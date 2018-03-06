@@ -1,0 +1,16 @@
+apply plugin: 'war'
+
+configurations { provided }
+
+dependencies {
+    providedCompile project(':app:server:ejb')
+    providedCompile project(':core:restComponents')
+
+    providedCompile group: 'org.keycloak', name: 'keycloak-core'
+
+    testCompile group: 'junit', name: 'junit'
+}
+
+ext {
+    warContextRoot = ''
+}

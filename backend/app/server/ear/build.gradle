@@ -1,0 +1,90 @@
+apply plugin: 'ear'
+
+dependencies {
+    deploy project(path: ':app:server:ejb', configuration: 'archives')
+    deploy project(path: ':app:server:rest', configuration: 'archives')
+}
+
+/**
+ * Add war project providedCompile dependencies to ear lib
+ */
+def setEarlibs() {
+    HashMap<String, ProjectDependency> deployments = new HashMap<>()
+
+    configurations.deploy.allDependencies.forEach({ e ->
+        if(e instanceof ProjectDependency) {
+            deployments.put(e.dependencyProject.name, e)
+        }
+    })
+
+    configurations.deploy.allDependencies.forEach({it ->
+        if(it instanceof ProjectDependency) {
+            def path = it.dependencyProject.path
+
+            evaluationDependsOn(path)
+            Project p = findProject(path)
+
+            p.configurations.compile.allDependencies.forEach {
+                if (it instanceof ProjectDependency &&
+                    !deployments.containsKey(it.dependencyProject.name))
+                {
+                    dependencies.add("earlib", it)
+                }
+            }
+        }
+    })
+}
+setEarlibs()
+
+def excludeEarlibs(){
+    Map<String, String> exclude = new HashMap<String, String>() {
+        {
+            put("group", "org.keycloak")
+            put("group", "javax")
+        }
+    }
+
+    configurations.earlib.exclude(exclude)
+}
+excludeEarlibs()
+
+def printEarlibs(){
+    configurations.earlib.forEach({it ->
+        println(it.name)
+    })
+}
+
+
+/**
+ * Ear deployment configuration
+ */
+def setProperties() {
+    evaluationDependsOn(":app:server:rest")
+    def warProject = project(":app:server:rest")
+    ext.warArchive = warProject.name + "-" + warProject.version + ".war"
+    ext.warContextRoot = warProject.warContextRoot
+
+    evaluationDependsOn(":app:server:ejb")
+    def ejbProject = project(":app:server:ejb")
+    ext.ejbArchive = ejbProject.name + "-" + ((String)ejbProject.version) + ".jar"
+}
+setProperties()
+
+ear {
+    libDirName 'APP-INF/lib'
+    deploymentDescriptor {
+        version = "1"
+        applicationName = "IS"
+        initializeInOrder = true
+        displayName = "IS Ear"
+        description = "Demo project"
+        module(project.ejbArchive, "ejb")
+        webModule(project.warArchive, project.warContextRoot)
+        securityRole "ADMINISTRATOR"
+        securityRole "CUSTOMER"
+    }
+}
+
+
+
+

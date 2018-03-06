@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':core:businessLogic')
+
+    testCompile group: 'junit', name: 'junit'
+}

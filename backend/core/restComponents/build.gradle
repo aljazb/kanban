@@ -1,0 +1,8 @@
+dependencies {
+
+    compile project(':core:businessLogic')
+
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate4'
+
+    testCompile group: 'junit', name: 'junit'
+}

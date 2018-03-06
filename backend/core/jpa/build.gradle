@@ -1,0 +1,113 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.liquibase:liquibase-gradle-plugin:1.2.4') {
+            exclude(module: 'liquibase-core')
+        }
+        classpath('org.liquibase:liquibase-core:3.5.3')
+        classpath('org.postgresql:postgresql:42.0.0')
+    }
+}
+
+apply plugin: 'org.liquibase.gradle'
+
+
+dependencies {
+    compile group: 'javax', name: 'javaee-api'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
+
+    testCompile group: 'junit', name: 'junit'
+}
+
+ext {
+    database_name = 'is'
+
+    database_bin = 'C:/Program Files/PostgreSQL/9.6/bin/'
+
+    liquibase_driver = 'org.postgresql.Driver'
+    liquibase_dir = projectDir.path + '/src/main/resources/liquibase'
+    liquibase_postgres_url = 'jdbc:postgresql://localhost:5432/'
+
+    liquibase_database_name = ext.database_name
+    liquibase_database_username = 'postgres'
+    liquibase_database_password = 'root'
+
+    liquibase_test_database_name = ext.database_name + '_test'
+    liquibase_test_database_username = ext.liquibase_database_username
+    liquibase_test_database_password = ext.liquibase_database_password
+}
+
+String getChangelog(){
+    String changelog = project.liquibase_dir
+    if(ext.has('cl')){
+        switch (project.ext.cl){
+            case 'import':
+                return changelog + '/changelog-import.groovy'
+            case 'diff':
+                return changelog + '/changelog-diff.groovy'
+        }
+    }
+    return changelog + '/changelogs.groovy'
+}
+
+liquibase {
+    activities {
+        base {
+            driver project.liquibase_driver
+            changeLogFile project.liquibase_dir + '/changelogs.groovy'
+            url project.liquibase_postgres_url + project.liquibase_database_name
+            username project.liquibase_database_username
+            password project.liquibase_database_password
+            referenceUrl project.liquibase_postgres_url + project.liquibase_test_database_name
+            referenceUsername project.liquibase_test_database_username
+            referencePassword project.liquibase_test_database_password
+        }
+    }
+    runList = ext.has('runList') ? project.ext.runList : 'base'
+}
+
+task initForDiffChangelog {
+    doFirst {
+        project.ext.cl = 'diff'
+        String changelog = getChangelog()
+
+        delete changelog
+        liquibase.activities.base.changeLogFile changelog
+    }
+}
+
+lbDiffChangeLog.dependsOn initForDiffChangelog
+
+task mainDB {
+    doFirst {
+        liquibase.activities.base.changeLogFile getChangelog()
+    }
+}
+
+task testDB {
+    doFirst {
+        liquibase.activities.base.changeLogFile getChangelog()
+        liquibase.activities.base.url project.liquibase_postgres_url + project.liquibase_test_database_name
+    }
+}
+
+/*
+ * Task to create database in postgresql
+ */
+String getCreateDatabaseCommand(String db){
+    return 'psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = \'' + db + '\'" | grep -q 1 || psql -U postgres -c "CREATE DATABASE ' + db + '"'
+}
+task initMainDatabase(type: Exec) {
+    workingDir project.database_bin
+    commandLine 'cmd', '/c', getCreateDatabaseCommand(project.liquibase_database_name)
+}
+task initTestDatabase(type: Exec) {
+    workingDir project.database_bin
+    commandLine 'cmd', '/c', getCreateDatabaseCommand(project.liquibase_test_database_name)
+}
+task initAllDatabases() {
+    dependsOn initMainDatabase
+    dependsOn initTestDatabase
+}

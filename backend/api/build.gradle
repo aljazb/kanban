@@ -1,0 +1,12 @@
+dependencies {
+    compile project(':core:jpa')
+
+    compile group: 'org.apache.httpcomponents', name: 'httpclient'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
+
+    compile group: 'org.keycloak', name: 'keycloak-admin-client'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-client'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider'
+
+    testCompile group: 'junit', name: 'junit'
+}
