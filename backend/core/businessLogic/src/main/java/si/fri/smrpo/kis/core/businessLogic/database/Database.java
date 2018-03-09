@@ -13,6 +13,7 @@ import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntityVersion;
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -105,10 +106,10 @@ public class Database implements DatabaseImpl {
     }
 
 
-    public <T extends BaseEntity> T get(Class<T> c, Integer id) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T get(Class<T> c, UUID id) throws BusinessLogicTransactionException {
         return get(c, id, null);
     }
-    public <T extends BaseEntity> T get(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T get(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException {
         try {
             T  o = entityManager.find(c, id);
 
@@ -251,16 +252,16 @@ public class Database implements DatabaseImpl {
     }
 
 
-    public <T extends BaseEntity> T delete(Class<T> c, Integer id) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T delete(Class<T> c, UUID id) throws BusinessLogicTransactionException{
         return delete(c, id, null, null);
     }
-    public <T extends BaseEntity> T delete(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T delete(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
         return delete(c, id, authorizationManager, null);
     }
-    public <T extends BaseEntity> T delete(Class<T> c, Integer id, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T delete(Class<T> c, UUID id, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
         return delete(c, id, null, validationManager);
     }
-    public <T extends BaseEntity> T delete(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T delete(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         try {
             T dbEntity = get(c, id, authorizationManager);
 
@@ -280,16 +281,16 @@ public class Database implements DatabaseImpl {
     }
 
 
-    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, Integer id) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, UUID id) throws BusinessLogicTransactionException{
         return toggleIsDeleted(c, id, null, null);
     }
-    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
         return toggleIsDeleted(c, id, authorizationManager, null);
     }
-    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, Integer id, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, UUID id, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
         return toggleIsDeleted(c, id, null, validationManager);
     }
-    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         try {
             T dbEntity = get(c, id, authorizationManager);
 
@@ -309,16 +310,16 @@ public class Database implements DatabaseImpl {
     }
 
 
-    public <T extends BaseEntity> T permDelete(Class<T> c, Integer id) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T permDelete(Class<T> c, UUID id) throws BusinessLogicTransactionException{
         return permDelete(c, id, null, null);
     }
-    public <T extends BaseEntity> T permDelete(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T permDelete(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
         return permDelete(c, id, authorizationManager, null);
     }
-    public <T extends BaseEntity> T permDelete(Class<T> c, Integer id, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntity> T permDelete(Class<T> c, UUID id, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
         return permDelete(c, id, null, validationManager);
     }
-    public <T extends BaseEntity> T permDelete(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T permDelete(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         try {
             T dbEntity = get(c, id, authorizationManager);
 
@@ -376,16 +377,16 @@ public class Database implements DatabaseImpl {
     }
 
 
-    public <T extends BaseEntityVersion> T updateVersion(int oldId, T newBaseEntityVersion) throws BusinessLogicTransactionException{
+    public <T extends BaseEntityVersion> T updateVersion(UUID oldId, T newBaseEntityVersion) throws BusinessLogicTransactionException{
         return updateVersion(oldId, newBaseEntityVersion, null, null);
     }
-    public <T extends BaseEntityVersion> T updateVersion(int oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntityVersion> T updateVersion(UUID oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
         return updateVersion(oldId, newBaseEntityVersion, authorizationManager, null);
     }
-    public <T extends BaseEntityVersion> T updateVersion(int oldId, T newBaseEntityVersion, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntityVersion> T updateVersion(UUID oldId, T newBaseEntityVersion, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
         return updateVersion(oldId, newBaseEntityVersion, null, validationManager);
     }
-    public <T extends BaseEntityVersion> T updateVersion(int oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntityVersion> T updateVersion(UUID oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         try {
             T dbEntityVersion = get((Class<T>) newBaseEntityVersion.getClass(), oldId, authorizationManager);
 
@@ -422,16 +423,16 @@ public class Database implements DatabaseImpl {
     }
 
 
-    public <T extends BaseEntityVersion> T patchVersion(int oldId, T newBaseEntityVersion) throws BusinessLogicTransactionException{
+    public <T extends BaseEntityVersion> T patchVersion(UUID oldId, T newBaseEntityVersion) throws BusinessLogicTransactionException{
         return patchVersion(oldId, newBaseEntityVersion, null, null);
     }
-    public <T extends BaseEntityVersion> T patchVersion(int oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntityVersion> T patchVersion(UUID oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException{
         return patchVersion(oldId, newBaseEntityVersion, authorizationManager, null);
     }
-    public <T extends BaseEntityVersion> T patchVersion(int oldId, T newBaseEntityVersion, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
+    public <T extends BaseEntityVersion> T patchVersion(UUID oldId, T newBaseEntityVersion, ValidationManager<T> validationManager) throws BusinessLogicTransactionException{
         return patchVersion(oldId, newBaseEntityVersion, null, validationManager);
     }
-    public <T extends BaseEntityVersion> T patchVersion(int oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntityVersion> T patchVersion(UUID oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         try {
             T dbEntityVersion = get((Class<T>) newBaseEntityVersion.getClass(), oldId, authorizationManager);
 

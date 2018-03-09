@@ -25,14 +25,17 @@
         <role-name>ADMINISTRATOR</role-name>
     </security-role>
     <security-role>
+        <role-name>DEVELOPER</role-name>
+    </security-role>
+
+    <!--
+    <security-role>
         <role-name>PRODUCT_OWNER</role-name>
     </security-role>
     <security-role>
         <role-name>KANBAN_MASTER</role-name>
     </security-role>
-    <security-role>
-        <role-name>DEVELOPER</role-name>
-    </security-role>
+    -->
 
     <!--
     <listener>

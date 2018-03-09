@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 @MappedSuperclass
 public abstract class BaseEntityVersion<T extends BaseEntityVersion> extends BaseEntity<T> {
 
     @Column(name = "origin_id")
-    protected Integer originId;
+    protected UUID originId;
 
     @Column(name = "version_order", nullable = false)
     protected Integer versionOrder;
@@ -59,11 +60,11 @@ public abstract class BaseEntityVersion<T extends BaseEntityVersion> extends Bas
         }
     }
 
-    public Integer getOriginId() {
+    public UUID getOriginId() {
         return originId;
     }
 
-    public void setOriginId(Integer originId) {
+    public void setOriginId(UUID originId) {
         this.originId = originId;
     }
 
@@ -83,8 +84,5 @@ public abstract class BaseEntityVersion<T extends BaseEntityVersion> extends Bas
         isLatest = latest;
     }
 
-    public Integer getId(){
-        return id;
-    }
 }
 

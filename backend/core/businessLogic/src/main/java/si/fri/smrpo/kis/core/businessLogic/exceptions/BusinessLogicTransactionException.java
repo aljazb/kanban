@@ -6,6 +6,10 @@ import javax.ws.rs.core.Response;
 @ApplicationException(rollback=true)
 public class BusinessLogicTransactionException extends BusinessLogicBaseException {
 
+    public BusinessLogicTransactionException(Response.Status status) {
+        super(status);
+    }
+
     public BusinessLogicTransactionException(Response.Status status, String message) {
         super(status, message);
     }

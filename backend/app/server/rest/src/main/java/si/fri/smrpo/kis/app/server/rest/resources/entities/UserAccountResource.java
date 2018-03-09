@@ -13,6 +13,7 @@ import si.fri.smrpo.kis.core.businessLogic.database.DatabaseImpl;
 import si.fri.smrpo.kis.core.businessLogic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.core.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.core.restComponents.providers.configuration.PATCH;
+import si.fri.smrpo.kis.core.restComponents.resource.CrudResource;
 import si.fri.smrpo.kis.core.restComponents.resource.CrudVersionResource;
 import si.fri.smrpo.kis.core.restComponents.utility.QueryParamatersUtility;
 
@@ -22,12 +23,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-import static si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility.ROLE_ADMINISTRATOR;
+import java.util.UUID;
+
+import static si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility.*;
 
 
 @Path("UserAccount")
 @RequestScoped
-public class UserAccountResource extends CrudVersionResource<UserAccount> {
+public class UserAccountResource extends CrudResource<UserAccount> {
 
     @EJB
     private DatabaseServiceLocal databaseImpl;
@@ -46,11 +49,12 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
     }
 
 
-    //@RolesAllowed(ROLE_CUSTOMER)
+    @RolesAllowed({ROLE_ADMINISTRATOR, ROLE_DEVELOPER})
     @GET
     @Path("login")
     public Response loginUserInfo() throws BusinessLogicTransactionException {
-        //return buildResponse(userAccount, true, true).build();
+
+
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
@@ -66,7 +70,7 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
     @GET
     @Path("{id}")
     @Override
-    public Response get(@PathParam("id") Integer id) throws BusinessLogicTransactionException {
+    public Response get(@PathParam("id") UUID id) throws BusinessLogicTransactionException {
         return super.get(id);
     }
 
@@ -81,7 +85,7 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
     @PUT
     @Path("{id}")
     @Override
-    public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") Integer id, UserAccount entity) throws BusinessLogicTransactionException {
+    public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, UserAccount entity) throws BusinessLogicTransactionException {
         return super.update(xContent, id, entity);
     }
 
@@ -89,7 +93,7 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
     @PATCH
     @Path("{id}")
     @Override
-    public Response patch(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") Integer id, UserAccount entity) throws BusinessLogicTransactionException {
+    public Response patch(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, UserAccount entity) throws BusinessLogicTransactionException {
         return super.patch(xContent, id, entity);
     }
 
@@ -97,7 +101,7 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
     @DELETE
     @Path("{id}")
     @Override
-    public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") Integer id) throws BusinessLogicTransactionException {
+    public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws BusinessLogicTransactionException {
         return super.delete(xContent, id);
     }
 
@@ -105,7 +109,7 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
     @PUT
     @Path("{id}/toggleIsDeleted")
     @Override
-    public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") Integer id) throws BusinessLogicTransactionException {
+    public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws BusinessLogicTransactionException {
         return super.toggleIsDeleted(xContent, id);
     }
 
@@ -122,7 +126,7 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
 
             @Override
             public void checkAuthority(UserAccount entity, Database database) throws BusinessLogicTransactionException {
-                if(!entity.getAuthenticationId().equals(authEntity.getId())){
+                if(!entity.getId().equals(authEntity.getId())){
                     throw new BusinessLogicTransactionException(Response.Status.FORBIDDEN, "UserAccount does not have permission.");
                 }
             }

@@ -6,6 +6,7 @@ import si.fri.smrpo.kis.core.restComponents.providers.configuration.PATCH;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 public abstract class CrudVersionResource<T extends BaseEntityVersion> extends GetResource<T> {
 
@@ -25,7 +26,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion> extends G
     @PUT
     @Path("{id}")
     public Response update(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") Integer id, T entity) throws BusinessLogicTransactionException {
+                           @PathParam("id") UUID id, T entity) throws BusinessLogicTransactionException {
         entity.setId(id);
 
         T dbEntity = getDatabaseService().updateVersion(id, entity, authorizationManager, validationManager);
@@ -36,7 +37,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion> extends G
     @PATCH
     @Path("{id}")
     public Response patch(@HeaderParam("X-Content") Boolean xContent,
-                          @PathParam("id") Integer id, T entity) throws BusinessLogicTransactionException {
+                          @PathParam("id") UUID id, T entity) throws BusinessLogicTransactionException {
         entity.setId(id);
 
         T dbEntity = getDatabaseService().patchVersion(id, entity, authorizationManager, validationManager);
@@ -47,7 +48,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion> extends G
     @DELETE
     @Path("{id}")
     public Response delete(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") Integer id) throws BusinessLogicTransactionException {
+                           @PathParam("id") UUID id) throws BusinessLogicTransactionException {
 
         T dbEntity = getDatabaseService().delete(type, id, authorizationManager, validationManager);
 
@@ -57,7 +58,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion> extends G
     @PUT
     @Path("{id}/toggleIsDeleted")
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent,
-                                    @PathParam("id") Integer id) throws BusinessLogicTransactionException {
+                                    @PathParam("id") UUID id) throws BusinessLogicTransactionException {
 
         T dbEntity = getDatabaseService().toggleIsDeleted(type, id, authorizationManager, validationManager);
 

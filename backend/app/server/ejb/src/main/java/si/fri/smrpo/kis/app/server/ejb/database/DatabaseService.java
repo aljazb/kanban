@@ -17,6 +17,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @PermitAll
@@ -47,7 +48,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity> T get(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T get(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager) throws BusinessLogicTransactionException {
         return database.get(c, id, authorizationManager);
     }
 
@@ -67,17 +68,17 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity> T delete(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T delete(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         return database.delete(c, id, authorizationManager, validationManager);
     }
 
     @Override
-    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T toggleIsDeleted(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         return database.toggleIsDeleted(c, id, authorizationManager, validationManager);
     }
 
     @Override
-    public <T extends BaseEntity> T permDelete(Class<T> c, Integer id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntity> T permDelete(Class<T> c, UUID id, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         return database.permDelete(c, id, authorizationManager, validationManager);
     }
 
@@ -87,12 +88,12 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntityVersion> T updateVersion(int oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntityVersion> T updateVersion(UUID oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         return database.updateVersion(oldId, newBaseEntityVersion, authorizationManager, validationManager);
     }
 
     @Override
-    public <T extends BaseEntityVersion> T patchVersion(int oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
+    public <T extends BaseEntityVersion> T patchVersion(UUID oldId, T newBaseEntityVersion, AuthorizationManager<T> authorizationManager, ValidationManager<T> validationManager) throws BusinessLogicTransactionException {
         return database.patchVersion(oldId, newBaseEntityVersion, authorizationManager, validationManager);
     }
 

@@ -8,6 +8,11 @@ public abstract class BusinessLogicBaseException extends Exception {
     private String message;
     private Exception innerException;
 
+    public BusinessLogicBaseException(Response.Status status) {
+        super();
+        this.status = status;
+    }
+
     public BusinessLogicBaseException(Response.Status status, String message) {
         super(message);
         this.message = message;

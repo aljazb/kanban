@@ -3,6 +3,7 @@ package si.fri.smrpo.kis.core.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntityVersion;
 import si.fri.smrpo.kis.core.jpa.utility.Constants;
 
@@ -13,7 +14,7 @@ import java.lang.reflect.Field;
 @Table(name="user_account")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class UserAccount extends BaseEntityVersion<UserAccount> {
+public class UserAccount extends BaseEntity<UserAccount> {
 
     @Column(length = Constants.DEF_STRING_LEN, nullable = false)
     private String email;
@@ -23,12 +24,6 @@ public class UserAccount extends BaseEntityVersion<UserAccount> {
 
     @Column(length = Constants.DEF_STRING_LEN)
     private String surname;
-
-    @Column(length = Constants.DEF_STRING_LEN)
-    private String telephoneNumber;
-
-    @Column(length = Constants.DEF_STRING_LEN, nullable = false)
-    private String authenticationId;
 
 
     @JsonIgnore
@@ -71,19 +66,4 @@ public class UserAccount extends BaseEntityVersion<UserAccount> {
         this.email = email;
     }
 
-    public String getTelephoneNumber() {
-        return telephoneNumber;
-    }
-
-    public void setTelephoneNumber(String telephoneNumber) {
-        this.telephoneNumber = telephoneNumber;
-    }
-
-    public String getAuthenticationId() {
-        return authenticationId;
-    }
-
-    public void setAuthenticationId(String keycloakId) {
-        this.authenticationId = keycloakId;
-    }
 }

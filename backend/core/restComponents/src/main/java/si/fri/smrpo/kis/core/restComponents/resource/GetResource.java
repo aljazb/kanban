@@ -17,6 +17,7 @@ import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 public abstract class GetResource<T extends BaseEntity> extends BaseResource {
 
@@ -63,7 +64,7 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
 
     @GET
     @Path("{id}")
-    public Response get(@PathParam("id") Integer id) throws BusinessLogicTransactionException {
+    public Response get(@PathParam("id") UUID id) throws BusinessLogicTransactionException {
 
         T dbEntity = getDatabaseService().get(type, id, authorizationManager);
 

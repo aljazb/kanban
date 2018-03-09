@@ -16,7 +16,7 @@ public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id")
-    protected Integer id;
+    protected UUID id;
 
     @Version
     protected Integer version;
@@ -322,11 +322,11 @@ public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
         return new EntityTag(Long.toString(editedOn.getTime()));
     }
 
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
