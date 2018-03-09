@@ -14,18 +14,24 @@
         <param-value>true</param-value>
     </context-param>
 
-    <!--
+
     <login-config>
         <auth-method>KEYCLOAK</auth-method>
-        <realm-name>is</realm-name>
+        <realm-name>Kis</realm-name>
     </login-config>
-    -->
+
 
     <security-role>
-        <role-name>CUSTOMER</role-name>
+        <role-name>ADMINISTRATOR</role-name>
     </security-role>
     <security-role>
-        <role-name>ADMINISTRATOR</role-name>
+        <role-name>PRODUCT_OWNER</role-name>
+    </security-role>
+    <security-role>
+        <role-name>KANBAN_MASTER</role-name>
+    </security-role>
+    <security-role>
+        <role-name>DEVELOPER</role-name>
     </security-role>
 
     <!--

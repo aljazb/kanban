@@ -81,7 +81,9 @@ ear {
         module(project.ejbArchive, "ejb")
         webModule(project.warArchive, project.warContextRoot)
         securityRole "ADMINISTRATOR"
-        securityRole "CUSTOMER"
+        securityRole "PRODUCT_OWNER"
+        securityRole "KANBAN_MASTER"
+        securityRole "DEVELOPER"
     }
 }
 

@@ -5,7 +5,6 @@ import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.enums.FilterOperation;
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.app.server.ejb.database.DatabaseServiceLocal;
-import si.fri.smrpo.kis.app.server.ejb.interfaces.CustomerServiceLocal;
 import si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility;
 import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
 import si.fri.smrpo.kis.core.businessLogic.database.AuthorizationManager;
@@ -22,6 +21,8 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+
+import static si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility.ROLE_ADMINISTRATOR;
 
 
 @Path("UserAccount")
@@ -40,9 +41,6 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
         return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
-    @EJB
-    private CustomerServiceLocal customerService;
-
     public UserAccountResource() {
         super(UserAccount.class);
     }
@@ -52,12 +50,12 @@ public class UserAccountResource extends CrudVersionResource<UserAccount> {
     @GET
     @Path("login")
     public Response loginUserInfo() throws BusinessLogicTransactionException {
-        UserAccount userAccount = customerService.get(getAuthorizedEntity());
-        return buildResponse(userAccount, true, true).build();
+        //return buildResponse(userAccount, true, true).build();
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 
-    //@RolesAllowed({ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_ADMINISTRATOR})
     @GET
     @Override
     public Response getList() throws BusinessLogicTransactionException {

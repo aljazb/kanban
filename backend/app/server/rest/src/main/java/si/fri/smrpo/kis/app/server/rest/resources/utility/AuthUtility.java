@@ -7,10 +7,11 @@ import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
 
 public class AuthUtility {
 
-    public static String ADMINISTRATOR = "ADMINISTRATOR";
-    public static String PRODUCT_OWNER = "PRODUCT_OWNER";
-    public static String KANBAN_MASTER = "KANBAN_MASTER";
-    public static String DEVELOPER = "DEVELOPER";
+    public static final String ROLE_ADMINISTRATOR = "ADMINISTRATOR";
+    public static final String ROLE_PRODUCT_OWNER = "PRODUCT_OWNER";
+    public static final String ROLE_KANBAN_MASTER = "KANBAN_MASTER";
+    public static final String ROLE_DEVELOPER = "DEVELOPER";
+
 
     public static AuthEntity getAuthorizedEntity(KeycloakPrincipal principal) {
         KeycloakPrincipal<KeycloakSecurityContext> kcPrincipal = principal;

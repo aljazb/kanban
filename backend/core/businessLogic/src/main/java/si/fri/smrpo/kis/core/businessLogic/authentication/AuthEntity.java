@@ -5,9 +5,6 @@ import java.util.Set;
 
 public class AuthEntity {
 
-    public static final String ROLE_CUSTOMER = "CUSTOMER";
-    public static final String ROLE_ADMINISTRATOR = "ADMINISTRATOR";
-
     protected String id;
     protected String email;
     protected String name;
