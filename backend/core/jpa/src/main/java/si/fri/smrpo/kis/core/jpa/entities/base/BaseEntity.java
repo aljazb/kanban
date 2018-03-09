@@ -14,7 +14,6 @@ import java.util.*;
 public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id")
     protected UUID id;
 
