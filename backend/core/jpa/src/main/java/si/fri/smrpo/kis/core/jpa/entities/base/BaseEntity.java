@@ -43,7 +43,9 @@ public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
 
     @JsonIgnore
     public void prePersist(){
-        id = null;
+        if (id == null)
+            id = UUID.randomUUID();
+
         version = null;
         isDeleted = false;
 

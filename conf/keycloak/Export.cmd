@@ -1,0 +1,1 @@
+bin/standalone.bat -Dkeycloak.migration.action=export -Dkeycloak.migration.realmName=Kis -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=kis-realm.json

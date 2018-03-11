@@ -25,43 +25,7 @@
         <role-name>ADMINISTRATOR</role-name>
     </security-role>
     <security-role>
-        <role-name>DEVELOPER</role-name>
+        <role-name>USER</role-name>
     </security-role>
-
-    <!--
-    <security-role>
-        <role-name>PRODUCT_OWNER</role-name>
-    </security-role>
-    <security-role>
-        <role-name>KANBAN_MASTER</role-name>
-    </security-role>
-    -->
-
-    <!--
-    <listener>
-        <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
-    </listener>
-
-    <servlet>
-        <servlet-name>Resteasy</servlet-name>
-        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>Resteasy</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Resteasy</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>CUSTOMER</role-name>
-            <role-name>ADMINISTRATOR</role-name>
-        </auth-constraint>
-    </security-constraint>
-    -->
 
 </web-app>

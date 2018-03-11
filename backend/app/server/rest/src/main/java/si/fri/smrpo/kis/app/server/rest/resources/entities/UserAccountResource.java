@@ -14,7 +14,6 @@ import si.fri.smrpo.kis.core.businessLogic.exceptions.BusinessLogicTransactionEx
 import si.fri.smrpo.kis.core.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.core.restComponents.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.restComponents.resource.CrudResource;
-import si.fri.smrpo.kis.core.restComponents.resource.CrudVersionResource;
 import si.fri.smrpo.kis.core.restComponents.utility.QueryParamatersUtility;
 
 import javax.annotation.security.RolesAllowed;
@@ -49,12 +48,10 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     }
 
 
-    @RolesAllowed({ROLE_ADMINISTRATOR, ROLE_DEVELOPER})
+    @RolesAllowed({ROLE_ADMINISTRATOR, ROLE_USER})
     @GET
     @Path("login")
     public Response loginUserInfo() throws BusinessLogicTransactionException {
-
-
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
@@ -78,7 +75,8 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     @POST
     @Override
     public Response create(@HeaderParam("X-Content") Boolean xContent, UserAccount entity) throws BusinessLogicTransactionException {
-        throw BusinessLogicTransactionException.buildNotImplemented();
+        return super.create(xContent, entity);
+        //throw BusinessLogicTransactionException.buildNotImplemented();
     }
 
     //@RolesAllowed(ROLE_CUSTOMER)

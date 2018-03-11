@@ -1,12 +1,11 @@
 apply plugin: 'war'
 
-configurations { provided }
-
 dependencies {
     providedCompile project(':app:server:ejb')
     providedCompile project(':core:restComponents')
 
     providedCompile group: 'org.keycloak', name: 'keycloak-core'
+    providedCompile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5'
 
     testCompile group: 'junit', name: 'junit'
 }

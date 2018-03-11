@@ -8,6 +8,8 @@ dependencies {
 /**
  * Add war project providedCompile dependencies to ear lib
  */
+ext.DEBUG = false
+
 def setEarlibs() {
     HashMap<String, ProjectDependency> deployments = new HashMap<>()
 
@@ -25,11 +27,31 @@ def setEarlibs() {
             Project p = findProject(path)
 
             p.configurations.compile.allDependencies.forEach {
-                if (it instanceof ProjectDependency &&
-                    !deployments.containsKey(it.dependencyProject.name))
-                {
+                boolean isProject = it instanceof ProjectDependency
+                if (
+                    !isProject ||
+                    (isProject && !deployments.containsKey(it.dependencyProject.name))
+                ) {
                     dependencies.add("earlib", it)
                 }
+            }
+
+            try {
+                def providedCompileConf = p.configurations.getByName("providedCompile")
+                println("Found providedCompile conf in deployment: " + p.name)
+                providedCompileConf.allDependencies.forEach {
+                    boolean isProject = it instanceof ProjectDependency
+                    if (
+                        !isProject ||
+                        (isProject && !deployments.containsKey(it.dependencyProject.name))
+                    ) {
+                        if(ext.DEBUG) printf("> %s \n", it.name)
+
+                        dependencies.add("earlib", it)
+                    }
+                }
+            } catch (UnknownConfigurationException e) {
+
             }
         }
     })
@@ -49,10 +71,14 @@ def excludeEarlibs(){
 excludeEarlibs()
 
 def printEarlibs(){
+    println("Ear libs:")
     configurations.earlib.forEach({it ->
-        println(it.name)
+        printf("> %s \n", it.name)
     })
+    println()
 }
+
+if(ext.DEBUG) printEarlibs()
 
 
 /**
@@ -81,9 +107,7 @@ ear {
         module(project.ejbArchive, "ejb")
         webModule(project.warArchive, project.warContextRoot)
         securityRole "ADMINISTRATOR"
-        securityRole "DEVELOPER"
-        //securityRole "PRODUCT_OWNER"
-        //securityRole "KANBAN_MASTER"
+        securityRole "USER"
     }
 }
 

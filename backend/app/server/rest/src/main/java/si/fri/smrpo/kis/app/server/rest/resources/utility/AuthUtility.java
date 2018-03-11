@@ -8,7 +8,7 @@ import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
 public class AuthUtility {
 
     public static final String ROLE_ADMINISTRATOR = "ADMINISTRATOR";
-    public static final String ROLE_DEVELOPER = "DEVELOPER";
+    public static final String ROLE_USER = "USER";
 
     //public static final String ROLE_PRODUCT_OWNER = "PRODUCT_OWNER";
     //public static final String ROLE_KANBAN_MASTER = "KANBAN_MASTER";

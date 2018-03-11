@@ -2,7 +2,7 @@ dependencies {
 
     compile project(':core:businessLogic')
 
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
 
     testCompile group: 'junit', name: 'junit'
 }
