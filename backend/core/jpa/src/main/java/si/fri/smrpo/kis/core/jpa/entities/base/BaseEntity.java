@@ -98,6 +98,7 @@ public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
 
     protected boolean baseSkip(Field field){
         switch (field.getName()) {
+            case "id":
             case "isDeleted":
             case "editedOn":
             case "createdOn":

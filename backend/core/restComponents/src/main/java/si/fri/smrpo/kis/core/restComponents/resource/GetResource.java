@@ -41,8 +41,8 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
 
     @PostConstruct
     private void init(){
-        //validationManager = initValidationManager();
-        //authorizationManager = initAuthorizationManager();
+        validationManager = initValidationManager();
+        authorizationManager = initAuthorizationManager();
     }
 
     @GET
@@ -142,6 +142,7 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
     }
 
     protected AuthorizationManager<T> initAuthorizationManager() { return null; }
+
     protected ValidationManager<T> initValidationManager() {
         return new ETagValidationManager<T>() {
             @Override

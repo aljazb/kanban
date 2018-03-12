@@ -10,6 +10,17 @@
         <jta-data-source>java:/jboss/datasources/KISDS</jta-data-source>
 
         <class>si.fri.smrpo.kis.core.jpa.entities.UserAccount</class>
+        <class>si.fri.smrpo.kis.core.jpa.entities.DevTeam</class>
+
+        <class>si.fri.smrpo.kis.core.jpa.entities.Project</class>
+        <class>si.fri.smrpo.kis.core.jpa.entities.Card</class>
+
+        <class>si.fri.smrpo.kis.core.jpa.entities.FlowTable</class>
+        <class>si.fri.smrpo.kis.core.jpa.entities.FlowTablePart</class>
+
+        <class>si.fri.smrpo.kis.core.jpa.entities.mtm.DevTeamMtmProject</class>
+        <class>si.fri.smrpo.kis.core.jpa.entities.mtm.UserAccountMtmDevTeam</class>
+
 
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>

@@ -5,6 +5,7 @@ import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.enums.FilterOperation;
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.app.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.app.server.ejb.managers.UserAccountManagerLocal;
 import si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility;
 import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
 import si.fri.smrpo.kis.core.businessLogic.database.AuthorizationManager;
@@ -34,6 +35,9 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     @EJB
     private DatabaseServiceLocal databaseImpl;
 
+    @EJB
+    private UserAccountManagerLocal accountManager;
+
     @Override
     protected DatabaseImpl getDatabaseService() {
         return databaseImpl;
@@ -48,13 +52,13 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     }
 
 
-    @RolesAllowed({ROLE_ADMINISTRATOR, ROLE_USER})
+    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
     @GET
     @Path("login")
     public Response loginUserInfo() throws BusinessLogicTransactionException {
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        UserAccount userAccount = accountManager.login(getAuthorizedEntity());
+        return buildResponse(userAccount).build();
     }
-
 
     @RolesAllowed({ROLE_ADMINISTRATOR})
     @GET
@@ -63,7 +67,7 @@ public class UserAccountResource extends CrudResource<UserAccount> {
         return super.getList();
     }
 
-    //@RolesAllowed({ROLE_ADMINISTRATOR, ROLE_CUSTOMER})
+    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
     @GET
     @Path("{id}")
     @Override
@@ -71,15 +75,14 @@ public class UserAccountResource extends CrudResource<UserAccount> {
         return super.get(id);
     }
 
-    //@RolesAllowed(ROLE_CUSTOMER)
+    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
     @POST
     @Override
     public Response create(@HeaderParam("X-Content") Boolean xContent, UserAccount entity) throws BusinessLogicTransactionException {
-        return super.create(xContent, entity);
-        //throw BusinessLogicTransactionException.buildNotImplemented();
+        throw BusinessLogicTransactionException.buildNotImplemented();
     }
 
-    //@RolesAllowed(ROLE_CUSTOMER)
+    @RolesAllowed(ROLE_USER)
     @PUT
     @Path("{id}")
     @Override
@@ -87,7 +90,7 @@ public class UserAccountResource extends CrudResource<UserAccount> {
         return super.update(xContent, id, entity);
     }
 
-    //@RolesAllowed(ROLE_CUSTOMER)
+    @RolesAllowed(ROLE_USER)
     @PATCH
     @Path("{id}")
     @Override
@@ -95,15 +98,16 @@ public class UserAccountResource extends CrudResource<UserAccount> {
         return super.patch(xContent, id, entity);
     }
 
-    //@RolesAllowed(ROLE_CUSTOMER)
+    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
     @DELETE
     @Path("{id}")
     @Override
     public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws BusinessLogicTransactionException {
+
         return super.delete(xContent, id);
     }
 
-    //@RolesAllowed(ROLE_CUSTOMER)
+    @RolesAllowed(ROLE_ADMINISTRATOR)
     @PUT
     @Path("{id}/toggleIsDeleted")
     @Override
