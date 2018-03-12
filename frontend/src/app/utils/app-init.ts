@@ -11,8 +11,9 @@ export function initializer(keycloak: KeycloakService): () => Promise<any> {
             clientId: 'frontend-angular-client'
           },
           initOptions: {
-            //onLoad: 'check-sso',
+            onLoad: 'check-sso',
             checkLoginIframe: false,
+            localStorage: true
           },
           bearerExcludedUrls: [
             '/src'
