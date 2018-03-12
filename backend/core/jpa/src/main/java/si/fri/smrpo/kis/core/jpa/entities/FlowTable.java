@@ -23,7 +23,7 @@ public class FlowTable extends BaseEntity<FlowTable> {
     @JoinColumn(name = "owner_user_account_id", nullable = false)
     public UserAccount owner;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "root_flow_table_part_id", nullable = false)
     private FlowTablePart rootFlowTablePart;
 

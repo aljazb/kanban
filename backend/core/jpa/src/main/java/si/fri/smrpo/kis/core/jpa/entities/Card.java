@@ -29,6 +29,11 @@ public class Card extends BaseEntity<Card> {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @ManyToOne
+    @JoinColumn(name = "flow_table_part_id", nullable = false)
+    private FlowTablePart flowTablePart;
+
+
 
     public UserAccount getOwner() {
         return owner;
@@ -68,5 +73,13 @@ public class Card extends BaseEntity<Card> {
 
     public void setWorkLoad(Integer workLoad) {
         this.workLoad = workLoad;
+    }
+
+    public FlowTablePart getFlowTablePart() {
+        return flowTablePart;
+    }
+
+    public void setFlowTablePart(FlowTablePart flowTablePart) {
+        this.flowTablePart = flowTablePart;
     }
 }

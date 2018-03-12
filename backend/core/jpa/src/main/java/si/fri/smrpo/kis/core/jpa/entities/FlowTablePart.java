@@ -23,8 +23,8 @@ public class FlowTablePart extends BaseEntity<FlowTablePart> {
 
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "rootFlowTablePart")
-    private Set<FlowTable> flowTables;
+    @OneToOne(mappedBy = "rootFlowTablePart")
+    private FlowTable flowTables;
 
     @ManyToOne
     @JoinColumn(name = "flow_table_part_parent_id")
@@ -34,13 +34,17 @@ public class FlowTablePart extends BaseEntity<FlowTablePart> {
     @OneToMany(mappedBy = "parent")
     private Set<FlowTablePart> children;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @OneToMany(mappedBy = "flowTablePart")
+    private Set<Card> cards;
 
 
-    public Set<FlowTable> getFlowTables() {
+
+    public FlowTable getFlowTables() {
         return flowTables;
     }
 
-    public void setFlowTables(Set<FlowTable> flowTables) {
+    public void setFlowTables(FlowTable flowTables) {
         this.flowTables = flowTables;
     }
 
@@ -74,5 +78,13 @@ public class FlowTablePart extends BaseEntity<FlowTablePart> {
 
     public void setMaxWip(Integer maxWip) {
         this.maxWip = maxWip;
+    }
+
+    public Set<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(Set<Card> cards) {
+        this.cards = cards;
     }
 }
