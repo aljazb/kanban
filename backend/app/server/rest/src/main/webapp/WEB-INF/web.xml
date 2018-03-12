@@ -24,6 +24,19 @@
     <security-role>
         <role-name>ADMINISTRATOR</role-name>
     </security-role>
+
+    <security-role>
+        <role-name>KAMBAN_MASTER</role-name>
+    </security-role>
+
+    <security-role>
+        <role-name>PRODUCT_OWNER</role-name>
+    </security-role>
+
+    <security-role>
+        <role-name>DEVELOPER</role-name>
+    </security-role>
+
     <security-role>
         <role-name>USER</role-name>
     </security-role>
