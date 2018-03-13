@@ -21,9 +21,7 @@ public class Card extends BaseEntity<Card> {
     @Column(name = "work_load")
     private Integer workLoad;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_user_account_id", nullable = false)
-    private UserAccount owner;
+
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -33,15 +31,6 @@ public class Card extends BaseEntity<Card> {
     @JoinColumn(name = "flow_table_part_id", nullable = false)
     private FlowTablePart flowTablePart;
 
-
-
-    public UserAccount getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserAccount owner) {
-        this.owner = owner;
-    }
 
     public Project getProject() {
         return project;

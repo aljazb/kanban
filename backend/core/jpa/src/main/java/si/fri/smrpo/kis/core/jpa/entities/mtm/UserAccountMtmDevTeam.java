@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.core.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.core.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.entities.enums.MemberType;
 
 import javax.persistence.*;
 
@@ -15,6 +16,10 @@ import javax.persistence.*;
 public class UserAccountMtmDevTeam extends BaseEntity<UserAccountMtmDevTeam> {
 
 
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
+
+
     @ManyToOne
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
@@ -22,6 +27,7 @@ public class UserAccountMtmDevTeam extends BaseEntity<UserAccountMtmDevTeam> {
     @ManyToOne
     @JoinColumn(name = "dev_team_id", nullable = false)
     private DevTeam devTeam;
+
 
 
     public UserAccount getUserAccount() {
@@ -38,5 +44,13 @@ public class UserAccountMtmDevTeam extends BaseEntity<UserAccountMtmDevTeam> {
 
     public void setDevTeam(DevTeam devTeam) {
         this.devTeam = devTeam;
+    }
+
+    public MemberType getMemberType() {
+        return memberType;
+    }
+
+    public void setMemberType(MemberType memberType) {
+        this.memberType = memberType;
     }
 }

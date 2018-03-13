@@ -1,13 +1,10 @@
 package si.fri.smrpo.kis.core.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
-import si.fri.smrpo.kis.core.jpa.entities.mtm.DevTeamMtmProject;
 
 import javax.persistence.*;
-import java.util.Set;
 
 
 @Entity
@@ -23,28 +20,15 @@ public class Project extends BaseEntity<Project> {
     private String description;
 
 
-
-    @ManyToOne
-    @JoinColumn(name = "owner_user_account_id", nullable = false)
-    public UserAccount owner;
-
     @ManyToOne
     @JoinColumn(name = "flow_table_id", nullable = false)
     private FlowTable flowTable;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "project")
-    private Set<DevTeamMtmProject> joinedDevTeams;
+    @ManyToOne
+    @JoinColumn(name = "joined_dev_team_id")
+    private DevTeam devTeam;
 
 
-
-    public UserAccount getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserAccount owner) {
-        this.owner = owner;
-    }
 
     public FlowTable getFlowTable() {
         return flowTable;
@@ -54,12 +38,12 @@ public class Project extends BaseEntity<Project> {
         this.flowTable = flowTable;
     }
 
-    public Set<DevTeamMtmProject> getJoinedDevTeams() {
-        return joinedDevTeams;
+    public DevTeam getDevTeam() {
+        return devTeam;
     }
 
-    public void setJoinedDevTeams(Set<DevTeamMtmProject> joinedDevTeams) {
-        this.joinedDevTeams = joinedDevTeams;
+    public void setDevTeam(DevTeam joinedDevTeam) {
+        this.devTeam = joinedDevTeam;
     }
 
     public String getName() {

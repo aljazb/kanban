@@ -19,9 +19,9 @@ public class FlowTable extends BaseEntity<FlowTable> {
     private String name;
 
 
-    @ManyToOne
-    @JoinColumn(name = "owner_user_account_id", nullable = false)
-    public UserAccount owner;
+    @OneToOne
+    @JoinColumn(name = "dev_team_id", nullable = false)
+    public DevTeam devTeam;
 
     @OneToOne
     @JoinColumn(name = "root_flow_table_part_id", nullable = false)
@@ -32,13 +32,12 @@ public class FlowTable extends BaseEntity<FlowTable> {
     public Set<Project> projects;
 
 
-
-    public UserAccount getOwner() {
-        return owner;
+    public DevTeam getDevTeam() {
+        return devTeam;
     }
 
-    public void setOwner(UserAccount owner) {
-        this.owner = owner;
+    public void setDevTeam(DevTeam owner) {
+        this.devTeam = owner;
     }
 
     public Set<Project> getProjects() {
@@ -64,4 +63,6 @@ public class FlowTable extends BaseEntity<FlowTable> {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

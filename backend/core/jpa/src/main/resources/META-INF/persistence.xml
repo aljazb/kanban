@@ -18,7 +18,6 @@
         <class>si.fri.smrpo.kis.core.jpa.entities.FlowTable</class>
         <class>si.fri.smrpo.kis.core.jpa.entities.FlowTablePart</class>
 
-        <class>si.fri.smrpo.kis.core.jpa.entities.mtm.DevTeamMtmProject</class>
         <class>si.fri.smrpo.kis.core.jpa.entities.mtm.UserAccountMtmDevTeam</class>
 
 

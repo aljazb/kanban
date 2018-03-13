@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
-import si.fri.smrpo.kis.core.jpa.entities.mtm.DevTeamMtmProject;
 import si.fri.smrpo.kis.core.jpa.entities.mtm.UserAccountMtmDevTeam;
 
 import javax.persistence.*;
@@ -17,29 +16,23 @@ import java.util.Set;
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class DevTeam extends BaseEntity<DevTeam> {
 
+
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_user_account_id", nullable = false)
-    public UserAccount owner;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "userAccount")
-    public Set<UserAccountMtmDevTeam> joinedUsers;
+    private Set<UserAccountMtmDevTeam> joinedUsers;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "project")
-    public Set<DevTeamMtmProject> joinedProjects;
+    @OneToMany(mappedBy = "devTeam")
+    private Set<Project> projects;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @OneToOne(mappedBy = "devTeam")
+    private FlowTable flowTable;
 
-    public UserAccount getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserAccount owner) {
-        this.owner = owner;
-    }
 
     public Set<UserAccountMtmDevTeam> getJoinedUsers() {
         return joinedUsers;
@@ -49,19 +42,27 @@ public class DevTeam extends BaseEntity<DevTeam> {
         this.joinedUsers = joinedUsers;
     }
 
-    public Set<DevTeamMtmProject> getJoinedProjects() {
-        return joinedProjects;
-    }
-
-    public void setJoinedProjects(Set<DevTeamMtmProject> joinedProjects) {
-        this.joinedProjects = joinedProjects;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public FlowTable getFlowTable() {
+        return flowTable;
+    }
+
+    public void setFlowTable(FlowTable flowTable) {
+        this.flowTable = flowTable;
+    }
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> joinedProjects) {
+        this.projects = joinedProjects;
     }
 }
