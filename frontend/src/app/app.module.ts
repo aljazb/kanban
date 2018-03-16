@@ -21,6 +21,8 @@ import { HeroService }          from './hero.service';
 import { MessageService }       from './message.service';
 import { MessagesComponent }    from './messages/messages.component';
 import { AppHeaderComponent }   from './app-header/app-header.component';
+import {ApiService} from './api/Api';
+import {KeycloakAuthGuardService} from './api/keycloak/keycloak-auth-guard.service';
 
 @NgModule({
   imports: [
@@ -49,7 +51,8 @@ import { AppHeaderComponent }   from './app-header/app-header.component';
   providers: [
     HeroService,
     MessageService,
-    //KeycloakAuthGuardService,
+    KeycloakAuthGuardService,
+    ApiService,
     {
       provide: APP_INITIALIZER,
       useFactory: KeycloakInitializer,
