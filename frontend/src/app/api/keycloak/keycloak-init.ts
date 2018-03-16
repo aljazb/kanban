@@ -1,6 +1,6 @@
 import { KeycloakService } from 'keycloak-angular';
 
-export function initializer(keycloak: KeycloakService): () => Promise<any> {
+export function KeycloakInitializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
       try {

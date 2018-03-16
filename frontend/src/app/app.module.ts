@@ -4,8 +4,8 @@ import { FormsModule }    from '@angular/forms';
 import { HttpClientModule }    from '@angular/common/http';
 
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
-import { initializer } from './utils/app-init';
-//import { AppAuthGuardService } from './utils/app-auth-guard.service';
+import { KeycloakInitializer } from './api/keycloak/keycloak-init';
+//import { KeycloakAuthGuardService } from './utils/app-auth-guard.service';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService }  from './in-memory-data.service';
@@ -49,10 +49,10 @@ import { AppHeaderComponent }   from './app-header/app-header.component';
   providers: [
     HeroService,
     MessageService,
-    //AppAuthGuardService,
+    //KeycloakAuthGuardService,
     {
       provide: APP_INITIALIZER,
-      useFactory: initializer,
+      useFactory: KeycloakInitializer,
       multi: true,
       deps: [KeycloakService]
     }

@@ -24,7 +24,7 @@ public class FlowTablePart extends BaseEntity<FlowTablePart> {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToOne(mappedBy = "rootFlowTablePart")
-    private FlowTable flowTables;
+    private FlowTable flowTable;
 
     @ManyToOne
     @JoinColumn(name = "flow_table_part_parent_id")
@@ -40,12 +40,12 @@ public class FlowTablePart extends BaseEntity<FlowTablePart> {
 
 
 
-    public FlowTable getFlowTables() {
-        return flowTables;
+    public FlowTable getFlowTable() {
+        return flowTable;
     }
 
-    public void setFlowTables(FlowTable flowTables) {
-        this.flowTables = flowTables;
+    public void setFlowTable(FlowTable flowTable) {
+        this.flowTable = flowTable;
     }
 
     public FlowTablePart getParent() {
