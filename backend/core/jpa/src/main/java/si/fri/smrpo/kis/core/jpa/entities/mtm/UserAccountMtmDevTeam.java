@@ -8,15 +8,17 @@ import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 import si.fri.smrpo.kis.core.jpa.entities.enums.MemberType;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name="user_account_mtm_dev_team")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class UserAccountMtmDevTeam extends BaseEntity<UserAccountMtmDevTeam> {
+public class UserAccountMtmDevTeam extends BaseEntity<UserAccountMtmDevTeam, UUID> {
 
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
+
 
     @ManyToOne
     @JoinColumn(name = "user_account_id", nullable = false)

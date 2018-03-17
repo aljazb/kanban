@@ -1,21 +1,15 @@
 package si.fri.smrpo.kis.app.server.rest.resources.entities;
 
-import com.github.tfaga.lynx.beans.QueryFilter;
-import com.github.tfaga.lynx.beans.QueryParameters;
-import com.github.tfaga.lynx.enums.FilterOperation;
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.app.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.app.server.ejb.managers.UserAccountManagerLocal;
-import si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility;
-import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
-import si.fri.smrpo.kis.core.businessLogic.database.AuthorizationManager;
-import si.fri.smrpo.kis.core.businessLogic.database.Database;
-import si.fri.smrpo.kis.core.businessLogic.database.DatabaseImpl;
+import si.fri.smrpo.kis.app.server.ejb.utility.AuthUtility;
+import si.fri.smrpo.kis.app.server.rest.resources.managers.UserAccountDBM;
+import si.fri.smrpo.kis.core.businessLogic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.businessLogic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.core.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.core.restComponents.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.restComponents.resource.CrudResource;
-import si.fri.smrpo.kis.core.restComponents.utility.QueryParamatersUtility;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -25,7 +19,7 @@ import javax.ws.rs.core.Response;
 
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility.*;
+import static si.fri.smrpo.kis.app.server.ejb.utility.AuthUtility.*;
 
 
 @Path("UserAccount")
@@ -35,22 +29,29 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     @EJB
     private DatabaseServiceLocal databaseImpl;
 
-    @EJB
-    private UserAccountManagerLocal accountManager;
-
     @Override
-    protected DatabaseImpl getDatabaseService() {
+    protected DatabaseServiceLocal getDatabaseService() {
         return databaseImpl;
     }
 
-    protected AuthEntity getAuthorizedEntity() {
-        return null;
-        //return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
+
+    protected UserAccount getAuthorizedEntity() {
+        return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
     }
+
+    @Override
+    protected DatabaseManager<UserAccount> setInitManager() {
+        return new UserAccountDBM(getAuthorizedEntity());
+    }
+
+
+    @EJB
+    private UserAccountManagerLocal accountManager;
 
     public UserAccountResource() {
         super(UserAccount.class);
     }
+
 
 
     @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
@@ -117,23 +118,4 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     }
 
 
-    /*@Override
-    protected AuthorizationManager<UserAccount> initAuthorizationManager() {
-        return new AuthorizationManager<UserAccount>(getAuthorizedEntity()) {
-
-            @Override
-            public void setAuthorityFilter(QueryParameters queryParameters, Database database) throws BusinessLogicTransactionException {
-                QueryFilter filter = new QueryFilter("authenticationId", FilterOperation.EQ, authEntity.getId());
-                QueryParamatersUtility.addParam(queryParameters.getFilters(), filter);
-            }
-
-            @Override
-            public void checkAuthority(UserAccount entity, Database database) throws BusinessLogicTransactionException {
-                if(!entity.getId().equals(authEntity.getId())){
-                    throw new BusinessLogicTransactionException(Response.Status.FORBIDDEN, "UserAccount does not have permission.");
-                }
-            }
-
-        };
-    }*/
 }

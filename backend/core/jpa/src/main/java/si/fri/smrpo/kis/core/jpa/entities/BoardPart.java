@@ -7,12 +7,13 @@ import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name="board_part")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class BoardPart extends BaseEntity<BoardPart> {
+public class BoardPart extends BaseEntity<BoardPart, UUID> {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -37,7 +38,6 @@ public class BoardPart extends BaseEntity<BoardPart> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "boardPart")
     private Set<Card> cards;
-
 
 
     public Board getBoard() {

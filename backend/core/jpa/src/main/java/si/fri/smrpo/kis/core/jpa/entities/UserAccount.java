@@ -11,12 +11,13 @@ import si.fri.smrpo.kis.core.jpa.utility.Constants;
 import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name="user_account")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class UserAccount extends BaseEntity<UserAccount> {
+public class UserAccount extends BaseEntity<UserAccount, UUID> {
 
 
     @Column(length = Constants.DEF_STRING_LEN, nullable = false)

@@ -1,5 +1,7 @@
 package si.fri.smrpo.kis.core.businessLogic.exceptions;
 
+import si.fri.smrpo.kis.core.businessLogic.exceptions.base.BusinessLogicBaseException;
+
 import javax.ejb.ApplicationException;
 import javax.ws.rs.core.Response;
 

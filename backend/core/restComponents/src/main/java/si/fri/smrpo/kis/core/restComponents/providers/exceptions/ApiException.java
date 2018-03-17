@@ -1,7 +1,7 @@
 package si.fri.smrpo.kis.core.restComponents.providers.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import si.fri.smrpo.kis.core.businessLogic.exceptions.BusinessLogicBaseException;
+import si.fri.smrpo.kis.core.businessLogic.exceptions.base.BusinessLogicBaseException;
 
 import java.io.Serializable;
 

@@ -1,10 +1,10 @@
 package si.fri.smrpo.kis.app.server.ejb.database;
 
-import si.fri.smrpo.kis.core.businessLogic.database.Database;
-import si.fri.smrpo.kis.core.businessLogic.database.DatabaseImpl;
 
-public interface DatabaseServiceLocal extends DatabaseImpl {
+import si.fri.smrpo.kis.core.businessLogic.database.instance.DatabaseImpl;
 
-    Database getDatabase();
+import java.util.UUID;
+
+public interface DatabaseServiceLocal extends DatabaseImpl<UUID> {
 
 }

@@ -7,16 +7,18 @@ import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name="board_lane")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class BoardLane extends BaseEntity<BoardLane> {
+public class BoardLane extends BaseEntity<BoardLane, UUID> {
 
 
     @Column(name = "name", nullable = false)
     private String name;
+
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToOne(mappedBy = "boardLane")

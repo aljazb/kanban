@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.core.businessLogic.exceptions;
+package si.fri.smrpo.kis.core.businessLogic.exceptions.base;
 
 import javax.ws.rs.core.Response;
 

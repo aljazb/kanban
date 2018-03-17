@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @MappedSuperclass
-public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
+public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> implements Serializable {
 
     @Id
     @Column(name = "id")
-    protected UUID id;
+    protected K id;
 
     @Version
     protected Integer version;
@@ -43,9 +43,6 @@ public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
 
     @JsonIgnore
     public void prePersist(){
-        if (id == null)
-            id = UUID.randomUUID();
-
         version = null;
         isDeleted = false;
 
@@ -324,11 +321,11 @@ public abstract class BaseEntity<T extends BaseEntity> implements Serializable {
         return new EntityTag(Long.toString(editedOn.getTime()));
     }
 
-    public UUID getId() {
+    public K getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(K id) {
         this.id = id;
     }
 

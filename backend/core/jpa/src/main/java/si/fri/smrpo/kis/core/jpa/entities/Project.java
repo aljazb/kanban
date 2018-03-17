@@ -6,13 +6,14 @@ import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 
 @Entity
 @Table(name="project")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class Project extends BaseEntity<Project> {
+public class Project extends BaseEntity<Project, UUID> {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -23,8 +24,6 @@ public class Project extends BaseEntity<Project> {
     @Column(name = "product_buyer")
     private String productBuyer;
 
-
-
     @Column(name = "start_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date startDate;
@@ -32,6 +31,7 @@ public class Project extends BaseEntity<Project> {
     @Column(name = "end_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date endDate;
+
 
     @OneToOne
     @JoinColumn(name = "board_lane_id", nullable = false)
@@ -48,6 +48,7 @@ public class Project extends BaseEntity<Project> {
     @ManyToOne
     @JoinColumn(name = "owner_user_addount_id")
     private UserAccount owner;
+
 
 
     public Board getBoard() {

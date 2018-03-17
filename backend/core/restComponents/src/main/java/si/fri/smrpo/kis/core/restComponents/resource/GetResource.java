@@ -1,13 +1,11 @@
 package si.fri.smrpo.kis.core.restComponents.resource;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
-import si.fri.smrpo.kis.core.businessLogic.database.AuthorizationManager;
-import si.fri.smrpo.kis.core.businessLogic.database.ValidationManager;
+import si.fri.smrpo.kis.core.businessLogic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.businessLogic.dto.Paging;
 import si.fri.smrpo.kis.core.businessLogic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 import si.fri.smrpo.kis.core.restComponents.enums.CacheControlType;
-import si.fri.smrpo.kis.core.restComponents.managers.ETagValidationManager;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
@@ -15,11 +13,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
-public abstract class GetResource<T extends BaseEntity> extends BaseResource {
+public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseResource<UUID> {
 
     protected int defaultMaxLimit = 50;
 
@@ -29,11 +26,10 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
     protected CacheControlType getCacheControl = CacheControlType.NONE;
     protected int getCacheControlMaxAge = 180;
 
-
     protected Class<T> type;
 
-    protected AuthorizationManager<T> authorizationManager = null;
-    protected ValidationManager<T> validationManager = null;
+    protected DatabaseManager<T> databaseManager = null;
+
 
     public GetResource(Class<T> type) {
         this.type = type;
@@ -41,16 +37,17 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
 
     @PostConstruct
     private void init(){
-        validationManager = initValidationManager();
-        authorizationManager = initAuthorizationManager();
+        databaseManager = setInitManager();
     }
+
+
 
     @GET
     public Response getList() throws BusinessLogicTransactionException {
         QueryParameters param = QueryParameters.query(uriInfo.getRequestUri().getQuery())
                 .maxLimit(defaultMaxLimit).defaultLimit(defaultMaxLimit).defaultOffset(0).build();
 
-        Paging<T> paging = getDatabaseService().getList(type, param, authorizationManager);
+        Paging<T> paging = getDatabaseService().getList(type, param, databaseManager);
 
         Response.ResponseBuilder rb = buildResponse(paging);
 
@@ -61,12 +58,11 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
         return rb.build();
     }
 
-
     @GET
     @Path("{id}")
     public Response get(@PathParam("id") UUID id) throws BusinessLogicTransactionException {
 
-        T dbEntity = getDatabaseService().get(type, id, authorizationManager);
+        T dbEntity = getDatabaseService().get(type, id, databaseManager);
 
         EntityTag tag = dbEntity.getEntityTag();
 
@@ -81,6 +77,7 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
         }
         return rb.build();
     }
+
 
 
     protected CacheControl buildCacheControl(int maxAge, CacheControlType cacheControlType){
@@ -141,22 +138,7 @@ public abstract class GetResource<T extends BaseEntity> extends BaseResource {
         return responseBuilder;
     }
 
-    protected AuthorizationManager<T> initAuthorizationManager() { return null; }
-
-    protected ValidationManager<T> initValidationManager() {
-        return new ETagValidationManager<T>() {
-            @Override
-            protected Request getRequest() {
-                return request;
-            }
-        };
-    }
-
-    public AuthorizationManager<T> getAuthorizationManager() {
-        return authorizationManager;
-    }
-
-    public ValidationManager<T> getValidationManager() {
-        return validationManager;
+    protected DatabaseManager<T> setInitManager() {
+        return null;
     }
 }

@@ -8,14 +8,14 @@ import si.fri.smrpo.kis.core.jpa.entities.mtm.UserAccountMtmDevTeam;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Entity
 @Table(name="dev_team")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class DevTeam extends BaseEntity<DevTeam> {
-
+public class DevTeam extends BaseEntity<DevTeam, UUID> {
 
     @Column(name = "name")
     private String name;

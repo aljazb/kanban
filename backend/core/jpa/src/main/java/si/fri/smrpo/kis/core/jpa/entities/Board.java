@@ -7,13 +7,14 @@ import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Entity
 @Table(name="board")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class Board extends BaseEntity<Board> {
+public class Board extends BaseEntity<Board, UUID> {
 
     @Column(name = "name")
     private String name;

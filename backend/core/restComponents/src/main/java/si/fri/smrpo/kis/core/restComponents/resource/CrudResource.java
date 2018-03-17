@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 import java.util.UUID;
 
 
-public abstract class CrudResource<T extends BaseEntity> extends GetResource<T> {
+public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetResource<T> {
 
 
     public CrudResource(Class<T> type) {
@@ -20,7 +20,7 @@ public abstract class CrudResource<T extends BaseEntity> extends GetResource<T> 
     public Response create(@HeaderParam("X-Content") Boolean xContent, T entity) throws BusinessLogicTransactionException {
         entity.setId(null);
 
-        T dbEntity = getDatabaseService().create(entity, authorizationManager, validationManager);
+        T dbEntity = getDatabaseService().create(entity, databaseManager);
 
         return buildResponse(dbEntity, xContent, false, Response.Status.CREATED).build();
     }
@@ -31,7 +31,7 @@ public abstract class CrudResource<T extends BaseEntity> extends GetResource<T> 
                            @PathParam("id") UUID id, T newObject) throws BusinessLogicTransactionException {
         newObject.setId(id);
 
-        T dbEntity = getDatabaseService().update(newObject, authorizationManager, validationManager);
+        T dbEntity = getDatabaseService().update(newObject, databaseManager);
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -42,7 +42,7 @@ public abstract class CrudResource<T extends BaseEntity> extends GetResource<T> 
                           @PathParam("id") UUID id, T entity) throws BusinessLogicTransactionException {
         entity.setId(id);
 
-        T dbEntity = getDatabaseService().patch(entity, authorizationManager, validationManager);
+        T dbEntity = getDatabaseService().patch(entity, databaseManager);
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -52,7 +52,7 @@ public abstract class CrudResource<T extends BaseEntity> extends GetResource<T> 
     public Response delete(@HeaderParam("X-Content") Boolean xContent,
                            @PathParam("id") UUID id) throws BusinessLogicTransactionException {
 
-        T dbEntity = getDatabaseService().delete(type, id, authorizationManager, validationManager);
+        T dbEntity = getDatabaseService().delete(type, id, databaseManager);
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -62,7 +62,7 @@ public abstract class CrudResource<T extends BaseEntity> extends GetResource<T> 
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent,
                                     @PathParam("id") UUID id) throws BusinessLogicTransactionException {
 
-        T dbEntity = getDatabaseService().toggleIsDeleted(type, id, authorizationManager, validationManager);
+        T dbEntity = getDatabaseService().toggleIsDeleted(type, id, databaseManager);
 
         return buildResponse(dbEntity, xContent).build();
     }

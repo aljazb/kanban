@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.core.jpa.entities.base.BaseEntity;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name="card")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class Card extends BaseEntity<Card> {
+public class Card extends BaseEntity<Card, UUID> {
 
     @Column(name = "name")
     private String name;
@@ -20,7 +21,6 @@ public class Card extends BaseEntity<Card> {
 
     @Column(name = "work_load")
     private Integer workLoad;
-
 
 
     @ManyToOne

@@ -5,7 +5,7 @@ import com.github.tfaga.lynx.beans.QueryFilter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class QueryParamatersUtility {
+public class QueryParametersUtility {
 
     public static void addParam(List<QueryFilter> queryFilterList, QueryFilter queryFilter){
         List<QueryFilter> filters = queryFilterList.stream()
