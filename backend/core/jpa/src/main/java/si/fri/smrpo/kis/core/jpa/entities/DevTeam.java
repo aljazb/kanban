@@ -31,7 +31,7 @@ public class DevTeam extends BaseEntity<DevTeam> {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToOne(mappedBy = "devTeam")
-    private FlowTable flowTable;
+    private Board board;
 
 
     public Set<UserAccountMtmDevTeam> getJoinedUsers() {
@@ -50,12 +50,12 @@ public class DevTeam extends BaseEntity<DevTeam> {
         this.name = name;
     }
 
-    public FlowTable getFlowTable() {
-        return flowTable;
+    public Board getBoard() {
+        return board;
     }
 
-    public void setFlowTable(FlowTable flowTable) {
-        this.flowTable = flowTable;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public Set<Project> getProjects() {

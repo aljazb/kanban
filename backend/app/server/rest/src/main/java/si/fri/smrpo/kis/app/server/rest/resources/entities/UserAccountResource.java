@@ -44,7 +44,8 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     }
 
     protected AuthEntity getAuthorizedEntity() {
-        return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
+        return null;
+        //return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
     public UserAccountResource() {
@@ -116,7 +117,7 @@ public class UserAccountResource extends CrudResource<UserAccount> {
     }
 
 
-    @Override
+    /*@Override
     protected AuthorizationManager<UserAccount> initAuthorizationManager() {
         return new AuthorizationManager<UserAccount>(getAuthorizedEntity()) {
 
@@ -134,5 +135,5 @@ public class UserAccountResource extends CrudResource<UserAccount> {
             }
 
         };
-    }
+    }*/
 }

@@ -28,8 +28,12 @@ public class Card extends BaseEntity<Card> {
     private Project project;
 
     @ManyToOne
-    @JoinColumn(name = "flow_table_part_id", nullable = false)
-    private FlowTablePart flowTablePart;
+    @JoinColumn(name = "board_part_id", nullable = false)
+    private BoardPart boardPart;
+
+    @ManyToOne
+    @JoinColumn(name = "board_lane_id", nullable = false)
+    private BoardLane boardLane;
 
 
     public Project getProject() {
@@ -64,11 +68,19 @@ public class Card extends BaseEntity<Card> {
         this.workLoad = workLoad;
     }
 
-    public FlowTablePart getFlowTablePart() {
-        return flowTablePart;
+    public BoardPart getBoardPart() {
+        return boardPart;
     }
 
-    public void setFlowTablePart(FlowTablePart flowTablePart) {
-        this.flowTablePart = flowTablePart;
+    public void setBoardPart(BoardPart boardPart) {
+        this.boardPart = boardPart;
+    }
+
+    public BoardLane getBoardLane() {
+        return boardLane;
+    }
+
+    public void setBoardLane(BoardLane boardLane) {
+        this.boardLane = boardLane;
     }
 }

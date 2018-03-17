@@ -5,17 +5,16 @@ import si.fri.smrpo.kis.app.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility;
 import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
 import si.fri.smrpo.kis.core.businessLogic.database.DatabaseImpl;
-import si.fri.smrpo.kis.core.jpa.entities.DevTeam;
-import si.fri.smrpo.kis.core.jpa.entities.FlowTable;
+import si.fri.smrpo.kis.core.jpa.entities.Board;
 import si.fri.smrpo.kis.core.restComponents.resource.CrudResource;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 
-@Path("FlowTable")
+@Path("Board")
 @RequestScoped
-public class FlowTableResource extends CrudResource<FlowTable> {
+public class BoardResource extends CrudResource<Board> {
 
     @EJB
     private DatabaseServiceLocal databaseImpl;
@@ -29,8 +28,8 @@ public class FlowTableResource extends CrudResource<FlowTable> {
         return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
-    public FlowTableResource() {
-        super(FlowTable.class);
+    public BoardResource() {
+        super(Board.class);
     }
 
 }

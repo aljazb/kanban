@@ -15,8 +15,8 @@
         <class>si.fri.smrpo.kis.core.jpa.entities.Project</class>
         <class>si.fri.smrpo.kis.core.jpa.entities.Card</class>
 
-        <class>si.fri.smrpo.kis.core.jpa.entities.FlowTable</class>
-        <class>si.fri.smrpo.kis.core.jpa.entities.FlowTablePart</class>
+        <class>si.fri.smrpo.kis.core.jpa.entities.Board</class>
+        <class>si.fri.smrpo.kis.core.jpa.entities.BoardPart</class>
 
         <class>si.fri.smrpo.kis.core.jpa.entities.mtm.UserAccountMtmDevTeam</class>
 
@@ -26,9 +26,9 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.use_query_cache" value="true" />
 
+            <!--
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
 
-            <!--
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="javax.persistence.sql-load-script-source" value="C:/seedDatabase.sql"/>
             <property name="javax.persistence.schema-generation.database.action" value="create"/>

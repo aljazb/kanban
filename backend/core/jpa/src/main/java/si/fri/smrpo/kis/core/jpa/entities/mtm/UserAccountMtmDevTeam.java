@@ -15,10 +15,8 @@ import javax.persistence.*;
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class UserAccountMtmDevTeam extends BaseEntity<UserAccountMtmDevTeam> {
 
-
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
-
 
     @ManyToOne
     @JoinColumn(name = "user_account_id", nullable = false)

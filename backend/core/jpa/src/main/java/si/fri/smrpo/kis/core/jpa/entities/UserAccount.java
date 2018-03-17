@@ -23,16 +23,19 @@ public class UserAccount extends BaseEntity<UserAccount> {
     private String email;
 
     @Column(length = Constants.DEF_STRING_LEN, nullable = false)
-    private String name;
+    private String firstName;
 
     @Column(length = Constants.DEF_STRING_LEN)
-    private String surname;
+    private String lastName;
 
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "userAccount")
     private Set<UserAccountMtmDevTeam> joinedDevTeams;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @OneToMany(mappedBy = "owner")
+    private Set<Project> projects;
 
     @JsonIgnore
     protected boolean baseSkip(Field field){
@@ -49,20 +52,20 @@ public class UserAccount extends BaseEntity<UserAccount> {
         }
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String name) {
+        this.firstName = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String surname) {
+        this.lastName = surname;
     }
 
     public String getEmail() {
@@ -81,4 +84,19 @@ public class UserAccount extends BaseEntity<UserAccount> {
         this.joinedDevTeams = joinedDevTems;
     }
 
+    public Set<UserAccountMtmDevTeam> getJoinedDevTeams() {
+        return joinedDevTeams;
+    }
+
+    public void setJoinedDevTeams(Set<UserAccountMtmDevTeam> joinedDevTeams) {
+        this.joinedDevTeams = joinedDevTeams;
+    }
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }
 }

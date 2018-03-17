@@ -10,10 +10,10 @@ import java.util.Set;
 
 
 @Entity
-@Table(name="flow_table")
+@Table(name="board")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class FlowTable extends BaseEntity<FlowTable> {
+public class Board extends BaseEntity<Board> {
 
     @Column(name = "name")
     private String name;
@@ -24,11 +24,12 @@ public class FlowTable extends BaseEntity<FlowTable> {
     public DevTeam devTeam;
 
     @OneToOne
-    @JoinColumn(name = "root_flow_table_part_id", nullable = false)
-    private FlowTablePart rootFlowTablePart;
+    @JoinColumn(name = "root_board_part_id", nullable = false)
+    private BoardPart rootBoardPart;
+
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "flowTable")
+    @OneToMany(mappedBy = "board")
     public Set<Project> projects;
 
 
@@ -48,12 +49,12 @@ public class FlowTable extends BaseEntity<FlowTable> {
         this.projects = projects;
     }
 
-    public FlowTablePart getRootFlowTablePart() {
-        return rootFlowTablePart;
+    public BoardPart getRootBoardPart() {
+        return rootBoardPart;
     }
 
-    public void setRootFlowTablePart(FlowTablePart rootFlowTablePart) {
-        this.rootFlowTablePart = rootFlowTablePart;
+    public void setRootBoardPart(BoardPart rootBoardPart) {
+        this.rootBoardPart = rootBoardPart;
     }
 
     public String getName() {
@@ -63,6 +64,5 @@ public class FlowTable extends BaseEntity<FlowTable> {
     public void setName(String name) {
         this.name = name;
     }
-
 
 }

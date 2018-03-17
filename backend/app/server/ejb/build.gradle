@@ -1,5 +1,7 @@
 dependencies {
     compile project(':core:businessLogic')
 
+    compile group: 'com.github.blocoio', name: 'faker'
+
     testCompile group: 'junit', name: 'junit'
 }

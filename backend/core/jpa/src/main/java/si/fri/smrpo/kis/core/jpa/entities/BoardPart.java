@@ -9,10 +9,10 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name="flow_table_part")
+@Table(name="board_part")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
-public class FlowTablePart extends BaseEntity<FlowTablePart> {
+public class BoardPart extends BaseEntity<BoardPart> {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -23,44 +23,44 @@ public class FlowTablePart extends BaseEntity<FlowTablePart> {
 
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToOne(mappedBy = "rootFlowTablePart")
-    private FlowTable flowTable;
+    @OneToOne(mappedBy = "rootBoardPart")
+    private Board board;
 
     @ManyToOne
-    @JoinColumn(name = "flow_table_part_parent_id")
-    private FlowTablePart parent;
+    @JoinColumn(name = "board_part__id")
+    private BoardPart parent;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "parent")
-    private Set<FlowTablePart> children;
+    private Set<BoardPart> children;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "flowTablePart")
+    @OneToMany(mappedBy = "boardPart")
     private Set<Card> cards;
 
 
 
-    public FlowTable getFlowTable() {
-        return flowTable;
+    public Board getBoard() {
+        return board;
     }
 
-    public void setFlowTable(FlowTable flowTable) {
-        this.flowTable = flowTable;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
-    public FlowTablePart getParent() {
+    public BoardPart getParent() {
         return parent;
     }
 
-    public void setParent(FlowTablePart parent) {
+    public void setParent(BoardPart parent) {
         this.parent = parent;
     }
 
-    public Set<FlowTablePart> getChildren() {
+    public Set<BoardPart> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<FlowTablePart> children) {
+    public void setChildren(Set<BoardPart> children) {
         this.children = children;
     }
 
@@ -87,4 +87,6 @@ public class FlowTablePart extends BaseEntity<FlowTablePart> {
     public void setCards(Set<Card> cards) {
         this.cards = cards;
     }
+
+
 }

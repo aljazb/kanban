@@ -5,7 +5,6 @@ import si.fri.smrpo.kis.app.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.app.server.rest.resources.utility.AuthUtility;
 import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
 import si.fri.smrpo.kis.core.businessLogic.database.DatabaseImpl;
-import si.fri.smrpo.kis.core.jpa.entities.FlowTable;
 import si.fri.smrpo.kis.core.jpa.entities.Project;
 import si.fri.smrpo.kis.core.restComponents.resource.CrudResource;
 

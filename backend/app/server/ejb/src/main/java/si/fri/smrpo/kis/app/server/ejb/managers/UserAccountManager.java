@@ -2,7 +2,6 @@ package si.fri.smrpo.kis.app.server.ejb.managers;
 
 import si.fri.smrpo.kis.app.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.core.businessLogic.authentication.AuthEntity;
-import si.fri.smrpo.kis.core.businessLogic.dto.Paging;
 import si.fri.smrpo.kis.core.businessLogic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.core.jpa.entities.UserAccount;
 
@@ -19,7 +18,7 @@ import java.util.UUID;
 public class UserAccountManager implements UserAccountManagerLocal{
 
     @EJB
-    DatabaseServiceLocal database;
+    private DatabaseServiceLocal database;
 
     public UserAccount login(AuthEntity authEntity) throws BusinessLogicTransactionException {
 
@@ -47,8 +46,8 @@ public class UserAccountManager implements UserAccountManagerLocal{
 
         ua.setId(UUID.fromString(ae.getId()));
         ua.setEmail(ae.getEmail());
-        ua.setName(ae.getName());
-        ua.setSurname(ae.getSurname());
+        ua.setFirstName(ae.getName());
+        ua.setLastName(ae.getSurname());
 
         return ua;
     }
