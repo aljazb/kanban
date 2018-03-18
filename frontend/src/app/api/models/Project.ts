@@ -1,12 +1,17 @@
 import {BaseEntity} from './base/BaseEntity';
-import {FlowTable} from './FlowTable';
 import {DevTeam} from './DevTeam';
+import {UserAccount} from './UserAccount';
+import {BoardLane} from './BoardLane';
 
 export class Project extends BaseEntity<Project> {
   name: string;
   description: string;
+  productBuyer: string;
 
-  flowTable: FlowTable;
+  startDate: number;
+  endDate: number;
+
+  boardLane: BoardLane;
   devTeam: DevTeam;
-
+  owner: UserAccount;
 }

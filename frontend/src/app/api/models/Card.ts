@@ -1,6 +1,7 @@
 import {BaseEntity} from './base/BaseEntity';
 import {Project} from './Project';
-import {FlowTablePart} from './FlowTablePart';
+import {BoardPart} from './BoardPart';
+import {BoardLane} from './BoardLane';
 
 export class Card extends BaseEntity<Card> {
   name: string;
@@ -8,5 +9,7 @@ export class Card extends BaseEntity<Card> {
   workload: number;
 
   project: Project;
-  flowTablePart: FlowTablePart;
+
+  boardPart: BoardPart;
+  boardLane: BoardLane;
 }

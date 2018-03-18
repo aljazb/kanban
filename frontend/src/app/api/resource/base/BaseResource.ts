@@ -12,7 +12,7 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
     this.url = api.url + "/" + entityName;
   }
 
-  static getHeaders(xContent=false) : HttpHeaders {
+  getHeaders(xContent=false) : HttpHeaders {
 
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');

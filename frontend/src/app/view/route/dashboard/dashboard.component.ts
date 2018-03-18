@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Hero } from '../hero';
-import { HeroService } from '../hero.service';
-import {ApiService} from '../api/Api';
+import { Hero } from '../../../demo/hero';
+import { HeroService } from '../../../demo/hero.service';
+import {ApiService} from '../../../api/Api';
 import {KeycloakService} from 'keycloak-angular/index';
-import {logging} from 'selenium-webdriver';
-import LogManager = logging.LogManager;
-import {UserAccount} from '../api/models/UserAccount';
+import {UserAccount} from '../../../api/models/UserAccount';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,16 +15,17 @@ export class DashboardComponent implements OnInit {
 
   private user: UserAccount;
 
-  constructor(private heroService: HeroService, private keycloakService:KeycloakService, private apiService:ApiService) { }
+  constructor(
+    private heroService: HeroService,
+    private keycloakService:KeycloakService,
+    private apiService:ApiService) { }
 
   ngOnInit() {
     this.getHeroes();
 
-
-
-    if(this.keycloakService.getKeycloakInstance().authenticated){
+    /*if(this.keycloakService.getKeycloakInstance().authenticated){
       this.apiService.userAccount.login().subscribe(user => this.user = user);
-    }
+    }*/
 
   }
 

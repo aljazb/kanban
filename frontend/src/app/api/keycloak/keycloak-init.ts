@@ -1,4 +1,5 @@
 import { KeycloakService } from 'keycloak-angular';
+import {environment} from '../../../environments/environment';
 
 export function KeycloakInitializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
@@ -6,7 +7,7 @@ export function KeycloakInitializer(keycloak: KeycloakService): () => Promise<an
       try {
         await keycloak.init({
           config: {
-            url: 'http://localhost:8081/auth',
+            url: environment.authHostname + '/auth',
             realm: 'Kis',
             clientId: 'frontend-angular-client'
           },

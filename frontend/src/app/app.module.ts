@@ -8,21 +8,22 @@ import { KeycloakInitializer } from './api/keycloak/keycloak-init';
 //import { KeycloakAuthGuardService } from './utils/app-auth-guard.service';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService }  from './in-memory-data.service';
+import { InMemoryDataService }  from './demo/in-memory-data.service';
 
 import { AppRoutingModule }     from './app-routing.module';
 
 import { AppComponent }         from './app.component';
-import { DashboardComponent }   from './dashboard/dashboard.component';
-import { HeroDetailComponent }  from './hero-detail/hero-detail.component';
-import { HeroesComponent }      from './heroes/heroes.component';
-import { HeroSearchComponent }  from './hero-search/hero-search.component';
-import { HeroService }          from './hero.service';
-import { MessageService }       from './message.service';
-import { MessagesComponent }    from './messages/messages.component';
-import { AppHeaderComponent }   from './app-header/app-header.component';
+import { DashboardComponent }   from './view/route/dashboard/dashboard.component';
+import { HeroDetailComponent }  from './view/route/hero-detail/hero-detail.component';
+import { HeroesComponent }      from './view/route/heroes/heroes.component';
+import { HeroSearchComponent }  from './view/components/hero-search/hero-search.component';
+import { HeroService }          from './demo/hero.service';
+import { MessageService }       from './demo/message.service';
+import { MessagesComponent }    from './view/components/messages/messages.component';
+import { AppHeaderComponent }   from './view/base/header/header.component';
 import {ApiService} from './api/Api';
 import {KeycloakAuthGuardService} from './api/keycloak/keycloak-auth-guard.service';
+import { FooterComponent } from './view/base/footer/footer.component';
 
 @NgModule({
   imports: [
@@ -46,7 +47,8 @@ import {KeycloakAuthGuardService} from './api/keycloak/keycloak-auth-guard.servi
     HeroDetailComponent,
     MessagesComponent,
     HeroSearchComponent,
-    AppHeaderComponent
+    AppHeaderComponent,
+    FooterComponent
   ],
   providers: [
     HeroService,
