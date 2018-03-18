@@ -2,7 +2,7 @@ package si.fri.smrpo.kis.core.logic.database.instance.base;
 
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
-import si.fri.smrpo.kis.core.jpa.base.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.BaseEntity;
 
 import javax.persistence.EntityManager;
 import java.util.logging.Logger;

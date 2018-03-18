@@ -1,6 +1,7 @@
 package si.fri.smrpo.kis.core.rest.resource.uuid;
 
-import si.fri.smrpo.kis.core.jpa.UUIDEntity;
+
+import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 
@@ -9,7 +10,7 @@ import javax.ws.rs.core.Response;
 import java.util.UUID;
 
 
-public abstract class CrudResource<T extends UUIDEntity<T>> extends GetResource<T> {
+public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetResource<T> {
 
 
     public CrudResource(Class<T> type) {

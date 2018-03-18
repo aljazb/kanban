@@ -3,7 +3,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import si.fri.smrpo.kis.core.jpa.UUIDEntity;
+import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -22,6 +22,10 @@ public class BoardLane extends UUIDEntity<BoardLane> {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToOne(mappedBy = "boardLane")
     private Project project;
+
+    @ManyToOne
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "boardLane")
@@ -44,7 +48,6 @@ public class BoardLane extends UUIDEntity<BoardLane> {
         this.name = name;
     }
 
-
     public Set<Card> getCards() {
         return cards;
     }
@@ -53,5 +56,11 @@ public class BoardLane extends UUIDEntity<BoardLane> {
         this.cards = cards;
     }
 
+    public Board getBoard() {
+        return board;
+    }
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 }

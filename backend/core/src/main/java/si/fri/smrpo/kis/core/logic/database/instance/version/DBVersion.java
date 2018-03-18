@@ -1,6 +1,6 @@
 package si.fri.smrpo.kis.core.logic.database.instance.version;
 
-import si.fri.smrpo.kis.core.jpa.base.BaseEntityVersion;
+import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 import si.fri.smrpo.kis.core.logic.database.instance.core.DBCore;
 import si.fri.smrpo.kis.core.logic.database.manager.version.DBMVersion;
 import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;

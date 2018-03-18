@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.core.jpa.base;
+package si.fri.smrpo.kis.core.jpa;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

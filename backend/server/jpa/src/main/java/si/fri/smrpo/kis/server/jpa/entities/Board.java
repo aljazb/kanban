@@ -3,7 +3,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import si.fri.smrpo.kis.core.jpa.UUIDEntity;
+import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -23,14 +23,13 @@ public class Board extends UUIDEntity<Board> {
     @JoinColumn(name = "dev_team_id", nullable = false)
     public DevTeam devTeam;
 
-    @OneToOne
-    @JoinColumn(name = "root_board_part_id", nullable = false)
-    private BoardPart rootBoardPart;
-
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @OneToMany(mappedBy = "board")
+    private Set<BoardPart> boardParts;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "board")
-    public Set<Project> projects;
+    private Set<BoardLane> boardLanes;
 
 
     public DevTeam getDevTeam() {
@@ -41,20 +40,12 @@ public class Board extends UUIDEntity<Board> {
         this.devTeam = owner;
     }
 
-    public Set<Project> getProjects() {
-        return projects;
+    public Set<BoardPart> getBoardParts() {
+        return boardParts;
     }
 
-    public void setProjects(Set<Project> projects) {
-        this.projects = projects;
-    }
-
-    public BoardPart getRootBoardPart() {
-        return rootBoardPart;
-    }
-
-    public void setRootBoardPart(BoardPart rootBoardPart) {
-        this.rootBoardPart = rootBoardPart;
+    public void setBoardParts(Set<BoardPart> rootBoardPart) {
+        this.boardParts = rootBoardPart;
     }
 
     public String getName() {
@@ -65,4 +56,11 @@ public class Board extends UUIDEntity<Board> {
         this.name = name;
     }
 
+    public Set<BoardLane> getBoardLanes() {
+        return boardLanes;
+    }
+
+    public void setBoardLanes(Set<BoardLane> boardLanes) {
+        this.boardLanes = boardLanes;
+    }
 }

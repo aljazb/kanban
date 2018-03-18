@@ -49,6 +49,8 @@ allprojects {
                 entry 'resteasy-jackson2-provider'
             }
 
+            dependency group: 'org.hibernate', name: 'hibernate-core', version: '5.0.10.Final'
+
             dependency group: 'org.postgresql', name: 'postgresql', version: '42.2.1'
 
             dependency group: 'com.github.blocoio', name: 'faker', version: '1.0.1'

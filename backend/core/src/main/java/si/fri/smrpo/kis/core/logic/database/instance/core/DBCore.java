@@ -3,7 +3,7 @@ package si.fri.smrpo.kis.core.logic.database.instance.core;
 import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import com.github.tfaga.lynx.utils.JPAUtils;
-import si.fri.smrpo.kis.core.jpa.base.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.base.DBBase;
 import si.fri.smrpo.kis.core.logic.database.manager.core.DBMCore;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
@@ -81,16 +81,16 @@ public abstract class DBCore<K extends Serializable> extends DBBase implements D
 
     public <T extends BaseEntity<T, K>> T get(Class<T> c, K id, DBMCore<T> dbmCore) throws BusinessLogicTransactionException {
         try {
-            T o = entityManager.find(c, id);
+            T entity = entityManager.find(c, id);
 
-            if(o == null){
+            if(entity == null){
                 throw new BusinessLogicTransactionException(Response.Status.NOT_FOUND,
                         "Could not find " + c.getClass().getSimpleName() + " with id: " + id.toString());
             }
 
-            if(dbmCore != null) dbmCore.authGet(this, o);
+            if(dbmCore != null) dbmCore.authGet(this, entity);
 
-            return o;
+            return entity;
         } catch (BusinessLogicTransactionException e){
             throw e;
         } catch (Exception e){

@@ -3,7 +3,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import si.fri.smrpo.kis.core.jpa.UUIDEntity;
+import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -21,14 +21,9 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     private Integer maxWip;
 
 
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToOne(mappedBy = "rootBoardPart")
-    private Board board;
-
     @ManyToOne
-    @JoinColumn(name = "board_part__id")
-    private BoardPart parent;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "parent")
@@ -38,14 +33,11 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @OneToMany(mappedBy = "boardPart")
     private Set<Card> cards;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_board_part_id")
+    private BoardPart parent;
 
-    public Board getBoard() {
-        return board;
-    }
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
 
     public BoardPart getParent() {
         return parent;
@@ -53,6 +45,14 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     public void setParent(BoardPart parent) {
         this.parent = parent;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     public Set<BoardPart> getChildren() {

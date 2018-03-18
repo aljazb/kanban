@@ -3,13 +3,13 @@ package si.fri.smrpo.kis.server.ejb.database;
 import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import org.jinq.jpa.JPAJinqStream;
-import si.fri.smrpo.kis.core.jpa.base.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.Database;
 import si.fri.smrpo.kis.core.logic.database.manager.core.DBMCore;
 import si.fri.smrpo.kis.core.logic.database.manager.version.DBMVersion;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
-import si.fri.smrpo.kis.core.jpa.base.BaseEntityVersion;
+import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;

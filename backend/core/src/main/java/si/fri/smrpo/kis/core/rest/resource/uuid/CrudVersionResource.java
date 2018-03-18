@@ -1,7 +1,6 @@
 package si.fri.smrpo.kis.core.rest.resource.uuid;
 
-import si.fri.smrpo.kis.core.jpa.UUIDEntityVersion;
-import si.fri.smrpo.kis.core.jpa.base.BaseEntityVersion;
+import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 

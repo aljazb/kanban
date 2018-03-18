@@ -8,7 +8,7 @@ dependencies {
 /**
  * Add war project providedCompile dependencies to ear lib
  */
-ext.DEBUG = false
+ext.DEBUG = true
 
 def setEarLibs() {
     HashMap<String, ProjectDependency> deployments = new HashMap<>()
@@ -54,6 +54,7 @@ setEarLibs()
 def excludeEarLibs() {
     configurations.earlib.exclude group: 'javax'
     configurations.earlib.exclude group: 'org.keycloak'
+    configurations.earlib.exclude group: 'org.hibernate'
 }
 excludeEarLibs()
 

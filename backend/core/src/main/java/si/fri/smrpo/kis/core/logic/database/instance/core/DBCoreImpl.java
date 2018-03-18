@@ -2,7 +2,7 @@ package si.fri.smrpo.kis.core.logic.database.instance.core;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
-import si.fri.smrpo.kis.core.jpa.base.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.base.DBBaseImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.core.DBMCore;
 import si.fri.smrpo.kis.core.logic.dto.Paging;

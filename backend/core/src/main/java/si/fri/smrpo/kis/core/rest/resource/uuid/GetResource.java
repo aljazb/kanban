@@ -1,8 +1,7 @@
 package si.fri.smrpo.kis.core.rest.resource.uuid;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
-import si.fri.smrpo.kis.core.jpa.UUIDEntity;
-import si.fri.smrpo.kis.core.jpa.base.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;

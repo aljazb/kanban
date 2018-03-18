@@ -2,7 +2,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import si.fri.smrpo.kis.core.jpa.UUIDEntity;
+import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -33,30 +33,17 @@ public class Project extends UUIDEntity<Project> {
 
 
     @OneToOne
-    @JoinColumn(name = "board_lane_id", nullable = false)
+    @JoinColumn(name = "board_lane_id")
     private BoardLane boardLane;
 
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
-
-    @ManyToOne
-    @JoinColumn(name = "joined_dev_team_id")
+    @JoinColumn(name = "dev_team_id")
     private DevTeam devTeam;
 
     @ManyToOne
-    @JoinColumn(name = "owner_user_addount_id")
+    @JoinColumn(name = "owner_user_account_id")
     private UserAccount owner;
 
-
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-    }
 
     public DevTeam getDevTeam() {
         return devTeam;
