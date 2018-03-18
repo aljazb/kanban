@@ -9,16 +9,16 @@
     <persistence-unit name="kis-jpa">
         <jta-data-source>java:/jboss/datasources/KISDS</jta-data-source>
 
-        <class>si.fri.smrpo.kis.server.entities.UserAccount</class>
-        <class>si.fri.smrpo.kis.server.entities.DevTeam</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.UserAccount</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.DevTeam</class>
 
-        <class>si.fri.smrpo.kis.server.entities.Project</class>
-        <class>si.fri.smrpo.kis.server.entities.Card</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.Project</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.Card</class>
 
-        <class>si.fri.smrpo.kis.server.entities.Board</class>
-        <class>si.fri.smrpo.kis.server.entities.BoardPart</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.Board</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.BoardPart</class>
 
-        <class>si.fri.smrpo.kis.server.entities.mtm.UserAccountMtmDevTeam</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam</class>
 
 
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>

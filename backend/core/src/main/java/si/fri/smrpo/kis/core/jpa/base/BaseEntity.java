@@ -13,9 +13,8 @@ import java.util.*;
 @MappedSuperclass
 public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> implements Serializable {
 
-    @Id
-    @Column(name = "id")
-    protected K id;
+    public abstract K getId();
+    public abstract void setId(K id);
 
     @Version
     protected Integer version;
@@ -30,6 +29,8 @@ public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> i
     @Column(name = "edited_on", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date editedOn;
+
+
 
     @JsonIgnore
     public void update(T object, EntityManager em) throws IllegalAccessException {
@@ -93,6 +94,7 @@ public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> i
         }
     }
 
+    @JsonIgnore
     protected boolean baseSkip(Field field){
         switch (field.getName()) {
             case "id":
@@ -261,7 +263,7 @@ public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> i
 
     @JsonIgnore
     public void setAllBasePropertiesToNull(){
-        id = null;
+        setId(null);
         version = null;
         isDeleted = null;
         createdOn = null;
@@ -317,17 +319,12 @@ public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> i
     }
 
     @JsonIgnore
-    public EntityTag getEntityTag() {
-        return new EntityTag(Long.toString(editedOn.getTime()));
+    public EntityTag getEntityTag(){
+        return new EntityTag(String.valueOf(this.editedOn.getTime()));
     }
 
-    public K getId() {
-        return id;
-    }
 
-    public void setId(K id) {
-        this.id = id;
-    }
+
 
     public Integer getVersion() {
         return version;

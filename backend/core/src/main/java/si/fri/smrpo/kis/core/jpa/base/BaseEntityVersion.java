@@ -10,8 +10,9 @@ import java.lang.reflect.Field;
 @MappedSuperclass
 public abstract class BaseEntityVersion<T extends BaseEntityVersion, K extends Serializable> extends BaseEntity<T, K> {
 
-    @Column(name = "origin_id")
-    protected K originId;
+    public abstract K getOriginId();
+    public abstract void setOriginId(K originId);
+
 
     @Column(name = "version_order", nullable = false)
     protected Integer versionOrder;
@@ -37,7 +38,7 @@ public abstract class BaseEntityVersion<T extends BaseEntityVersion, K extends S
 
     @JsonIgnore
     public void setAllBaseVersionPropertiesToNull() {
-        originId = null;
+        setOriginId(null);
         versionOrder = null;
         isLatest = null;
     }
@@ -58,14 +59,6 @@ public abstract class BaseEntityVersion<T extends BaseEntityVersion, K extends S
                     return false;
             }
         }
-    }
-
-    public K getOriginId() {
-        return originId;
-    }
-
-    public void setOriginId(K originId) {
-        this.originId = originId;
     }
 
     public Integer getVersionOrder() {

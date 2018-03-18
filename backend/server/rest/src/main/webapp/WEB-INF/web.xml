@@ -9,18 +9,15 @@
         <param-value>true</param-value>
     </context-param>
 
-    <!--
     <context-param>
         <param-name>resteasy.role.based.security</param-name>
         <param-value>true</param-value>
     </context-param>
-    -->
 
     <login-config>
         <auth-method>KEYCLOAK</auth-method>
         <realm-name>Kis</realm-name>
     </login-config>
-
 
     <security-role>
         <role-name>ADMINISTRATOR</role-name>
