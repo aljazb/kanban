@@ -1,0 +1,119 @@
+apply plugin: 'ear'
+
+dependencies {
+    deploy project(path: ':server:ejb', configuration: 'archives')
+    deploy project(path: ':server:rest', configuration: 'archives')
+}
+
+/**
+ * Add war project providedCompile dependencies to ear lib
+ */
+ext.DEBUG = false
+
+def setEarlibs() {
+    HashMap<String, ProjectDependency> deployments = new HashMap<>()
+
+    configurations.deploy.allDependencies.forEach({ e ->
+        if(e instanceof ProjectDependency) {
+            deployments.put(e.dependencyProject.name, e)
+        }
+    })
+
+    configurations.deploy.allDependencies.forEach({it ->
+        if(it instanceof ProjectDependency) {
+            def path = it.dependencyProject.path
+
+            evaluationDependsOn(path)
+            Project p = findProject(path)
+
+            p.configurations.compile.allDependencies.forEach {
+                boolean isProject = it instanceof ProjectDependency
+                if (
+                    !isProject ||
+                    (isProject && !deployments.containsKey(it.dependencyProject.name))
+                ) {
+                    dependencies.add("earlib", it)
+                }
+            }
+
+            try {
+                def providedCompileConf = p.configurations.getByName("providedCompile")
+                if(ext.DEBUG) println("Found providedCompile conf in deployment: " + p.name)
+                providedCompileConf.allDependencies.forEach {
+                    boolean isProject = it instanceof ProjectDependency
+                    if (
+                        !isProject ||
+                        (isProject && !deployments.containsKey(it.dependencyProject.name))
+                    ) {
+                        if(ext.DEBUG) printf("> %s \n", it.name)
+
+                        dependencies.add("earlib", it)
+                    }
+                }
+            } catch (UnknownConfigurationException e) {
+
+            }
+        }
+    })
+}
+setEarlibs()
+
+def excludeEarlibs(){
+    Map<String, String> exclude = new HashMap<String, String>() {
+        {
+            put("group", "org.keycloak")
+            put("group", "javax")
+        }
+    }
+
+    configurations.earlib.exclude(exclude)
+}
+excludeEarlibs()
+
+def printEarlibs(){
+    println("Ear libs:")
+    configurations.earlib.forEach({it ->
+        printf("> %s \n", it.name)
+    })
+    println()
+}
+
+if(ext.DEBUG) printEarlibs()
+
+
+/**
+ * Ear deployment configuration
+ */
+def setProperties() {
+    evaluationDependsOn(":server:rest")
+    def warProject = project(":server:rest")
+    ext.warArchive = warProject.name + "-" + warProject.version + ".war"
+    ext.warContextRoot = warProject.warContextRoot
+
+    evaluationDependsOn(":server:ejb")
+    def ejbProject = project(":server:ejb")
+    ext.ejbArchive = ejbProject.name + "-" + ((String)ejbProject.version) + ".jar"
+}
+setProperties()
+
+ear {
+    libDirName 'APP-INF/lib'
+    deploymentDescriptor {
+        version = "1"
+        applicationName = "IS"
+        initializeInOrder = true
+        displayName = "IS Ear"
+        description = "Demo project"
+        module(project.ejbArchive, "ejb")
+        webModule(project.warArchive, project.warContextRoot)
+        securityRole "ADMINISTRATOR"
+        securityRole "PRODUCT_OWNER"
+        securityRole "KANBAN_MASTER"
+        securityRole "DEVELOPER"
+        securityRole "USER"
+    }
+}
+
+
+
+

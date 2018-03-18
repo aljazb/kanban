@@ -1,8 +1,0 @@
-dependencies {
-    compile project(':core:businessLogic')
-
-    compile group: 'com.github.blocoio', name: 'faker'
-    compile group: 'org.keycloak', name: 'keycloak-core'
-
-    testCompile group: 'junit', name: 'junit'
-}

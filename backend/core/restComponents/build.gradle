@@ -1,8 +1,0 @@
-dependencies {
-
-    compile project(':core:businessLogic')
-
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
-
-    testCompile group: 'junit', name: 'junit'
-}
