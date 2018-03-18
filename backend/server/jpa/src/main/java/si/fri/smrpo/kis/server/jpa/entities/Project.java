@@ -14,6 +14,7 @@ import java.util.Date;
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Project extends UUIDEntity<Project> {
 
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -32,8 +33,8 @@ public class Project extends UUIDEntity<Project> {
     protected Date endDate;
 
 
-    @OneToOne
-    @JoinColumn(name = "board_lane_id")
+
+    @OneToOne(mappedBy = "project")
     private BoardLane boardLane;
 
     @ManyToOne

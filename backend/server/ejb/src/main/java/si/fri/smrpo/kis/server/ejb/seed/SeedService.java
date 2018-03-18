@@ -3,10 +3,7 @@ package si.fri.smrpo.kis.server.ejb.seed;
 import io.bloco.faker.Faker;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
-import si.fri.smrpo.kis.server.jpa.entities.Board;
-import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
-import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
-import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
+import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
@@ -14,10 +11,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Startup
 @Singleton
@@ -25,25 +20,39 @@ public class SeedService {
 
     private static final Faker FAKER = new Faker();
 
+    private static final String TEST_USER_ID = "ccad0cc9-1786-4936-8525-3c325d1de0dd";
+
     private static final Integer USERS_NUMBER = 100;
     private static final Integer DEV_TEAMS_NUMBER = 10;
     private static final Integer DEV_TEAM_MEMBERS_NUMBER_MIN = 5;
     private static final Integer DEV_TEAM_MEMBERS_NUMBER_MAX = 15;
     private static final Integer BOARD_PARTS_NUMBER = 4;
+    private static final Integer CARD_NUMBER_MIN = 3;
+    private static final Integer CARD_NUMBER_MAX = 20;
 
 
     @EJB
     private DatabaseServiceLocal database;
 
+
+    private ArrayList<UserAccount> userAccounts = new ArrayList<>();
+    private ArrayList<DevTeam> devTeams = new ArrayList<>();
+    private HashMap<UUID, ArrayList<UserAccountMtmDevTeam>> devTeamMembers = new HashMap<>();
+    private HashMap<UUID, Board> devTeamBoard = new HashMap<>();
+    private HashMap<UUID, ArrayList<BoardPart>> boardParts = new HashMap<>();
+    private ArrayList<Project> projects = new ArrayList<>();
+    private HashMap<UUID, BoardLane> projectBoardLane = new HashMap<>();
+
     @PostConstruct
     public void init() {
         if(isDatabaseEmpty()){
             try {
-                ArrayList<UserAccount> userAccounts = generateUserAccounts();
-                ArrayList<DevTeam> devTeams = generateDevTeams(userAccounts);
-                ArrayList<Board> boards = generateBoard(devTeams);
-
-
+                generateUserAccounts();
+                generateDevTeams();
+                generateBoard();
+                generateBoardParts();
+                generateProjects();
+                generateCards();
             } catch (BusinessLogicTransactionException e) {
                 e.printStackTrace();
             }
@@ -55,25 +64,23 @@ public class SeedService {
         return userAccounts.isEmpty();
     }
 
-    private ArrayList<UserAccount> generateUserAccounts() throws BusinessLogicTransactionException {
-        ArrayList<UserAccount> userAccounts = new ArrayList<>();
-
+    private void generateUserAccounts() throws BusinessLogicTransactionException {
         for(int i=0; i<USERS_NUMBER; i++){
             UserAccount ua = new UserAccount();
             ua.setEmail(FAKER.internet.email());
             ua.setFirstName(FAKER.name.firstName());
             ua.setLastName(FAKER.name.lastName());
 
+            if(i == 0){
+                ua.setId(UUID.fromString(TEST_USER_ID));
+            }
+
             ua = database.create(ua);
             userAccounts.add(ua);
         }
-
-        return userAccounts;
     }
 
-    private ArrayList<DevTeam> generateDevTeams(ArrayList<UserAccount> userAccounts) throws BusinessLogicTransactionException {
-        ArrayList<DevTeam> devTeams = new ArrayList<>();
-
+    private void generateDevTeams() throws BusinessLogicTransactionException {
         for(int i=0; i<DEV_TEAMS_NUMBER; i++){
             DevTeam dt = new DevTeam();
             dt.setName(FAKER.company.name());
@@ -82,11 +89,13 @@ public class SeedService {
 
             devTeams.add(dt);
 
-            Set<UserAccountMtmDevTeam> joinedMembers = new HashSet<>();
+            ArrayList<UserAccountMtmDevTeam> dtMembers = new ArrayList<>();
             ArrayList<UserAccount> potentialMembers = new ArrayList<>(userAccounts);
             int members = FAKER.number.between(DEV_TEAM_MEMBERS_NUMBER_MIN, DEV_TEAM_MEMBERS_NUMBER_MAX);
             for(int m=0; m<members; m++) {
                 int index = FAKER.number.between(0, potentialMembers.size());
+
+                if(i == 0 && m == 0) index = 0;
 
                 UserAccount ua = potentialMembers.get(index);
                 potentialMembers.remove(index);
@@ -103,48 +112,14 @@ public class SeedService {
 
                 uaMTMdt = database.create(uaMTMdt);
 
-                joinedMembers.add(uaMTMdt);
+                dtMembers.add(uaMTMdt);
             }
 
-            dt.setJoinedUsers(joinedMembers);
+            devTeamMembers.put(dt.getId(), dtMembers);
         }
-
-        return devTeams;
     }
 
-    private ArrayList<BoardPart> generateBoardParts(Board board) throws BusinessLogicTransactionException {
-        ArrayList<BoardPart> boardParts = new ArrayList<>();
-
-        for(int i=0; i<BOARD_PARTS_NUMBER; i++){
-            BoardPart bp = new BoardPart();
-            bp.setBoard(board);
-            bp.setMaxWip(FAKER.number.between(5, 15));
-            bp.setName(FAKER.app.name());
-
-            bp = database.create(bp);
-
-            if(Math.random() > 0.5){
-                for(int j=0; j<2; j++){
-                    BoardPart sbp = new BoardPart();
-                    sbp.setBoard(board);
-                    sbp.setMaxWip(FAKER.number.between(5, 15));
-                    sbp.setName(FAKER.app.name());
-                    sbp.setParent(bp);
-
-                    sbp = database.create(sbp);
-
-                    boardParts.add(sbp);
-                }
-            }
-            boardParts.add(bp);
-        }
-
-        return boardParts;
-    }
-
-    private ArrayList<Board> generateBoard(ArrayList<DevTeam> devTeams) throws BusinessLogicTransactionException {
-        ArrayList<Board> boards = new ArrayList<>();
-
+    private void generateBoard() throws BusinessLogicTransactionException {
         for(DevTeam dt : devTeams) {
             Board b = new Board();
             b.setDevTeam(dt);
@@ -152,13 +127,105 @@ public class SeedService {
 
             b = database.create(b);
 
-            ArrayList<BoardPart> boardParts = generateBoardParts(b);
-            b.setBoardParts(new HashSet<>(boardParts));
-
-            boards.add(b);
+            devTeamBoard.put(dt.getId(), b);
         }
-
-        return boards;
     }
 
+    private void generateBoardParts() throws BusinessLogicTransactionException {
+        for(Board board : devTeamBoard.values()){
+            ArrayList<BoardPart> leafParts = new ArrayList<>();
+
+            for(int i=0; i<BOARD_PARTS_NUMBER; i++){
+                BoardPart bp = new BoardPart();
+                bp.setBoard(board);
+                bp.setMaxWip(FAKER.number.between(5, 15));
+                bp.setName(FAKER.app.name());
+                bp.setLeaf(true);
+
+                bp = database.create(bp);
+
+                if(Math.random() > 0.5){
+                    bp.setLeaf(false);
+                    database.update(bp);
+                    for(int j=0; j<2; j++){
+                        BoardPart sbp = new BoardPart();
+                        sbp.setBoard(board);
+                        sbp.setMaxWip(FAKER.number.between(5, 15));
+                        sbp.setName(FAKER.app.name());
+                        sbp.setParent(bp);
+                        sbp.setLeaf(true);
+
+                        sbp = database.create(sbp);
+
+                        leafParts.add(sbp);
+                    }
+                } else {
+                    leafParts.add(bp);
+                }
+            }
+
+            boardParts.put(board.getId(), leafParts);
+        }
+    }
+
+    private void generateProjects() throws BusinessLogicTransactionException {
+        for(DevTeam dt : devTeams) {
+
+            int projectNum = FAKER.number.between(1,2);
+            for(int i=0; i<projectNum; i++){
+                UserAccountMtmDevTeam uaMTMdt = devTeamMembers.get(dt.getId()).stream()
+                        .filter(e -> e.getMemberType() == MemberType.KAMBAN_MASTER).findFirst().get();
+
+                Project p = new Project();
+                p.setName(FAKER.app.name());
+                p.setProductBuyer(FAKER.company.name());
+                p.setDescription(FAKER.lorem.characters(150));
+                p.setStartDate(FAKER.date.forward(1));
+                p.setEndDate(FAKER.date.forward(FAKER.number.between(40, 100)));
+
+                p.setOwner(uaMTMdt.getUserAccount());
+                p.setDevTeam(dt);
+
+                p = database.create(p);
+
+                projects.add(p);
+                Board b = devTeamBoard.get(dt.getId());
+
+                BoardLane bl = new BoardLane();
+                bl.setBoard(b);
+                bl.setProject(p);
+                bl.setName(FAKER.app.name());
+
+                bl = database.create(bl);
+
+                projectBoardLane.put(p.getId(), bl);
+            }
+        }
+    }
+
+    private void generateCards() throws BusinessLogicTransactionException {
+        for(Project p : projects) {
+
+            BoardLane bl = projectBoardLane.get(p.getId());
+            ArrayList<BoardPart> bpLeaves = boardParts.get(bl.getBoard().getId());
+
+            int cardsNumber = FAKER.number.between(CARD_NUMBER_MIN, CARD_NUMBER_MAX);
+            for(int i=0; i<cardsNumber; i++){
+                BoardPart bp = bpLeaves.get(FAKER.number.between(0, bpLeaves.size()-1));
+
+                Card c = new Card();
+
+                c.setBoardLane(bl);
+                c.setBoardPart(bp);
+                c.setProject(p);
+
+                c.setName(FAKER.app.name());
+                c.setDescription(FAKER.lorem.characters(50));
+                c.setWorkLoad(FAKER.number.between(1, 10));
+
+                c = database.create(c);
+            }
+
+        }
+    }
 }

@@ -46,7 +46,6 @@ public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseRes
     }
 
 
-
     @GET
     public Response getList() throws BusinessLogicTransactionException {
         QueryParameters param = QueryParameters.query(uriInfo.getRequestUri().getQuery())

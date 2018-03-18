@@ -111,7 +111,7 @@ public class DatabaseService implements DatabaseServiceLocal {
 
     @Override
     public <T extends BaseEntity<T, UUID>> T update(T newEntity, DBMCore<T> dbmCore) throws BusinessLogicTransactionException {
-        return update(newEntity, dbmCore);
+        return database.update(newEntity, dbmCore);
     }
 
     @Override

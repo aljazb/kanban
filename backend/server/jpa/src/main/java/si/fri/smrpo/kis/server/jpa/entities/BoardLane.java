@@ -18,9 +18,8 @@ public class BoardLane extends UUIDEntity<BoardLane> {
     @Column(name = "name", nullable = false)
     private String name;
 
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToOne(mappedBy = "boardLane")
+    @OneToOne
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @ManyToOne

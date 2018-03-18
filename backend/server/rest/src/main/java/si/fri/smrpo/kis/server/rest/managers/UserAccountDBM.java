@@ -1,13 +1,9 @@
 package si.fri.smrpo.kis.server.rest.managers;
 
-import com.github.tfaga.lynx.beans.QueryFilter;
-import com.github.tfaga.lynx.beans.QueryParameters;
-import com.github.tfaga.lynx.enums.FilterOperation;
 import si.fri.smrpo.kis.core.logic.database.instance.core.DBCore;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
-import si.fri.smrpo.kis.core.rest.utility.QueryParametersUtility;
 
 import javax.ws.rs.core.Response;
 

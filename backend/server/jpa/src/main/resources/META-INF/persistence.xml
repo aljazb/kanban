@@ -21,12 +21,19 @@
         <class>si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam</class>
 
 
+        <!--
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        -->
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL94Dialect"/>
+
+            <!--
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.use_query_cache" value="true" />
+            -->
 
+
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
 
 
             <!--

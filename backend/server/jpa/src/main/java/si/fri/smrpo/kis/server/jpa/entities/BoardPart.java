@@ -20,6 +20,7 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "max_wip", nullable = false)
     private Integer maxWip;
 
+    private Boolean isLeaf;
 
     @ManyToOne
     @JoinColumn(name = "board_id")
@@ -87,5 +88,11 @@ public class BoardPart extends UUIDEntity<BoardPart> {
         this.cards = cards;
     }
 
+    public Boolean getLeaf() {
+        return isLeaf;
+    }
 
+    public void setLeaf(Boolean leaf) {
+        isLeaf = leaf;
+    }
 }
