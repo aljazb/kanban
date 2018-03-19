@@ -18,15 +18,13 @@ public class BoardLane extends UUIDEntity<BoardLane> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "project_id")
+    @OneToOne(mappedBy = "boardLane", fetch = FetchType.LAZY)
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "boardLane")
     private Set<Card> cards;
 

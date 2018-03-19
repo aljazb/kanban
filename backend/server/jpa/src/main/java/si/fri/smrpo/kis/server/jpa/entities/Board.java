@@ -19,15 +19,13 @@ public class Board extends UUIDEntity<Board> {
     private String name;
 
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dev_team_id", nullable = false)
     public DevTeam devTeam;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "board")
     private Set<BoardPart> boardParts;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "board")
     private Set<BoardLane> boardLanes;
 

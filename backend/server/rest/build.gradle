@@ -4,6 +4,7 @@ dependencies {
     providedCompile project(':server:ejb')
 
     providedCompile group: 'org.keycloak', name: 'keycloak-core'
+    providedCompile group: 'org.hibernate', name: 'hibernate-core'
     providedCompile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5'
 
     testCompile group: 'junit', name: 'junit'

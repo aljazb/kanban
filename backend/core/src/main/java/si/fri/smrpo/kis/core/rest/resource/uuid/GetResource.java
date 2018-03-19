@@ -2,14 +2,11 @@ package si.fri.smrpo.kis.core.rest.resource.uuid;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
-import si.fri.smrpo.kis.core.logic.database.instance.DatabaseImpl;
-import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
-import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.core.rest.enums.CacheControlType;
+import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.resource.base.BaseResource;
 
-import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,8 +15,7 @@ import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
-public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseResource {
-
+public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseResource<T, UUID> {
 
     protected int defaultMaxLimit = 50;
 
@@ -29,25 +25,14 @@ public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseRes
     protected CacheControlType getCacheControl = CacheControlType.NONE;
     protected int getCacheControlMaxAge = 180;
 
-    protected Class<T> type;
-
-    protected DatabaseManager<T> databaseManager = null;
-
-    protected abstract DatabaseImpl<UUID> getDatabaseService();
-
 
     public GetResource(Class<T> type) {
-        this.type = type;
-    }
-
-    @PostConstruct
-    private void init(){
-        databaseManager = setInitManager();
+        super(type);
     }
 
 
     @GET
-    public Response getList() throws BusinessLogicTransactionException {
+    public Response getList() throws ApiException {
         QueryParameters param = QueryParameters.query(uriInfo.getRequestUri().getQuery())
                 .maxLimit(defaultMaxLimit).defaultLimit(defaultMaxLimit).defaultOffset(0).build();
 
@@ -64,7 +49,7 @@ public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseRes
 
     @GET
     @Path("{id}")
-    public Response get(@PathParam("id") UUID id) throws BusinessLogicTransactionException {
+    public Response get(@PathParam("id") UUID id) throws ApiException {
 
         T dbEntity = getDatabaseService().get(type, id, databaseManager);
 
@@ -142,7 +127,4 @@ public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseRes
         return responseBuilder;
     }
 
-    protected DatabaseManager<T> setInitManager() {
-        return null;
-    }
 }

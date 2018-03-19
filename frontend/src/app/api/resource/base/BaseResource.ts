@@ -1,6 +1,8 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
 import {ApiService} from '../../Api';
 import {HttpHeaders} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of';
 
 export abstract class BaseResource<T extends BaseEntity<T>> {
 
@@ -25,5 +27,14 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
     return headers;
   }
 
+  protected handleError<T> (operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+
+      console.log(`${operation} failed: ${error.message}`);
+      console.error(error);
+
+      return of(result as T);
+    };
+  }
 
 }

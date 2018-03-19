@@ -17,8 +17,6 @@ apply plugin: 'org.liquibase.gradle'
 dependencies {
     compile project(':core')
 
-    //compile group: 'org.hibernate', name: 'hibernate-core'
-
     testCompile group: 'junit', name: 'junit'
 }
 

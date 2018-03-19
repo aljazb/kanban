@@ -1,8 +1,8 @@
 package si.fri.smrpo.kis.core.rest.resource.uuid;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
-import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
-import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
+import si.fri.smrpo.kis.core.rest.exception.ApiException;
+import si.fri.smrpo.kis.core.rest.resource.providers.configuration.PATCH;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -15,7 +15,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     }
 
     @POST
-    public Response create(@HeaderParam("X-Content") Boolean xContent, T entity) throws BusinessLogicTransactionException {
+    public Response create(@HeaderParam("X-Content") Boolean xContent, T entity) throws ApiException {
         entity.setId(null);
 
         T dbEntity = getDatabaseService().createVersion(entity, databaseManager);
@@ -26,7 +26,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     @PUT
     @Path("{id}")
     public Response update(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") UUID id, T entity) throws BusinessLogicTransactionException {
+                           @PathParam("id") UUID id, T entity) throws ApiException {
         entity.setId(id);
 
         T dbEntity = getDatabaseService().updateVersion(entity, databaseManager);
@@ -37,7 +37,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     @PATCH
     @Path("{id}")
     public Response patch(@HeaderParam("X-Content") Boolean xContent,
-                          @PathParam("id") UUID id, T entity) throws BusinessLogicTransactionException {
+                          @PathParam("id") UUID id, T entity) throws ApiException {
         entity.setId(id);
 
         T dbEntity = getDatabaseService().patchVersion(entity, databaseManager);
@@ -48,7 +48,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     @DELETE
     @Path("{id}")
     public Response delete(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") UUID id) throws BusinessLogicTransactionException {
+                           @PathParam("id") UUID id) throws ApiException {
 
         T dbEntity = getDatabaseService().delete(type, id, databaseManager);
 
@@ -58,7 +58,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     @PUT
     @Path("{id}/toggleIsDeleted")
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent,
-                                    @PathParam("id") UUID id) throws BusinessLogicTransactionException {
+                                    @PathParam("id") UUID id) throws ApiException {
 
         T dbEntity = getDatabaseService().toggleIsDeleted(type, id, databaseManager);
 

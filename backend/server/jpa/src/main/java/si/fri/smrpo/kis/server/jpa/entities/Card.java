@@ -22,15 +22,15 @@ public class Card extends UUIDEntity<Card> {
     private Integer workLoad;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_part_id", nullable = false)
     private BoardPart boardPart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_lane_id", nullable = false)
     private BoardLane boardLane;
 

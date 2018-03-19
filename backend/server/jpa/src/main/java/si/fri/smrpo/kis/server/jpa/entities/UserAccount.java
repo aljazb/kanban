@@ -15,6 +15,9 @@ import java.util.Set;
 @Entity
 @Table(name="user_account")
 @Cacheable
+@NamedQueries({
+        @NamedQuery(name = "user-account.get-all", query = "SELECT ua FROM UserAccount ua")
+})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class UserAccount extends UUIDEntity<UserAccount> {
 
@@ -29,11 +32,9 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     private String lastName;
 
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "userAccount")
     private Set<UserAccountMtmDevTeam> joinedDevTeams;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "owner")
     private Set<Project> projects;
 

@@ -1,8 +1,8 @@
 package si.fri.smrpo.kis.server.ejb.seed;
 
 import io.bloco.faker.Faker;
+import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
-import si.fri.smrpo.kis.core.logic.exceptions.BusinessLogicTransactionException;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
@@ -12,7 +12,6 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Startup
 @Singleton
@@ -53,18 +52,21 @@ public class SeedService {
                 generateBoardParts();
                 generateProjects();
                 generateCards();
-            } catch (BusinessLogicTransactionException e) {
+            } catch (DatabaseException e) {
                 e.printStackTrace();
             }
         }
     }
 
     private boolean isDatabaseEmpty(){
-        List<UserAccount> userAccounts = database.getStream(UserAccount.class).limit(1).toList();
+        List<UserAccount> userAccounts = database.getEntityManager()
+                .createNamedQuery("user-account.get-all", UserAccount.class)
+                .setMaxResults(1).getResultList();
+
         return userAccounts.isEmpty();
     }
 
-    private void generateUserAccounts() throws BusinessLogicTransactionException {
+    private void generateUserAccounts() throws DatabaseException {
         for(int i=0; i<USERS_NUMBER; i++){
             UserAccount ua = new UserAccount();
             ua.setEmail(FAKER.internet.email());
@@ -80,7 +82,7 @@ public class SeedService {
         }
     }
 
-    private void generateDevTeams() throws BusinessLogicTransactionException {
+    private void generateDevTeams() throws DatabaseException {
         for(int i=0; i<DEV_TEAMS_NUMBER; i++){
             DevTeam dt = new DevTeam();
             dt.setName(FAKER.company.name());
@@ -119,7 +121,7 @@ public class SeedService {
         }
     }
 
-    private void generateBoard() throws BusinessLogicTransactionException {
+    private void generateBoard() throws DatabaseException {
         for(DevTeam dt : devTeams) {
             Board b = new Board();
             b.setDevTeam(dt);
@@ -131,7 +133,7 @@ public class SeedService {
         }
     }
 
-    private void generateBoardParts() throws BusinessLogicTransactionException {
+    private void generateBoardParts() throws DatabaseException {
         for(Board board : devTeamBoard.values()){
             ArrayList<BoardPart> leafParts = new ArrayList<>();
 
@@ -168,7 +170,7 @@ public class SeedService {
         }
     }
 
-    private void generateProjects() throws BusinessLogicTransactionException {
+    private void generateProjects() throws DatabaseException {
         for(DevTeam dt : devTeams) {
 
             int projectNum = FAKER.number.between(1,2);
@@ -203,7 +205,7 @@ public class SeedService {
         }
     }
 
-    private void generateCards() throws BusinessLogicTransactionException {
+    private void generateCards() throws DatabaseException {
         for(Project p : projects) {
 
             BoardLane bl = projectBoardLane.get(p.getId());

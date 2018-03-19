@@ -13,6 +13,13 @@ import java.util.Set;
 @Entity
 @Table(name="dev_team")
 @Cacheable
+@NamedQueries({
+        @NamedQuery(name = "devTeam.get-kamban-master",
+                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND ua = uaMTMdt.userAccount AND " +
+                        "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KAMBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KAMBAN_MASTER)"),
+        @NamedQuery(name = "devTeam.get-memebrs",
+                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND ua = uaMTMdt.userAccount")
+})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class DevTeam extends UUIDEntity<DevTeam> {
 
@@ -20,15 +27,12 @@ public class DevTeam extends UUIDEntity<DevTeam> {
     private String name;
 
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "userAccount")
     private Set<UserAccountMtmDevTeam> joinedUsers;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToMany(mappedBy = "devTeam")
     private Set<Project> projects;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @OneToOne(mappedBy = "devTeam")
     private Board board;
 

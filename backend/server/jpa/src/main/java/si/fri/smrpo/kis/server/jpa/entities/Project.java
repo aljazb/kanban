@@ -1,11 +1,13 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 
 @Entity
@@ -13,7 +15,6 @@ import java.util.Date;
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Project extends UUIDEntity<Project> {
-
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -32,16 +33,15 @@ public class Project extends UUIDEntity<Project> {
     @Temporal(TemporalType.TIMESTAMP)
     protected Date endDate;
 
-
-
-    @OneToOne(mappedBy = "project")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "boardLane_id")
     private BoardLane boardLane;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dev_team_id")
     private DevTeam devTeam;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_account_id")
     private UserAccount owner;
 
@@ -50,8 +50,8 @@ public class Project extends UUIDEntity<Project> {
         return devTeam;
     }
 
-    public void setDevTeam(DevTeam joinedDevTeam) {
-        this.devTeam = joinedDevTeam;
+    public void setDevTeam(DevTeam devTeam) {
+        this.devTeam = devTeam;
     }
 
     public String getName() {
@@ -109,4 +109,5 @@ public class Project extends UUIDEntity<Project> {
     public void setBoardLane(BoardLane boardLane) {
         this.boardLane = boardLane;
     }
+
 }

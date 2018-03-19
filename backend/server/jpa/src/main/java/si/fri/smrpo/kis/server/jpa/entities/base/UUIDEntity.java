@@ -11,7 +11,6 @@ import java.util.UUID;
 public abstract class UUIDEntity<T extends UUIDEntity> extends BaseEntity<T, UUID> {
 
     @Id
-    @GeneratedValue
     @Column(name = "id", columnDefinition = "uuid", updatable = false)
     private UUID id;
 

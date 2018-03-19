@@ -22,22 +22,19 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     private Boolean isLeaf;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "parent")
-    private Set<BoardPart> children;
-
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @OneToMany(mappedBy = "boardPart")
-    private Set<Card> cards;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_board_part_id")
     private BoardPart parent;
 
+    @OneToMany(mappedBy = "parent")
+    private Set<BoardPart> children;
+
+    @OneToMany(mappedBy = "boardPart")
+    private Set<Card> cards;
 
 
     public BoardPart getParent() {

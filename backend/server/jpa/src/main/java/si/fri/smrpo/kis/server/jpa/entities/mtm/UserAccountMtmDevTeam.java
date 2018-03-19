@@ -19,11 +19,11 @@ public class UserAccountMtmDevTeam extends UUIDEntity<UserAccountMtmDevTeam> {
     private MemberType memberType;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dev_team_id", nullable = false)
     private DevTeam devTeam;
 

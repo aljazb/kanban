@@ -4,7 +4,6 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations'
 
-    compile group: 'org.jinq', name: 'jinq-jpa'
     compile group: 'com.github.tfaga.lynx', name: 'lynx-core'
 
     testCompile group: 'junit', name: 'junit'

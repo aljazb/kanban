@@ -11,6 +11,7 @@ import {BoardResource} from './resource/BoardResource';
 export class ApiService {
 
   public url: string;
+  private _xContent: boolean;
 
   public board: BoardResource;
   public card: CardResource;
@@ -35,4 +36,12 @@ export class ApiService {
     this.userAccount = new UserAccountResource(this);
   }
 
+
+  get xContent(): boolean {
+    return this._xContent;
+  }
+
+  set xContent(value: boolean) {
+    this._xContent = value;
+  }
 }
