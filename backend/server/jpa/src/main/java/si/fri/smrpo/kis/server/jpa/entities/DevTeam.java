@@ -16,7 +16,7 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = "devTeam.get-kamban-master",
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND ua = uaMTMdt.userAccount AND " +
-                        "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KAMBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KAMBAN_MASTER)"),
+                        "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER)"),
         @NamedQuery(name = "devTeam.get-memebrs",
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND ua = uaMTMdt.userAccount")
 })
