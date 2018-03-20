@@ -107,7 +107,7 @@ public class SeedService {
                 uaMTMdt.setDevTeam(dt);
 
                 if(m == 0) {
-                    uaMTMdt.setMemberType(MemberType.KAMBAN_MASTER);
+                    uaMTMdt.setMemberType(MemberType.KANBAN_MASTER);
                 } else {
                     uaMTMdt.setMemberType(MemberType.DEVELOPER);
                 }
@@ -176,7 +176,7 @@ public class SeedService {
             int projectNum = FAKER.number.between(1,2);
             for(int i=0; i<projectNum; i++){
                 UserAccountMtmDevTeam uaMTMdt = devTeamMembers.get(dt.getId()).stream()
-                        .filter(e -> e.getMemberType() == MemberType.KAMBAN_MASTER).findFirst().get();
+                        .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER).findFirst().get();
 
                 Project p = new Project();
                 p.setName(FAKER.app.name());
