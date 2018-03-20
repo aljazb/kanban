@@ -126,6 +126,10 @@ public class SeedService {
             Board b = new Board();
             b.setDevTeam(dt);
             b.setName(FAKER.app.name());
+            b.setHighestPriority(0);
+            b.setStartDev(1);
+            b.setEndDev(2);
+            b.setAcceptenceTesting(3);
 
             b = database.create(b);
 
@@ -139,6 +143,7 @@ public class SeedService {
 
             for(int i=0; i<BOARD_PARTS_NUMBER; i++){
                 BoardPart bp = new BoardPart();
+                bp.setOrderIndex(i);
                 bp.setBoard(board);
                 bp.setMaxWip(FAKER.number.between(5, 15));
                 bp.setName(FAKER.app.name());
@@ -151,6 +156,7 @@ public class SeedService {
                     database.update(bp);
                     for(int j=0; j<2; j++){
                         BoardPart sbp = new BoardPart();
+                        sbp.setOrderIndex(j);
                         sbp.setBoard(board);
                         sbp.setMaxWip(FAKER.number.between(5, 15));
                         sbp.setName(FAKER.app.name());

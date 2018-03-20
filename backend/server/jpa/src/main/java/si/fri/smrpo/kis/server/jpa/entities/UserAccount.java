@@ -2,7 +2,6 @@ package si.fri.smrpo.kis.server.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
@@ -37,6 +36,15 @@ public class UserAccount extends UUIDEntity<UserAccount> {
 
     @OneToMany(mappedBy = "owner")
     private Set<Project> projects;
+
+
+    @OneToMany(mappedBy = "sender")
+    private Set<Request> sentRequests;
+
+    @OneToMany(mappedBy = "receiver")
+    private Set<Request> receivedRequests;
+
+
 
     @JsonIgnore
     protected boolean baseSkip(Field field){
@@ -99,5 +107,21 @@ public class UserAccount extends UUIDEntity<UserAccount> {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public Set<Request> getSentRequests() {
+        return sentRequests;
+    }
+
+    public void setSentRequests(Set<Request> sendRequests) {
+        this.sentRequests = sendRequests;
+    }
+
+    public Set<Request> getReceivedRequests() {
+        return receivedRequests;
+    }
+
+    public void setReceivedRequests(Set<Request> recivedRequests) {
+        this.receivedRequests = recivedRequests;
     }
 }

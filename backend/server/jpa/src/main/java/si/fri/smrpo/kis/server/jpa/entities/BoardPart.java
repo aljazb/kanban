@@ -20,6 +20,9 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "max_wip", nullable = false)
     private Integer maxWip;
 
+    @Column(name = "order_index", nullable = false)
+    private Integer orderIndex;
+
     private Boolean isLeaf;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -91,5 +94,13 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     public void setLeaf(Boolean leaf) {
         isLeaf = leaf;
+    }
+
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
     }
 }

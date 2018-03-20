@@ -5,6 +5,10 @@ import {BoardLane} from './BoardLane';
 
 export class Board extends BaseEntity<Board> {
   name: string;
+  highestPriority: number;
+  startDev: number;
+  endDev: number;
+  acceptanceTesting: number;
 
   devTeam: DevTeam;
   boardParts: BoardPart[];

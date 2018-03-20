@@ -6,7 +6,8 @@ export class UserAccount extends BaseEntity<UserAccount> {
   email: string;
   firstName: string;
   lastName: string;
-
   joinedDevTeams: UserAccountMTMDevTeam[];
   projects: Project[];
+  sentRequests: Request[];
+  receivedRequests: Request[];
 }

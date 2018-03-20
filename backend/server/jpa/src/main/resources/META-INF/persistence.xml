@@ -19,6 +19,7 @@
         <class>si.fri.smrpo.kis.server.jpa.entities.BoardPart</class>
 
         <class>si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.Request</class>
 
 
         <!--
@@ -31,6 +32,7 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.use_query_cache" value="true" />
             -->
+
 
 
             <!--

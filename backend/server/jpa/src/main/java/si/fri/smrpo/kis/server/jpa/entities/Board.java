@@ -1,7 +1,6 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
@@ -17,6 +16,19 @@ public class Board extends UUIDEntity<Board> {
 
     @Column(name = "name")
     private String name;
+
+
+    @Column(name = "highest_priority", nullable = false)
+    private Integer highestPriority;
+
+    @Column(name = "start_dev", nullable = false)
+    private Integer startDev;
+
+    @Column(name = "end_dev", nullable = false)
+    private Integer endDev;
+
+    @Column(name = "acceptance_testing", nullable = false)
+    private Integer acceptanceTesting;
 
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -60,5 +72,37 @@ public class Board extends UUIDEntity<Board> {
 
     public void setBoardLanes(Set<BoardLane> boardLanes) {
         this.boardLanes = boardLanes;
+    }
+
+    public Integer getHighestPriority() {
+        return highestPriority;
+    }
+
+    public void setHighestPriority(Integer higestPriority) {
+        this.highestPriority = higestPriority;
+    }
+
+    public Integer getStartDev() {
+        return startDev;
+    }
+
+    public void setStartDev(Integer startDev) {
+        this.startDev = startDev;
+    }
+
+    public Integer getEndDev() {
+        return endDev;
+    }
+
+    public void setEndDev(Integer endDev) {
+        this.endDev = endDev;
+    }
+
+    public Integer getAcceptenceTesting() {
+        return acceptanceTesting;
+    }
+
+    public void setAcceptenceTesting(Integer acceptanceTesting) {
+        this.acceptanceTesting = acceptanceTesting;
     }
 }
