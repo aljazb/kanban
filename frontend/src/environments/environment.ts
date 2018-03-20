@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  apiHostname: "http://localhost:8080",
-  authHostname: "http://localhost:8081"
+  apiHostname: "", //http://localhost:8080
+  authHostname: "" //http://localhost:8081
 };

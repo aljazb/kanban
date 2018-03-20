@@ -1,6 +1,6 @@
 {
   "realm": "Kis",
-  "auth-server-url": "http://localhost:8081/auth",
+  "auth-server-url": "http://kamban.smrpo7:31337/auth",
   "ssl-required": "external",
   "resource": "backend-javaee-server",
   "public-client": true,
