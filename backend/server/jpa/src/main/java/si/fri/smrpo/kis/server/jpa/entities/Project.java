@@ -19,7 +19,7 @@ public class Project extends UUIDEntity<Project> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "product_buyer")
