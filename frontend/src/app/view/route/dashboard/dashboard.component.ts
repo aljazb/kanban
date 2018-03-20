@@ -4,6 +4,7 @@ import { HeroService } from '../../../demo/hero.service';
 import {ApiService} from '../../../api/Api';
 import {KeycloakService} from 'keycloak-angular/index';
 import {UserAccount} from '../../../api/models/UserAccount';
+import {Project} from '../../../api/models/Project';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +15,7 @@ export class DashboardComponent implements OnInit {
   heroes: Hero[] = [];
 
   user: UserAccount;
+  projects: Project[];
 
   constructor(
     private heroService: HeroService,
@@ -23,11 +25,22 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     //this.getHeroes();
     this.login();
+    this.getProjects()
   }
 
   getHeroes(): void {
     this.heroService.getHeroes()
       .subscribe(heroes => this.heroes = heroes.slice(1, 5));
+  }
+
+  getProjects(): void {
+    console.log("Getting projects");
+    this.apiService.project.getList()
+      .subscribe(projects => {
+        this.projects = projects;
+        console.log("Loaded projects");
+        console.log(projects);
+      });
   }
 
   login(): void {
