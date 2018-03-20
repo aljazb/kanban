@@ -2,6 +2,7 @@ import {BaseEntity} from '../../models/base/BaseEntity';
 import {BaseResource} from './BaseResource';
 import {Observable} from 'rxjs/Observable';
 import {ApiService} from '../../Api';
+import {HttpParams} from '@angular/common/http';
 
 
 export abstract class GetResource<T extends BaseEntity<T>> extends BaseResource<T> {
@@ -10,8 +11,8 @@ export abstract class GetResource<T extends BaseEntity<T>> extends BaseResource<
     super(entityName, api);
   }
 
-  getList (): Observable<T[]> {
-    return this.api.httpClient.get<T[]>(this.url, { headers: this.getHeaders()});
+  getList (httpParams: HttpParams = null): Observable<T[]> {
+    return this.api.httpClient.get<T[]>(this.url, { headers: this.getHeaders(), params: httpParams});
   }
 
   get (id: string): Observable<T> {

@@ -2,9 +2,7 @@ import {UserAccount} from '../models/UserAccount';
 import {CrudResource} from './base/CrudResource';
 import {Observable} from 'rxjs/Observable';
 import {ApiService} from '../Api';
-import {errorHandler} from '@angular/platform-browser/src/browser';
 import {catchError} from 'rxjs/operators';
-import {Hero} from '../../demo/hero';
 
 export class UserAccountResource extends CrudResource<UserAccount> {
 
