@@ -1,0 +1,7 @@
+dependencies {
+    compile project(':server:jpa')
+
+    compile group: 'com.github.blocoio', name: 'faker'
+
+    testCompile group: 'junit', name: 'junit'
+}

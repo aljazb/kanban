@@ -1,8 +1,16 @@
-<h1>{{title}}</h1>
-<app-app-header></app-app-header>
-<nav>
-  <a routerLink="/dashboard">Dashboard</a>
-  <a routerLink="/heroes">Heroes</a>
-</nav>
-<router-outlet></router-outlet>
-<app-messages></app-messages>
+
+<app-header></app-header>
+
+<main class="main-padding">
+  <div class="main-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<app-footer></app-footer>

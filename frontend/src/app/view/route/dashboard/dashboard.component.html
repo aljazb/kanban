@@ -1,0 +1,13 @@
+<div>
+  <h3>Top Projects</h3>
+
+  <div class="grid grid-pad">
+    <a *ngFor="let project of projects" class="col-1-4">
+      <div class="module hero">
+        <h4>{{project.name}}</h4>
+        <h4>{{project.productBuyer}}</h4>
+      </div>
+    </a>
+  </div>
+</div>
+

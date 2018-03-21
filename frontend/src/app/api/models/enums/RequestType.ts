@@ -1,0 +1,4 @@
+export enum RequestType {
+  DEV_TEAM_INVITE,
+  DEV_TEAM_KAMBAN_MASTER_PROMOTION
+}

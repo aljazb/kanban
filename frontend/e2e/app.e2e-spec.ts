@@ -194,7 +194,7 @@ describe('Tutorial part 6', () => {
     it('displays correctly styled buttons', async () => {
       element.all(by.buttonText('x')).then(buttons => {
         for (const button of buttons) {
-          // Inherited styles from styles.css
+          // Inherited styles from styles.scss
           expect(button.getCssValue('font-family')).toBe('Arial');
           expect(button.getCssValue('border')).toContain('none');
           expect(button.getCssValue('padding')).toBe('5px 10px');
@@ -206,7 +206,7 @@ describe('Tutorial part 6', () => {
       });
 
       const addButton = element(by.buttonText('add'));
-      // Inherited styles from styles.css
+      // Inherited styles from styles.scss
       expect(addButton.getCssValue('font-family')).toBe('Arial');
       expect(addButton.getCssValue('border')).toContain('none');
       expect(addButton.getCssValue('padding')).toBe('5px 10px');

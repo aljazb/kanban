@@ -1,0 +1,8 @@
+{
+  "realm": "Kis",
+  "auth-server-url": "https://kanban.smrpo7:31337/auth",
+  "ssl-required": "external",
+  "resource": "backend-javaee-server",
+  "public-client": true,
+  "confidential-port": 0
+}
