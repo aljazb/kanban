@@ -10,5 +10,11 @@
     "test.ts",
     "**/*.spec.ts",
     "**/testing/*"
+  ],
+  "include": [
+    "../node_modules/keycloak-angular/*",
+    "../node_modules/keycloak-js/dist*",
+    "**/*.ts",
+    "../node_modules/angular-bootstrap-md/index.ts"
   ]
 }
