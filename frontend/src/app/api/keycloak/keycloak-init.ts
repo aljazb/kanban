@@ -17,7 +17,7 @@ export function KeycloakInitializer(keycloak: KeycloakService): () => Promise<an
             localStorage: true
           },
           bearerExcludedUrls: [
-            '/src'
+            '/^(?!\/api).*/'
           ]
         });
         resolve();

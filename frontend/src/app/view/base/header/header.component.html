@@ -1,29 +1,11 @@
 <header>
-  <!--Navbar-->
+
   <mdb-navbar SideClass="navbar fixed-top navbar-expand-md top-nav-collapse scrolling-navbar navbar-dark unique-color-dark">
 
-    <!--
-    navbar fixed-top navbar-expand-md navbar-dark double-nav scrolling-navbar top-nav-collapse
-    -->
-
-    <!-- Navbar brand -->
     <logo><a class="navbar-brand" href="#">Navbar</a></logo>
 
-    <!-- Collapsible content -->
     <links>
-
-      <!-- Links -->
       <ul class="navbar-nav ml-auto">
-        <!--<li class="nav-item active">
-          <a class="nav-link waves-light" mdbRippleRadius>Home<span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-light" mdbRippleRadius>Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link waves-light" mdbRippleRadius>Pricing</a>
-        </li>-->
-
 
         <li *ngIf="user" class="nav-item dropdown" dropdown>
           <a dropdownToggle mdbRippleRadius type="button" class="nav-link dropdown-toggle waves-light" mdbRippleRadius>
@@ -44,8 +26,7 @@
       </ul>
     </links>
 
-
   </mdb-navbar>
-  <!--/.Navbar-->
+
 </header>
 
