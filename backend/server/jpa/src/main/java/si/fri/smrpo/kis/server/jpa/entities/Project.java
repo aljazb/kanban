@@ -13,6 +13,11 @@ import java.util.UUID;
 @Entity
 @Table(name="project")
 @Cacheable
+@NamedQueries({
+        @NamedQuery(name = "project.isMember",
+                query = "SELECT p.id FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua " +
+                        "WHERE p.id = :projectId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND ua.id = :userId")
+})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Project extends UUIDEntity<Project> {
 

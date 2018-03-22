@@ -7,7 +7,7 @@ import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.managers.DevTeamAuthManager;
-import si.fri.smrpo.kis.server.ejb.service.DevTeamServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
@@ -19,9 +19,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.ejb.managers.base.UserAuthManager.ROLE_ADMINISTRATOR;
-import static si.fri.smrpo.kis.server.ejb.managers.base.UserAuthManager.ROLE_DEVELOPER;
-import static si.fri.smrpo.kis.server.ejb.managers.base.UserAuthManager.ROLE_KANBAN_MASTER;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_ADMINISTRATOR;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_DEVELOPER;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_KANBAN_MASTER;
 
 @Path("DevTeam")
 @RequestScoped

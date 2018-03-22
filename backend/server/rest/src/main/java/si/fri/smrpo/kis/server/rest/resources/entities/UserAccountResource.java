@@ -4,7 +4,7 @@ import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
-import si.fri.smrpo.kis.server.ejb.service.UserAccountServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.UserAccountServiceLocal;
 import si.fri.smrpo.kis.server.ejb.managers.UserAccountAuthManager;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
@@ -20,8 +20,8 @@ import javax.ws.rs.core.Response;
 
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.ejb.managers.base.UserAuthManager.ROLE_ADMINISTRATOR;
-import static si.fri.smrpo.kis.server.ejb.managers.base.UserAuthManager.ROLE_USER;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_ADMINISTRATOR;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_USER;
 
 
 @Path("UserAccount")

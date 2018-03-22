@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
-public class UserAuthManager<T extends UUIDEntity<T>> extends DatabaseManager<T, UUID> {
+public class AuthManager<T extends UUIDEntity<T>> extends DatabaseManager<T, UUID> {
 
     public static final String ROLE_ADMINISTRATOR = "ADMINISTRATOR";
     public static final String ROLE_PRODUCT_OWNER = "PRODUCT_OWNER";
@@ -19,7 +19,7 @@ public class UserAuthManager<T extends UUIDEntity<T>> extends DatabaseManager<T,
 
     protected AuthUser userAccount;
 
-    public UserAuthManager(AuthUser userAccount) {
+    public AuthManager(AuthUser userAccount) {
         this.userAccount = userAccount;
 
     }

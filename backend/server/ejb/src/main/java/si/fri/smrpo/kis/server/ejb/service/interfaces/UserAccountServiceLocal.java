@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.server.ejb.service;
+package si.fri.smrpo.kis.server.ejb.service.interfaces;
 
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;

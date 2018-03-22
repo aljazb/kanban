@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.service;
 
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.UserAccountServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import javax.annotation.security.PermitAll;

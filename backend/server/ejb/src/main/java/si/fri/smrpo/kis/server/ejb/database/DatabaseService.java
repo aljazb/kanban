@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.database;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
+import org.jinq.jpa.JPAJinqStream;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.Database;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
@@ -156,6 +157,11 @@ public class DatabaseService implements DatabaseServiceLocal {
     @Override
     public EntityManager getEntityManager() {
         return database.getEntityManager();
+    }
+
+    @Override
+    public <T extends BaseEntity> JPAJinqStream<T> stream(Class<T> c) {
+        return database.stream(c);
     }
 
 }

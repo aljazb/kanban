@@ -14,11 +14,14 @@ import java.util.Set;
 @Table(name="dev_team")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "devTeam.get-kamban-master",
-                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND ua = uaMTMdt.userAccount AND " +
+        @NamedQuery(name = "devTeam.getKanbanMaster",
+                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND " +
                         "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER)"),
-        @NamedQuery(name = "devTeam.get-memebrs",
-                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND ua = uaMTMdt.userAccount")
+        @NamedQuery(name = "devTeam.getMembers",
+                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua"),
+        @NamedQuery(name = "devTeam.isMember",
+                query = "SELECT ua.id FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua " +
+                        "WHERE dt.id = :devTeamId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND ua.id = :userId")
 })
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class DevTeam extends UUIDEntity<DevTeam> {
@@ -33,7 +36,7 @@ public class DevTeam extends UUIDEntity<DevTeam> {
     @OneToMany(mappedBy = "devTeam")
     private Set<Project> projects;
 
-    @OneToOne(mappedBy = "devTeam")
+    @OneToOne(mappedBy = "devTeam", fetch = FetchType.LAZY)
     private Board board;
 
 
