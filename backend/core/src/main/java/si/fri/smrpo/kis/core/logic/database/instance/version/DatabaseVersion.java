@@ -2,13 +2,13 @@ package si.fri.smrpo.kis.core.logic.database.instance.version;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 import si.fri.smrpo.kis.core.logic.database.instance.core.DatabaseCore;
-import si.fri.smrpo.kis.core.logic.database.manager.version.DatabaseManagerVersion;
+import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
 
-public abstract class DatabaseVersion<K extends Serializable> extends DatabaseCore<K> implements DatabaseVersionImpl<K> {
+public abstract class DatabaseVersion<I extends Serializable> extends DatabaseCore<I> implements DatabaseVersionImpl<I> {
 
     public DatabaseVersion() {
     }
@@ -18,11 +18,11 @@ public abstract class DatabaseVersion<K extends Serializable> extends DatabaseCo
     }
 
 
-    public <T extends BaseEntityVersion<T, K>> T createVersion(T newEntityVersion) throws DatabaseException {
+    public <E extends BaseEntityVersion<E, I>> E createVersion(E newEntityVersion) throws DatabaseException {
         return createVersion(newEntityVersion, null);
     }
 
-    public <T extends BaseEntityVersion<T, K>> T createVersion(T newEntityVersion, DatabaseManagerVersion<T> dbmVersion) throws DatabaseException {
+    public <E extends BaseEntityVersion<E, I>> E createVersion(E newEntityVersion, DatabaseManager<E, I> dbmVersion) throws DatabaseException {
         try {
             newEntityVersion.update(newEntityVersion, entityManager);
 
@@ -46,15 +46,15 @@ public abstract class DatabaseVersion<K extends Serializable> extends DatabaseCo
 
 
 
-    public <T extends BaseEntityVersion<T, K>> T updateVersion(T newBaseEntityVersion) throws DatabaseException {
+    public <E extends BaseEntityVersion<E, I>> E updateVersion(E newBaseEntityVersion) throws DatabaseException {
         return updateVersion(newBaseEntityVersion, null);
     }
 
-    public <T extends BaseEntityVersion<T, K>> T updateVersion(T newEntityVersion, DatabaseManagerVersion<T> dbmVersion) throws DatabaseException {
+    public <E extends BaseEntityVersion<E, I>> E updateVersion(E newEntityVersion, DatabaseManager<E, I> dbmVersion) throws DatabaseException {
         try {
-            Class<T> c = (Class<T>) newEntityVersion.getClass();
+            Class<E> c = (Class<E>) newEntityVersion.getClass();
 
-            T dbEntityVersion = get(c, newEntityVersion.getId(), dbmVersion);
+            E dbEntityVersion = get(c, newEntityVersion.getId(), dbmVersion);
 
             if(dbEntityVersion == null){
                 throw new DatabaseException(String.format("Entity %s with id %s does not exist.",
@@ -73,7 +73,7 @@ public abstract class DatabaseVersion<K extends Serializable> extends DatabaseCo
             dbEntityVersion.setIsLatest(false);
             entityManager.merge(dbEntityVersion);
 
-            T dbEntityClone = (T) dbEntityVersion.cloneObject();
+            E dbEntityClone = (E) dbEntityVersion.cloneObject();
             dbEntityClone.update(newEntityVersion, entityManager);
             dbEntityClone.prePersist(dbEntityVersion.getVersionOrder() + 1);
 
@@ -92,15 +92,15 @@ public abstract class DatabaseVersion<K extends Serializable> extends DatabaseCo
 
 
 
-    public <T extends BaseEntityVersion<T, K>> T patchVersion(T newBaseEntityVersion) throws DatabaseException {
+    public <E extends BaseEntityVersion<E, I>> E patchVersion(E newBaseEntityVersion) throws DatabaseException {
         return patchVersion(newBaseEntityVersion, null);
     }
 
-    public <T extends BaseEntityVersion<T, K>> T patchVersion(T newEntityVersion, DatabaseManagerVersion<T> dbmVersion) throws DatabaseException {
+    public <E extends BaseEntityVersion<E, I>> E patchVersion(E newEntityVersion, DatabaseManager<E, I> dbmVersion) throws DatabaseException {
         try {
-            Class<T> c = (Class<T>) newEntityVersion.getClass();
+            Class<E> c = (Class<E>) newEntityVersion.getClass();
 
-            T dbEntityVersion = get(c, newEntityVersion.getId(), dbmVersion);
+            E dbEntityVersion = get(c, newEntityVersion.getId(), dbmVersion);
 
             if(dbEntityVersion == null){
                 throw new DatabaseException(String.format("Entity %s with id %s does not exist.",
@@ -119,7 +119,7 @@ public abstract class DatabaseVersion<K extends Serializable> extends DatabaseCo
             dbEntityVersion.setIsLatest(false);
             entityManager.merge(dbEntityVersion);
 
-            T dbEntityClone = (T) dbEntityVersion.cloneObject();
+            E dbEntityClone = (E) dbEntityVersion.cloneObject();
 
             dbEntityClone.patch(newEntityVersion, entityManager);
             dbEntityClone.prePersist(dbEntityClone.getVersionOrder() + 1);

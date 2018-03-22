@@ -4,8 +4,7 @@ import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.Database;
-import si.fri.smrpo.kis.core.logic.database.manager.core.DatabaseManagerCore;
-import si.fri.smrpo.kis.core.logic.database.manager.version.DatabaseManagerVersion;
+import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
@@ -39,7 +38,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntityVersion<T, UUID>> T createVersion(T newEntityVersion, DatabaseManagerVersion<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntityVersion<T, UUID>> T createVersion(T newEntityVersion, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.createVersion(newEntityVersion, dbmCore);
     }
 
@@ -49,7 +48,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntityVersion<T, UUID>> T updateVersion(T newBaseEntityVersion, DatabaseManagerVersion<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntityVersion<T, UUID>> T updateVersion(T newBaseEntityVersion, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.updateVersion(newBaseEntityVersion, dbmCore);
     }
 
@@ -59,7 +58,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntityVersion<T, UUID>> T patchVersion(T newBaseEntityVersion, DatabaseManagerVersion<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntityVersion<T, UUID>> T patchVersion(T newBaseEntityVersion, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.patchVersion(newBaseEntityVersion, dbmCore);
     }
 
@@ -69,7 +68,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, QueryParameters param, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, QueryParameters param, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.getList(c, param, dbmCore);
     }
 
@@ -79,7 +78,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, CriteriaFilter<T> customFilter, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, CriteriaFilter<T> customFilter, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.getList(c, customFilter, dbmCore);
     }
 
@@ -89,7 +88,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> T get(Class<T> c, UUID id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> T get(Class<T> c, UUID id, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.get(c, id, dbmCore);
     }
 
@@ -99,7 +98,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> T create(T newEntity, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> T create(T newEntity, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.create(newEntity, dbmCore);
     }
 
@@ -109,7 +108,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> T update(T newEntity, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> T update(T newEntity, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.update(newEntity, dbmCore);
     }
 
@@ -119,7 +118,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> T patch(T newEntity, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> T patch(T newEntity, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.patch(newEntity, dbmCore);
     }
 
@@ -129,7 +128,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> T delete(Class<T> c, UUID id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> T delete(Class<T> c, UUID id, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.delete(c, id, dbmCore);
     }
 
@@ -139,7 +138,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> T toggleIsDeleted(Class<T> c, UUID id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> T toggleIsDeleted(Class<T> c, UUID id, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.toggleIsDeleted(c, id, dbmCore);
     }
 
@@ -149,7 +148,7 @@ public class DatabaseService implements DatabaseServiceLocal {
     }
 
     @Override
-    public <T extends BaseEntity<T, UUID>> T permDelete(Class<T> c, UUID id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <T extends BaseEntity<T, UUID>> T permDelete(Class<T> c, UUID id, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.permDelete(c, id, dbmCore);
     }
 

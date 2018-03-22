@@ -5,7 +5,7 @@ import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import com.github.tfaga.lynx.utils.JPAUtils;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.base.DatabaseBase;
-import si.fri.smrpo.kis.core.logic.database.manager.core.DatabaseManagerCore;
+import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase implements DatabaseCoreImpl<K> {
+public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase implements DatabaseCoreImpl<I> {
 
     public DatabaseCore() {
     }
@@ -32,52 +32,47 @@ public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase 
 
 
 
-    public <T extends BaseEntity<T, K>> Paging<T> getList(Class<T> c, QueryParameters param) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param) throws DatabaseException {
         return getList(c, param, null);
     }
 
-    public <T extends BaseEntity<T, K>> Paging<T> getList(Class<T> c, QueryParameters param, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
-        try {
-            if(dbmCore != null) dbmCore.authQuery(this, c, param);
-
-            List<T> items = JPAUtils.queryEntities(entityManager, c, param);
-            Long count = JPAUtils.queryEntitiesCount(entityManager, c, param);
-
-            return new Paging<T>(items, count);
-        } catch (Exception e) {
-            throw new DatabaseException("Exception during query.", e);
-        }
+    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, DatabaseManager<E, I> dbmCore) throws DatabaseException {
+        return getList(c, param, null, dbmCore);
     }
 
-
-
-    public <T extends BaseEntity<T, K>> Paging<T> getList(Class<T> c, CriteriaFilter<T> customFilter) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, CriteriaFilter<E> customFilter) throws DatabaseException {
         return getList(c, customFilter, null);
     }
 
-    public <T extends BaseEntity<T, K>> Paging<T> getList(Class<T> c, CriteriaFilter<T> customFilter, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, CriteriaFilter<E> customFilter, DatabaseManager<E, I> dbmCore) throws DatabaseException {
+        return getList(c, new QueryParameters(), customFilter, dbmCore);
+    }
+
+    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try{
-            if(dbmCore != null) dbmCore.authCriteria(this, c, customFilter);
+            if(dbmCore != null) {
+                customFilter = dbmCore.authCriteria(this, c, customFilter);
+            }
 
-            List<T> items = JPAUtils.queryEntities(entityManager, c, customFilter);
-            Long count = JPAUtils.queryEntitiesCount(entityManager, c, customFilter);
+            List<E> items = JPAUtils.queryEntities(entityManager, c, param, customFilter);
+            Long count = JPAUtils.queryEntitiesCount(entityManager, c, param, customFilter);
 
-            return new Paging<T>(items, count);
+            return new Paging<E>(items, count);
         } catch (Exception e){
             throw new DatabaseException("Exception during query.", e);
         }
     }
 
 
-    public <T extends BaseEntity<T, K>> T get(Class<T> c, K id) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E get(Class<E> c, I id) throws DatabaseException {
         return get(c, id, null);
     }
 
-    public <T extends BaseEntity<T, K>> T get(Class<T> c, K id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E get(Class<E> c, I id, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try {
-            T entity = entityManager.find(c, id);
+            E entity = entityManager.find(c, id);
 
-            if(dbmCore != null) dbmCore.authGet(this, entity);
+            if(entity != null && dbmCore != null) dbmCore.authGet(this, entity);
 
             return entity;
         } catch (DatabaseException e){
@@ -89,11 +84,11 @@ public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase 
     }
 
 
-    public  <T extends BaseEntity<T, K>> T create(T newEntity) throws DatabaseException {
+    public  <E extends BaseEntity<E, I>> E create(E newEntity) throws DatabaseException {
         return create(newEntity, null);
     }
 
-    public  <T extends BaseEntity<T, K>> T create(T newEntity, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public  <E extends BaseEntity<E, I>> E create(E newEntity, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try {
             if(dbmCore != null) dbmCore.authSet(this, newEntity);
 
@@ -116,15 +111,15 @@ public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase 
 
 
 
-    public <T extends BaseEntity<T, K>> T update(T newEntity) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E update(E newEntity) throws DatabaseException {
         return update(newEntity, null);
     }
 
-    public <T extends BaseEntity<T, K>> T update(T newEntity, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E update(E newEntity, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try {
-            Class<T> c = (Class<T>) newEntity.getClass();
+            Class<E> c = (Class<E>) newEntity.getClass();
 
-            T dbEntity = get(c, newEntity.getId(), dbmCore);
+            E dbEntity = get(c, newEntity.getId(), dbmCore);
 
             if(dbEntity == null){
                 throw new DatabaseException(String.format("Entity %s with id %s does not exist.",
@@ -156,15 +151,15 @@ public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase 
 
 
 
-    public <T extends BaseEntity<T, K>> T patch(T newEntity) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E patch(E newEntity) throws DatabaseException {
         return patch(newEntity, null);
     }
 
-    public <T extends BaseEntity<T, K>> T patch(T newEntity, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E patch(E newEntity, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try {
-            Class<T> c = (Class<T>) newEntity.getClass();
+            Class<E> c = (Class<E>) newEntity.getClass();
 
-            T dbEntity = get(c, newEntity.getId(), dbmCore);
+            E dbEntity = get(c, newEntity.getId(), dbmCore);
 
             if(dbEntity == null){
                 throw new DatabaseException(String.format("Entity %s with id %s does not exist.",
@@ -195,13 +190,13 @@ public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase 
 
 
 
-    public <T extends BaseEntity<T, K>> T delete(Class<T> c, K id) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E delete(Class<E> c, I id) throws DatabaseException {
         return delete(c, id, null);
     }
 
-    public <T extends BaseEntity<T, K>> T delete(Class<T> c, K id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E delete(Class<E> c, I id, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try {
-            T dbEntity = get(c, id, dbmCore);
+            E dbEntity = get(c, id, dbmCore);
 
             if(dbEntity == null){
                 throw new DatabaseException(String.format("Entity %s with id %s does not exist.",
@@ -221,13 +216,13 @@ public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase 
 
 
 
-    public <T extends BaseEntity<T, K>> T toggleIsDeleted(Class<T> c, K id) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E toggleIsDeleted(Class<E> c, I id) throws DatabaseException {
         return toggleIsDeleted(c, id, null);
     }
 
-    public <T extends BaseEntity<T, K>> T toggleIsDeleted(Class<T> c, K id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E toggleIsDeleted(Class<E> c, I id, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try {
-            T dbEntity = get(c, id, dbmCore);
+            E dbEntity = get(c, id, dbmCore);
 
             if(dbEntity == null){
                 throw new DatabaseException(String.format("Entity %s with id %s does not exist.",
@@ -247,13 +242,13 @@ public abstract class DatabaseCore<K extends Serializable> extends DatabaseBase 
 
 
 
-    public <T extends BaseEntity<T, K>> T permDelete(Class<T> c, K id) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E permDelete(Class<E> c, I id) throws DatabaseException {
         return permDelete(c, id, null);
     }
 
-    public <T extends BaseEntity<T, K>> T permDelete(Class<T> c, K id, DatabaseManagerCore<T> dbmCore) throws DatabaseException {
+    public <E extends BaseEntity<E, I>> E permDelete(Class<E> c, I id, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try {
-            T dbEntity = get(c, id, dbmCore);
+            E dbEntity = get(c, id, dbmCore);
 
             if(dbEntity == null){
                 throw new DatabaseException(String.format("Entity %s with id %s does not exist.",

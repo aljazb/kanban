@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.server.ejb.managers;
+package si.fri.smrpo.kis.server.ejb.service;
 
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 
 @PermitAll
 @Stateless
-@Local(UserAccountManagerLocal.class)
-public class UserAccountManager implements UserAccountManagerLocal {
+@Local(UserAccountServiceLocal.class)
+public class UserAccountService implements UserAccountServiceLocal {
 
     @EJB
     private DatabaseServiceLocal database;

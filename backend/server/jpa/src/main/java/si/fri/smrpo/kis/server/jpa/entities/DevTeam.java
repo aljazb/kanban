@@ -27,7 +27,7 @@ public class DevTeam extends UUIDEntity<DevTeam> {
     private String name;
 
 
-    @OneToMany(mappedBy = "userAccount")
+    @OneToMany(mappedBy = "devTeam")
     private Set<UserAccountMtmDevTeam> joinedUsers;
 
     @OneToMany(mappedBy = "devTeam")

@@ -3,6 +3,8 @@
   "auth-server-url": "https://kanban.smrpo7:31337/auth",
   "ssl-required": "external",
   "resource": "backend-javaee-server",
-  "public-client": true,
+  "credentials": {
+    "secret": "2fd29eea-e430-4a6a-8f2f-4223890a03c9"
+  },
   "confidential-port": 0
 }

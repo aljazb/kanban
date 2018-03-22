@@ -8,10 +8,10 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 
 @MappedSuperclass
-public abstract class BaseEntityVersion<T extends BaseEntityVersion, K extends Serializable> extends BaseEntity<T, K> {
+public abstract class BaseEntityVersion<E extends BaseEntityVersion, I extends Serializable> extends BaseEntity<E, I> {
 
-    public abstract K getOriginId();
-    public abstract void setOriginId(K originId);
+    public abstract I getOriginId();
+    public abstract void setOriginId(I originId);
 
 
     @Column(name = "version_order", nullable = false)

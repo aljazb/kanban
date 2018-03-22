@@ -1,11 +1,8 @@
 package si.fri.smrpo.kis.server.rest.resources.entities;
 
-import org.keycloak.KeycloakPrincipal;
-import si.fri.smrpo.kis.core.rest.source.CrudSourceImpl;
-import si.fri.smrpo.kis.server.ejb.source.CrudSourceServiceLocal;
-import si.fri.smrpo.kis.server.rest.utility.AuthUtility;
+import si.fri.smrpo.kis.core.rest.source.CrudSource;
+import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
-import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
 
 import javax.ejb.EJB;
@@ -15,18 +12,14 @@ import java.util.UUID;
 
 @Path("Board")
 @RequestScoped
-public class BoardResource extends CrudResource<Board> {
+public class BoardResource extends CrudResource<Board, CrudSource<Board, UUID>> {
 
     @EJB
-    private CrudSourceServiceLocal crudSourceImpl;
+    private DatabaseServiceLocal databaseService;
 
     @Override
-    protected CrudSourceImpl<UUID> getDatabaseService() {
-        return crudSourceImpl;
-    }
-
-    protected UserAccount getAuthorizedEntity() {
-        return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
+    protected void initSource() {
+        source = new CrudSource<>(databaseService);
     }
 
     public BoardResource() {

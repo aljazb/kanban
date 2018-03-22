@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @MappedSuperclass
-public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> implements Serializable {
+public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> implements Serializable {
 
-    public abstract K getId();
-    public abstract void setId(K id);
+    public abstract I getId();
+    public abstract void setId(I id);
 
     @Version
     protected Integer version;
@@ -33,12 +33,12 @@ public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> i
 
 
     @JsonIgnore
-    public void update(T object, EntityManager em) throws IllegalAccessException {
+    public void update(E object, EntityManager em) throws IllegalAccessException {
         genericUpdate(object, em);
     }
 
     @JsonIgnore
-    public void patch(T object, EntityManager em) throws IllegalAccessException {
+    public void patch(E object, EntityManager em) throws IllegalAccessException {
         genericPatch(object, em);
     }
 
@@ -114,7 +114,7 @@ public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> i
     }
 
     @JsonIgnore
-    public void genericUpdate(T object, EntityManager em) throws IllegalAccessException {
+    public void genericUpdate(E object, EntityManager em) throws IllegalAccessException {
         for (Field field : getAllClassFields()) {
             if(genericUpdateSkip(field)){
                 continue;
@@ -148,7 +148,7 @@ public abstract class BaseEntity<T extends BaseEntity, K extends Serializable> i
     }
 
     @JsonIgnore
-    public void genericPatch(T object, EntityManager em) throws IllegalAccessException {
+    public void genericPatch(E object, EntityManager em) throws IllegalAccessException {
         for (Field field : getAllClassFields()) {
             if(genericPatchSkip(field)){
                 continue;

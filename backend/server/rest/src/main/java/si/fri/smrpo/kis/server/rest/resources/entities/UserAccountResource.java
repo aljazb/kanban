@@ -2,16 +2,15 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
-import si.fri.smrpo.kis.core.rest.source.CrudSourceImpl;
-import si.fri.smrpo.kis.server.ejb.managers.UserAccountManagerLocal;
-import si.fri.smrpo.kis.server.ejb.source.CrudSourceServiceLocal;
-import si.fri.smrpo.kis.server.rest.utility.AuthUtility;
-import si.fri.smrpo.kis.server.rest.managers.UserAccountDatabaseManager;
-import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
+import si.fri.smrpo.kis.core.rest.source.CrudSource;
+import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.UserAccountServiceLocal;
+import si.fri.smrpo.kis.server.ejb.managers.UserAccountAuthManager;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
-import si.fri.smrpo.kis.core.rest.resource.providers.configuration.PATCH;
+import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
+import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -21,47 +20,44 @@ import javax.ws.rs.core.Response;
 
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.rest.utility.AuthUtility.ROLE_ADMINISTRATOR;
-import static si.fri.smrpo.kis.server.rest.utility.AuthUtility.ROLE_USER;
+import static si.fri.smrpo.kis.server.ejb.managers.base.UserAuthManager.ROLE_ADMINISTRATOR;
+import static si.fri.smrpo.kis.server.ejb.managers.base.UserAuthManager.ROLE_USER;
 
 
 @Path("UserAccount")
 @RequestScoped
-public class UserAccountResource extends CrudResource<UserAccount> {
+public class UserAccountResource extends CrudResource<UserAccount, CrudSource<UserAccount, UUID>> {
 
     @EJB
-    private CrudSourceServiceLocal crudSourceImpl;
-
-    @Override
-    protected CrudSourceImpl<UUID> getDatabaseService() {
-        return crudSourceImpl;
-    }
-
-    protected UserAccount getAuthorizedEntity() {
-        return AuthUtility.getAuthorizedEntity((KeycloakPrincipal) sc.getUserPrincipal());
-    }
-
-    @Override
-    protected DatabaseManager<UserAccount> setInitManager() {
-        return new UserAccountDatabaseManager(getAuthorizedEntity());
-    }
-
+    private DatabaseServiceLocal databaseService;
 
     @EJB
-    private UserAccountManagerLocal accountManager;
+    private UserAccountServiceLocal accountManager;
+
+    private UserAccountAuthManager manager;
+
+    @Override
+    protected void initSource() {
+        manager = new UserAccountAuthManager(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
+        source = new CrudSource<>(databaseService, manager);
+    }
+
 
     public UserAccountResource() {
         super(UserAccount.class);
     }
 
 
-
     @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
     @GET
     @Path("login")
-    public Response loginUserInfo() throws DatabaseException {
-        UserAccount userAccount = accountManager.login(getAuthorizedEntity());
-        return buildResponse(userAccount, true).build();
+    public Response loginUserInfo() throws ApiException {
+        try {
+            UserAccount userAccount = accountManager.login(manager.getUserAccount());
+            return buildResponse(userAccount, true).build();
+        } catch (DatabaseException e) {
+            throw ApiException.transform(e);
+        }
     }
 
     @RolesAllowed({ROLE_ADMINISTRATOR})

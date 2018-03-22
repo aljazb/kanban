@@ -2,20 +2,20 @@ package si.fri.smrpo.kis.core.logic.database.instance.version;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 import si.fri.smrpo.kis.core.logic.database.instance.core.DatabaseCoreImpl;
-import si.fri.smrpo.kis.core.logic.database.manager.version.DatabaseManagerVersion;
+import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 
 import java.io.Serializable;
 
-public interface DatabaseVersionImpl<K extends Serializable> extends DatabaseCoreImpl<K> {
+public interface DatabaseVersionImpl<I extends Serializable> extends DatabaseCoreImpl<I> {
 
-    <T extends BaseEntityVersion<T, K>> T createVersion(T newEntityVersion) throws DatabaseException;
-    <T extends BaseEntityVersion<T, K>> T createVersion(T newEntityVersion, DatabaseManagerVersion<T> dbmCore) throws DatabaseException;
+    <E extends BaseEntityVersion<E, I>> E createVersion(E newEntityVersion) throws DatabaseException;
+    <E extends BaseEntityVersion<E, I>> E createVersion(E newEntityVersion, DatabaseManager<E, I> dbmCore) throws DatabaseException;
 
-    <T extends BaseEntityVersion<T, K>> T updateVersion(T newBaseEntityVersion) throws DatabaseException;
-    <T extends BaseEntityVersion<T, K>> T updateVersion(T newBaseEntityVersion, DatabaseManagerVersion<T> dbmCore) throws DatabaseException;
+    <E extends BaseEntityVersion<E, I>> E updateVersion(E newBaseEntityVersion) throws DatabaseException;
+    <E extends BaseEntityVersion<E, I>> E updateVersion(E newBaseEntityVersion, DatabaseManager<E, I> dbmCore) throws DatabaseException;
 
-    <T extends BaseEntityVersion<T, K>> T patchVersion(T newBaseEntityVersion) throws DatabaseException;
-    <T extends BaseEntityVersion<T, K>> T patchVersion(T newBaseEntityVersion, DatabaseManagerVersion<T> dbmCore) throws DatabaseException;
+    <E extends BaseEntityVersion<E, I>> E patchVersion(E newBaseEntityVersion) throws DatabaseException;
+    <E extends BaseEntityVersion<E, I>> E patchVersion(E newBaseEntityVersion, DatabaseManager<E, I> dbmCore) throws DatabaseException;
 
 }

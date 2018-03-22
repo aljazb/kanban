@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.core.rest.resource.providers.configuration;
+package si.fri.smrpo.kis.core.rest.providers.configuration;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;

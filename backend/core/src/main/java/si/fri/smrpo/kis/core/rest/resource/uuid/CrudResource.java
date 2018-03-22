@@ -3,14 +3,19 @@ package si.fri.smrpo.kis.core.rest.resource.uuid;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
-import si.fri.smrpo.kis.core.rest.resource.providers.configuration.PATCH;
+import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
+import si.fri.smrpo.kis.core.rest.source.CrudSource;
+import si.fri.smrpo.kis.core.rest.source.GetSource;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
 
-public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetResource<T> {
+public abstract class CrudResource<
+            T extends BaseEntity<T, UUID>,
+            S extends CrudSource<T, UUID>
+        > extends GetResource<T, S> {
 
 
     public CrudResource(Class<T> type) {
@@ -21,9 +26,9 @@ public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetRes
     public Response create(@HeaderParam("X-Content") Boolean xContent, T entity) throws ApiException {
         entity.setId(null);
 
-        T dbEntity = getDatabaseService().create(entity, databaseManager);
+        T dbEntity = source.create(entity);
 
-        return buildResponse(dbEntity, xContent, false, Response.Status.CREATED).build();
+        return buildResponse(dbEntity, xContent, true, Response.Status.CREATED).build();
     }
 
     @PUT
@@ -32,7 +37,7 @@ public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetRes
                            @PathParam("id") UUID id, T newObject) throws ApiException {
         newObject.setId(id);
 
-        T dbEntity = getDatabaseService().update(newObject, databaseManager);
+        T dbEntity = source.update(newObject);
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -43,7 +48,7 @@ public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetRes
                           @PathParam("id") UUID id, T entity) throws ApiException {
         entity.setId(id);
 
-        T dbEntity = getDatabaseService().patch(entity, databaseManager);
+        T dbEntity = source.patch(entity);
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -53,7 +58,7 @@ public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetRes
     public Response delete(@HeaderParam("X-Content") Boolean xContent,
                            @PathParam("id") UUID id) throws ApiException {
 
-        T dbEntity = getDatabaseService().delete(type, id, databaseManager);
+        T dbEntity = source.delete(type, id);
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -63,7 +68,7 @@ public abstract class CrudResource<T extends BaseEntity<T, UUID>> extends GetRes
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent,
                                     @PathParam("id") UUID id) throws ApiException {
 
-        T dbEntity = getDatabaseService().toggleIsDeleted(type, id, databaseManager);
+        T dbEntity = source.toggleIsDeleted(type, id);
 
         return buildResponse(dbEntity, xContent).build();
     }

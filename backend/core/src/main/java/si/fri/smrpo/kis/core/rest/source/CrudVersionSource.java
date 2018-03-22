@@ -1,6 +1,6 @@
 package si.fri.smrpo.kis.core.rest.source;
 
-import si.fri.smrpo.kis.core.jpa.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
@@ -8,39 +8,38 @@ import si.fri.smrpo.kis.core.rest.exception.ApiException;
 
 import java.io.Serializable;
 
-public class CrudSource<
-            E extends BaseEntity<E, I>,
+public class CrudVersionSource<
+            E extends BaseEntityVersion<E, I>,
             I extends Serializable
-        > extends GetSource<E, I> {
+        > extends GetSource<E, I>  {
 
-
-    public CrudSource(DatabaseImpl<I> database) {
+    public CrudVersionSource(DatabaseImpl<I> database) {
         super(database);
     }
 
-    public CrudSource(DatabaseImpl<I> database, DatabaseManager<E, I> dbmCore) {
+    public CrudVersionSource(DatabaseImpl<I> database, DatabaseManager<E, I> dbmCore) {
         super(database, dbmCore);
     }
 
-    public E create(E newEntity) throws ApiException {
+    public E create(E newEntityVersion) throws ApiException {
         try {
-            return database.create(newEntity, dbmCore);
+            return database.createVersion(newEntityVersion, dbmCore);
         } catch (DatabaseException e) {
             throw ApiException.transform(e);
         }
     }
 
-    public E update(E newEntity) throws ApiException {
+    public E update(E newEntityVersion) throws ApiException {
         try {
-            return database.update(newEntity, dbmCore);
+            return database.updateVersion(newEntityVersion, dbmCore);
         } catch (DatabaseException e) {
             throw ApiException.transform(e);
         }
     }
 
-    public E patch(E newEntity) throws ApiException {
+    public E patch(E newEntityVersion) throws ApiException {
         try {
-            return database.patch(newEntity, dbmCore);
+            return database.patchVersion(newEntityVersion, dbmCore);
         } catch (DatabaseException e) {
             throw ApiException.transform(e);
         }
@@ -69,5 +68,7 @@ public class CrudSource<
             throw ApiException.transform(e);
         }
     }
+
+
 
 }

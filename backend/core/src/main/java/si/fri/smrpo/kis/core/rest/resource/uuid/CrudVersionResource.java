@@ -2,23 +2,28 @@ package si.fri.smrpo.kis.core.rest.resource.uuid;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
-import si.fri.smrpo.kis.core.rest.resource.providers.configuration.PATCH;
+import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
+import si.fri.smrpo.kis.core.rest.source.CrudSource;
+import si.fri.smrpo.kis.core.rest.source.CrudVersionSource;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
-public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> extends GetResource<T> {
+public abstract class CrudVersionResource<
+            E extends BaseEntityVersion<E, UUID>,
+            S extends CrudVersionSource<E, UUID>
+        > extends GetResource<E, S> {
 
-    public CrudVersionResource(Class<T> type) {
+    public CrudVersionResource(Class<E> type) {
         super(type);
     }
 
     @POST
-    public Response create(@HeaderParam("X-Content") Boolean xContent, T entity) throws ApiException {
+    public Response create(@HeaderParam("X-Content") Boolean xContent, E entity) throws ApiException {
         entity.setId(null);
 
-        T dbEntity = getDatabaseService().createVersion(entity, databaseManager);
+        E dbEntity = source.create(entity);
 
         return buildResponse(dbEntity, xContent, true, Response.Status.CREATED).build();
     }
@@ -26,10 +31,10 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     @PUT
     @Path("{id}")
     public Response update(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") UUID id, T entity) throws ApiException {
+                           @PathParam("id") UUID id, E entity) throws ApiException {
         entity.setId(id);
 
-        T dbEntity = getDatabaseService().updateVersion(entity, databaseManager);
+        E dbEntity = source.update(entity);
 
         return buildResponse(dbEntity, xContent, true, Response.Status.CREATED).build();
     }
@@ -37,10 +42,10 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     @PATCH
     @Path("{id}")
     public Response patch(@HeaderParam("X-Content") Boolean xContent,
-                          @PathParam("id") UUID id, T entity) throws ApiException {
+                          @PathParam("id") UUID id, E entity) throws ApiException {
         entity.setId(id);
 
-        T dbEntity = getDatabaseService().patchVersion(entity, databaseManager);
+        E dbEntity = source.patch(entity);
 
         return buildResponse(dbEntity, xContent, true, Response.Status.CREATED).build();
     }
@@ -50,7 +55,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     public Response delete(@HeaderParam("X-Content") Boolean xContent,
                            @PathParam("id") UUID id) throws ApiException {
 
-        T dbEntity = getDatabaseService().delete(type, id, databaseManager);
+        E dbEntity = source.delete(type, id);
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -60,7 +65,7 @@ public abstract class CrudVersionResource<T extends BaseEntityVersion<T, UUID>> 
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent,
                                     @PathParam("id") UUID id) throws ApiException {
 
-        T dbEntity = getDatabaseService().toggleIsDeleted(type, id, databaseManager);
+        E dbEntity = source.toggleIsDeleted(type, id);
 
         return buildResponse(dbEntity, xContent).build();
     }

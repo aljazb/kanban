@@ -2,10 +2,13 @@ package si.fri.smrpo.kis.core.rest.resource.uuid;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
+import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.rest.enums.CacheControlType;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.resource.base.BaseResource;
+import si.fri.smrpo.kis.core.rest.source.GetSource;
+import si.fri.smrpo.kis.core.rest.source.base.BaseSource;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -15,7 +18,10 @@ import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
-public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseResource<T, UUID> {
+public abstract class GetResource<
+            T extends BaseEntity<T, UUID>,
+            S extends GetSource<T, UUID>
+        > extends BaseResource<T, S, UUID> {
 
     protected int defaultMaxLimit = 50;
 
@@ -36,7 +42,7 @@ public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseRes
         QueryParameters param = QueryParameters.query(uriInfo.getRequestUri().getQuery())
                 .maxLimit(defaultMaxLimit).defaultLimit(defaultMaxLimit).defaultOffset(0).build();
 
-        Paging<T> paging = getDatabaseService().getList(type, param, databaseManager);
+        Paging<T> paging = source.getList(type, param);
 
         Response.ResponseBuilder rb = buildResponse(paging);
 
@@ -50,8 +56,11 @@ public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseRes
     @GET
     @Path("{id}")
     public Response get(@PathParam("id") UUID id) throws ApiException {
+        return getProcess(id);
+    }
 
-        T dbEntity = getDatabaseService().get(type, id, databaseManager);
+    protected Response getProcess(UUID id) throws ApiException {
+        T dbEntity = source.get(type, id);
 
         EntityTag tag = dbEntity.getEntityTag();
 
@@ -66,8 +75,6 @@ public abstract class GetResource<T extends BaseEntity<T, UUID>> extends BaseRes
         }
         return rb.build();
     }
-
-
 
     protected CacheControl buildCacheControl(int maxAge, CacheControlType cacheControlType){
         CacheControl cc = new CacheControl();

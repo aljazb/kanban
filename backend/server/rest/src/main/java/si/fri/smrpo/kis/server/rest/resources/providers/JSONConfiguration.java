@@ -34,7 +34,7 @@ public class JSONConfiguration implements ContextResolver<ObjectMapper> {
 
             @Override
             public String getIdentifierPropertyName(String className) throws MappingException {
-                return "id";
+                return "userId";
             }
 
             @Override

@@ -29,6 +29,7 @@ allprojects {
         dependencies {
             dependency group: 'javax', name: 'javaee-api', version: '7.0'
 
+
             dependency group: 'com.github.tfaga.lynx', name: 'lynx-core', version: '1.1.0'
             dependency group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
 

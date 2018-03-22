@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.core.rest.resource.providers.exceptions;
+package si.fri.smrpo.kis.core.rest.providers.exceptions;
 
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 

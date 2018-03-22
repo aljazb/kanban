@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.core.rest.resource.providers.configuration;
+package si.fri.smrpo.kis.core.rest.providers.configuration;
 
 @java.lang.annotation.Target({java.lang.annotation.ElementType.METHOD})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
