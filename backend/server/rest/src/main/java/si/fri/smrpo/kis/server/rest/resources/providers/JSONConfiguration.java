@@ -14,14 +14,21 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class JSONConfiguration implements ContextResolver<ObjectMapper> {
 
+    private static final ObjectMapper jsonMapper = buildJsonObjectMapper();
+
+    @Override
+    public ObjectMapper getContext(Class<?> type) {
+        return jsonMapper;
+    }
 
 
-    public static final ObjectMapper jsonMapper = JSONObjectMapper.buildDefault()
-                   .registerModule(buildHibernateModule());
+    private static ObjectMapper buildJsonObjectMapper() {
+        return JSONObjectMapper.buildDefault().registerModule(buildHibernateModule());
+    }
 
     private static Hibernate5Module buildHibernateModule(){
 
-        Mapping identifierMapping = new Mapping() {
+        Hibernate5Module hm = new Hibernate5Module(new Mapping() {
             @Override
             public IdentifierGeneratorFactory getIdentifierGeneratorFactory() {
                 return null;
@@ -34,26 +41,19 @@ public class JSONConfiguration implements ContextResolver<ObjectMapper> {
 
             @Override
             public String getIdentifierPropertyName(String className) throws MappingException {
-                return "userId";
+                return "id";
             }
 
             @Override
             public Type getReferencedPropertyType(String className, String propertyName) throws MappingException {
                 return null;
             }
-        };
-
-        Hibernate5Module hm = new Hibernate5Module(identifierMapping);
+        });
 
         hm.configure(Hibernate5Module.Feature.FORCE_LAZY_LOADING, false);
+        hm.configure(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION, false);
         hm.configure(Hibernate5Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS, true);
 
         return hm;
     }
-
-    @Override
-    public ObjectMapper getContext(Class<?> type) {
-        return jsonMapper;
-    }
-
 }

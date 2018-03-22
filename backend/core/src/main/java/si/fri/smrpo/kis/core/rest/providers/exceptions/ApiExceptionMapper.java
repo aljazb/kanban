@@ -23,18 +23,10 @@ public class ApiExceptionMapper implements ExceptionMapper<ApiException> {
     @Override
     public Response toResponse(ApiException e) {
 
-        String requestContent = "";
-        try {
-             requestContent = httpServletRequest.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        String errorMessage = String.format("\n\nRemote address: %s\nRequest url: %s\nMethod: %s\nBody:\n %s\n",
+        String errorMessage = String.format("\n\nRemote address: %s\nRequest url: %s\nMethod: %s\n",
                 httpServletRequest.getRemoteAddr(),
                 httpServletRequest.getRequestURI(),
-                httpServletRequest.getMethod(),
-                requestContent);
+                httpServletRequest.getMethod());
 
         LOG.log(Level.SEVERE, errorMessage, e);
 

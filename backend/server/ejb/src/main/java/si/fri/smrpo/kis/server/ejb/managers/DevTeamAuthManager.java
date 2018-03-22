@@ -7,6 +7,7 @@ import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
+import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -22,19 +23,20 @@ public class DevTeamAuthManager extends AuthManager<DevTeam> {
     public CriteriaFilter<DevTeam> authCriteria(DatabaseCore dbCore, Class<DevTeam> c) throws DatabaseException {
         return (p, cb, r) -> {
             if(!isUserInRole(ROLE_ADMINISTRATOR)) {
-                Path path = r.join("joinedUsers").join("userAccount").get("id");
-                Predicate authP = cb.equal(path, getUserId());
-                cb.and(p, authP);
+                return cb.and(p, cb.equal(
+                        r.join("joinedUsers").join("userAccount").get("id"),
+                        getUserId()));
+            } else {
+                return p;
             }
-            return p;
         };
     }
 
     @Override
     public void authGet(DatabaseCore db, DevTeam entity) throws DatabaseException {
         if(!isUserInRole(ROLE_ADMINISTRATOR)) {
-            List<DevTeam> devTeamQueryList = db.getEntityManager()
-                    .createNamedQuery("devTeam.isMember", DevTeam.class)
+            List<UserAccount> devTeamQueryList = db.getEntityManager()
+                    .createNamedQuery("devTeam.isMember", UserAccount.class)
                     .setMaxResults(1).setParameter("devTeamId", entity.getId())
                     .setParameter("userId", getUserId()).getResultList();
 

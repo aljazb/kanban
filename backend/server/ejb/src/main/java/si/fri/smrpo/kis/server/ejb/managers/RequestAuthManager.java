@@ -16,23 +16,24 @@ public class RequestAuthManager extends AuthManager<Request> {
 
     @Override
     public CriteriaFilter<Request> authCriteria(DatabaseCore dbCore, Class<Request> c) throws DatabaseException {
-        return (p, cb, r) -> cb.and(p, cb.or(
-                cb.equal(r.join("sender").get("id"), getUserId()),
-                cb.equal(r.join("receiver").get("id"), getUserId()))
-        );
+        return (p, cb, r) -> {
+            if(!isUserInRole(ROLE_ADMINISTRATOR)){
+                return cb.and(p, cb.or(
+                        cb.equal(r.join("sender").get("id"), getUserId()),
+                        cb.equal(r.join("receiver").get("id"), getUserId())));
+            } else {
+                return p;
+            }
+        };
     }
 
     @Override
     public void authGet(DatabaseCore db, Request entity) throws DatabaseException {
-
-        if (!(
-                entity.getSender().getId().equals(getUserId()) ||
-                entity.getReceiver().getId().equals(getUserId())
-             )
-        ){
-            throw new DatabaseException("User is neither sender or receiver.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+        if(!isUserInRole(ROLE_ADMINISTRATOR)) {
+            if (!(entity.getSender().getId().equals(getUserId()) ||
+                    entity.getReceiver().getId().equals(getUserId()))) {
+                throw new DatabaseException("User is neither sender or receiver.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+            }
         }
-
-        super.authGet(db, entity);
     }
 }
