@@ -75,14 +75,14 @@ public class UserAccountResource extends CrudResource<UserAccount, CrudSource<Us
         return super.get(id);
     }
 
-    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_USER})
     @POST
     @Override
     public Response create(@HeaderParam("X-Content") Boolean xContent, UserAccount entity) throws ApiException {
         throw ApiException.buildNotImplemented();
     }
 
-    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_USER})
     @PUT
     @Path("{id}")
     @Override
@@ -90,7 +90,7 @@ public class UserAccountResource extends CrudResource<UserAccount, CrudSource<Us
         return super.update(xContent, id, entity);
     }
 
-    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_USER})
     @PATCH
     @Path("{id}")
     @Override
@@ -98,7 +98,7 @@ public class UserAccountResource extends CrudResource<UserAccount, CrudSource<Us
         return super.patch(xContent, id, entity);
     }
 
-    @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_USER})
     @DELETE
     @Path("{id}")
     @Override

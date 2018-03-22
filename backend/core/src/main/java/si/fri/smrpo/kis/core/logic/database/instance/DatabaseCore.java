@@ -1,10 +1,11 @@
-package si.fri.smrpo.kis.core.logic.database.instance.core;
+package si.fri.smrpo.kis.core.logic.database.instance;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import com.github.tfaga.lynx.utils.JPAUtils;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
-import si.fri.smrpo.kis.core.logic.database.instance.base.DatabaseBase;
+import si.fri.smrpo.kis.core.logic.database.instance.DatabaseBase;
+import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseCoreImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
@@ -31,27 +32,15 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
     }
 
 
-
     public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param) throws DatabaseException {
-        return getList(c, param, null);
+        return getList(c, param,null);
     }
 
     public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, DatabaseManager<E, I> dbmCore) throws DatabaseException {
-        return getList(c, param, null, dbmCore);
-    }
-
-    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, CriteriaFilter<E> customFilter) throws DatabaseException {
-        return getList(c, customFilter, null);
-    }
-
-    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, CriteriaFilter<E> customFilter, DatabaseManager<E, I> dbmCore) throws DatabaseException {
-        return getList(c, new QueryParameters(), customFilter, dbmCore);
-    }
-
-    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try{
+            CriteriaFilter<E> customFilter = null;
             if(dbmCore != null) {
-                customFilter = dbmCore.authCriteria(this, c, customFilter);
+                customFilter = dbmCore.authCriteria(this, c);
             }
 
             List<E> items = JPAUtils.queryEntities(entityManager, c, param, customFilter);

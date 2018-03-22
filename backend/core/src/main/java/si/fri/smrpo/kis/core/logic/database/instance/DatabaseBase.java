@@ -1,12 +1,11 @@
-package si.fri.smrpo.kis.core.logic.database.instance.base;
+package si.fri.smrpo.kis.core.logic.database.instance;
 
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
+import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseBaseImpl;
 
 import javax.persistence.EntityManager;
-import java.io.Serializable;
-import java.util.logging.Logger;
 
 public abstract class DatabaseBase implements DatabaseBaseImpl {
 

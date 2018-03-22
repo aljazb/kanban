@@ -1,7 +1,8 @@
-package si.fri.smrpo.kis.core.logic.database.instance.version;
+package si.fri.smrpo.kis.core.logic.database.instance;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
-import si.fri.smrpo.kis.core.logic.database.instance.core.DatabaseCore;
+import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
+import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseVersionImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 

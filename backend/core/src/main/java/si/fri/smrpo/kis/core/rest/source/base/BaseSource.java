@@ -1,7 +1,7 @@
 package si.fri.smrpo.kis.core.rest.source.base;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
-import si.fri.smrpo.kis.core.logic.database.instance.DatabaseImpl;
+import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 
 import java.io.Serializable;

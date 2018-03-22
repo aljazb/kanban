@@ -1,6 +1,6 @@
 package si.fri.smrpo.kis.server.ejb.managers;
 
-import si.fri.smrpo.kis.core.logic.database.instance.core.DatabaseCore;
+import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;

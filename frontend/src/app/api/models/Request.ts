@@ -7,11 +7,11 @@ import {RequestStatus} from './enums/RequestStatus';
 import {UserAccountResource} from '../resource/UserAccountResource';
 import {UserAccount} from './UserAccount';
 
-export class Board extends BaseEntity<Board> {
+export class Request extends BaseEntity<Request> {
   requestType: RequestType;
-  context: string;
-  referenceId: string;
   requestStatus: RequestStatus;
+  referenceId: string;
+  context: string;
   sender: UserAccount;
   receiver:UserAccount;
 }

@@ -1,9 +1,8 @@
-package si.fri.smrpo.kis.core.logic.database.instance.core;
+package si.fri.smrpo.kis.core.logic.database.instance.interfaces;
 
 import com.github.tfaga.lynx.beans.QueryParameters;
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
-import si.fri.smrpo.kis.core.logic.database.instance.base.DatabaseBaseImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
@@ -15,9 +14,6 @@ public interface DatabaseCoreImpl<I extends Serializable> extends DatabaseBaseIm
 
     <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param) throws DatabaseException;
     <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, DatabaseManager<E, I> dbmCore) throws DatabaseException;
-
-    <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, CriteriaFilter<E> customFilter) throws DatabaseException;
-    <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, CriteriaFilter<E> customFilter, DatabaseManager<E, I> dbmCore) throws DatabaseException;
 
     <E extends BaseEntity<E, I>> E get(Class<E> c, I id) throws DatabaseException;
     <E extends BaseEntity<E, I>> E get(Class<E> c, I id, DatabaseManager<E, I> dbmCore) throws DatabaseException;

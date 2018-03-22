@@ -20,13 +20,13 @@ import java.util.Set;
         @NamedQuery(name = "devTeam.getMembers",
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua"),
         @NamedQuery(name = "devTeam.isMember",
-                query = "SELECT ua.id FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua " +
+                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua " +
                         "WHERE dt.id = :devTeamId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND ua.id = :userId")
 })
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class DevTeam extends UUIDEntity<DevTeam> {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
 

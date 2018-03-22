@@ -85,14 +85,6 @@ public class UserAccount extends UUIDEntity<UserAccount> {
         this.email = email;
     }
 
-    public Set<UserAccountMtmDevTeam> getJoinedDevTems() {
-        return joinedDevTeams;
-    }
-
-    public void setJoinedDevTems(Set<UserAccountMtmDevTeam> joinedDevTems) {
-        this.joinedDevTeams = joinedDevTems;
-    }
-
     public Set<UserAccountMtmDevTeam> getJoinedDevTeams() {
         return joinedDevTeams;
     }

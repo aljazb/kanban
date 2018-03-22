@@ -18,9 +18,8 @@
         <class>si.fri.smrpo.kis.server.jpa.entities.Board</class>
         <class>si.fri.smrpo.kis.server.jpa.entities.BoardPart</class>
 
-        <class>si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam</class>
         <class>si.fri.smrpo.kis.server.jpa.entities.Request</class>
-
+        <class>si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam</class>
 
 
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
@@ -33,8 +32,8 @@
 
             <!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
 
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.format_sql" value="true" />
+            <!--<property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />-->
 
             <!--
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>

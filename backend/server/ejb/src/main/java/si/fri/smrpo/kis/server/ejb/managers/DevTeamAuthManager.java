@@ -1,14 +1,13 @@
 package si.fri.smrpo.kis.server.ejb.managers;
 
 import com.github.tfaga.lynx.interfaces.CriteriaFilter;
-import si.fri.smrpo.kis.core.logic.database.instance.core.DatabaseCore;
+import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.List;
@@ -20,10 +19,8 @@ public class DevTeamAuthManager extends AuthManager<DevTeam> {
     }
 
     @Override
-    public CriteriaFilter<DevTeam> authCriteria(DatabaseCore dbCore, Class<DevTeam> c, CriteriaFilter<DevTeam> criteriaFilter) throws DatabaseException {
+    public CriteriaFilter<DevTeam> authCriteria(DatabaseCore dbCore, Class<DevTeam> c) throws DatabaseException {
         return (p, cb, r) -> {
-            if(criteriaFilter != null) p = criteriaFilter.createPredicate(p, cb, r);
-
             if(!isUserInRole(ROLE_ADMINISTRATOR)) {
                 Path path = r.join("joinedUsers").join("userAccount").get("id");
                 Predicate authP = cb.equal(path, getUserId());

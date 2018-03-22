@@ -6,12 +6,15 @@ import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
+import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
+import si.fri.smrpo.kis.server.jpa.enums.RequestType;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Startup
 @Singleton
@@ -33,6 +36,8 @@ public class SeedService {
     @EJB
     private DatabaseServiceLocal database;
 
+    private UserAccount root;
+    private DevTeam rootDevTeam;
 
     private ArrayList<UserAccount> userAccounts = new ArrayList<>();
     private ArrayList<DevTeam> devTeams = new ArrayList<>();
@@ -41,6 +46,8 @@ public class SeedService {
     private HashMap<UUID, ArrayList<BoardPart>> boardParts = new HashMap<>();
     private ArrayList<Project> projects = new ArrayList<>();
     private HashMap<UUID, BoardLane> projectBoardLane = new HashMap<>();
+
+
 
     @PostConstruct
     public void init() {
@@ -52,6 +59,7 @@ public class SeedService {
                 generateBoardParts();
                 generateProjects();
                 generateCards();
+                generateRequests();
             } catch (DatabaseException e) {
                 e.printStackTrace();
             }
@@ -75,6 +83,7 @@ public class SeedService {
 
             if(i == 0){
                 ua.setId(UUID.fromString(TEST_USER_ID));
+                root = ua;
             }
 
             ua = database.create(ua);
@@ -97,7 +106,10 @@ public class SeedService {
             for(int m=0; m<members; m++) {
                 int index = FAKER.number.between(0, potentialMembers.size());
 
-                if(i == 0 && m == 0) index = 0;
+                if(i == 0 && m == 0){
+                    index = 0;
+                    rootDevTeam = dt;
+                }
 
                 UserAccount ua = potentialMembers.get(index);
                 potentialMembers.remove(index);
@@ -235,5 +247,40 @@ public class SeedService {
             }
 
         }
+    }
+
+    private void generateRequests() throws DatabaseException {
+        List<UserAccount> members = devTeamMembers.get(rootDevTeam.getId())
+                .stream()
+                .map(UserAccountMtmDevTeam::getUserAccount)
+                .collect(Collectors.toList());
+
+        List<UserAccount> potentialInvites = new ArrayList<>(userAccounts);
+        potentialInvites.removeAll(members);
+
+        for(int i=0; i<5; i++) {
+            UserAccount reciever = potentialInvites.get(FAKER.number.between(0, potentialInvites.size()-1));
+            potentialInvites.remove(reciever);
+
+            Request request = new Request();
+            request.setRequestType(RequestType.DEV_TEAM_INVITE);
+            request.setContext("Invite to dev team " + rootDevTeam.getName());
+            request.setRequestStatus(RequestStatus.PENDING);
+            request.setSender(root);
+            request.setReceiver(reciever);
+            request.setReferenceId(rootDevTeam.getId());
+
+            database.create(request);
+        }
+
+        Request request = new Request();
+        request.setRequestType(RequestType.DEV_TEAM_KAMBAN_MASTER_PROMOTION);
+        request.setContext("Promotion to kanban master for dev team " + rootDevTeam.getName());
+        request.setRequestStatus(RequestStatus.PENDING);
+        request.setSender(root);
+        request.setReceiver(members.get(2));
+        request.setReferenceId(rootDevTeam.getId());
+
+        database.create(request);
     }
 }

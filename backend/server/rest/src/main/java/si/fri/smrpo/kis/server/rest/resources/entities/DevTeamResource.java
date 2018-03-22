@@ -48,7 +48,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     }
 
 
-    @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_KANBAN_MASTER})
     @POST
     @Override
     public Response create(@HeaderParam("X-Content") Boolean xContent, DevTeam entity) throws ApiException {
@@ -60,7 +60,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         }
     }
 
-    @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_KANBAN_MASTER})
     @PUT
     @Path("{id}")
     @Override
@@ -68,7 +68,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         return super.update(xContent, id, newObject);
     }
 
-    @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_KANBAN_MASTER})
     @PATCH
     @Path("{id}")
     @Override
@@ -76,7 +76,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         return super.patch(xContent, id, entity);
     }
 
-    @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_KANBAN_MASTER})
     @DELETE
     @Path("{id}")
     @Override
@@ -99,7 +99,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         return super.getList();
     }
 
-    @RolesAllowed({ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
     @GET
     @Path("{id}")
     @Override

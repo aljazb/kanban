@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.core.logic.database.instance.base;
+package si.fri.smrpo.kis.core.logic.database.instance.interfaces;
 
 import org.jinq.jpa.JPAJinqStream;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;

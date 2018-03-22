@@ -10,29 +10,32 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name="board")
+@Table(name="request")
 @Cacheable
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Request extends UUIDEntity<Request> {
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "request_type", nullable = false)
     private RequestType requestType;
 
     @Column(name = "context")
     private String context;
 
-    @Column(name = "reference_id")
+    @Column(name = "reference_id", nullable = false)
     private UUID referenceId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "request_status", nullable = false)
     private RequestStatus requestStatus;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", nullable = false)
     private UserAccount sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reciver_id")
+    @JoinColumn(name = "reciver_id", nullable = false)
     private UserAccount receiver;
 
 

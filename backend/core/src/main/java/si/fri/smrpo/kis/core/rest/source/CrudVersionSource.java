@@ -1,7 +1,7 @@
 package si.fri.smrpo.kis.core.rest.source;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
-import si.fri.smrpo.kis.core.logic.database.instance.DatabaseImpl;
+import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;

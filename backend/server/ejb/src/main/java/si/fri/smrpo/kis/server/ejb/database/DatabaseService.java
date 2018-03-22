@@ -63,6 +63,7 @@ public class DatabaseService implements DatabaseServiceLocal {
         return database.patchVersion(newBaseEntityVersion, dbmCore);
     }
 
+
     @Override
     public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, QueryParameters param) throws DatabaseException {
         return getList(c, param, null);
@@ -71,16 +72,6 @@ public class DatabaseService implements DatabaseServiceLocal {
     @Override
     public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, QueryParameters param, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.getList(c, param, dbmCore);
-    }
-
-    @Override
-    public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, CriteriaFilter<T> customFilter) throws DatabaseException {
-        return getList(c, customFilter, null);
-    }
-
-    @Override
-    public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, CriteriaFilter<T> customFilter, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
-        return database.getList(c, customFilter, dbmCore);
     }
 
     @Override
