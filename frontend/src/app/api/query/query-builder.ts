@@ -33,30 +33,32 @@ export class QueryBuilder {
   private _orderByType: OrderByType = OrderByType.ASC;
   private _limit: number = 30;
   private _skip: number = 0;
-  private _defaultIsDeleted: boolean;
 
 
-  constructor(defaultIsDeleted: boolean=false) {
-    this._defaultIsDeleted = defaultIsDeleted;
+  constructor() {
   }
 
-  static query(defaultIsDeleted: boolean=false): QueryBuilder {
-    return new QueryBuilder(defaultIsDeleted);
+  static query(isDeleted: boolean=true): QueryBuilder {
+    if(isDeleted){
+      return new QueryBuilder().eq("isDeleted", "false");
+    } else {
+      return new QueryBuilder();
+    }
   }
 
   build(): HttpParams {
     let params = new HttpParams();
 
     if(this._limit){
-      params.append("limit", this._limit.toString());
+      params = params.append("limit", this._limit.toString());
     }
 
     if(this._skip){
-      params.append("skip", this._skip.toString());
+      params = params.append("skip", this._skip.toString());
     }
 
     if(this._orderBy){
-      params.append("orderBy", this._orderBy + " " + this._orderByType);
+      params = params.append("orderBy", this._orderBy + " " + this._orderByType);
     }
 
     if(this._select.size > 0){
@@ -64,11 +66,7 @@ export class QueryBuilder {
       for(let select in this._select){
         content = content + select + ',';
       }
-      params.append("select", content);
-    }
-
-    if(this._defaultIsDeleted){
-      this.eq("isDeleted", "false");
+      params = params.append("select", content);
     }
 
     if(this._where.size > 0){
@@ -76,7 +74,7 @@ export class QueryBuilder {
       for(let where in this._where){
         content = content + where + ',';
       }
-      params.append("where", content);
+      params = params.append("where", content);
     }
 
     return params;
@@ -177,7 +175,7 @@ export class QueryBuilder {
   }
 
   isDeleted(value: boolean): QueryBuilder {
-    this._defaultIsDeleted = value;
+    this.eq("isDeleted", value ? "true" : "false");
     return this;
   }
 
