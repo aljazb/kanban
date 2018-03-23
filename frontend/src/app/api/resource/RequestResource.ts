@@ -29,6 +29,7 @@ export class RequestResource extends GetResource<Request> {
   createDevTeamInvite(devTeamId: string, userId: string): Observable<Request> {
     let request: Request = new Request();
     request.requestType = RequestType.DEV_TEAM_INVITE;
+    request.referenceId = devTeamId;
     request.receiver = new UserAccount();
     request.receiver.id = userId;
 
@@ -41,6 +42,7 @@ export class RequestResource extends GetResource<Request> {
   createKanbanMasterPromotion(devTeamId: string, userId: string): Observable<Request> {
     let request: Request = new Request();
     request.requestType = RequestType.DEV_TEAM_KAMBAN_MASTER_PROMOTION;
+    request.referenceId = devTeamId;
     request.receiver = new UserAccount();
     request.receiver.id = userId;
 
