@@ -22,7 +22,7 @@ public class ProjectAuthManager extends AuthManager<Project> {
     public CriteriaFilter<Project> authCriteria(DatabaseCore dbCore, Class<Project> c) throws DatabaseException {
         return (p, cb, r) -> {
             if(!isUserInRole(ROLE_ADMINISTRATOR)) {
-                return cb.and(p, cb.and(
+                return cb.and(p, cb.or(
                         cb.equal(r.join("devTeam").join("joinedUsers")
                                 .join("userAccount").get("id"), getUserId()),
                         cb.equal(r.join("owner").get("id"),  getUserId())
