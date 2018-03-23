@@ -7,6 +7,7 @@ import {environmentLocal} from './environment-local';
 
 export const environment = {
   production: false,
+  debugMode: true,
   apiHostname: environmentLocal.apiHostname, // http://localhost:8080   http://kamban.smrpo7:8080
   authHostname: environmentLocal.authHostname // http://localhost:8081  http://kamban.smrpo7:8081
 };

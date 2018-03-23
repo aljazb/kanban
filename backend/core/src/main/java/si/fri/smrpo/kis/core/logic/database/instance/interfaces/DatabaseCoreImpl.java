@@ -1,11 +1,10 @@
 package si.fri.smrpo.kis.core.logic.database.instance.interfaces;
 
-import com.github.tfaga.lynx.beans.QueryParameters;
-import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 
 import java.io.Serializable;
 

@@ -1,14 +1,12 @@
 package si.fri.smrpo.kis.core.rest.resource.uuid;
 
-import com.github.tfaga.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
-import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
+import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.rest.enums.CacheControlType;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.resource.base.BaseResource;
 import si.fri.smrpo.kis.core.rest.source.GetSource;
-import si.fri.smrpo.kis.core.rest.source.base.BaseSource;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

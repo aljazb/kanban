@@ -35,7 +35,7 @@ export class RequestResource extends GetResource<Request> {
 
     return this.api.httpClient.post<Request>(this.url, { headers: this.getHeaders()})
       .pipe(
-        catchError(this.handleError<Request>(`decline`))
+        catchError(this.handleError<Request>(`createDevTeamInvite`))
       );
   }
 
@@ -48,7 +48,7 @@ export class RequestResource extends GetResource<Request> {
 
     return this.api.httpClient.post<Request>(this.url, { headers: this.getHeaders()})
       .pipe(
-        catchError(this.handleError<Request>(`decline`))
+        catchError(this.handleError<Request>(`createKanbanMasterPromotion`))
       );
   }
 

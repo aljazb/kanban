@@ -29,7 +29,7 @@ public class ApiException extends Exception {
 
 
 
-    public static ApiException transform(LogicBaseException e){
+    public static ApiException transform(LogicBaseException e) {
         return new ApiException(getStatus(e), e.getMessage(), e);
     }
 
@@ -63,19 +63,17 @@ public class ApiException extends Exception {
     public class ApiExceptionDTO {
         public Response.Status status;
         public String error;
+        public String stack;
 
-        public ApiExceptionDTO(Response.Status status) {
-            this.status = status;
-        }
-
-        public ApiExceptionDTO(Response.Status status, String error) {
-            this.status = status;
-            this.error = error;
+        public ApiExceptionDTO(ApiException e) {
+            this.status = e.getStatus();
+            this.error = e.getMessage();
+            this.stack = e.toString();
         }
     }
 
 
     public ApiExceptionDTO buildDto(){
-        return new ApiExceptionDTO(getStatus(), getMessage());
+        return new ApiExceptionDTO(this);
     }
 }

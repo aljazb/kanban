@@ -13,8 +13,7 @@ import {environment} from '../../../../environments/environment';
 export class HeaderComponent implements OnInit {
 
   user: UserAccount;
-  isLoggedIn: boolean = false;
-  authUrl: string = environment.authHostname + "/auth";
+  keycloakUrl: string = environment.authHostname + "/auth";
 
   constructor(
     public keycloak: KeycloakService,
@@ -23,8 +22,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     this.keycloak.isLoggedIn()
       .then(isLoggedIn => {
-        this.isLoggedIn = isLoggedIn;
-        this.loginApi();
+        if(isLoggedIn){
+          this.loginApi();
+        }
       })
   }
 
@@ -37,15 +37,7 @@ export class HeaderComponent implements OnInit {
   }
 
   loginApi(): void {
-    if(this.keycloak.getKeycloakInstance().authenticated) {
-      console.log("About to login api");
-      this.apiService.userAccount.login()
-        .subscribe(user => {
-          console.log("Logged in api");
-          this.user = user;
-          console.log(user);
-        });
-    }
+    this.apiService.userAccount.login().subscribe(user => this.user = user);
   }
 
 }

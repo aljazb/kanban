@@ -1,9 +1,9 @@
 package si.fri.smrpo.kis.server.ejb.managers;
 
-import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.jpa.entities.Request;
@@ -15,7 +15,7 @@ public class RequestAuthManager extends AuthManager<Request> {
     }
 
     @Override
-    public CriteriaFilter<Request> authCriteria(DatabaseCore dbCore, Class<Request> c) throws DatabaseException {
+    public CriteriaFilter<Request> authCriteria() {
         return (p, cb, r) -> {
             if(!isUserInRole(ROLE_ADMINISTRATOR)){
                 return cb.and(p, cb.or(
@@ -25,6 +25,11 @@ public class RequestAuthManager extends AuthManager<Request> {
                 return p;
             }
         };
+    }
+
+    @Override
+    public boolean authCriteriaRequiresDistinct() {
+        return true;
     }
 
     @Override

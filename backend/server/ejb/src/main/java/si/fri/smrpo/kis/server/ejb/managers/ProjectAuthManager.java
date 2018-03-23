@@ -1,15 +1,14 @@
 package si.fri.smrpo.kis.server.ejb.managers;
-
-import com.github.tfaga.lynx.interfaces.CriteriaFilter;
+;
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
-import javax.persistence.criteria.Predicate;
 import java.util.List;
 
 public class ProjectAuthManager extends AuthManager<Project> {
@@ -19,7 +18,7 @@ public class ProjectAuthManager extends AuthManager<Project> {
     }
 
     @Override
-    public CriteriaFilter<Project> authCriteria(DatabaseCore dbCore, Class<Project> c) throws DatabaseException {
+    public CriteriaFilter<Project> authCriteria() {
         return (p, cb, r) -> {
             if(!isUserInRole(ROLE_ADMINISTRATOR)) {
                 return cb.and(p, cb.or(
@@ -31,6 +30,11 @@ public class ProjectAuthManager extends AuthManager<Project> {
                 return p;
             }
         };
+    }
+
+    @Override
+    public boolean authCriteriaRequiresDistinct() {
+        return true;
     }
 
     @Override

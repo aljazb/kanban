@@ -12,12 +12,12 @@
             {{user.email}}<span class="caret"></span>
           </a>
           <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
-            <a href="{{authUrl}}" class="dropdown-item waves-light" mdbRippleRadius>Keycloak</a>
+            <a href="{{keycloakUrl}}" class="dropdown-item waves-light" mdbRippleRadius>Keycloak</a>
             <a (click)="logout()" class="dropdown-item waves-light" mdbRippleRadius>Log out</a>
           </div>
         </li>
 
-        <li *ngIf="!isLoggedIn" class="nav-item">
+        <li *ngIf="!user" class="nav-item">
           <a (click)="login()" id="navbar-static-login" class="nav-link waves-effect waves-light">
             <i class="fa fa-sign-in mr-1"></i>
             <span class="clearfix d-none d-sm-inline-block">Log in</span>

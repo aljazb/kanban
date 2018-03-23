@@ -1,15 +1,14 @@
 package si.fri.smrpo.kis.core.logic.database.instance;
 
-import com.github.tfaga.lynx.beans.QueryParameters;
-import com.github.tfaga.lynx.interfaces.CriteriaFilter;
-import com.github.tfaga.lynx.utils.JPAUtils;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
-import si.fri.smrpo.kis.core.logic.database.instance.DatabaseBase;
 import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseCoreImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
+import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
+import si.fri.smrpo.kis.core.lynx.utils.JPAUtils;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
@@ -39,12 +38,14 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
     public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, DatabaseManager<E, I> dbmCore) throws DatabaseException {
         try{
             CriteriaFilter<E> customFilter = null;
+            boolean requiresDistinct = false;
             if(dbmCore != null) {
-                customFilter = dbmCore.authCriteria(this, c);
+                customFilter = dbmCore.authCriteria();
+                requiresDistinct = dbmCore.authCriteriaRequiresDistinct();
             }
 
-            List<E> items = JPAUtils.queryEntities(entityManager, c, param, customFilter);
-            Long count = JPAUtils.queryEntitiesCount(entityManager, c, param, customFilter);
+            List<E> items = JPAUtils.queryEntities(entityManager, c, param, customFilter, requiresDistinct);
+            Long count = JPAUtils.queryEntitiesCount(entityManager, c, param, customFilter, requiresDistinct);
 
             return new Paging<E>(items, count);
         } catch (Exception e){

@@ -1,7 +1,5 @@
 package si.fri.smrpo.kis.server.ejb.database;
 
-import com.github.tfaga.lynx.beans.QueryParameters;
-import com.github.tfaga.lynx.interfaces.CriteriaFilter;
 import org.jinq.jpa.JPAJinqStream;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.database.instance.Database;
@@ -9,6 +7,7 @@ import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
+import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
