@@ -14,12 +14,18 @@ export class DashboardComponent implements OnInit {
   projects: Project[];
 
   constructor(
+    private keycloak:KeycloakService,
     private apiService:ApiService) { }
 
   ngOnInit() {
-    this.getProjects()
+    if(this.keycloak.getKeycloakInstance().authenticated){
+      this.loadContent();
+    }
   }
 
+  loadContent(): void {
+    this.getProjects();
+  }
 
   getProjects(): void {
     console.log("Getting projects");
