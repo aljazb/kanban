@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import {UserAccount} from '../../../api/models/UserAccount';
 import {ApiService} from '../../../api/Api';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +14,7 @@ export class HeaderComponent implements OnInit {
 
   user: UserAccount;
   isLoggedIn: boolean = false;
+  authUrl: string = environment.authHostname + "/auth";
 
   constructor(
     public keycloak: KeycloakService,

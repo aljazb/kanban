@@ -68,7 +68,7 @@ export class QueryBuilder {
     }
 
     if(this._defaultIsDeleted){
-      this.eq("isDeleted", "true");
+      this.eq("isDeleted", "false");
     }
 
     if(this._where.size > 0){
