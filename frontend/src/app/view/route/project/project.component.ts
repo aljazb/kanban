@@ -12,7 +12,7 @@ import {DevTeam} from '../../../api/models/DevTeam';
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent implements OnInit {
-
+  model;
   devTeams: DevTeam[];
 
   constructor(
@@ -35,9 +35,7 @@ export class ProjectComponent implements OnInit {
   getDevTeams(): void {
     console.log("Getting dev teams");
 
-    let p: HttpParams = QueryBuilder.query().eq("name", "ime").build();
-
-    this.apiService.devTeam.getList(p)
+    this.apiService.devTeam.getList()
       .subscribe(devTeams => {
         this.devTeams = devTeams;
         console.log("Loaded dev teams");
