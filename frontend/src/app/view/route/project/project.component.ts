@@ -12,7 +12,8 @@ import {DevTeam} from '../../../api/models/DevTeam';
   styleUrls: ['./project.component.scss']
 })
 export class ProjectComponent implements OnInit {
-  model;
+  startDate;
+  endDate;
   devTeams: DevTeam[];
 
   constructor(

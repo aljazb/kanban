@@ -20,6 +20,7 @@ import { ProjectComponent } from './view/route/project/project.component';
 import { BoardComponent } from './view/route/board/board.component';
 import { AdminComponent } from './view/route/admin/admin.component';
 import { UserPagingComponent } from './view/components/paging/user-paging/user-paging.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { UserPagingComponent } from './view/components/paging/user-paging/user-p
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    KeycloakAngularModule
+    KeycloakAngularModule,
+    NgbModule.forRoot()
   ],
   declarations: [
     AppComponent,
