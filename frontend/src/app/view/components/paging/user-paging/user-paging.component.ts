@@ -10,7 +10,7 @@ import {Paging} from '../../../../api/dto/Paging';
 @Component({
   selector: 'app-user-paging',
   templateUrl: './user-paging.component.html',
-  styleUrls: ['./user-paging.component.scss']
+  styleUrls: ['./user-paging.component.css']
 })
 export class UserPagingComponent implements OnInit {
   lastQuery: UserSearchTerms = new UserSearchTerms(false);

@@ -5,16 +5,16 @@ import { HttpClientModule }    from '@angular/common/http';
 
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakInitializer } from './api/keycloak/keycloak-init';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule }     from './app-routing.module';
-import { MDBBootstrapModule } from 'angular-bootstrap-md';
+
+import { ApiService } from './api/Api';
+import { KeycloakAuthGuardService } from './api/keycloak/keycloak-auth-guard.service';
 
 import { AppComponent }         from './app.component';
 import { DashboardComponent }   from './view/route/dashboard/dashboard.component';
 import { HeaderComponent }   from './view/base/header/header.component';
-import {ApiService} from './api/Api';
-import {KeycloakAuthGuardService} from './api/keycloak/keycloak-auth-guard.service';
 import { FooterComponent } from './view/base/footer/footer.component';
 import { DevTeamComponent } from './view/route/dev-team/dev-team.component';
 import { ProjectComponent } from './view/route/project/project.component';
@@ -23,6 +23,7 @@ import { AdminComponent } from './view/route/admin/admin.component';
 import { UserPagingComponent } from './view/components/paging/user-paging/user-paging.component';
 import { UserDetailsComponent } from './view/components/details/user-details/user-details.component';
 
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -30,7 +31,7 @@ import { UserDetailsComponent } from './view/components/details/user-details/use
     AppRoutingModule,
     HttpClientModule,
     KeycloakAngularModule,
-    MDBBootstrapModule.forRoot()
+    NgbModule.forRoot()
   ],
   declarations: [
     AppComponent,

@@ -1,34 +1,41 @@
-<header>
+<header class="navbar navbar-light navbar-fixed-top navbar-expand-lg">
 
-  <mdb-navbar SideClass="navbar fixed-top navbar-expand-md top-nav-collapse scrolling-navbar navbar-dark unique-color-dark">
+  <a class="navbar-brand" [routerLink]="['/']" (click)="navbarCollapsed = true">ng-Kanban</a>
 
-    <logo><a class="navbar-brand" href="#">Navbar</a></logo>
 
-    <links>
-      <ul class="navbar-nav ml-auto">
+  <button class="navbar-toggler navbar-toggler-right" type="button" (click)="navbarCollapsed = !navbarCollapsed"
+          [attr.aria-expanded]="!navbarCollapsed" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-        <li *ngIf="user" class="nav-item dropdown" dropdown>
-          <a dropdownToggle mdbRippleRadius type="button" class="nav-link dropdown-toggle waves-light" mdbRippleRadius>
-            {{user.email}}<span class="caret"></span>
+  <div class="navbar-collapse" [ngbCollapse]="navbarCollapsed" id="navbarContent">
+
+    <ul class="navbar-nav ml-auto">
+
+      <div *ngIf="!user">
+        <li class="nav-item">
+          <a class="nav-link" (click)="navbarCollapsed = true; login()">
+            Log in
           </a>
-          <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
-            <a href="{{keycloakUrl}}" class="dropdown-item waves-light" mdbRippleRadius>Keycloak</a>
-            <a *ngIf="isAdministrator" routerLink="/admin" class="dropdown-item waves-light" mdbRippleRadius>Admin</a>
-            <a (click)="logout()" class="dropdown-item waves-light" mdbRippleRadius>Log out</a>
+        </li>
+      </div>
+
+      <div *ngIf="user">
+        <li class="nav-item">
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>{{user.email}}</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+              <div *ngIf="isAdministrator">
+                <a class="btn btn-info dropdown-item" role="button" href="{{keycloakUrl}}">Keycloak</a>
+                <a class="btn btn-info dropdown-item" role="button" routerLink="/admin">Admin</a>
+              </div>
+              <a class="btn btn-info dropdown-item" role="button" (click)="logout()">Log out</a>
+            </div>
           </div>
         </li>
+      </div>
 
-        <li *ngIf="!user" class="nav-item">
-          <a (click)="login()" id="navbar-static-login" class="nav-link waves-effect waves-light">
-            <i class="fa fa-sign-in mr-1"></i>
-            <span class="clearfix d-none d-sm-inline-block">Log in</span>
-          </a>
-        </li>
+    </ul>
 
-      </ul>
-    </links>
-
-  </mdb-navbar>
-
+  </div>
 </header>
-

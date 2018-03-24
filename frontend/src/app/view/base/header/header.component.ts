@@ -11,9 +11,10 @@ import {KeycloakAuthGuardService} from '../../../api/keycloak/keycloak-auth-guar
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  navbarCollapsed = true;
 
   user: UserAccount;
   keycloakUrl: string = environment.authHostname + "/auth";

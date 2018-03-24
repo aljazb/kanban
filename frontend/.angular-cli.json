@@ -19,10 +19,9 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "../node_modules/font-awesome/scss/font-awesome.scss",
-        "../node_modules/angular-bootstrap-md/scss/bootstrap/bootstrap.scss",
-        "../node_modules/angular-bootstrap-md/scss/mdb-free.scss",
-        "./styles.scss"
+        "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+        "../node_modules/font-awesome/css/font-awesome.min.css",
+        "./styles.css"
       ],
       "scripts": [
         "../node_modules/chart.js/dist/Chart.js",
@@ -60,7 +59,7 @@
     }
   },
   "defaults": {
-    "styleExt": "scss",
+    "styleExt": "css",
     "component": {
     }
   }

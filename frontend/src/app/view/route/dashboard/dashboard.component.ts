@@ -5,16 +5,16 @@ import {UserAccount} from '../../../api/models/UserAccount';
 import {Project} from '../../../api/models/Project';
 import {QueryBuilder} from '../../../api/query/query-builder';
 import {HttpParams} from '@angular/common/http';
-import {ROLE_ADMINISTRATOR} from '../../../api/keycloak/keycloak-init';
+import {ROLE_ADMINISTRATOR, ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: [ './dashboard.component.scss' ]
+  styleUrls: [ './dashboard.component.css' ]
 })
 export class DashboardComponent implements OnInit {
 
-
+  isKM: boolean;
   projects: Project[];
 
   constructor(
@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit {
       .then(isLoggedIn => {
         if(isLoggedIn){
           this.loadContent();
+          this.isKM = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
         }
       })
   }

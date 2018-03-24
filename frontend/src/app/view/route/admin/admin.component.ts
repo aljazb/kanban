@@ -8,7 +8,7 @@ import {UserPagingComponent} from '../../components/paging/user-paging/user-pagi
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss']
+  styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
 
