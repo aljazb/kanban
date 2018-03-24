@@ -3,7 +3,7 @@
   <ul class="list-group">
     <li *ngFor="let p of projects" class="list-group-item">
       <p>{{p.name}}</p>
-      <p>{{p.description}}</p>
+      <p>{{p.description | slice:0:40 }}</p>
       <p>{{p.startDate | date:'dd-MM-yyyy'}}</p>
     </li>
   </ul>

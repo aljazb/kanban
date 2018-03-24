@@ -17,11 +17,11 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
   getHeaders(xContent=false) : HttpHeaders {
 
     let headers = new HttpHeaders();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
+    headers = headers.append('Content-Type', 'application/json');
+    headers = headers.append('Accept', 'application/json');
 
     if(xContent){
-      headers.append('X-Content', 'application/json');
+      headers = headers.append('X-Content', 'true');
     }
 
     return headers;

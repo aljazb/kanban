@@ -33,9 +33,9 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
       .pipe(catchError(this.handleError<T>(`delete`)));
   }
 
-  deleteToggle (id: string, xContent = this.api.xContent): Observable<T> {
-    return this.api.httpClient.delete<T>(this.url + "/toggleDelete/" + id, { headers: this.getHeaders(xContent)})
-      .pipe(catchError(this.handleError<T>(`deleteToggle`)));
+  changeStatus (id: string, xContent = this.api.xContent): Observable<T> {
+    return this.api.httpClient.put<T>(this.url + "/" + id + "/status/", null,{ headers: this.getHeaders(xContent)})
+      .pipe(catchError(this.handleError<T>(`status`)));
   }
 
 }

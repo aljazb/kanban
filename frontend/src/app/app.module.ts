@@ -21,6 +21,7 @@ import { ProjectComponent } from './view/route/project/project.component';
 import { BoardComponent } from './view/route/board/board.component';
 import { AdminComponent } from './view/route/admin/admin.component';
 import { UserPagingComponent } from './view/components/paging/user-paging/user-paging.component';
+import { UserDetailsComponent } from './view/components/details/user-details/user-details.component';
 
 @NgModule({
   imports: [
@@ -40,7 +41,8 @@ import { UserPagingComponent } from './view/components/paging/user-paging/user-p
     ProjectComponent,
     BoardComponent,
     AdminComponent,
-    UserPagingComponent
+    UserPagingComponent,
+    UserDetailsComponent
   ],
   providers: [
     {

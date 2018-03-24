@@ -22,9 +22,7 @@ export enum Comperator {
 export class QueryBuilder {
 
   private static AND: string = '|';
-  private static OR: string = ',';
   private static PAR: string = "'";
-
 
   private _select: Set<string> = new Set();
   private _where: Set<string> = new Set();

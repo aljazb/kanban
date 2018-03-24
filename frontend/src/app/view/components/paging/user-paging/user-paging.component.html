@@ -1,53 +1,89 @@
 <div class="row">
 
-  <div class="col-md-6">
-
-  </div>
-
-
-  <div id="search-component" class="col-md-6">
+  <div class="col-md-12">
     <h4>User search</h4>
 
-    <form (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
-      <div class="row">
+    <div (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
+      <form>
+        <div class="row">
 
-        <div class="col-md-4">
-          <div class="md-form">
-            <input #email mdbActive type="text" id="in-email" class="form-control">
-            <label for="in-email" class="">Email</label>
+          <div class="col-md-4">
+            <div class="md-form">
+              <input #email mdbActive type="text" id="in-email" class="form-control">
+              <label for="in-email" class="">Email</label>
+            </div>
           </div>
-        </div>
 
-        <div class="col-md-3">
-          <div class="md-form">
-            <input #firstName mdbActive type="text" id="in-firstName" class="form-control">
-            <label for="in-firstName" class="">First name</label>
+          <div class="col-md-3">
+            <div class="md-form">
+              <input #firstName mdbActive type="text" id="in-firstName" class="form-control">
+              <label for="in-firstName" class="">First name</label>
+            </div>
           </div>
-        </div>
 
-        <div class="col-md-3">
-          <div class="md-form">
-            <input #lastName mdbActive type="text" id="in-lastName" class="form-control">
-            <label for="in-lastName" class="">Last name</label>
+          <div class="col-md-3">
+            <div class="md-form">
+              <input #lastName mdbActive type="text" id="in-lastName" class="form-control">
+              <label for="in-lastName" class="">Last name</label>
+            </div>
           </div>
-        </div>
 
-        <div class="col-md-2">
-          <div class="form-group">
-            <input #isDeleted mdbDeepDirective type="checkbox" id="in-isDeleted">
-            <label for="in-isDeleted">Deleted</label>
+          <div class="col-md-2">
+            <div class="form-group">
+              <input (click)="search(email.value, firstName.value, lastName.value, isDeleted.checked)"
+                     #isDeleted mdbDeepDirective type="checkbox" id="in-isDeleted">
+              <label for="in-isDeleted">Deleted</label>
+            </div>
           </div>
-        </div>
 
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="userPaging" class="list-group">
+      <div>
+        <a (click)="onUserClicked(item)" *ngFor="let item of userPaging.items" class="list-group-item list-group-item-action">
+          <p>{{item.firstName}} {{item.lastName}}</p>
+          <p>{{item.email}}</p>
+        </a>
       </div>
-    </form>
 
-    <ul class="list-group">
-      <li *ngFor="let item of users$ | async" class="list-group-item">
-        <p>{{item.firstName}} {{item.lastName}}</p>
-        <p>{{item.email}}</p>
-      </li>
-    </ul>
+      <nav class="my-4">
+        <ul class="pagination pagination-circle pg-blue mb-0">
+
+          <li class="page-item" (click)="firstPage()" [ngClass]="{'disabled': pageIndex == 1}">
+            <a class="page-link" mdbRippleRadius>First</a>
+          </li>
+
+          <li (click)="previousPage()" class="page-item" [ngClass]="{'disabled': pageIndex == 1}">
+            <a class="page-link" mdbRippleRadius aria-label="Previous">
+              <span aria-hidden="true">«</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+
+          <li (click)="setPageIndex(index)" *ngFor="let index of pageLabels" [ngClass]="{'active': index==pageIndex}" class="page-item">
+            <a class="page-link" mdbRippleRadius>{{index}}</a>
+          </li>
+
+
+          <li (click)="nextPage()" class="page-item" [ngClass]="{'disabled': pageCount == pageIndex}">
+            <a class="page-link" mdbRippleRadius aria-label="Next">
+              <span aria-hidden="true">»</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+
+          <li class="page-item" (click)="lastPage()" [ngClass]="{'disabled': pageCount == pageIndex}">
+            <a class="page-link">Last</a>
+          </li>
+
+        </ul>
+      </nav>
+
+    </div>
+
+
   </div>
 
 </div>

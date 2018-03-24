@@ -37,11 +37,9 @@ export class DashboardComponent implements OnInit {
   getProjects(): void {
     console.log("Getting projects");
 
-    let p: HttpParams = QueryBuilder.query().eq("name", "ime").build();
-
-    this.apiService.project.getList(p)
+    this.apiService.project.getList()
       .subscribe(projects => {
-        this.projects = projects;
+        this.projects = projects.items;
         console.log("Loaded projects");
         console.log(projects);
       });

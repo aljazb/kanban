@@ -109,7 +109,7 @@ public class UserAccountResource extends CrudResource<UserAccount, CrudSource<Us
 
     @RolesAllowed(ROLE_ADMINISTRATOR)
     @PUT
-    @Path("{id}/toggleIsDeleted")
+    @Path("{id}/status")
     @Override
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
         return super.toggleIsDeleted(xContent, id);

@@ -1,1 +1,18 @@
-<app-user-paging></app-user-paging>
+
+<div class="row">
+
+  <div class="col-md-6">
+    <div *ngIf="selectedUser">
+      <app-user-details [user]="selectedUser" ></app-user-details>
+      <button class="btn waves-light" (click)="toggleDeleted()" [ngClass]="{'btn-danger': !selectedUser.isDeleted, 'btn-success': selectedUser.isDeleted}">
+        {{!selectedUser.isDeleted ? "Delete" : "Activate"}}
+      </button>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <app-user-paging (onUserSelect)="selectedUserCallback($event)" ></app-user-paging>
+  </div>
+
+</div>
+
