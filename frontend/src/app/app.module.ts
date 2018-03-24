@@ -8,7 +8,6 @@ import { KeycloakInitializer } from './api/keycloak/keycloak-init';
 
 
 import { AppRoutingModule }     from './app-routing.module';
-import { MDBBootstrapModule } from 'angular-bootstrap-md';
 
 import { AppComponent }         from './app.component';
 import { DashboardComponent }   from './view/route/dashboard/dashboard.component';
@@ -28,8 +27,7 @@ import { UserPagingComponent } from './view/components/paging/user-paging/user-p
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    KeycloakAngularModule,
-    MDBBootstrapModule.forRoot()
+    KeycloakAngularModule
   ],
   declarations: [
     AppComponent,

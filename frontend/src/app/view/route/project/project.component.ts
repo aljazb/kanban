@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import {QueryBuilder} from '../../../api/query/query-builder';
+import {HttpParams} from '@angular/common/http';
+import {ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
+import {KeycloakService} from 'keycloak-angular/index';
+import {ApiService} from '../../../api/Api';
+import {DevTeam} from '../../../api/models/DevTeam';
 
 @Component({
   selector: 'app-project',
@@ -7,9 +13,35 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProjectComponent implements OnInit {
 
-  constructor() { }
+  devTeams: DevTeam[];
+
+  constructor(
+    private keycloak:KeycloakService,
+    private apiService:ApiService) { }
 
   ngOnInit() {
+    this.keycloak.isLoggedIn()
+      .then(isLoggedIn => {
+        if(isLoggedIn){
+          this.loadContent();
+        }
+      })
   }
 
+  loadContent(): void {
+    this.getDevTeams();
+  }
+
+  getDevTeams(): void {
+    console.log("Getting dev teams");
+
+    let p: HttpParams = QueryBuilder.query().eq("name", "ime").build();
+
+    this.apiService.devTeam.getList(p)
+      .subscribe(devTeams => {
+        this.devTeams = devTeams;
+        console.log("Loaded dev teams");
+        console.log(devTeams);
+      });
+  }
 }

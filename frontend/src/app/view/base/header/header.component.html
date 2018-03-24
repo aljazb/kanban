@@ -1,34 +1,34 @@
 <header>
 
-  <mdb-navbar SideClass="navbar fixed-top navbar-expand-md top-nav-collapse scrolling-navbar navbar-dark unique-color-dark">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Kanban</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <logo><a class="navbar-brand" href="#">Navbar</a></logo>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-    <links>
-      <ul class="navbar-nav ml-auto">
-
-        <li *ngIf="user" class="nav-item dropdown" dropdown>
-          <a dropdownToggle mdbRippleRadius type="button" class="nav-link dropdown-toggle waves-light" mdbRippleRadius>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <div *ngIf="user" class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{user.email}}<span class="caret"></span>
-          </a>
-          <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a href="{{keycloakUrl}}" class="dropdown-item waves-light" mdbRippleRadius>Keycloak</a>
             <a *ngIf="isAdministrator" routerLink="/admin" class="dropdown-item waves-light" mdbRippleRadius>Admin</a>
             <a (click)="logout()" class="dropdown-item waves-light" mdbRippleRadius>Log out</a>
           </div>
-        </li>
+        </div>
 
-        <li *ngIf="!user" class="nav-item">
-          <a (click)="login()" id="navbar-static-login" class="nav-link waves-effect waves-light">
-            <i class="fa fa-sign-in mr-1"></i>
-            <span class="clearfix d-none d-sm-inline-block">Log in</span>
-          </a>
-        </li>
-
-      </ul>
-    </links>
-
-  </mdb-navbar>
+        <a *ngIf="!user" (click)="login()" id="navbar-static-login" class="btn btn-primary">
+          <i class="fa fa-sign-in mr-1"></i>
+          <span class="clearfix d-none d-sm-inline-block">Log in</span>
+        </a>
+      </form>
+    </div>
+  </nav>
 
 </header>
 
