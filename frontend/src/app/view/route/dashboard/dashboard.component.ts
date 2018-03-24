@@ -5,6 +5,7 @@ import {UserAccount} from '../../../api/models/UserAccount';
 import {Project} from '../../../api/models/Project';
 import {QueryBuilder} from '../../../api/query/query-builder';
 import {HttpParams} from '@angular/common/http';
+import {ROLE_ADMINISTRATOR} from '../../../api/keycloak/keycloak-init';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ import {HttpParams} from '@angular/common/http';
 })
 export class DashboardComponent implements OnInit {
 
+
   projects: Project[];
 
   constructor(
@@ -20,9 +22,12 @@ export class DashboardComponent implements OnInit {
     private apiService:ApiService) { }
 
   ngOnInit() {
-    if(this.keycloak.getKeycloakInstance().authenticated){
-      this.loadContent();
-    }
+    this.keycloak.isLoggedIn()
+      .then(isLoggedIn => {
+        if(isLoggedIn){
+          this.loadContent();
+        }
+      })
   }
 
   loadContent(): void {

@@ -1,0 +1,58 @@
+<div class="row">
+
+  <div class="col-md-6">
+
+  </div>
+
+
+  <div id="search-component" class="col-md-6">
+    <h4>User search</h4>
+
+    <form (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
+      <div class="row">
+
+        <div class="col-md-4">
+          <div class="md-form">
+            <input #email mdbActive type="text" id="in-email" class="form-control">
+            <label for="in-email" class="">Email</label>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="md-form">
+            <input #firstName mdbActive type="text" id="in-firstName" class="form-control">
+            <label for="in-firstName" class="">First name</label>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="md-form">
+            <input #lastName mdbActive type="text" id="in-lastName" class="form-control">
+            <label for="in-lastName" class="">Last name</label>
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <input #isDeleted mdbDeepDirective type="checkbox" id="in-isDeleted">
+            <label for="in-isDeleted">Deleted</label>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+    <ul class="list-group">
+      <li *ngFor="let item of users$ | async" class="list-group-item">
+        <p>{{item.firstName}} {{item.lastName}}</p>
+        <p>{{item.email}}</p>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+
+
+
+

@@ -13,6 +13,7 @@
           </a>
           <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
             <a href="{{keycloakUrl}}" class="dropdown-item waves-light" mdbRippleRadius>Keycloak</a>
+            <a *ngIf="isAdministrator" routerLink="/admin" class="dropdown-item waves-light" mdbRippleRadius>Admin</a>
             <a (click)="logout()" class="dropdown-item waves-light" mdbRippleRadius>Log out</a>
           </div>
         </li>

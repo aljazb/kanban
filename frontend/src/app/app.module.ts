@@ -19,6 +19,8 @@ import { FooterComponent } from './view/base/footer/footer.component';
 import { DevTeamComponent } from './view/route/dev-team/dev-team.component';
 import { ProjectComponent } from './view/route/project/project.component';
 import { BoardComponent } from './view/route/board/board.component';
+import { AdminComponent } from './view/route/admin/admin.component';
+import { UserPagingComponent } from './view/components/paging/user-paging/user-paging.component';
 
 @NgModule({
   imports: [
@@ -36,7 +38,9 @@ import { BoardComponent } from './view/route/board/board.component';
     DashboardComponent,
     DevTeamComponent,
     ProjectComponent,
-    BoardComponent
+    BoardComponent,
+    AdminComponent,
+    UserPagingComponent
   ],
   providers: [
     {

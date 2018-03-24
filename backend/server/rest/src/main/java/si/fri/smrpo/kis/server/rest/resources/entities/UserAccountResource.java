@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import java.util.UUID;
 
 import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_ADMINISTRATOR;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_KANBAN_MASTER;
 import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_USER;
 
 
@@ -60,7 +61,7 @@ public class UserAccountResource extends CrudResource<UserAccount, CrudSource<Us
         }
     }
 
-    @RolesAllowed({ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
     @GET
     @Override
     public Response getList() throws ApiException {

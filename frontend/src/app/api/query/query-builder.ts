@@ -21,7 +21,7 @@ export enum Comperator {
 
 export class QueryBuilder {
 
-  private static AND: string = ',';
+  private static AND: string = '|';
   private static OR: string = ',';
   private static PAR: string = "'";
 
@@ -63,17 +63,29 @@ export class QueryBuilder {
 
     if(this._select.size > 0){
       let content = '';
-      for(let select in this._select){
-        content = content + select + ',';
-      }
+      let first = true;
+      this._select.forEach(select => {
+        if(first){
+          first = false;
+        } else {
+          content += ',';
+        }
+        content += select;
+      });
       params = params.append("select", content);
     }
 
     if(this._where.size > 0){
       let content = '';
-      for(let where in this._where){
-        content = content + where + ',';
-      }
+      let first = true;
+      this._where.forEach(where => {
+        if(first){
+          first = false;
+        } else {
+          content += QueryBuilder.AND;
+        }
+        content += where;
+      });
       params = params.append("where", content);
     }
 
@@ -153,9 +165,13 @@ export class QueryBuilder {
         break;
       default:
         if(value != null){
-          this._where.add(field + comp + QueryBuilder.PAR + value + QueryBuilder.PAR);
+          this._where.add(field + comp + value);
         }
     }
+  }
+
+  wrapWhiteSpace(value: string): string {
+    return QueryBuilder.PAR + value + QueryBuilder.PAR;
   }
 
   orderBy(orderBy: string, orderByType: OrderByType=OrderByType.ASC): QueryBuilder {

@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import {CanActivate, Router, ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
 import { KeycloakService, KeycloakAuthGuard } from 'keycloak-angular';
 
 @Injectable()
 export class KeycloakAuthGuardService extends KeycloakAuthGuard {
   constructor(
     protected router: Router,
-    protected keycloakAngular: KeycloakService) {
-    super(router, keycloakAngular);
+    protected keycloak: KeycloakService) {
+    super(router, keycloak);
   }
 
   isAccessAllowed(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       if (!this.authenticated) {
-        this.keycloakAngular.login();
+        this.keycloak.login();
         return;
       }
 
@@ -34,5 +34,33 @@ export class KeycloakAuthGuardService extends KeycloakAuthGuard {
         resolve(granted);
       }
     });
+  }
+
+  handleAuth(): void {
+    let state = this.router.routerState.snapshot;
+    let active = this.router.routerState.snapshot.root;
+    this.canActivate(active, state).then(value => {
+      if(!value){
+        console.log("KeycloakGuard: Access denied.");
+        this.router.navigate(['dashboard']);
+      }
+    });
+  }
+
+  login(){
+    this.keycloak.login();
+  }
+
+  logout(): void {
+    this.router.navigate(['dashboard'])
+      .then(value => this.keycloak.logout());
+  }
+
+  isLoggedIn(): Promise<boolean> {
+    return this.keycloak.isLoggedIn();
+  }
+
+  isUserInRole(role: string): boolean {
+    return this.keycloak.isUserInRole(role);
   }
 }
