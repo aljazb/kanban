@@ -11,11 +11,11 @@ import {ROLE_KANBAN_MASTER} from './api/keycloak/keycloak-init';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'admin', component: AdminComponent, data: {roles: {ROLE_ADMINISTRATOR}} },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'dev-team', component: DevTeamComponent },
-  { path: 'project', component: ProjectComponent, data: {roles: {ROLE_KANBAN_MASTER}} },
-  { path: 'board', component: BoardComponent },
-  { path: 'admin', component: AdminComponent, data: {roles: {ROLE_ADMINISTRATOR}} }
+  { path: 'dev-team/:id', component: DevTeamComponent },
+  { path: 'project/:id', component: ProjectComponent, data: {roles: {ROLE_KANBAN_MASTER}} },
+  { path: 'board/:id', component: BoardComponent }
 ];
 
 @NgModule({

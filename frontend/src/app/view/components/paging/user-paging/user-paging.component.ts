@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ApiService} from '../../../../api/Api';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {debounceTime, switchMap, tap} from 'rxjs/operators';
@@ -6,70 +6,41 @@ import {QueryBuilder} from '../../../../api/query/query-builder';
 import {HttpParams} from '@angular/common/http';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Paging} from '../../../../api/dto/Paging';
+import {PagingImpl, QueryImpl} from '../PagingImpl';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-user-paging',
   templateUrl: './user-paging.component.html',
   styleUrls: ['./user-paging.component.css']
 })
-export class UserPagingComponent implements OnInit {
-  lastQuery: UserSearchTerms = new UserSearchTerms(false);
+export class UserPagingComponent extends PagingImpl<UserAccount> implements OnInit {
 
-  @Output()
-  onUserSelect: EventEmitter<any> = new EventEmitter();
-  userPaging: Paging<UserAccount>;
-  searchQuery = new BehaviorSubject<UserSearchTerms>(this.lastQuery);
 
-  collectionSize: number=1;
-  pageSize: number=5;
-  page: number=1;
+  @Input() enableSearch: boolean = false;
 
-  constructor(private apiService:ApiService) { }
+  constructor(private apiService:ApiService) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.searchQuery.pipe(
-      debounceTime(300),
-      switchMap((params: UserSearchTerms) => this.apiService.userAccount.getList(this.buildQuery(params))),
-    ).subscribe(value => {
-      this.userPaging = value;
-      this.setPageCount(value.count);
-    });
   }
 
   search(email: string, firstName: string, lastName: string, isDeleted: boolean): void {
-    this.page = 1;
-    this.lastQuery = new UserSearchTerms(isDeleted, email, firstName, lastName);
-    this.searchQuery.next(this.lastQuery);
+    this.nextSearch(new UserQuery(isDeleted, email, firstName, lastName));
   }
 
-  onUserClicked(user: UserAccount) {
-    this.onUserSelect.emit(user);
+  protected initialQuery(): UserQuery {
+    return new UserQuery(false);
   }
 
-  refresh(): void {
-    this.searchQuery.next(this.lastQuery);
-  }
-
-  setPageCount(count: number): void {
-    this.collectionSize = count;
-  }
-
-  private buildQuery(search: UserSearchTerms): HttpParams {
-    let qb = QueryBuilder.query(false);
-
-    qb.limit(this.pageSize);
-    qb.skip(this.pageSize * (this.page - 1));
-    if(search.email) qb.like("email", search.email + "%");
-    if(search.firstName) qb.like("firstName", search.firstName + "%");
-    if(search.lastName) qb.like("lastName", search.lastName + "%");
-    if(search.isDeleted != null) qb.eq("isDeleted", search.isDeleted ? "true" : "false");
-
-    return qb.build();
+  protected getList(params: HttpParams): Observable<Paging<UserAccount>> {
+    return this.apiService.userAccount.getList(params);
   }
 
 }
 
-class UserSearchTerms {
+class UserQuery extends UserAccount implements QueryImpl<UserAccount> {
   email: string;
   firstName: string;
   lastName: string;
@@ -79,11 +50,23 @@ class UserSearchTerms {
     isDeleted: boolean=false,
     email: string=null,
     firstName: string=null,
-    lastName: string=null) {
+    lastName: string=null)
+  {
+    super();
 
     this.email = email;
     this.firstName = firstName;
     this.lastName = lastName;
     this.isDeleted = isDeleted;
+  }
+
+  addQuery(qb: QueryBuilder): QueryBuilder {
+
+    if(this.email) qb.like("email", this.email + "%");
+    if(this.firstName) qb.like("firstName", this.firstName + "%");
+    if(this.lastName) qb.like("lastName", this.lastName + "%");
+    if(this.isDeleted != null) qb.eq("isDeleted", this.isDeleted ? "true" : "false");
+
+    return qb;
   }
 }

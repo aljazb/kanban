@@ -5,6 +5,7 @@ import {ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
 import {KeycloakService} from 'keycloak-angular/index';
 import {ApiService} from '../../../api/Api';
 import {DevTeam} from '../../../api/models/DevTeam';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-project',
@@ -13,13 +14,12 @@ import {DevTeam} from '../../../api/models/DevTeam';
 })
 export class ProjectComponent implements OnInit {
 
-  constructor(
-    private keycloak:KeycloakService,
-    private apiService:ApiService) { }
+  id: string;
+
+  constructor( private route: ActivatedRoute) { }
 
   ngOnInit() {
-
+    this.id = this.route.snapshot.paramMap.get('id');
   }
-
 
 }

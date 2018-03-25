@@ -9,6 +9,8 @@ import {ROLE_ADMINISTRATOR, ROLE_KANBAN_MASTER} from '../../../api/keycloak/keyc
 import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ProjectCreationFormComponent} from '../../components/forms/project-creation-form/project-creation-form.component';
 import {DevTeam} from '../../../api/models/DevTeam';
+import {Board} from '../../../api/models/Board';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,41 +19,34 @@ import {DevTeam} from '../../../api/models/DevTeam';
 })
 export class DashboardComponent implements OnInit {
 
-  projects: Project[];
-  devTeams: DevTeam[];
-
   constructor(
+    private router: Router,
     private keycloak:KeycloakService,
-    private apiService:ApiService,
     private modalService: NgbModal) { }
 
   ngOnInit() {
-    this.keycloak.isLoggedIn()
-      .then(isLoggedIn => {
-        if(isLoggedIn){
-          this.loadContent();
-        }
-      })
+
   }
 
-  loadContent(): void {
-    this.getProjects();
-    this.getDevTeams();
-  }
-
-  getProjects(): void {
-    this.apiService.project.getList()
-      .subscribe(projects => this.projects = projects.items);
-  }
-
-  getDevTeams(): void {
-    this.apiService.devTeam.getList()
-      .subscribe(devTeams => this.devTeams = devTeams.items);
-  }
-
-  open() {
+  openProjectCreateModal() {
     const modalRef = this.modalService.open(ProjectCreationFormComponent);
-    modalRef.componentInstance.devTeams = this.devTeams;
-    modalRef.result.then(value => console.log(value));
+    modalRef.result
+      .then(value => console.log(value))
+      .catch(reason => console.log(reason));
+  }
+
+  goToProject(project: Project): void {
+    console.log(project);
+    this.router.navigate(['/project/' + project.id]);
+  }
+
+  goToDevTeam(devTeam: DevTeam): void {
+    console.log(devTeam);
+    this.router.navigate(['/dev-team/' + devTeam.id]);
+  }
+
+  goToBoard(board: Board): void {
+    console.log(board);
+    this.router.navigate(['/board/' + board.id]);
   }
 }

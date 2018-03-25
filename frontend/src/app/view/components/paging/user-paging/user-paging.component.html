@@ -1,15 +1,16 @@
 <div class="row">
 
   <div class="col-md-12">
-    <h4>User search</h4>
 
-    <div (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
-      <form>
+    <h4>User list</h4>
+
+    <div *ngIf="enableSearch" >
+      <form (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
         <div class="row">
 
           <div class="col-md-4">
             <div class="md-form">
-              <input #email type="text" id="in-email" class="form-control">
+              <input #email type="text" id="in-email" class="form-control" placeholder="john.doe@gmail.com">
               <label for="in-email" class="">Email</label>
             </div>
           </div>
@@ -40,9 +41,9 @@
       </form>
     </div>
 
-    <div *ngIf="userPaging" class="list-group">
+    <div *ngIf="paging" class="list-group">
       <div>
-        <a (click)="onUserClicked(item)" *ngFor="let item of userPaging.items" class="list-group-item list-group-item-action">
+        <a (click)="itemSelected(item)" *ngFor="let item of paging.items" class="list-group-item list-group-item-action">
           <p>{{item.firstName}} {{item.lastName}}</p>
           <p>{{item.email}}</p>
         </a>
@@ -55,12 +56,10 @@
                       [maxSize]="5"
                       [rotate]="true"
                       [ellipses]="false"
-                      [boundaryLinks]="true"
-                      aria-label="Default pagination">
+                      [boundaryLinks]="true">
       </ngb-pagination>
 
     </div>
-
 
   </div>
 

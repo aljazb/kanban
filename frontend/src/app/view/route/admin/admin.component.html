@@ -11,7 +11,7 @@
   </div>
 
   <div class="col-md-6">
-    <app-user-paging (onUserSelect)="selectedUserCallback($event)" ></app-user-paging>
+    <app-user-paging [enableSearch]="true" (onSelect)="selectedUserCallback($event)"> </app-user-paging>
   </div>
 
 </div>

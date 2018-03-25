@@ -23,6 +23,9 @@ import { AdminComponent } from './view/route/admin/admin.component';
 import { UserPagingComponent } from './view/components/paging/user-paging/user-paging.component';
 import { UserDetailsComponent } from './view/components/details/user-details/user-details.component';
 import { ProjectCreationFormComponent } from './view/components/forms/project-creation-form/project-creation-form.component';
+import { DevTeamPagingComponent } from './view/components/paging/dev-team-paging/dev-team-paging.component';
+import { ProjectPagingComponent } from './view/components/paging/project-paging/project-paging.component';
+import { BoardPagingComponent } from './view/components/paging/board-paging/board-paging.component';
 
 
 @NgModule({
@@ -45,7 +48,10 @@ import { ProjectCreationFormComponent } from './view/components/forms/project-cr
     AdminComponent,
     UserPagingComponent,
     UserDetailsComponent,
-    ProjectCreationFormComponent
+    ProjectCreationFormComponent,
+    DevTeamPagingComponent,
+    ProjectPagingComponent,
+    BoardPagingComponent
   ],
   providers: [
     {
