@@ -1,0 +1,92 @@
+<div class="modal-header">
+  <h4 class="modal-title">Ustvari projekt</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+<div class="modal-body">
+
+  <form>
+
+    <div class="form-group row">
+      <label for="in-name" class="col-sm-2 col-form-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" [(ngModel)]="project.name" name="project-name" class="form-control" id="in-name" placeholder="Name">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-buyer" class="col-sm-2 col-form-label">Buyer</label>
+      <div class="col-sm-10">
+        <input type="text" [(ngModel)]="project.productBuyer" name="project-buyer" class="form-control" id="in-buyer"
+               placeholder="Buyer">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-start-date" class="col-sm-2 col-form-label">Start date</label>
+      <div class="col" id="in-start-date">
+        <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control" placeholder="yyyy-mm-dd"
+                     name="dp1" [(ngModel)]="project.startDate" ngbDatepicker #d="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+                  <img src="https://ng-bootstrap.github.io/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-end-date" class="col-sm-2 col-form-label">End date</label>
+      <div class="col" id="in-end-date">
+        <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control" placeholder="yyyy-mm-dd"
+                     name="dp2" [(ngModel)]="project.endDate" ngbDatepicker #d2="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+                  <img src="https://ng-bootstrap.github.io/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-devteam" class="col-sm-2 col-form-label">Dev team</label>
+      <div class="col-sm-10">
+        <select [ngModel]="project.devTeam" name="project-devteam" class="form-control" id="in-devteam">
+          <option value="project.devTeam" selected disabled>Pick dev team</option>
+          <option *ngFor="let devTeam of devTeams">{{devTeam.name}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-10">
+        <button type="button" class="btn btn-primary" (click)="activeModal.close(project)">Create</button>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+</div>
+
+
+

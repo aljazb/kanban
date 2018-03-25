@@ -6,6 +6,9 @@ import {Project} from '../../../api/models/Project';
 import {QueryBuilder} from '../../../api/query/query-builder';
 import {HttpParams} from '@angular/common/http';
 import {ROLE_ADMINISTRATOR, ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
+import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ProjectCreationFormComponent} from '../../components/forms/project-creation-form/project-creation-form.component';
+import {DevTeam} from '../../../api/models/DevTeam';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,35 +17,41 @@ import {ROLE_ADMINISTRATOR, ROLE_KANBAN_MASTER} from '../../../api/keycloak/keyc
 })
 export class DashboardComponent implements OnInit {
 
-  isKM: boolean;
   projects: Project[];
+  devTeams: DevTeam[];
 
   constructor(
     private keycloak:KeycloakService,
-    private apiService:ApiService) { }
+    private apiService:ApiService,
+    private modalService: NgbModal) { }
 
   ngOnInit() {
     this.keycloak.isLoggedIn()
       .then(isLoggedIn => {
         if(isLoggedIn){
           this.loadContent();
-          this.isKM = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
         }
       })
   }
 
   loadContent(): void {
     this.getProjects();
+    this.getDevTeams();
   }
 
   getProjects(): void {
-    console.log("Getting projects");
-
     this.apiService.project.getList()
-      .subscribe(projects => {
-        this.projects = projects.items;
-        console.log("Loaded projects");
-        console.log(projects);
-      });
+      .subscribe(projects => this.projects = projects.items);
+  }
+
+  getDevTeams(): void {
+    this.apiService.devTeam.getList()
+      .subscribe(devTeams => this.devTeams = devTeams.items);
+  }
+
+  open() {
+    const modalRef = this.modalService.open(ProjectCreationFormComponent);
+    modalRef.componentInstance.devTeams = this.devTeams;
+    modalRef.result.then(value => console.log(value));
   }
 }

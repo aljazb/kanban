@@ -20,11 +20,9 @@ export class UserPagingComponent implements OnInit {
   userPaging: Paging<UserAccount>;
   searchQuery = new BehaviorSubject<UserSearchTerms>(this.lastQuery);
 
-  pageIndex: number=1;
+  collectionSize: number=1;
   pageSize: number=5;
-  pageCount: number;
-  pageLabels: number[];
-
+  page: number=1;
 
   constructor(private apiService:ApiService) { }
 
@@ -39,7 +37,7 @@ export class UserPagingComponent implements OnInit {
   }
 
   search(email: string, firstName: string, lastName: string, isDeleted: boolean): void {
-    this.pageIndex = 1;
+    this.page = 1;
     this.lastQuery = new UserSearchTerms(isDeleted, email, firstName, lastName);
     this.searchQuery.next(this.lastQuery);
   }
@@ -52,62 +50,15 @@ export class UserPagingComponent implements OnInit {
     this.searchQuery.next(this.lastQuery);
   }
 
-  nextPage(): void {
-    this.setPageIndex(this.pageIndex + 1);
-  }
-
-  previousPage(): void {
-    this.setPageIndex(this.pageIndex - 1);
-  }
-
-  firstPage(): void {
-    this.setPageIndex(1);
-  }
-
-  lastPage(): void {
-    this.setPageIndex(this.pageCount);
-  }
-
-  setPageIndex(index: number): void {
-    if(index < 1){
-      index = 1;
-    } else if(index >= this.pageCount){
-      index = this.pageCount
-    }
-    if(this.pageIndex != index) {
-      this.pageIndex = index;
-      this.searchQuery.next(this.lastQuery);
-    }
-  }
-
   setPageCount(count: number): void {
-    this.pageCount = Math.ceil(count / this.pageSize);
-    this.generateLabels();
-  }
-
-  private generateLabels(): void {
-    let offset = 3 - this.pageIndex;
-    if(offset < 0) {
-      offset = this.pageCount - 2 - this.pageIndex;
-      if(offset > 0){
-        offset = 0;
-      }
-    }
-
-    let numberOfLabels = this.pageCount < 5 ? this.pageCount : 5;
-    let labels: number[] = [];
-    for(let i=0; i<numberOfLabels; i++) {
-      labels.push(this.pageIndex - 2 + i + offset);
-    }
-
-    this.pageLabels = labels;
+    this.collectionSize = count;
   }
 
   private buildQuery(search: UserSearchTerms): HttpParams {
     let qb = QueryBuilder.query(false);
 
     qb.limit(this.pageSize);
-    qb.skip(this.pageSize * (this.pageIndex - 1));
+    qb.skip(this.pageSize * (this.page - 1));
     if(search.email) qb.like("email", search.email + "%");
     if(search.firstName) qb.like("firstName", search.firstName + "%");
     if(search.lastName) qb.like("lastName", search.lastName + "%");

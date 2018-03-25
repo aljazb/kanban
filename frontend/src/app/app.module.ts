@@ -22,6 +22,7 @@ import { BoardComponent } from './view/route/board/board.component';
 import { AdminComponent } from './view/route/admin/admin.component';
 import { UserPagingComponent } from './view/components/paging/user-paging/user-paging.component';
 import { UserDetailsComponent } from './view/components/details/user-details/user-details.component';
+import { ProjectCreationFormComponent } from './view/components/forms/project-creation-form/project-creation-form.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { UserDetailsComponent } from './view/components/details/user-details/use
     BoardComponent,
     AdminComponent,
     UserPagingComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    ProjectCreationFormComponent
   ],
   providers: [
     {
@@ -56,6 +58,9 @@ import { UserDetailsComponent } from './view/components/details/user-details/use
     ApiService
   ],
   bootstrap: [ AppComponent ],
+  entryComponents: [
+    ProjectCreationFormComponent
+  ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })
 export class AppModule { }

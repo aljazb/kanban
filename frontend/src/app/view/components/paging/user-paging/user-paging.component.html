@@ -9,21 +9,21 @@
 
           <div class="col-md-4">
             <div class="md-form">
-              <input #email mdbActive type="text" id="in-email" class="form-control">
+              <input #email type="text" id="in-email" class="form-control">
               <label for="in-email" class="">Email</label>
             </div>
           </div>
 
           <div class="col-md-3">
             <div class="md-form">
-              <input #firstName mdbActive type="text" id="in-firstName" class="form-control">
+              <input #firstName type="text" id="in-firstName" class="form-control">
               <label for="in-firstName" class="">First name</label>
             </div>
           </div>
 
           <div class="col-md-3">
             <div class="md-form">
-              <input #lastName mdbActive type="text" id="in-lastName" class="form-control">
+              <input #lastName type="text" id="in-lastName" class="form-control">
               <label for="in-lastName" class="">Last name</label>
             </div>
           </div>
@@ -31,7 +31,7 @@
           <div class="col-md-2">
             <div class="form-group">
               <input (click)="search(email.value, firstName.value, lastName.value, isDeleted.checked)"
-                     #isDeleted mdbDeepDirective type="checkbox" id="in-isDeleted">
+                     #isDeleted type="checkbox" id="in-isDeleted">
               <label for="in-isDeleted">Deleted</label>
             </div>
           </div>
@@ -48,38 +48,16 @@
         </a>
       </div>
 
-      <nav class="my-4">
-        <ul class="pagination pagination-circle pg-blue mb-0">
-
-          <li class="page-item" (click)="firstPage()" [ngClass]="{'disabled': pageIndex == 1}">
-            <a class="page-link" mdbRippleRadius>First</a>
-          </li>
-
-          <li (click)="previousPage()" class="page-item" [ngClass]="{'disabled': pageIndex == 1}">
-            <a class="page-link" mdbRippleRadius aria-label="Previous">
-              <span aria-hidden="true">«</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-
-          <li (click)="setPageIndex(index)" *ngFor="let index of pageLabels" [ngClass]="{'active': index==pageIndex}" class="page-item">
-            <a class="page-link" mdbRippleRadius>{{index}}</a>
-          </li>
-
-
-          <li (click)="nextPage()" class="page-item" [ngClass]="{'disabled': pageCount == pageIndex}">
-            <a class="page-link" mdbRippleRadius aria-label="Next">
-              <span aria-hidden="true">»</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-
-          <li class="page-item" (click)="lastPage()" [ngClass]="{'disabled': pageCount == pageIndex}">
-            <a class="page-link">Last</a>
-          </li>
-
-        </ul>
-      </nav>
+      <ngb-pagination (pageChange)="refresh()"
+                      [collectionSize]="collectionSize"
+                      [pageSize]="pageSize"
+                      [(page)]="page"
+                      [maxSize]="5"
+                      [rotate]="true"
+                      [ellipses]="false"
+                      [boundaryLinks]="true"
+                      aria-label="Default pagination">
+      </ngb-pagination>
 
     </div>
 
