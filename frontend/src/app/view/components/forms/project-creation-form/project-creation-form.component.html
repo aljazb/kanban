@@ -71,9 +71,13 @@
       </div>
     </div>
 
+    <div *ngIf='emptyFields' class="alert alert-warning">Please fill in all of the fields.</div>
+    <div *ngIf='dateSwitch' class="alert alert-warning">End date must be greater than the start date.</div>
+    <div *ngIf='earlyDate' class="alert alert-warning">Start date must be greater then todays date.</div>
+
     <div class="form-group row">
       <div class="container">
-        <button type="button" class="btn btn-primary float-right" (click)="activeModal.close(project)">Create</button>
+        <button type="button" class="btn btn-primary float-right" (click)="createProject()">Create</button>
       </div>
     </div>
 

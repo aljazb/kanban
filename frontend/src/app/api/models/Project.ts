@@ -8,8 +8,8 @@ export class Project extends BaseEntity<Project> {
   description: string;
   productBuyer: string;
 
-  startDate: number;
-  endDate: number;
+  startDate: Date;
+  endDate: Date;
 
   boardLane: BoardLane;
   devTeam: DevTeam;
