@@ -12,7 +12,11 @@ import java.util.UUID;
 @Entity
 @Table(name="request")
 @Cacheable
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
+@NamedQueries({
+        @NamedQuery(name="request.getAll",
+                query="SELECT req FROM Request req JOIN FETCH req.sender s JOIN FETCH req.receiver r " +
+                    "WHERE (r.id = :uid OR s.id = :uid)"),
+})
 public class Request extends UUIDEntity<Request> {
 
     @Enumerated(EnumType.STRING)

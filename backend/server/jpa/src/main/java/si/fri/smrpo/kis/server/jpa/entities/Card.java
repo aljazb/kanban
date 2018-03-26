@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 @Table(name="card")
 @Cacheable
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class Card extends UUIDEntity<Card> {
 
     @Column(name = "name")

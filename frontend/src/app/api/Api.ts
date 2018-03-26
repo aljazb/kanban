@@ -6,6 +6,7 @@ import {ProjectResource} from './resource/ProjectResource';
 import {CardResource} from './resource/CardResource';
 import {environment} from '../../environments/environment';
 import {BoardResource} from './resource/BoardResource';
+import {RequestResource} from './resource/RequestResource';
 
 @Injectable()
 export class ApiService {
@@ -18,6 +19,7 @@ export class ApiService {
   public devTeam: DevTeamResource;
   public project: ProjectResource;
   public userAccount: UserAccountResource;
+  public request: RequestResource;
 
   constructor(
     public httpClient: HttpClient) {
@@ -34,6 +36,7 @@ export class ApiService {
     this.devTeam = new DevTeamResource(this);
     this.project = new ProjectResource(this);
     this.userAccount = new UserAccountResource(this);
+    this.request = new RequestResource(this);
   }
 
 

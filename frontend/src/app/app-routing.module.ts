@@ -8,6 +8,7 @@ import {BoardComponent} from './view/route/board/board.component';
 import {AdminComponent} from './view/route/admin/admin.component';
 import {ROLE_ADMINISTRATOR} from './api/keycloak/keycloak-init';
 import {ROLE_KANBAN_MASTER} from './api/keycloak/keycloak-init';
+import {ProfileComponent} from './view/route/profile/profile.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'dev-team/:id', component: DevTeamComponent },
   { path: 'project/:id', component: ProjectComponent, data: {roles: {ROLE_KANBAN_MASTER}} },
-  { path: 'board/:id', component: BoardComponent }
+  { path: 'board/:id', component: BoardComponent },
+  { path: 'profile', component: ProfileComponent },
 ];
 
 @NgModule({

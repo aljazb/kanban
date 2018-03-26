@@ -15,7 +15,9 @@ import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
@@ -52,6 +54,13 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
     @Override
     public Response getList() throws ApiException {
         return super.getList();
+    }
+
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @GET
+    @Path("/userRequests")
+    public Response getUserRequests() {
+        return Response.ok(requestService.getUserRequests(manager.getUserId())).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})

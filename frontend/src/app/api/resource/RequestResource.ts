@@ -12,6 +12,12 @@ export class RequestResource extends GetResource<Request> {
     super("Request", api);
   }
 
+  getUserRequests(): Observable<Request[]> {
+    return this.api.httpClient.get<Request[]>(`${this.url}/userRequests`).pipe(
+      catchError(this.handleError<Request[]>("userRequests"))
+    );
+  }
+
   accept (requestId: string): Observable<Request> {
     return this.api.httpClient.put<Request>(this.url + "/" + requestId, { headers: this.getHeaders()})
       .pipe(
@@ -41,7 +47,7 @@ export class RequestResource extends GetResource<Request> {
 
   createKanbanMasterPromotion(devTeamId: string, userId: string): Observable<Request> {
     let request: Request = new Request();
-    request.requestType = RequestType.DEV_TEAM_KAMBAN_MASTER_PROMOTION;
+    request.requestType = RequestType.DEV_TEAM_KANBAN_MASTER_PROMOTION;
     request.referenceId = devTeamId;
     request.receiver = new UserAccount();
     request.receiver.id = userId;

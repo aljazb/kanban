@@ -26,6 +26,8 @@ import { ProjectCreationFormComponent } from './view/components/forms/project-cr
 import { DevTeamPagingComponent } from './view/components/paging/dev-team-paging/dev-team-paging.component';
 import { ProjectPagingComponent } from './view/components/paging/project-paging/project-paging.component';
 import { BoardPagingComponent } from './view/components/paging/board-paging/board-paging.component';
+import { ProfileComponent } from './view/route/profile/profile.component';
+import {LoginService} from './api/login.service';
 
 
 @NgModule({
@@ -51,7 +53,8 @@ import { BoardPagingComponent } from './view/components/paging/board-paging/boar
     ProjectCreationFormComponent,
     DevTeamPagingComponent,
     ProjectPagingComponent,
-    BoardPagingComponent
+    BoardPagingComponent,
+    ProfileComponent
   ],
   providers: [
     {
@@ -61,7 +64,8 @@ import { BoardPagingComponent } from './view/components/paging/board-paging/boar
       deps: [KeycloakService]
     },
     KeycloakAuthGuardService,
-    ApiService
+    ApiService,
+    LoginService,
   ],
   bootstrap: [ AppComponent ],
   entryComponents: [
