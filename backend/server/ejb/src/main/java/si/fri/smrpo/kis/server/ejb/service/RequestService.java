@@ -43,15 +43,21 @@ public class RequestService implements RequestServiceLocal {
         }
     }
 
-    private void validateRequest(Request request) throws OperationException {
-        if(request.getReceiver() == null || request.getReceiver().getId() == null){
-            throw new OperationException("Request receiver specified.");
-        }
+    private void validateRequest(Request request) throws LogicBaseException {
         if(request.getReferenceId() == null){
             throw new OperationException("Request reference id not specified.");
         }
         if(request.getRequestType() == null){
             throw new OperationException("No request type specified.");
+        }
+        if(request.getReceiver() == null || request.getReceiver().getId() == null){
+            throw new OperationException("Request receiver specified.");
+
+        } else {
+            UserAccount receiver = database.get(UserAccount.class, request.getReceiver().getId());
+            if(receiver == null || receiver.getIsDeleted()){
+                throw new OperationException("Request receiver does not exist or is marked as deleted.");
+            }
         }
     }
 

@@ -11,7 +11,7 @@ public class JSONObjectMapper {
         return new ObjectMapper()
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true)
                 .setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
                 //.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
