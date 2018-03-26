@@ -26,6 +26,7 @@ import { ProjectCreationFormComponent } from './view/components/forms/project-cr
 import { DevTeamPagingComponent } from './view/components/paging/dev-team-paging/dev-team-paging.component';
 import { ProjectPagingComponent } from './view/components/paging/project-paging/project-paging.component';
 import { BoardPagingComponent } from './view/components/paging/board-paging/board-paging.component';
+import {ProjectEditFormComponent} from './view/components/forms/project-edit-form/project-edit-form.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { BoardPagingComponent } from './view/components/paging/board-paging/boar
     UserPagingComponent,
     UserDetailsComponent,
     ProjectCreationFormComponent,
+    ProjectEditFormComponent,
     DevTeamPagingComponent,
     ProjectPagingComponent,
     BoardPagingComponent
@@ -65,7 +67,8 @@ import { BoardPagingComponent } from './view/components/paging/board-paging/boar
   ],
   bootstrap: [ AppComponent ],
   entryComponents: [
-    ProjectCreationFormComponent
+    ProjectCreationFormComponent,
+    ProjectEditFormComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

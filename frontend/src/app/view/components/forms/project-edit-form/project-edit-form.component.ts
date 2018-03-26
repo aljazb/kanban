@@ -6,13 +6,15 @@ import {ApiService} from '../../../../api/Api';
 
 @Component({
   selector: 'app-project-creation-form',
-  templateUrl: './project-creation-form.component.html',
-  styleUrls: ['./project-creation-form.component.css']
+  templateUrl: './project-edit-form.component.html',
+  styleUrls: ['./project-edit-form.component.css']
 })
-export class ProjectCreationFormComponent {
+export class ProjectEditFormComponent {
 
   devTeams: DevTeam[];
-  project: Project = new Project();
+  project: Project;
+  startDate = {};
+  endDate = {};
   emptyFields = false;
   earlyDate = false;
   dateSwitch = false;
@@ -33,7 +35,7 @@ export class ProjectCreationFormComponent {
       .subscribe(devTeams => this.devTeams = devTeams.items);
   }
 
-  createProject() {
+  editProject() {
     this.emptyFields = this.earlyDate = this.dateSwitch = false;
     if (!this.project.startDate || !this.project.endDate || !this.project.name || !this.project.productBuyer) {
       this.emptyFields = true;
@@ -50,7 +52,11 @@ export class ProjectCreationFormComponent {
           this.project.devTeam = this.devTeams.find(i => i.name == this.project.devTeam.toString());
         else
           this.project.devTeam = this.devTeams[0];
-        this.apiService.project.post(this.project, true).subscribe(value =>
+        this.project.startDate = new Date();
+        this.project.endDate = new Date();
+        console.log(this.project.productBuyer);
+        console.log(this.project.devTeam);
+        this.apiService.project.put(this.project, true).subscribe(value =>
           console.log(this.project)
         );
       }
