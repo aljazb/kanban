@@ -1,8 +1,10 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
+import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
-import si.fri.smrpo.kis.server.ejb.exceptions.NoContentException;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
@@ -47,32 +49,26 @@ public class DevTeamService implements DevTeamServiceLocal {
         return devTeam;
     }
 
-    public List<UserAccount> getDevelopers(UUID devTeamId) {
-        return database.getEntityManager().createNamedQuery("devTeam.getDevelopers", UserAccount.class)
+    public Paging<UserAccount> getDevelopers(UUID devTeamId) {
+        List<UserAccount> uaList = database.getEntityManager().createNamedQuery("devTeam.getDevelopers", UserAccount.class)
                 .setParameter("id", devTeamId)
                 .getResultList();
+
+        return new Paging<>(uaList, uaList.size());
     }
 
     @Override
-    public UserAccount getKanbanMaster(UUID devTeamId) throws NoContentException {
-        try {
+    public UserAccount getKanbanMaster(UUID devTeamId) {
         return database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
                 .setParameter("id", devTeamId)
-                .getSingleResult();
-        } catch (NoResultException e) {
-            throw new NoContentException("Kanban Master not found", e);
-        }
+                .getResultList().stream().findFirst().orElse(null);
     }
 
     @Override
-    public UserAccount getProductOwner(UUID devTeamId) throws NoContentException {
-        try {
+    public UserAccount getProductOwner(UUID devTeamId) {
             return database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
                     .setParameter("id", devTeamId)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            throw new NoContentException("Product Owner not found", e);
-        }
+                    .getResultList().stream().findFirst().orElse(null);
     }
 
 }

@@ -36,13 +36,20 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
     }
 
     public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, DatabaseManager<E, I> dbmCore) throws DatabaseException {
+        CriteriaFilter<E> customFilter = null;
+        boolean requiresDistinct = false;
+
+        if(dbmCore != null) {
+            customFilter = dbmCore.authCriteria();
+            requiresDistinct = dbmCore.authCriteriaRequiresDistinct();
+        }
+
+        return getList(c, param, customFilter, requiresDistinct);
+    }
+
+    public <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, boolean requiresDistinct) throws DatabaseException {
         try{
-            CriteriaFilter<E> customFilter = null;
-            boolean requiresDistinct = false;
-            if(dbmCore != null) {
-                customFilter = dbmCore.authCriteria();
-                requiresDistinct = dbmCore.authCriteriaRequiresDistinct();
-            }
+
 
             List<E> items = JPAUtils.queryEntities(entityManager, c, param, customFilter, requiresDistinct);
             Long count = JPAUtils.queryEntitiesCount(entityManager, c, param, customFilter, requiresDistinct);

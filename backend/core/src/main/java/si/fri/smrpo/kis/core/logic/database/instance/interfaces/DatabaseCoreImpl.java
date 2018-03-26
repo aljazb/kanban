@@ -5,6 +5,7 @@ import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
+import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ public interface DatabaseCoreImpl<I extends Serializable> extends DatabaseBaseIm
 
     <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param) throws DatabaseException;
     <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, DatabaseManager<E, I> dbmCore) throws DatabaseException;
+    <E extends BaseEntity<E, I>> Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, boolean requiresDistinct) throws DatabaseException;
 
     <E extends BaseEntity<E, I>> E get(Class<E> c, I id) throws DatabaseException;
     <E extends BaseEntity<E, I>> E get(Class<E> c, I id, DatabaseManager<E, I> dbmCore) throws DatabaseException;

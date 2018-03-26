@@ -54,10 +54,6 @@ public abstract class GetResource<
     @GET
     @Path("{id}")
     public Response get(@PathParam("id") UUID id) throws ApiException {
-        return getProcess(id);
-    }
-
-    protected Response getProcess(UUID id) throws ApiException {
         T dbEntity = source.get(type, id);
 
         EntityTag tag = dbEntity.getEntityTag();
@@ -74,6 +70,7 @@ public abstract class GetResource<
         return rb.build();
     }
 
+
     protected CacheControl buildCacheControl(int maxAge, CacheControlType cacheControlType){
         CacheControl cc = new CacheControl();
         cc.setMaxAge(maxAge);
@@ -88,48 +85,6 @@ public abstract class GetResource<
 
         }
         return cc;
-    }
-
-    protected Response.ResponseBuilder buildResponse(T dbEntity) {
-        return buildResponse(dbEntity, false, false, null);
-    }
-
-    protected Response.ResponseBuilder buildResponse(T dbEntity, Boolean isContentReturned) {
-        return buildResponse(dbEntity, isContentReturned, false, null);
-    }
-
-    protected Response.ResponseBuilder buildResponse(T dbEntity, Boolean isContentReturned, boolean locationHeader) {
-        return buildResponse(dbEntity, isContentReturned, locationHeader, null);
-    }
-
-    protected Response.ResponseBuilder buildResponse(T dbEntity, Boolean isContentReturned, boolean locationHeader, Response.Status status) {
-
-        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.NO_CONTENT);
-
-        if(isContentReturned != null && isContentReturned){
-            responseBuilder.entity(dbEntity);
-            responseBuilder.status(Response.Status.OK);
-        }
-
-        if(status != null){
-            responseBuilder.status(status);
-        }
-
-        if(locationHeader){
-            String locationValue = type.getSimpleName() + "/" + dbEntity.getId();
-            responseBuilder.header("Location", locationValue);
-        }
-
-        return responseBuilder;
-    }
-
-    protected Response.ResponseBuilder buildResponse(Paging<T> paging){
-
-        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.OK);
-        responseBuilder.header("X-Count", paging.getCount());
-        responseBuilder.entity(paging.getItems());
-
-        return responseBuilder;
     }
 
 }

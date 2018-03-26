@@ -8,6 +8,7 @@ import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
+import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
@@ -71,6 +72,11 @@ public class DatabaseService implements DatabaseServiceLocal {
     @Override
     public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, QueryParameters param, DatabaseManager<T, UUID> dbmCore) throws DatabaseException {
         return database.getList(c, param, dbmCore);
+    }
+
+    @Override
+    public <T extends BaseEntity<T, UUID>> Paging<T> getList(Class<T> c, QueryParameters param, CriteriaFilter<T> customFilter, boolean distinct) throws DatabaseException {
+        return database.getList(c, param, customFilter, distinct);
     }
 
     @Override
