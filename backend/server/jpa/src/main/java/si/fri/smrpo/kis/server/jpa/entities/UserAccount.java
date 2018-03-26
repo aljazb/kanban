@@ -17,7 +17,6 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = "user-account.get-all", query = "SELECT ua FROM UserAccount ua")
 })
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class UserAccount extends UUIDEntity<UserAccount> {
 
 

@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.service;
 
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.exceptions.NoContentException;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
@@ -12,7 +13,9 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 @PermitAll
@@ -42,6 +45,34 @@ public class DevTeamService implements DevTeamServiceLocal {
         devTeam.setJoinedUsers(members);
 
         return devTeam;
+    }
+
+    public List<UserAccount> getDevelopers(UUID devTeamId) {
+        return database.getEntityManager().createNamedQuery("devTeam.getDevelopers", UserAccount.class)
+                .setParameter("id", devTeamId)
+                .getResultList();
+    }
+
+    @Override
+    public UserAccount getKanbanMaster(UUID devTeamId) throws NoContentException {
+        try {
+        return database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
+                .setParameter("id", devTeamId)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            throw new NoContentException("Kanban Master not found", e);
+        }
+    }
+
+    @Override
+    public UserAccount getProductOwner(UUID devTeamId) throws NoContentException {
+        try {
+            return database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
+                    .setParameter("id", devTeamId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            throw new NoContentException("Product Owner not found", e);
+        }
     }
 
 }

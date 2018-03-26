@@ -11,7 +11,6 @@ import java.util.Set;
 @Entity
 @Table(name="board_lane")
 @Cacheable
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class BoardLane extends UUIDEntity<BoardLane> {
 
 

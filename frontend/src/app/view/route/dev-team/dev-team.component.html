@@ -1,3 +1,30 @@
-<p>
-  dev-team works!
-</p>
+<div *ngIf="devTeam">
+  <h2>{{ devTeam.name }}</h2>
+
+  <h3>Kanban Master:</h3>
+  <div *ngIf="kanbanMaster">
+    <ul class="list-group">
+      <li class="list-group-item">
+        {{ kanbanMaster.email }}
+      </li>
+    </ul>
+  </div>
+
+  <h3>Product Owner:</h3>
+  <div *ngIf="productOwner">
+    <ul class="list-group">
+      <li class="list-group-item">
+        {{ productOwner.email }}
+      </li>
+    </ul>
+  </div>
+
+  <h3>Joined users:</h3>
+  <div *ngIf="developers">
+    <ul class="list-group">
+      <li *ngFor="let user of developers" class="list-group-item">
+        {{ user.email }}
+      </li>
+    </ul>
+  </div>
+</div>

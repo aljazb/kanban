@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Entity
 @Table(name="user_account_mtm_dev_team")
 @Cacheable
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class UserAccountMtmDevTeam extends UUIDEntity<UserAccountMtmDevTeam> {
 
     @Enumerated(EnumType.STRING)

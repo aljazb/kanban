@@ -28,6 +28,13 @@ public class RequestService implements RequestServiceLocal {
     @EJB
     private DatabaseServiceLocal database;
 
+    public List<Request> getUserRequests(UUID userId) {
+        List<Request> rl = database.getEntityManager().createNamedQuery("request.getAll", Request.class)
+                .setParameter("uid", userId)
+                .getResultList();
+        return rl;
+    }
+
     public Request create(Request request, UUID authId) throws LogicBaseException {
         validateRequest(request);
 
@@ -35,7 +42,7 @@ public class RequestService implements RequestServiceLocal {
         request.setSender(sender);
 
         switch (request.getRequestType()) {
-            case DEV_TEAM_KAMBAN_MASTER_PROMOTION:
+            case DEV_TEAM_KANBAN_MASTER_PROMOTION:
                 return createKanbanMasterPromotion(request);
             case DEV_TEAM_INVITE:
             default:
@@ -112,7 +119,7 @@ public class RequestService implements RequestServiceLocal {
                 } else if(request.getSender().getId().equals(authId) && !statusDecision) {
                     return processUpdate(request, RequestStatus.CANCELED);
                 } else {
-                    throw new OperationException("User is not reciever or sender of request.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+                    throw new OperationException("User is not receiver or sender of request.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
                 }
             } else {
                 throw new OperationException("Request was already updated.");
@@ -123,11 +130,11 @@ public class RequestService implements RequestServiceLocal {
     }
 
     private Request processUpdate(Request request, RequestStatus status) throws DatabaseException {
-        if(request.getRequestStatus() == RequestStatus.ACCEPTED){
+        if(status == RequestStatus.ACCEPTED){
             switch (request.getRequestType()){
                 case DEV_TEAM_INVITE:
                     processDevTeamInvite(request); break;
-                case DEV_TEAM_KAMBAN_MASTER_PROMOTION:
+                case DEV_TEAM_KANBAN_MASTER_PROMOTION:
                     processKanbanMasterPromotion(request); break;
             }
         }

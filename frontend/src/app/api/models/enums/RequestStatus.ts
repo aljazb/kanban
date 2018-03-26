@@ -1,5 +1,5 @@
-export enum RequestStatus {
-  PENDING,
-  ACCEPTED,
-  DECLINED
+export class RequestStatus {
+  PENDING = "PENDING";
+  ACCEPTED = "ACCEEPTED";
+  DECLINED = "DECLINED";
 }

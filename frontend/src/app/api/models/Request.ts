@@ -13,5 +13,5 @@ export class Request extends BaseEntity<Request> {
   referenceId: string;
   context: string;
   sender: UserAccount;
-  receiver:UserAccount;
+  receiver: UserAccount;
 }
