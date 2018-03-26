@@ -6,6 +6,7 @@ import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.exceptions.NoContentException;
 import si.fri.smrpo.kis.server.ejb.managers.DevTeamAuthManager;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
@@ -15,6 +16,7 @@ import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.persistence.NoResultException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
@@ -105,5 +107,26 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @Override
     public Response get(@PathParam("id") UUID id) throws ApiException {
         return super.get(id);
+    }
+
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @GET
+    @Path("{id}/developers")
+    public Response getMembers(@PathParam("id") UUID id) {
+        return Response.ok(devTeamService.getDevelopers(id)).build();
+    }
+
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @GET
+    @Path("{id}/kanbanMaster")
+    public Response getKanbanMaster(@PathParam("id") UUID id) throws NoContentException {
+        return Response.ok(devTeamService.getKanbanMaster(id)).build();
+    }
+
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @GET
+    @Path("{id}/productOwner")
+    public Response getProductOwner(@PathParam("id") UUID id) throws NoContentException {
+        return Response.ok(devTeamService.getProductOwner(id)).build();
     }
 }

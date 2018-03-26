@@ -17,11 +17,17 @@ import java.util.Set;
         @NamedQuery(name = "devTeam.getKanbanMaster",
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND " +
                         "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER)"),
+        @NamedQuery(name = "devTeam.getProductOwner",
+                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND " +
+                        "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.PRODUCT_OWNER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_PRODUCT_OWNER)"),
         @NamedQuery(name = "devTeam.getMembers",
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua"),
         @NamedQuery(name = "devTeam.isMember",
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua " +
-                        "WHERE dt.id = :devTeamId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND ua.id = :userId")
+                        "WHERE dt.id = :devTeamId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND ua.id = :userId"),
+        @NamedQuery(name = "devTeam.getDevelopers",
+                query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND " +
+                        "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_PRODUCT_OWNER)"),
 })
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 public class DevTeam extends UUIDEntity<DevTeam> {
