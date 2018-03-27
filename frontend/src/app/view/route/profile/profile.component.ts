@@ -29,8 +29,20 @@ export class ProfileComponent implements OnInit {
     })
   }
 
+  private replaceRequest(array: Request[], request: Request) {
+    array[array.findIndex(arrayRequest => request.id == arrayRequest.id)] = request
+  }
+
   acceptRequest(rq: Request) {
-    this.api.request.accept(rq.id).subscribe(() => this.loadRequests());
+    this.api.request.accept(rq.id).subscribe(request => this.replaceRequest(this.receivedRequests, request));
+  }
+
+  declineRequest(rq: Request) {
+    this.api.request.decline(rq.id).subscribe(request => this.replaceRequest(this.receivedRequests, request));
+  }
+
+  cancelRequest(rq: Request) {
+    this.api.request.decline(rq.id).subscribe(request => this.replaceRequest(this.sentRequests, request));
   }
 
 }

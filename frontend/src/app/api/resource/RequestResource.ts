@@ -19,14 +19,14 @@ export class RequestResource extends GetResource<Request> {
   }
 
   accept (requestId: string): Observable<Request> {
-    return this.api.httpClient.put<Request>(this.url + "/" + requestId, { headers: this.getHeaders()})
+    return this.api.httpClient.put<Request>(this.url + "/" + requestId, null, { headers: this.getHeaders(true)})
       .pipe(
         catchError(this.handleError<Request>(`accept`))
       );
   }
 
   decline (requestId: string): Observable<Request> {
-    return this.api.httpClient.delete<Request>(this.url + "/" + requestId, { headers: this.getHeaders()})
+    return this.api.httpClient.delete<Request>(this.url + "/" + requestId, { headers: this.getHeaders(true)})
       .pipe(
         catchError(this.handleError<Request>(`decline`))
       );
