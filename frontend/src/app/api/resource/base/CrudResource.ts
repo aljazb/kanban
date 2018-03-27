@@ -1,7 +1,7 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
 import {GetResource} from './GetResource';
 import {Observable} from 'rxjs/Observable';
-import {ApiService} from '../../Api';
+import {ApiService} from '../../api.service';
 import {catchError} from 'rxjs/operators';
 import {Request} from '../../models/Request';
 

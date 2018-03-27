@@ -4,10 +4,8 @@
 
     <h4>User list</h4>
 
-    <div *ngIf="enableSearch" >
-      <form (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
-        <div class="row">
-
+    <div *ngIf="enableSearch">
+        <div class="row" (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
           <div class="col-md-4">
             <div class="md-form">
               <input #email type="text" id="in-email" class="form-control" placeholder="john.doe@gmail.com">
@@ -38,7 +36,6 @@
           </div>
 
         </div>
-      </form>
     </div>
 
     <div *ngIf="paging" class="list-group">

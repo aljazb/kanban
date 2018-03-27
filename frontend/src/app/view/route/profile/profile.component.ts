@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ApiService} from '../../../api/Api';
+import {ApiService} from '../../../api/api.service';
 import {LoginService} from '../../../api/login.service';
 import {Request} from '../../../api/models/Request';
 import {RequestStatus} from '../../../api/models/enums/RequestStatus';

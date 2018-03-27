@@ -1,7 +1,7 @@
 import {UserAccount} from '../models/UserAccount';
 import {CrudResource} from './base/CrudResource';
 import {Observable} from 'rxjs/Observable';
-import {ApiService} from '../Api';
+import {ApiService} from '../api.service';
 import {catchError} from 'rxjs/operators';
 
 export class UserAccountResource extends CrudResource<UserAccount> {

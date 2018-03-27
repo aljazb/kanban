@@ -1,5 +1,5 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
-import {ApiService} from '../../Api';
+import {ApiService} from '../../api.service';
 import {HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';

@@ -1,15 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {QueryBuilder} from '../../../api/query/query-builder';
-import {HttpParams} from '@angular/common/http';
-import {ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
-import {KeycloakService} from 'keycloak-angular/index';
-import {ApiService} from '../../../api/Api';
-import {DevTeam} from '../../../api/models/DevTeam';
+import {ApiService} from '../../../api/api.service';
 import {ActivatedRoute} from '@angular/router';
 import {Project} from '../../../api/models/Project';
-import {ProjectCreationFormComponent} from '../../components/forms/project-creation-form/project-creation-form.component';
+import {ProjectFormComponent} from '../../components/forms/project-form/project-form.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ProjectEditFormComponent} from '../../components/forms/project-edit-form/project-edit-form.component';
+
 
 @Component({
   selector: 'app-project',
@@ -42,8 +37,9 @@ export class ProjectComponent implements OnInit {
   }
 
   openProjectCreateModal() {
-    const modalRef = this.modalService.open(ProjectEditFormComponent);
-    (<ProjectComponent>modalRef.componentInstance).project = Object.create(this.project);
+    const modalRef = this.modalService.open(ProjectFormComponent);
+    (<ProjectFormComponent> modalRef.componentInstance).setInitialProject(this.project);
+
     modalRef.result
       .then(value => console.log(value))
       .catch(reason => console.log(reason));
