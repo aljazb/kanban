@@ -118,13 +118,13 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @GET
     @Path("{id}/kanbanMaster")
     public Response getKanbanMaster(@PathParam("id") UUID id) {
-        return buildResponse(devTeamService.getKanbanMaster(id)).build();
+        return buildResponse(devTeamService.getKanbanMaster(id), true).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
     @GET
     @Path("{id}/productOwner")
     public Response getProductOwner(@PathParam("id") UUID id) {
-        return buildResponse(devTeamService.getProductOwner(id)).build();
+        return buildResponse(devTeamService.getProductOwner(id), true).build();
     }
 }

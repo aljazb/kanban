@@ -23,6 +23,7 @@ public class SeedService {
     private static final Faker FAKER = new Faker();
 
     private static final String TEST_USER_ID = "ccad0cc9-1786-4936-8525-3c325d1de0dd";
+    private static final String TEST1_USER_ID = "52ad43f3-463f-4838-98d7-9f096a73068b";
 
     private static final Integer USERS_NUMBER = 100;
     private static final Integer DEV_TEAMS_NUMBER = 10;
@@ -37,6 +38,7 @@ public class SeedService {
     private DatabaseServiceLocal database;
 
     private UserAccount root;
+    private UserAccount test1;
     private DevTeam rootDevTeam;
 
     private ArrayList<UserAccount> userAccounts = new ArrayList<>();
@@ -84,6 +86,10 @@ public class SeedService {
             if(i == 0){
                 ua.setId(UUID.fromString(TEST_USER_ID));
                 root = ua;
+            }
+            if(i == 1){
+                ua.setId(UUID.fromString(TEST1_USER_ID));
+                test1 = ua;
             }
 
             ua = database.create(ua);
@@ -274,19 +280,14 @@ public class SeedService {
         }
 
         DevTeam dt = devTeams.get(0);
-        for (int i = 0; i < devTeams.size(); i++) {
-            dt = devTeams.get(i);
+        for (DevTeam devTeam : devTeams) {
+            dt = devTeam;
             if (dt != rootDevTeam) {
                 break;
             }
         }
-        UserAccount ua = userAccounts.get(0);
-        for (int i = 0; i < userAccounts.size(); i++) {
-            ua = userAccounts.get(i);
-            if (ua != root) {
-                break;
-            }
-        }
+        UserAccount ua = database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
+                .setParameter("id", dt.getId()).getResultList().stream().findFirst().orElse(null);
         Request requestToRoot = new Request();
         requestToRoot.setRequestType(RequestType.DEV_TEAM_INVITE);
         requestToRoot.setContext("Invite to dev team " + dt.getName());
@@ -298,13 +299,23 @@ public class SeedService {
         database.create(requestToRoot);
 
         Request request = new Request();
-        request.setRequestType(RequestType.DEV_TEAM_KANBAN_MASTER_PROMOTION);
-        request.setContext("Promotion to kanban master for dev team " + rootDevTeam.getName());
+        request.setRequestType(RequestType.KANBAN_MASTER_INVITE);
+        request.setContext("Invite to become kanban master for dev team " + rootDevTeam.getName());
         request.setRequestStatus(RequestStatus.PENDING);
         request.setSender(root);
-        request.setReceiver(members.get(2));
+        request.setReceiver(test1);
         request.setReferenceId(rootDevTeam.getId());
 
         database.create(request);
+
+        Request requestPO = new Request();
+        requestPO.setRequestType(RequestType.PRODUCT_OWNER_INVITE);
+        requestPO.setContext("Invite to become product owner for dev team " + rootDevTeam.getName());
+        requestPO.setRequestStatus(RequestStatus.PENDING);
+        requestPO.setSender(root);
+        requestPO.setReceiver(test1);
+        requestPO.setReferenceId(rootDevTeam.getId());
+
+        database.create(requestPO);
     }
 }
