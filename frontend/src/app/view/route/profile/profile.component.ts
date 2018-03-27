@@ -3,6 +3,7 @@ import {ApiService} from '../../../api/Api';
 import {LoginService} from '../../../api/login.service';
 import {Request} from '../../../api/models/Request';
 import {RequestStatus} from '../../../api/models/enums/RequestStatus';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-profile',
@@ -24,12 +25,20 @@ export class ProfileComponent implements OnInit {
 
   loadRequests() {
     this.api.request.getUserRequests().subscribe(requests => {
+      if (isNullOrUndefined(requests)) {
+        this.sentRequests = this.receivedRequests = null;
+        return;
+      }
       this.sentRequests = requests.filter(rq => rq.sender.id == this.loginService.user.id);
       this.receivedRequests = requests.filter(rq => rq.receiver.id == this.loginService.user.id);
     })
   }
 
   private replaceRequest(array: Request[], request: Request) {
+    if (isNullOrUndefined(request)) {
+      this.loadRequests();
+      return;
+    }
     array[array.findIndex(arrayRequest => request.id == arrayRequest.id)] = request
   }
 

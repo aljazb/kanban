@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.service.interfaces;
 
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
@@ -16,4 +17,6 @@ public interface DevTeamServiceLocal {
     UserAccount getKanbanMaster(UUID devTeamId);
 
     UserAccount getProductOwner(UUID devTeamId);
+
+    UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException;
 }

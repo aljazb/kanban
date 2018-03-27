@@ -2,14 +2,17 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.managers.DevTeamAuthManager;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
+import si.fri.smrpo.kis.server.jpa.enums.RequestType;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -29,6 +32,9 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
 
     @EJB
     private DevTeamServiceLocal devTeamService;
+
+    @EJB
+    private RequestServiceLocal requestService;
 
     @EJB
     private DatabaseServiceLocal databaseService;
@@ -126,5 +132,28 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @Path("{id}/productOwner")
     public Response getProductOwner(@PathParam("id") UUID id) {
         return buildResponse(devTeamService.getProductOwner(id), true).build();
+    }
+
+    @RolesAllowed({ROLE_KANBAN_MASTER})
+    @DELETE
+    @Path("{devTeamId}/user/{uid}")
+    public Response kickMember(@HeaderParam("X-Content") Boolean xContent, @PathParam("devTeamId") UUID devTeamId, @PathParam("uid") UUID userId) throws ApiException {
+        try {
+            return buildResponse(devTeamService.kickMember(devTeamId, userId, manager.getUserId()), xContent).build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
+    }
+
+    @RolesAllowed({ROLE_KANBAN_MASTER})
+    @DELETE
+    @Path("{devTeamId}/po/{uid}")
+    public Response demotePO(@HeaderParam("X-Content") Boolean xContent, @PathParam("devTeamId") UUID devTeamId, @PathParam("uid") UUID userId) throws ApiException {
+        try {
+            requestService.demotePO(devTeamId, manager.getUserId());
+            return Response.noContent().build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
     }
 }

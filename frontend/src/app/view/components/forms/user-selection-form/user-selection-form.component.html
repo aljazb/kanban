@@ -1,0 +1,29 @@
+<div class="modal-header">
+  <h4 class="modal-title">Select user</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <form #projectForm="ngForm">
+
+    <div class="form-group row">
+      <label for="in-devteam" class="col-sm-2 col-form-label">User:</label>
+      <div class="col-sm-10">
+        <select required [(ngModel)]="selectedUser" name="project-devteam" class="form-control" id="in-devteam">
+          <option *ngFor="let user of users">{{ user.email}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="container">
+        <button type="button" class="btn btn-primary float-right" (click)="selectUser()">Create</button>
+      </div>
+    </div>
+
+  </form>
+
+</div>

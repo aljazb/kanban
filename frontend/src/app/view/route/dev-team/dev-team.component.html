@@ -9,22 +9,31 @@
       </li>
     </ul>
   </div>
+  <button *ngIf="isUserKanbanMaster" type="button" (click)="sendKMInvite()" class="btn btn-primary">Invite new Kanban Master</button>
 
   <h3>Product Owner:</h3>
   <div *ngIf="productOwner">
     <ul class="list-group">
-      <li class="list-group-item">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
         {{ productOwner.email }}
+        <div *ngIf="isUserKanbanMaster">
+          <button (click)="demotePO(productOwner)" type="button" class="btn btn-danger">Demote</button>
+        </div>
       </li>
     </ul>
   </div>
+  <button *ngIf="isUserKanbanMaster" type="button" (click)="sendPOInvite()" class="btn btn-primary">Invite new Product Owner</button>
 
-  <h3>Joined users:</h3>
+  <h3>Developers:</h3>
   <div *ngIf="developers">
     <ul class="list-group">
-      <li *ngFor="let user of developers" class="list-group-item">
-        {{ user.email }}
+      <li *ngFor="let developer of developers" class="list-group-item d-flex justify-content-between align-items-center">
+        {{ developer.email }}
+        <div *ngIf="isUserKanbanMaster">
+          <button (click)="kick(developer)" type="button" class="btn btn-danger">Kick</button>
+        </div>
       </li>
     </ul>
   </div>
+  <button *ngIf="isUserKanbanMaster" type="button" (click)="sendDevInvite()" class="btn btn-primary">Add new developer</button>
 </div>

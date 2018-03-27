@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.service;
 
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
@@ -69,6 +70,41 @@ public class DevTeamService implements DevTeamServiceLocal {
             return database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
                     .setParameter("id", devTeamId)
                     .getResultList().stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException {
+        if (!getKanbanMaster(devTeamId).getId().equals(authId)) {
+            throw new OperationException("User is not KanbanMaster of this group",
+                    LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+        }
+
+        DevTeam devTeam = database.get(DevTeam.class, devTeamId);
+
+        UserAccountMtmDevTeam memberMtm = devTeam.getJoinedUsers().stream().filter(e -> e.getUserAccount().getId()
+                .equals(memberId) && !e.getIsDeleted()).findFirst().orElse(null);
+
+        if (memberMtm == null) {
+            throw new OperationException("Member is not in the development team.");
+        }
+
+        switch (memberMtm.getMemberType()) {
+            case DEVELOPER_AND_KANBAN_MASTER:
+                memberMtm.setMemberType(MemberType.KANBAN_MASTER);
+                memberMtm = database.update(memberMtm);
+                break;
+            case DEVELOPER_AND_PRODUCT_OWNER:
+                memberMtm.setMemberType(MemberType.PRODUCT_OWNER);
+                memberMtm = database.update(memberMtm);
+                break;
+            case DEVELOPER:
+                memberMtm = database.delete(UserAccountMtmDevTeam.class, memberMtm.getId());
+                break;
+            default:
+                throw new OperationException("Member is not developer");
+        }
+
+        return memberMtm.getUserAccount();
     }
 
 }

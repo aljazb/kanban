@@ -263,9 +263,11 @@ public class SeedService {
 
         List<UserAccount> potentialInvites = new ArrayList<>(userAccounts);
         potentialInvites.removeAll(members);
+        potentialInvites.remove(test1);
 
         for(int i=0; i<5; i++) {
-            UserAccount reciever = potentialInvites.get(FAKER.number.between(0, potentialInvites.size()-1));
+            UserAccount reciever = (i == 0) ? test1 :
+                    potentialInvites.get(FAKER.number.between(0, potentialInvites.size()-1));
             potentialInvites.remove(reciever);
 
             Request request = new Request();

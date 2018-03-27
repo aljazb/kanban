@@ -88,7 +88,7 @@ public class RequestService implements RequestServiceLocal {
     }
 
     private boolean isRecieverMemberOfDevTeam(UUID recieverID, UUID devTeamId){
-        List<UserAccount> user = database.getEntityManager().createNamedQuery("devTeam.isMember", UserAccount.class)
+        List<UserAccount> user = database.getEntityManager().createNamedQuery("devTeam.isDeveloper", UserAccount.class)
                 .setParameter("devTeamId", devTeamId).setParameter("userId", recieverID).getResultList();
         return !user.isEmpty();
     }
@@ -113,6 +113,7 @@ public class RequestService implements RequestServiceLocal {
         UUID devTeamId = request.getReferenceId();
         if(isUserKanbanMaster(request.getSender().getId(), devTeamId)) {
             if(canBecomeRole(request.getReceiver().getId(), devTeamId)) {
+                request.setRequestStatus(RequestStatus.PENDING);
                 return database.create(request);
             } else {
                 throw new OperationException("Receiver cannot become specified role.");
@@ -180,6 +181,21 @@ public class RequestService implements RequestServiceLocal {
         mtm = database.create(mtm);
     }
 
+    @Override
+    public void demotePO(UUID devTeamId, UUID authUserId) throws LogicBaseException {
+        DevTeam devTeam = database.getEntityManager().find(DevTeam.class, devTeamId);
+
+        if (devTeam == null) {
+            throw new OperationException("Development team does not exist.");
+        }
+
+        if (!isUserKanbanMaster(authUserId, devTeamId)) {
+            throw new OperationException("User not KanbanMaster.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+        }
+
+        demote(devTeam, RequestType.PRODUCT_OWNER_INVITE);
+    }
+
     private void demote(DevTeam devTeam, RequestType role) throws OperationException, DatabaseException {
         final UserAccount user;
         switch (role) {
@@ -222,7 +238,7 @@ public class RequestService implements RequestServiceLocal {
         demote(devTeam, request.getRequestType());
 
         UserAccountMtmDevTeam receiverMtm = members.stream()
-                .filter(e -> e.getUserAccount().getId().equals(request.getReceiver().getId()))
+                .filter(e -> !e.getIsDeleted() && e.getUserAccount().getId().equals(request.getReceiver().getId()))
                 .findFirst().orElse(null);
 
         boolean create = false;

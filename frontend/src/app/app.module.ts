@@ -29,6 +29,7 @@ import { BoardPagingComponent } from './view/components/paging/board-paging/boar
 import {ProjectEditFormComponent} from './view/components/forms/project-edit-form/project-edit-form.component';
 import { ProfileComponent } from './view/route/profile/profile.component';
 import {LoginService} from './api/login.service';
+import { UserSelectionFormComponent } from './view/components/forms/user-selection-form/user-selection-form.component';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import {LoginService} from './api/login.service';
     DevTeamPagingComponent,
     ProjectPagingComponent,
     BoardPagingComponent,
-    ProfileComponent
+    ProfileComponent,
+    UserSelectionFormComponent
   ],
   providers: [
     {
@@ -72,7 +74,8 @@ import {LoginService} from './api/login.service';
   bootstrap: [ AppComponent ],
   entryComponents: [
     ProjectCreationFormComponent,
-    ProjectEditFormComponent
+    ProjectEditFormComponent,
+    UserSelectionFormComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

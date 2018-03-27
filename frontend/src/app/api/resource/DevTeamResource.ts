@@ -28,4 +28,16 @@ export class DevTeamResource extends CrudResource<DevTeam> {
       catchError(this.handleError<UserAccount>("productOwner"))
     );
   }
+
+  kickMember(devTeamId: string, memberId: string): Observable<UserAccount> {
+    return this.api.httpClient.delete<UserAccount>(`${this.url}/${devTeamId}/user/${memberId}`).pipe(
+      catchError(this.handleError<UserAccount>("kickMember"))
+    );
+  }
+
+  demotePO(devTeamId: string, poId: string): Observable<UserAccount> {
+    return this.api.httpClient.delete<UserAccount>(`${this.url}/${devTeamId}/po/${poId}`).pipe(
+      catchError(this.handleError<UserAccount>("demotePO"))
+    );
+  }
 }

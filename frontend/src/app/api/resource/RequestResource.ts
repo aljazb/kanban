@@ -32,30 +32,45 @@ export class RequestResource extends GetResource<Request> {
       );
   }
 
-  createDevTeamInvite(devTeamId: string, userId: string): Observable<Request> {
+  createDevTeamInvite(devTeamId: string, userId: string, context: string): Observable<Request> {
     let request: Request = new Request();
     request.requestType = RequestType.DEV_TEAM_INVITE;
     request.referenceId = devTeamId;
     request.receiver = new UserAccount();
     request.receiver.id = userId;
+    request.context = context;
 
-    return this.api.httpClient.post<Request>(this.url, { headers: this.getHeaders()})
+    return this.api.httpClient.post<Request>(this.url, request, { headers: this.getHeaders()})
       .pipe(
         catchError(this.handleError<Request>(`createDevTeamInvite`))
       );
   }
 
-  createKanbanMasterPromotion(devTeamId: string, userId: string): Observable<Request> {
+  createKanbanMasterInvite(devTeamId: string, userId: string, context: string): Observable<Request> {
     let request: Request = new Request();
-    request.requestType = RequestType.DEV_TEAM_KANBAN_MASTER_PROMOTION;
+    request.requestType = RequestType.KANBAN_MASTER_INVITE;
     request.referenceId = devTeamId;
     request.receiver = new UserAccount();
     request.receiver.id = userId;
+    request.context = context;
 
-    return this.api.httpClient.post<Request>(this.url, { headers: this.getHeaders()})
+    return this.api.httpClient.post<Request>(this.url, request, { headers: this.getHeaders()})
       .pipe(
-        catchError(this.handleError<Request>(`createKanbanMasterPromotion`))
+        catchError(this.handleError<Request>(`createKanbanMasterInvite`))
       );
   }
 
+  createProductOwnerInvite(devTeamId: string, userId: string, context: string): Observable<Request> {
+    let request: Request = new Request();
+    request.requestType = RequestType.PRODUCT_OWNER_INVITE;
+    request.referenceId = devTeamId;
+    request.receiver = new UserAccount();
+    request.receiver.id = userId;
+    request.context = context;
+
+    return this.api.httpClient.post<Request>(this.url, request, { headers: this.getHeaders()})
+      .pipe(
+        catchError(this.handleError<Request>(`createProductOwnerInvite`))
+      );
+  }
 }
