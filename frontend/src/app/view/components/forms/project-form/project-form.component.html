@@ -72,6 +72,11 @@
       </div>
     </div>
 
+    <div *ngIf='emptyFields' class="alert alert-warning">Please fill in all of the fields.</div>
+    <div *ngIf='dateSwitch' class="alert alert-warning">End date must be greater than the start date.</div>
+    <div *ngIf='earlyDate' class="alert alert-warning">Start date must be greater then todays date.</div>
+
+
   </form>
 
 </div>

@@ -6,6 +6,7 @@ import {ProjectFormComponent} from '../../components/forms/project-form/project-
 import {DevTeam} from '../../../api/models/DevTeam';
 import {Board} from '../../../api/models/Board';
 import {Router} from '@angular/router';
+import {ApiService} from '../../../api/api.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private router: Router,
     private keycloak:KeycloakService,
+    private apiService:ApiService,
     private modalService: NgbModal) { }
 
   ngOnInit() {
@@ -27,7 +29,10 @@ export class DashboardComponent implements OnInit {
     const modalRef = this.modalService.open(ProjectFormComponent);
     (<ProjectFormComponent> modalRef.componentInstance).setInitialProject(new Project());
     modalRef.result
-      .then(value => console.log(value))
+      .then(value =>
+        this.apiService.project.post(value, true).subscribe(value =>
+          console.log(value)
+        ))
       .catch(reason => console.log(reason));
   }
 

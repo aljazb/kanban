@@ -41,7 +41,10 @@ export class ProjectComponent implements OnInit {
     (<ProjectFormComponent> modalRef.componentInstance).setInitialProject(this.project);
 
     modalRef.result
-      .then(value => console.log(value))
+      .then(value =>
+        this.apiService.project.put(value, true).subscribe(value =>
+          console.log(value)
+        ))
       .catch(reason => console.log(reason));
   }
 }
