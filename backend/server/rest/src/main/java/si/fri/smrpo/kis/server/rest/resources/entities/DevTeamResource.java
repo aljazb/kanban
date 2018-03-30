@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
@@ -55,7 +56,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         try {
             DevTeam devTeam = devTeamService.create(entity, manager.getUserId());
             return buildResponse(devTeam, xContent, true ,Response.Status.CREATED).build();
-        } catch (DatabaseException e) {
+        } catch (LogicBaseException e) {
             throw ApiException.transform(e);
         }
     }

@@ -1,13 +1,9 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 
 @Entity
@@ -48,9 +44,6 @@ public class Project extends UUIDEntity<Project> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_account_id")
     private UserAccount owner;
-
-
-
 
 
     public DevTeam getDevTeam() {
