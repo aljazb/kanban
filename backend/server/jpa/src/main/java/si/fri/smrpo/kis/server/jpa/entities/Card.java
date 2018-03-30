@@ -1,10 +1,9 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="card")
@@ -18,7 +17,7 @@ public class Card extends UUIDEntity<Card> {
     private String description;
 
     @Column(name = "work_load")
-    private Integer workLoad;
+    private Integer workload;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,6 +31,12 @@ public class Card extends UUIDEntity<Card> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_lane_id", nullable = false)
     private BoardLane boardLane;
+
+    @OneToMany(mappedBy = "card")
+    private Set<CardMove> cardMoves;
+
+    @OneToMany(mappedBy = "card")
+    private Set<SubTask> subTasks;
 
 
     public Project getProject() {
@@ -58,12 +63,12 @@ public class Card extends UUIDEntity<Card> {
         this.description = description;
     }
 
-    public Integer getWorkLoad() {
-        return workLoad;
+    public Integer getWorkload() {
+        return workload;
     }
 
-    public void setWorkLoad(Integer workLoad) {
-        this.workLoad = workLoad;
+    public void setWorkload(Integer workLoad) {
+        this.workload = workLoad;
     }
 
     public BoardPart getBoardPart() {
@@ -80,5 +85,21 @@ public class Card extends UUIDEntity<Card> {
 
     public void setBoardLane(BoardLane boardLane) {
         this.boardLane = boardLane;
+    }
+
+    public Set<CardMove> getCardMoves() {
+        return cardMoves;
+    }
+
+    public void setCardMoves(Set<CardMove> cardMoves) {
+        this.cardMoves = cardMoves;
+    }
+
+    public Set<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(Set<SubTask> subTasks) {
+        this.subTasks = subTasks;
     }
 }
