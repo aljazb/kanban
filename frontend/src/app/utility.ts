@@ -4,7 +4,7 @@ export class Utility {
 
   public static cDpToTs(sp: { year:number, month: number, day: number }){
     if(sp){
-      let d = new Date(sp.year, sp.month, sp.day);
+      let d = new Date(sp.year, sp.month-1, sp.day, 0, 0, 0, 0);
       return d.getTime();
     } else {
       return null;
@@ -14,7 +14,7 @@ export class Utility {
   public static cTsToDp(timestamp: number) : { year:number, month: number, day: number }{
     if(timestamp){
       let d = new Date(timestamp);
-      return {year: d.getFullYear(), month: d.getMonth(), day: d.getDay()};
+      return {year: d.getFullYear(), month: d.getMonth()+1, day: d.getDate()};
     } else {
       return null;
     }

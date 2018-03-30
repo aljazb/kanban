@@ -16,7 +16,7 @@ import {ActivatedRoute} from '@angular/router';
 export class ProjectFormComponent {
 
   devTeams: DevTeam[];
-
+  project: Project = new Project();
   formProject: FormGroup;
 
   fcName: FormControl;
@@ -58,6 +58,8 @@ export class ProjectFormComponent {
   }
 
   setInitialProject(project: Project) {
+    this.project = project;
+
     this.fcName.setValue(project.name);
     this.fcProductBuyer.setValue(project.productBuyer);
     this.fcStartDate.setValue(Utility.cTsToDp(project.startDate));
@@ -74,24 +76,23 @@ export class ProjectFormComponent {
 
   onSubmit() {
     if(this.formProject.valid) {
-
-      let p = new Project();
+      let p = this.project;
       p.name = this.fcName.value;
       p.productBuyer = this.fcProductBuyer.value;
-      p.startDate = Utility.cDpToTs(this.fcStartDate.value);
       p.startDate = Utility.cDpToTs(this.fcStartDate.value);
       p.endDate = Utility.cDpToTs(this.fcEndDate.value);
       p.devTeam = this.devTeams.filter(e => e.id === this.fcDevTeam.value)[0];
 
       let today = new Date();
-      let todayUnix = Utility.cDpToTs({year: today.getFullYear(), month: today.getMonth()+1, day: today.getDate()});
+      today.setHours(0, 0, 0, 0);
+      let todayUnix = today.getTime();
 
       this.dateSwitch = this.earlyDate = this.emptyFields = false;
 
-      if (p.startDate < todayUnix) {
+      if (p.startDate > todayUnix) {
         this.earlyDate = true;
       }
-      if (p.startDate >= p.endDate) {
+      if (p.endDate <= todayUnix) {
         this.dateSwitch = true;
       }
       if (!this.emptyFields && !this.dateSwitch && !this.earlyDate) {

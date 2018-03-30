@@ -7,6 +7,8 @@ import {DevTeam} from '../../../api/models/DevTeam';
 import {Board} from '../../../api/models/Board';
 import {Router} from '@angular/router';
 import {ApiService} from '../../../api/api.service';
+import {ROLE_ADMINISTRATOR, ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
+import {LoginService} from '../../../api/login.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,14 +17,24 @@ import {ApiService} from '../../../api/api.service';
 })
 export class DashboardComponent implements OnInit {
 
+  isKanbanMaster: boolean = false;
+
   constructor(
     private router: Router,
     private keycloak:KeycloakService,
     private apiService:ApiService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    public loginService: LoginService) { }
 
   ngOnInit() {
-
+    this.keycloak.login();
+    this.keycloak.isLoggedIn()
+      .then(isLoggedIn => {
+        if(isLoggedIn){
+          this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
+          this.loginService.loginApi();
+        }
+      });
   }
 
   openProjectCreateModal() {
