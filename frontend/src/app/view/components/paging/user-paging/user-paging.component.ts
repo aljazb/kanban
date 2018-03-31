@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ApiService} from '../../../../api/Api';
+import {ApiService} from '../../../../api/api.service';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {debounceTime, switchMap, tap} from 'rxjs/operators';
 import {QueryBuilder} from '../../../../api/query/query-builder';

@@ -1,5 +1,5 @@
 import {CrudResource} from './base/CrudResource';
-import {ApiService} from '../Api';
+import {ApiService} from '../api.service';
 import {Project} from '../models/Project';
 
 export class ProjectResource extends CrudResource<Project> {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {ApiService} from './Api';
+import {ApiService} from './api.service';
 import {UserAccount} from './models/UserAccount';
 import 'rxjs/add/observable/of';
 

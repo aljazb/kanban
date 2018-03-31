@@ -1,8 +1,6 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.Constants;
@@ -29,6 +27,8 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     @Column(length = Constants.DEF_STRING_LEN)
     private String lastName;
 
+    @Column(length = Constants.DEF_STRING_LEN, nullable = false)
+    private String roles;
 
     @OneToMany(mappedBy = "userAccount")
     private Set<UserAccountMtmDevTeam> joinedDevTeams;
@@ -36,13 +36,17 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     @OneToMany(mappedBy = "owner")
     private Set<Project> projects;
 
-
     @OneToMany(mappedBy = "sender")
     private Set<Request> sentRequests;
 
     @OneToMany(mappedBy = "receiver")
     private Set<Request> receivedRequests;
 
+    @OneToMany(mappedBy = "movedBy")
+    private Set<CardMove> cardMoves;
+
+    @OneToMany(mappedBy = "assignedTo")
+    private Set<SubTask> subTasks;
 
 
     @JsonIgnore
@@ -112,7 +116,31 @@ public class UserAccount extends UUIDEntity<UserAccount> {
         return receivedRequests;
     }
 
-    public void setReceivedRequests(Set<Request> recivedRequests) {
-        this.receivedRequests = recivedRequests;
+    public void setReceivedRequests(Set<Request> receivedRequests) {
+        this.receivedRequests = receivedRequests;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public Set<CardMove> getCardMoves() {
+        return cardMoves;
+    }
+
+    public void setCardMoves(Set<CardMove> cardMoves) {
+        this.cardMoves = cardMoves;
+    }
+
+    public Set<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(Set<SubTask> subTasks) {
+        this.subTasks = subTasks;
     }
 }

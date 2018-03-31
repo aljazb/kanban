@@ -2,6 +2,7 @@ dependencies {
     compile project(':server:jpa')
 
     compile group: 'com.github.blocoio', name: 'faker'
+    compile group: 'org.keycloak', name: 'keycloak-admin-client'
 
     testCompile group: 'junit', name: 'junit'
 }

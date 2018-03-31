@@ -1,5 +1,3 @@
-
-
 export enum MemberType {
   DEVELOPER,
   KAMBAN_MASTER,

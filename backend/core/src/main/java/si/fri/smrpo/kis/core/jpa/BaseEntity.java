@@ -127,17 +127,21 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
             if (BaseEntity.class.isAssignableFrom(classType)) {
                 BaseEntity obj = (BaseEntity) field.get(object);
                 if (obj != null && obj.getId() != null) {
-                    Object setObj = em.getReference(classType, obj.getId());
-                    field.set(this, setObj);
+                    if(!em.contains(obj)) {
+                        Object setObj = em.getReference(classType, obj.getId());
+                        field.set(this, setObj);
+                    }
                 } else {
                     field.set(this, null);
                 }
             } else {
-                if(Set.class.isAssignableFrom(classType)){
+                field.set(this, field.get(object));
+
+                /*if(Set.class.isAssignableFrom(classType)) {
                     field.set(this, null);
                 } else {
                     field.set(this, field.get(object));
-                }
+                }*/
             }
         }
     }
@@ -161,18 +165,25 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
             if (BaseEntity.class.isAssignableFrom(classType)) {
                 BaseEntity obj = (BaseEntity) field.get(object);
                 if (obj != null && obj.getId() != null) {
-                    Object setObj = em.getReference(obj.getClass(), obj.getId());
-                    field.set(this, setObj);
+                    if(!em.contains(obj)) {
+                        Object setObj = em.getReference(obj.getClass(), obj.getId());
+                        field.set(this, setObj);
+                    }
                 }
             } else {
-                if(Set.class.isAssignableFrom(classType)){
+                Object obj = field.get(object);
+                if (obj != null){
+                    field.set(this, obj);
+                }
+
+                /*if(Set.class.isAssignableFrom(classType)){
                     field.set(this, null);
                 } else {
                     Object obj = field.get(object);
                     if (obj != null){
                         field.set(this, obj);
                     }
-                }
+                }*/
             }
         }
     }

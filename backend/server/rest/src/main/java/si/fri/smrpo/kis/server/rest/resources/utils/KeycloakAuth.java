@@ -18,6 +18,7 @@ public class KeycloakAuth {
         ua.setEmail(accessToken.getEmail());
         ua.setFirstName(accessToken.getName());
         ua.setLastName(accessToken.getFamilyName());
+        ua.setRoles(String.join(", ", accessToken.getRealmAccess().getRoles()));
 
         return new AuthUser(ua, accessToken.getRealmAccess().getRoles());
     }

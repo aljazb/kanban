@@ -1,8 +1,5 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
@@ -38,6 +35,11 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @OneToMany(mappedBy = "boardPart")
     private Set<Card> cards;
 
+    @OneToMany(mappedBy = "from")
+    private Set<CardMove> cardMovesFrom;
+
+    @OneToMany(mappedBy = "to")
+    private Set<CardMove> cardMovesTo;
 
     public BoardPart getParent() {
         return parent;
@@ -101,5 +103,21 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     public void setOrderIndex(Integer orderIndex) {
         this.orderIndex = orderIndex;
+    }
+
+    public Set<CardMove> getCardMovesFrom() {
+        return cardMovesFrom;
+    }
+
+    public void setCardMovesFrom(Set<CardMove> cardMovesFrom) {
+        this.cardMovesFrom = cardMovesFrom;
+    }
+
+    public Set<CardMove> getCardMovesTo() {
+        return cardMovesTo;
+    }
+
+    public void setCardMovesTo(Set<CardMove> cardMovesTo) {
+        this.cardMovesTo = cardMovesTo;
     }
 }

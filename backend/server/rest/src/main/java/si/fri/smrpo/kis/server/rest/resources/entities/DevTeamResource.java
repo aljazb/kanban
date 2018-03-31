@@ -61,7 +61,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         try {
             DevTeam devTeam = devTeamService.create(entity, manager.getUserId());
             return buildResponse(devTeam, xContent, true ,Response.Status.CREATED).build();
-        } catch (DatabaseException e) {
+        } catch (LogicBaseException e) {
             throw ApiException.transform(e);
         }
     }

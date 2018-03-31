@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { KeycloakService } from 'keycloak-angular';
 import {UserAccount} from '../../../api/models/UserAccount';
-import {ApiService} from '../../../api/Api';
+import {ApiService} from '../../../api/api.service';
 import {environment} from '../../../../environments/environment';
 import {ROLE_ADMINISTRATOR} from '../../../api/keycloak/keycloak-init';
 import {Router} from '@angular/router';

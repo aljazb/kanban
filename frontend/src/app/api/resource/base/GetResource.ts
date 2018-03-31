@@ -1,7 +1,7 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
 import {BaseResource} from './BaseResource';
 import {Observable} from 'rxjs/Observable';
-import {ApiService} from '../../Api';
+import {ApiService} from '../../api.service';
 import {HttpParams, HttpResponse} from '@angular/common/http';
 import {catchError, map} from 'rxjs/operators';
 import {Paging} from '../../dto/Paging';

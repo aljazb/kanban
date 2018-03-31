@@ -16,6 +16,8 @@ import javax.ejb.Startup;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
+
 @Startup
 @Singleton
 public class SeedService {
@@ -23,11 +25,13 @@ public class SeedService {
     private static final Faker FAKER = new Faker();
 
     private static final String TEST_USER_ID = "ccad0cc9-1786-4936-8525-3c325d1de0dd";
-    private static final String TEST1_USER_ID = "52ad43f3-463f-4838-98d7-9f096a73068b";
+    private static final String TEST_USER_ROLES = String.join(",",
+            ROLE_USER, ROLE_DEVELOPER, ROLE_PRODUCT_OWNER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR);
+
 
     private static final Integer USERS_NUMBER = 100;
     private static final Integer DEV_TEAMS_NUMBER = 10;
-    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MIN = 5;
+    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MIN = 7;
     private static final Integer DEV_TEAM_MEMBERS_NUMBER_MAX = 15;
     private static final Integer BOARD_PARTS_NUMBER = 4;
     private static final Integer CARD_NUMBER_MIN = 3;
@@ -38,7 +42,6 @@ public class SeedService {
     private DatabaseServiceLocal database;
 
     private UserAccount root;
-    private UserAccount test1;
     private DevTeam rootDevTeam;
 
     private ArrayList<UserAccount> userAccounts = new ArrayList<>();
@@ -82,14 +85,12 @@ public class SeedService {
             ua.setEmail(FAKER.internet.email());
             ua.setFirstName(FAKER.name.firstName());
             ua.setLastName(FAKER.name.lastName());
+            ua.setRoles(String.join(",", ROLE_USER, ROLE_DEVELOPER));
 
             if(i == 0){
                 ua.setId(UUID.fromString(TEST_USER_ID));
+                ua.setRoles(TEST_USER_ROLES);
                 root = ua;
-            }
-            if(i == 1){
-                ua.setId(UUID.fromString(TEST1_USER_ID));
-                test1 = ua;
             }
 
             ua = database.create(ua);
@@ -125,7 +126,9 @@ public class SeedService {
                 uaMTMdt.setDevTeam(dt);
 
                 if(m == 0) {
-                    uaMTMdt.setMemberType(MemberType.KANBAN_MASTER);
+                    uaMTMdt.setMemberType(MemberType.DEVELOPER_AND_KANBAN_MASTER);
+                } else if(m == 1) {
+                    uaMTMdt.setMemberType(MemberType.PRODUCT_OWNER);
                 } else {
                     uaMTMdt.setMemberType(MemberType.DEVELOPER);
                 }
@@ -200,7 +203,8 @@ public class SeedService {
             int projectNum = FAKER.number.between(1,2);
             for(int i=0; i<projectNum; i++){
                 UserAccountMtmDevTeam uaMTMdt = devTeamMembers.get(dt.getId()).stream()
-                        .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER).findFirst().get();
+                        .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER ||
+                                e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER).findFirst().get();
 
                 Project p = new Project();
                 p.setName(FAKER.app.name());
@@ -247,9 +251,20 @@ public class SeedService {
 
                 c.setName(FAKER.app.name());
                 c.setDescription(FAKER.lorem.characters(50));
-                c.setWorkLoad(FAKER.number.between(1, 10));
+                c.setWorkload(FAKER.number.between(1, 10));
 
                 c = database.create(c);
+
+                int tasks = FAKER.number.between(1,5);
+                for(int t=0; t<tasks; t++){
+                    SubTask st = new SubTask();
+                    st.setName(FAKER.app.name());
+                    st.setDescription(FAKER.lorem.characters(20));
+                    st.setWorkingHours(FAKER.number.between(5, 40));
+                    st.setCard(c);
+
+                    database.create(st);
+                }
             }
 
         }
@@ -263,11 +278,9 @@ public class SeedService {
 
         List<UserAccount> potentialInvites = new ArrayList<>(userAccounts);
         potentialInvites.removeAll(members);
-        potentialInvites.remove(test1);
 
         for(int i=0; i<5; i++) {
-            UserAccount reciever = (i == 0) ? test1 :
-                    potentialInvites.get(FAKER.number.between(0, potentialInvites.size()-1));
+            UserAccount reciever = potentialInvites.get(FAKER.number.between(0, potentialInvites.size()-1));
             potentialInvites.remove(reciever);
 
             Request request = new Request();
@@ -282,14 +295,19 @@ public class SeedService {
         }
 
         DevTeam dt = devTeams.get(0);
-        for (DevTeam devTeam : devTeams) {
-            dt = devTeam;
+        for (int i = 0; i < devTeams.size(); i++) {
+            dt = devTeams.get(i);
             if (dt != rootDevTeam) {
                 break;
             }
         }
-        UserAccount ua = database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
-                .setParameter("id", dt.getId()).getResultList().stream().findFirst().orElse(null);
+        UserAccount ua = userAccounts.get(0);
+        for (int i = 0; i < userAccounts.size(); i++) {
+            ua = userAccounts.get(i);
+            if (ua != root) {
+                break;
+            }
+        }
         Request requestToRoot = new Request();
         requestToRoot.setRequestType(RequestType.DEV_TEAM_INVITE);
         requestToRoot.setContext("Invite to dev team " + dt.getName());
@@ -305,19 +323,9 @@ public class SeedService {
         request.setContext("Invite to become kanban master for dev team " + rootDevTeam.getName());
         request.setRequestStatus(RequestStatus.PENDING);
         request.setSender(root);
-        request.setReceiver(test1);
+        request.setReceiver(members.get(2));
         request.setReferenceId(rootDevTeam.getId());
 
         database.create(request);
-
-        Request requestPO = new Request();
-        requestPO.setRequestType(RequestType.PRODUCT_OWNER_INVITE);
-        requestPO.setContext("Invite to become product owner for dev team " + rootDevTeam.getName());
-        requestPO.setRequestStatus(RequestStatus.PENDING);
-        requestPO.setSender(root);
-        requestPO.setReceiver(test1);
-        requestPO.setReferenceId(rootDevTeam.getId());
-
-        database.create(requestPO);
     }
 }

@@ -37,7 +37,6 @@ public class DevTeam extends UUIDEntity<DevTeam> {
     @Column(name = "name", nullable = false)
     private String name;
 
-
     @OneToMany(mappedBy = "devTeam")
     private Set<UserAccountMtmDevTeam> joinedUsers;
 

@@ -7,8 +7,8 @@
     <div *ngIf="paging" class="list-group">
       <div>
         <a (click)="itemSelected(item)" *ngFor="let item of paging.items" class="list-group-item list-group-item-action">
-          <p>{{item.name}} - {{item.productBuyer}}</p>
-          <p>Start: {{item.startDate | date:'dd-MM-yyyy'}}  End: {{item.endDate | date:'dd-MM-yyyy'}}</p>
+          {{item.name}} - {{item.productBuyer}}<br>
+          {{item.startDate | date:'dd-MM-yyyy'}} - {{item.endDate | date:'dd-MM-yyyy'}}
         </a>
       </div>
 

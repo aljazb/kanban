@@ -24,7 +24,6 @@ public class AuthManager<T extends UUIDEntity<T>> extends DatabaseManager<T, UUI
 
     }
 
-
     public boolean isUserInRole(String role) {
         return userAccount.getRoles().contains(role);
     }
