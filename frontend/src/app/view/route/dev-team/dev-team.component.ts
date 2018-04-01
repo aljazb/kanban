@@ -35,7 +35,7 @@ export class DevTeamComponent implements OnInit {
     this.api.devTeam.getDevelopers(this.id).subscribe(m => this.developers = m);
     this.api.devTeam.getKanbanMaster(this.id).subscribe(km => {
       this.kanbanMaster = km;
-      this.isUserKanbanMaster = this.loginService.user.id == this.kanbanMaster.id;
+      this.loginService.getUser().subscribe(user => this.isUserKanbanMaster = user.id == this.kanbanMaster.id)
     });
     this.api.devTeam.getProductOwner(this.id).subscribe(po => this.productOwner = po);
   }

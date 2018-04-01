@@ -49,7 +49,7 @@ public class DevTeamService implements DevTeamServiceLocal {
 
         if(kanbanMasters.isEmpty()){
             throw new OperationException("No kanban master specified.");
-        } else if(kanbanMasters.size() > 2) {
+        } else if(kanbanMasters.size() > 1) {
             throw new OperationException("Only one kanban master can be specified.");
         }
 
@@ -66,16 +66,6 @@ public class DevTeamService implements DevTeamServiceLocal {
         if(productOwners.isEmpty()) {
             throw new OperationException("No product owner specified.");
         }
-
-        List<UserAccountMtmDevTeam> developers = devTeam.getJoinedUsers().stream()
-                .filter(e -> e.getMemberType() == MemberType.DEVELOPER ||
-                        e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER ||
-                        e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER)
-                .collect(Collectors.toList());
-
-        if(developers.isEmpty()){
-            throw new OperationException("At least one developer must be specified.");
-        }
     }
 
     private void loadDevTeamMembers(DevTeam devTeam) throws DatabaseException {
@@ -83,7 +73,7 @@ public class DevTeamService implements DevTeamServiceLocal {
             UUID id = member.getUserAccount().getId();
             UserAccount ua = database.getEntityManager().find(UserAccount.class, id);
             if(ua == null){
-                throw new DatabaseException(String.format("User with id '%s' does not exist."));
+                throw new DatabaseException(String.format("User with id '%s' does not exist.", id));
             } else {
                 member.setUserAccount(ua);
             }

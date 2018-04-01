@@ -18,6 +18,7 @@ import {LoginService} from '../../../api/login.service';
 export class DashboardComponent implements OnInit {
 
   isKanbanMaster: boolean;
+  isLoggedIn: boolean;
 
   constructor(
     private router: Router,
@@ -33,6 +34,7 @@ export class DashboardComponent implements OnInit {
   checkStatus() {
     this.keycloak.isLoggedIn()
       .then(isLoggedIn => {
+        this.isLoggedIn = isLoggedIn;
         if(isLoggedIn){
           this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
         }

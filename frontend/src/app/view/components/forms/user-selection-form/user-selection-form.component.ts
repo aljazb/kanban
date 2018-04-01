@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {ApiService} from '../../../../api/Api';
 import {isNullOrUndefined} from 'util';
+import {ApiService} from '../../../../api/api.service';
 
 @Component({
   selector: 'app-user-selection-form',

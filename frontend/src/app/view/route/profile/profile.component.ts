@@ -4,6 +4,7 @@ import {LoginService} from '../../../api/login.service';
 import {Request} from '../../../api/models/Request';
 import {RequestStatus} from '../../../api/models/enums/RequestStatus';
 import {isNullOrUndefined} from 'util';
+import {UserAccount} from '../../../api/models/UserAccount';
 
 @Component({
   selector: 'app-profile',
