@@ -5,6 +5,8 @@ import {Project} from '../../../../api/models/Project';
 import {ApiService} from '../../../../api/api.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Utility} from '../../../../utility';
+import {connectableObservableDescriptor} from 'rxjs/observable/ConnectableObservable';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-project-form',
@@ -14,7 +16,7 @@ import {Utility} from '../../../../utility';
 export class ProjectFormComponent {
 
   devTeams: DevTeam[];
-
+  project: Project = new Project();
   formProject: FormGroup;
 
   fcName: FormControl;
@@ -22,6 +24,11 @@ export class ProjectFormComponent {
   fcStartDate: FormControl;
   fcEndDate: FormControl;
   fcDevTeam: FormControl;
+
+  emptyFields = false;
+  earlyDate = false;
+  dateSwitch = false;
+
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -51,6 +58,8 @@ export class ProjectFormComponent {
   }
 
   setInitialProject(project: Project) {
+    this.project = project;
+
     this.fcName.setValue(project.name);
     this.fcProductBuyer.setValue(project.productBuyer);
     this.fcStartDate.setValue(Utility.cTsToDp(project.startDate));
@@ -67,16 +76,32 @@ export class ProjectFormComponent {
 
   onSubmit() {
     if(this.formProject.valid) {
-
-      let p = new Project();
+      let p = this.project;
       p.name = this.fcName.value;
       p.productBuyer = this.fcProductBuyer.value;
       p.startDate = Utility.cDpToTs(this.fcStartDate.value);
       p.endDate = Utility.cDpToTs(this.fcEndDate.value);
       p.devTeam = this.devTeams.filter(e => e.id === this.fcDevTeam.value)[0];
 
-      this.activeModal.close(p)
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let todayUnix = today.getTime();
+
+      this.dateSwitch = this.earlyDate = this.emptyFields = false;
+
+      if (p.startDate > todayUnix) {
+        this.earlyDate = true;
+      }
+      if (p.endDate <= todayUnix) {
+        this.dateSwitch = true;
+      }
+      if (!this.emptyFields && !this.dateSwitch && !this.earlyDate) {
+        this.activeModal.close(p);
+      }
+    } else {
+      this.emptyFields = true;
     }
   }
+
 
 }

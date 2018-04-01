@@ -6,6 +6,8 @@ import {ProjectFormComponent} from '../../components/forms/project-form/project-
 import {DevTeam} from '../../../api/models/DevTeam';
 import {Board} from '../../../api/models/Board';
 import {Router} from '@angular/router';
+import {ApiService} from '../../../api/api.service';
+import {ROLE_ADMINISTRATOR, ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
 import {LoginService} from '../../../api/login.service';
 
 @Component({
@@ -15,23 +17,33 @@ import {LoginService} from '../../../api/login.service';
 })
 export class DashboardComponent implements OnInit {
 
-  isLoggedIn: boolean;
+  isKanbanMaster: boolean;
 
   constructor(
     private router: Router,
-    private loginService: LoginService,
-    private modalService: NgbModal) { }
+    private keycloak:KeycloakService,
+    private apiService:ApiService,
+    private modalService: NgbModal,
+    public loginService: LoginService) { }
 
   ngOnInit() {
-    this.loginService.isLoggedIn()
-      .subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn);
+    // this.keycloak.isLoggedIn()
+    //   .then(isLoggedIn => {
+    //     if(isLoggedIn){
+    //       this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
+    //       this.loginService.loginApi();
+    //     }
+    //   });
   }
 
   openProjectCreateModal() {
     const modalRef = this.modalService.open(ProjectFormComponent);
     (<ProjectFormComponent> modalRef.componentInstance).setInitialProject(new Project());
     modalRef.result
-      .then(value => console.log(value))
+      .then(value =>
+        this.apiService.project.post(value, true).subscribe(value =>
+          console.log(value)
+        ))
       .catch(reason => console.log(reason));
   }
 
