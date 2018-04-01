@@ -42,7 +42,8 @@ export class DevTeamComponent implements OnInit {
 
   sendKMInvite() {
     const modalRef = this.modalService.open(UserSelectionFormComponent);
-    (<UserSelectionFormComponent>modalRef.componentInstance).filterUsersWith(user => (this.kanbanMaster) ? user.id != this.kanbanMaster.id : true);
+    this.api.userAccount.getKanbanMasters().subscribe(kanbanMasters =>
+      (<UserSelectionFormComponent>modalRef.componentInstance).setUsers(kanbanMasters.filter(km => km.id != this.kanbanMaster.id)));
     modalRef.result
       .then(ua => this.api.request
         .createKanbanMasterInvite(this.id, ua.id, `Invite to become Kanban Master of ${this.devTeam.name}`).subscribe())

@@ -40,4 +40,18 @@ export class UserAccountResource extends GetResource<UserAccount> {
       .pipe(catchError(this.handleError<UserAccount>(`status`)));
   }
 
+  getKanbanMasters(): Observable<UserAccount[]> {
+    return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleKanbanMaster:eq:true",{ headers: this.getHeaders()})
+      .pipe(catchError(this.handleError<UserAccount[]>(`get kanbanMasters`)));
+  }
+
+  getProductOwners(): Observable<UserAccount[]> {
+    return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleProductOwner:eq:true",{ headers: this.getHeaders()})
+      .pipe(catchError(this.handleError<UserAccount[]>(`get productOwners`)));
+  }
+
+  getDevelopers(): Observable<UserAccount[]> {
+    return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleDeveloper:eq:true",{ headers: this.getHeaders()})
+      .pipe(catchError(this.handleError<UserAccount[]>(`get developers`)));
+  }
 }

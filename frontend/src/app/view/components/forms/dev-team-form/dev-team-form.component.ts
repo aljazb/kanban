@@ -42,11 +42,10 @@ export class DevTeamFormComponent {
   }
 
   loadUsers() {
-    this.api.userAccount.getList().subscribe(paging => {
-      // TODO fix when roles are available
-      this.productOwners = paging.items;
-      this.allDevelopers = paging.items;
-      this.availableDevelopers = paging.items.map(x => Object.assign({}, x)); // copy
+    this.api.userAccount.getProductOwners().subscribe(productOwners => this.productOwners = productOwners);
+    this.api.userAccount.getDevelopers().subscribe(developers => {
+      this.allDevelopers = developers;
+      this.availableDevelopers = developers.map(x => Object.assign({}, x)); // copy
     });
     this.loginService.getUser().subscribe(u => this.kanbanMaster = u);
   }
