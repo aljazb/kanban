@@ -12,15 +12,23 @@ import {isNullOrUndefined} from 'util';
 })
 export class ProfileComponent implements OnInit {
 
+  user: UserAccount;
+
   sentRequests: Request[];
   receivedRequests: Request[];
-
   requestStatus = new RequestStatus();
 
-  constructor(private api: ApiService, public loginService: LoginService) { }
+  constructor(
+    private api: ApiService,
+    public loginService: LoginService) { }
 
   ngOnInit() {
-    this.loadRequests()
+    this.loginService.getUser().subscribe(user => {
+      this.user = user;
+      if(this.user != null){
+        this.loadRequests()
+      }
+    });
   }
 
   loadRequests() {
@@ -29,8 +37,8 @@ export class ProfileComponent implements OnInit {
         this.sentRequests = this.receivedRequests = null;
         return;
       }
-      this.sentRequests = requests.filter(rq => rq.sender.id == this.loginService.user.id);
-      this.receivedRequests = requests.filter(rq => rq.receiver.id == this.loginService.user.id);
+      this.sentRequests = requests.filter(rq => rq.sender.id == this.user.id);
+      this.receivedRequests = requests.filter(rq => rq.receiver.id == this.user.id);
     })
   }
 

@@ -11,7 +11,7 @@
 
       <ul class="navbar-nav ml-auto">
 
-        <div *ngIf="!loginService.user">
+        <div *ngIf="!user">
           <li class="nav-item">
             <a class="btn" (click)="navbarCollapsed = true; login()">
               Log in
@@ -19,15 +19,12 @@
           </li>
         </div>
 
-        <div *ngIf="loginService.user">
+        <div *ngIf="user">
           <li class="nav-item">
             <div ngbDropdown class="d-inline-block">
-              <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>{{loginService.user.email}}</button>
+              <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>{{user.email}}</button>
               <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                <div *ngIf="isAdministrator">
-                  <a class="btn btn-info dropdown-item" role="button" href="{{keycloakUrl}}">Keycloak</a>
-                  <a class="btn btn-info dropdown-item" role="button" routerLink="/admin">Admin</a>
-                </div>
+                <a *ngIf="user.inRoleAdministrator" class="btn btn-info dropdown-item" role="button" routerLink="/admin">Admin</a>
                 <a class="btn btn-info dropdown-item" role="button" routerLink="/profile">Profile</a>
                 <a class="btn btn-info dropdown-item" role="button" (click)="logout()">Log out</a>
               </div>

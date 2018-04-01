@@ -82,14 +82,20 @@ public class SeedService {
     private void generateUserAccounts() throws DatabaseException {
         for(int i=0; i<USERS_NUMBER; i++){
             UserAccount ua = new UserAccount();
+            ua.setUsername(FAKER.app.author());
             ua.setEmail(FAKER.internet.email());
             ua.setFirstName(FAKER.name.firstName());
             ua.setLastName(FAKER.name.lastName());
-            ua.setRoles(String.join(",", ROLE_USER, ROLE_DEVELOPER));
+            ua.setInRoleDeveloper(true);
+            ua.setInRoleKanbanMaster(false);
+            ua.setInRoleAdministrator(false);
+            ua.setInRoleProductOwner(false);
 
             if(i == 0){
                 ua.setId(UUID.fromString(TEST_USER_ID));
-                ua.setRoles(TEST_USER_ROLES);
+                ua.setInRoleKanbanMaster(true);
+                ua.setInRoleAdministrator(true);
+                ua.setInRoleProductOwner(true);
                 root = ua;
             }
 
@@ -126,10 +132,13 @@ public class SeedService {
                 uaMTMdt.setDevTeam(dt);
 
                 if(m == 0) {
+                    ua.setInRoleKanbanMaster(true);
                     uaMTMdt.setMemberType(MemberType.DEVELOPER_AND_KANBAN_MASTER);
                 } else if(m == 1) {
+                    ua.setInRoleProductOwner(true);
                     uaMTMdt.setMemberType(MemberType.PRODUCT_OWNER);
                 } else {
+                    ua.setInRoleDeveloper(true);
                     uaMTMdt.setMemberType(MemberType.DEVELOPER);
                 }
 

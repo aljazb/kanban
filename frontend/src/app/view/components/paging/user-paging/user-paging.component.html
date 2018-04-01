@@ -41,8 +41,7 @@
     <div *ngIf="paging" class="list-group">
       <div>
         <a (click)="itemSelected(item)" *ngFor="let item of paging.items" class="list-group-item list-group-item-action">
-          <p>{{item.firstName}} {{item.lastName}}</p>
-          <p>{{item.email}}</p>
+          {{item.email}} - {{item.firstName}} {{item.lastName}}
         </a>
       </div>
 

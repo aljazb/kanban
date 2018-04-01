@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { KeycloakService } from 'keycloak-angular';
-import {UserAccount} from '../../../api/models/UserAccount';
-import {ApiService} from '../../../api/api.service';
-import {environment} from '../../../../environments/environment';
-import {ROLE_ADMINISTRATOR} from '../../../api/keycloak/keycloak-init';
-import {Router} from '@angular/router';
-import {KeycloakAuthGuardService} from '../../../api/keycloak/keycloak-auth-guard.service';
 import {LoginService} from '../../../api/login.service';
+import {UserAccount} from '../../../api/models/UserAccount';
 
 @Component({
   selector: 'app-header',
@@ -17,29 +11,21 @@ import {LoginService} from '../../../api/login.service';
 export class HeaderComponent implements OnInit {
   navbarCollapsed = true;
 
-  keycloakUrl: string = environment.authHostname + "/auth";
-  isAdministrator: boolean = false;
+  user: UserAccount;
 
   constructor(
-    public keycloak: KeycloakAuthGuardService,
     public loginService: LoginService) { }
 
   ngOnInit() {
-    this.keycloak.isLoggedIn()
-      .then(isLoggedIn => {
-        if(isLoggedIn){
-          this.isAdministrator = this.keycloak.isUserInRole(ROLE_ADMINISTRATOR);
-          this.loginService.loginApi();
-        }
-      })
+    this.loginService.getUser().subscribe(user => this.user = user);
   }
 
   login(): void {
-    this.keycloak.login();
+    this.loginService.login();
   }
 
   logout(): void {
-    this.keycloak.logout();
+    this.loginService.logout();
   }
 
 }

@@ -4,6 +4,9 @@ import {ActivatedRoute} from '@angular/router';
 import {Project} from '../../../api/models/Project';
 import {ProjectFormComponent} from '../../components/forms/project-form/project-form.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ProjectDeleteConfirmationComponent} from '../../components/forms/project-delete-confirmation/project-delete-confirmation.component';
+import {ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
+import {KeycloakService} from 'keycloak-angular/index';
 
 
 @Component({
@@ -15,15 +18,28 @@ export class ProjectComponent implements OnInit {
 
   id: string;
   project: Project;
+  isKanbanMaster: boolean;
 
   constructor( private route: ActivatedRoute,
                private apiService:ApiService,
+               private keycloak:KeycloakService,
                private modalService: NgbModal) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.getProject();
+    this.checkStatus();
   }
+
+  checkStatus() {
+    this.keycloak.isLoggedIn()
+      .then(isLoggedIn => {
+        if(isLoggedIn){
+          this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
+        }
+      });
+  }
+
 
   getProject() {
     this.apiService.project.get(this.id).subscribe(project =>
@@ -41,7 +57,25 @@ export class ProjectComponent implements OnInit {
     (<ProjectFormComponent> modalRef.componentInstance).setInitialProject(this.project);
 
     modalRef.result
-      .then(value => console.log(value))
+      .then(value =>
+        this.apiService.project.put(value, true).subscribe(value =>
+          console.log(value)
+        ))
       .catch(reason => console.log(reason));
+  }
+
+  openDeleteConfirmationModal() {
+    const modalRef = this.modalService.open(ProjectDeleteConfirmationComponent);
+
+    modalRef.result
+      .then(value => this.deleteProject())
+      .catch(reason => console.log(reason));
+  }
+
+  deleteProject() {
+    this.apiService.project.delete(this.id, true).subscribe(value =>
+      console.log(value)
+    );
+
   }
 }

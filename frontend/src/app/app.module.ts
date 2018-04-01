@@ -29,6 +29,8 @@ import { BoardPagingComponent } from './view/components/paging/board-paging/boar
 import { ProfileComponent } from './view/route/profile/profile.component';
 import {LoginService} from './api/login.service';
 import { UserSelectionFormComponent } from './view/components/forms/user-selection-form/user-selection-form.component';
+import { UserAccountFormComponent } from './view/components/forms/user-account-form/user-account-form.component';
+import { ProjectDeleteConfirmationComponent } from './view/components/forms/project-delete-confirmation/project-delete-confirmation.component';
 
 
 @NgModule({
@@ -52,11 +54,13 @@ import { UserSelectionFormComponent } from './view/components/forms/user-selecti
     AdminComponent,
     UserPagingComponent,
     UserDetailsComponent,
-    ProjectFormComponent,
     DevTeamPagingComponent,
     ProjectPagingComponent,
     BoardPagingComponent,
     ProfileComponent,
+    ProjectFormComponent,
+    UserAccountFormComponent,
+    ProjectDeleteConfirmationComponent,
     UserSelectionFormComponent,
   ],
   providers: [
@@ -74,6 +78,9 @@ import { UserSelectionFormComponent } from './view/components/forms/user-selecti
   entryComponents: [
     ProjectFormComponent,
     UserSelectionFormComponent,
+    ProjectFormComponent,
+    ProjectDeleteConfirmationComponent,
+    UserAccountFormComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })
