@@ -27,13 +27,16 @@ export class DashboardComponent implements OnInit {
     public loginService: LoginService) { }
 
   ngOnInit() {
-    // this.keycloak.isLoggedIn()
-    //   .then(isLoggedIn => {
-    //     if(isLoggedIn){
-    //       this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
-    //       this.loginService.loginApi();
-    //     }
-    //   });
+    this.checkStatus();
+  }
+
+  checkStatus() {
+    this.keycloak.isLoggedIn()
+      .then(isLoggedIn => {
+        if(isLoggedIn){
+          this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
+        }
+      });
   }
 
   openProjectCreateModal() {
