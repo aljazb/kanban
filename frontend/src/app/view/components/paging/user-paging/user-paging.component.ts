@@ -66,7 +66,7 @@ class UserQuery extends UserAccount implements QueryImpl<UserAccount> {
     if(this.email) qb.like("email", this.email + "%");
     if(this.firstName) qb.like("firstName", this.firstName + "%");
     if(this.lastName) qb.like("lastName", this.lastName + "%");
-    if(this.isDeleted != null) qb.eq("isDeleted", this.isDeleted ? "true" : "false");
+    if(this.isDeleted != null) qb.isDeleted(this.isDeleted);
 
     return qb;
   }

@@ -36,12 +36,8 @@ export class QueryBuilder {
   constructor() {
   }
 
-  static query(isDeleted: boolean=true): QueryBuilder {
-    if(isDeleted){
-      return new QueryBuilder().eq("isDeleted", "false");
-    } else {
-      return new QueryBuilder();
-    }
+  static query(defaultDeletedFalse: boolean=null): QueryBuilder {
+    return new QueryBuilder();
   }
 
   build(): HttpParams {
