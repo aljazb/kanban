@@ -31,6 +31,7 @@ import {LoginService} from './api/login.service';
 import { UserSelectionFormComponent } from './view/components/forms/user-selection-form/user-selection-form.component';
 import { UserAccountFormComponent } from './view/components/forms/user-account-form/user-account-form.component';
 import { ProjectDeleteConfirmationComponent } from './view/components/forms/project-delete-confirmation/project-delete-confirmation.component';
+import { DevTeamFormComponent } from './view/components/forms/dev-team-form/dev-team-form.component';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { ProjectDeleteConfirmationComponent } from './view/components/forms/proj
     UserAccountFormComponent,
     ProjectDeleteConfirmationComponent,
     UserSelectionFormComponent,
+    DevTeamFormComponent,
   ],
   providers: [
     {
@@ -80,7 +82,8 @@ import { ProjectDeleteConfirmationComponent } from './view/components/forms/proj
     UserSelectionFormComponent,
     ProjectFormComponent,
     ProjectDeleteConfirmationComponent,
-    UserAccountFormComponent
+    UserAccountFormComponent,
+    DevTeamFormComponent,
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

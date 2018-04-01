@@ -9,6 +9,7 @@ import {Router} from '@angular/router';
 import {ApiService} from '../../../api/api.service';
 import {ROLE_ADMINISTRATOR, ROLE_KANBAN_MASTER} from '../../../api/keycloak/keycloak-init';
 import {LoginService} from '../../../api/login.service';
+import {DevTeamFormComponent} from '../../components/forms/dev-team-form/dev-team-form.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,6 +40,17 @@ export class DashboardComponent implements OnInit {
           this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
         }
       });
+  }
+
+  openDevTeamCreateModal() {
+    const modalRef = this.modalService.open(DevTeamFormComponent);
+
+    modalRef.result
+      .then(value =>
+        this.apiService.devTeam.post(value, true).subscribe(value =>
+          console.log(value)
+        ))
+      .catch(reason => console.log(reason));
   }
 
   openProjectCreateModal() {

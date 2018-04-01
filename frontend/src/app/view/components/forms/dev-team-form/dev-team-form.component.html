@@ -1,0 +1,68 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create project</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="formDevTeam" (ngSubmit)="onSubmit()">
+
+    <div class="form-group row">
+      <label for="in-name" class="col-sm-2 col-form-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" name="devteam-name" class="form-control" id="in-name"  placeholder="Name"
+               formControlName="name">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Kanban Master</label>
+      <div class="col-sm-10">
+        {{ kanbanMaster.email }} (Your account, can be changed after creation)
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-productOwner" class="col-sm-2 col-form-label">Product Owner</label>
+      <div class="col-sm-10">
+        <select name="devteam-productOwner" class="form-control" id="in-productOwner"
+                formControlName="productOwner">
+          <option [ngValue]="null">Select Product Owner</option>
+          <option *ngFor="let po of productOwners" [ngValue]="po.id">{{po.email}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-addDeveloper" class="col-sm-2 col-form-label">Add developer</label>
+      <div class="col-sm-10">
+        <select name="devteam-addDeveloper" class="form-control" id="in-addDeveloper"
+                formControlName="selectDeveloper">
+          <option [ngValue]="null">Select Developer</option>
+          <option *ngFor="let dev of availableDevelopers" [ngValue]="dev.id">{{dev.email}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-sm-2 div-form-label">Selected developers:</div>
+    <div class="form-group row">
+      <ul *ngIf="selectedDevelopers" class="list-group">
+        <li *ngFor="let selectedDev of selectedDevelopers" class="list-group-item">
+          {{ selectedDev.email }}
+          <button (click)="removeDeveloper(selectedDev.id)" type="button" class="btn btn-danger">x</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-group row">
+      <div class="container">
+        <button type="submit" class="btn btn-primary float-right">Submit</button>
+      </div>
+    </div>
+
+    <div *ngIf='emptyFields' class="alert alert-warning">Please fill in all of the fields.</div>
+  </form>
+
+</div>

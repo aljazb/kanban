@@ -44,11 +44,9 @@ public class RequestService implements RequestServiceLocal {
 
         switch (request.getRequestType()) {
             case KANBAN_MASTER_INVITE:
-            case PRODUCT_OWNER_INVITE:
                 return createRoleInvite(request, request.getRequestType());
-            case DEV_TEAM_INVITE:
             default:
-                return createDevTeamInvite(request);
+                throw new OperationException("Unknown request type");
         }
     }
 
@@ -148,10 +146,7 @@ public class RequestService implements RequestServiceLocal {
                 throw new OperationException("Request sender is (no longer) KanbanMaster of this development team.");
             }
             switch (request.getRequestType()){
-                case DEV_TEAM_INVITE:
-                    processDevTeamInvite(request); break;
                 case KANBAN_MASTER_INVITE:
-                case PRODUCT_OWNER_INVITE:
                     if (canBecomeRole(request.getReceiver().getId(), request.getReferenceId())) {
                         processRoleInvite(request);
                     } else {
@@ -160,6 +155,8 @@ public class RequestService implements RequestServiceLocal {
                         throw new OperationException("User can not become this role.");
                     }
                     break;
+                default:
+                    throw new OperationException("Unknown request type.");
             }
         }
 
@@ -193,17 +190,17 @@ public class RequestService implements RequestServiceLocal {
             throw new OperationException("User not KanbanMaster.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
         }
 
-        demote(devTeam, RequestType.PRODUCT_OWNER_INVITE);
+        demote(devTeam, MemberType.PRODUCT_OWNER);
     }
 
-    private void demote(DevTeam devTeam, RequestType role) throws OperationException, DatabaseException {
+    private void demote(DevTeam devTeam, MemberType role) throws OperationException, DatabaseException {
         final UserAccount user;
         switch (role) {
-            case KANBAN_MASTER_INVITE:
+            case KANBAN_MASTER:
                 user = database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
                         .setParameter("id", devTeam.getId()).getResultList().stream().findFirst().orElse(null);
                 break;
-            case PRODUCT_OWNER_INVITE:
+            case PRODUCT_OWNER:
                 user = database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
                         .setParameter("id", devTeam.getId()).getResultList().stream().findFirst().orElse(null);
                 break;
@@ -235,7 +232,13 @@ public class RequestService implements RequestServiceLocal {
         DevTeam devTeam = database.getEntityManager().find(DevTeam.class, request.getReferenceId());
         Set<UserAccountMtmDevTeam> members = devTeam.getJoinedUsers();
 
-        demote(devTeam, request.getRequestType());
+        switch (request.getRequestType()) {
+            case KANBAN_MASTER_INVITE:
+                demote(devTeam, MemberType.KANBAN_MASTER);
+                break;
+            default:
+                throw new OperationException("Unknown request type.");
+        }
 
         UserAccountMtmDevTeam receiverMtm = members.stream()
                 .filter(e -> !e.getIsDeleted() && e.getUserAccount().getId().equals(request.getReceiver().getId()))
@@ -256,13 +259,6 @@ public class RequestService implements RequestServiceLocal {
                     receiverMtm.setMemberType(MemberType.DEVELOPER_AND_KANBAN_MASTER);
                 } else {
                     receiverMtm.setMemberType(MemberType.KANBAN_MASTER);
-                }
-                break;
-            case PRODUCT_OWNER_INVITE:
-                if (isAlreadyDev) {
-                    receiverMtm.setMemberType(MemberType.DEVELOPER_AND_PRODUCT_OWNER);
-                } else {
-                    receiverMtm.setMemberType(MemberType.PRODUCT_OWNER);
                 }
                 break;
             default:

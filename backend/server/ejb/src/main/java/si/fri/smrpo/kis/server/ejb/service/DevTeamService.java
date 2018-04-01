@@ -102,6 +102,7 @@ public class DevTeamService implements DevTeamServiceLocal {
         validateDevTeam(devTeam, authId);
         persistDevTeam(devTeam);
 
+        devTeam.setJoinedUsers(null); // prevents recursive cycling when marshalling
         return devTeam;
     }
 

@@ -12,6 +12,7 @@
         <ngb-panel id="ngb-panel-0" title="DevTeam">
           <ng-template ngbPanelContent>
             <app-dev-team-paging (onSelect)="goToDevTeam($event)"></app-dev-team-paging>
+            <button *ngIf="isKanbanMaster" class="btn btn-primary" (click)="openDevTeamCreateModal()">Create development team</button>
           </ng-template>
         </ngb-panel>
 

@@ -288,44 +288,20 @@ public class SeedService {
         List<UserAccount> potentialInvites = new ArrayList<>(userAccounts);
         potentialInvites.removeAll(members);
 
-        for(int i=0; i<5; i++) {
-            UserAccount reciever = potentialInvites.get(FAKER.number.between(0, potentialInvites.size()-1));
-            potentialInvites.remove(reciever);
-
-            Request request = new Request();
-            request.setRequestType(RequestType.DEV_TEAM_INVITE);
-            request.setContext("Invite to dev team " + rootDevTeam.getName());
-            request.setRequestStatus(RequestStatus.PENDING);
-            request.setSender(root);
-            request.setReceiver(reciever);
-            request.setReferenceId(rootDevTeam.getId());
-
-            database.create(request);
-        }
-
-        DevTeam dt = devTeams.get(0);
+        DevTeam dt;
         for (int i = 0; i < devTeams.size(); i++) {
             dt = devTeams.get(i);
             if (dt != rootDevTeam) {
                 break;
             }
         }
-        UserAccount ua = userAccounts.get(0);
+        UserAccount ua;
         for (int i = 0; i < userAccounts.size(); i++) {
             ua = userAccounts.get(i);
             if (ua != root) {
                 break;
             }
         }
-        Request requestToRoot = new Request();
-        requestToRoot.setRequestType(RequestType.DEV_TEAM_INVITE);
-        requestToRoot.setContext("Invite to dev team " + dt.getName());
-        requestToRoot.setRequestStatus(RequestStatus.PENDING);
-        requestToRoot.setSender(ua);
-        requestToRoot.setReceiver(root);
-        requestToRoot.setReferenceId(dt.getId());
-
-        database.create(requestToRoot);
 
         Request request = new Request();
         request.setRequestType(RequestType.KANBAN_MASTER_INVITE);
