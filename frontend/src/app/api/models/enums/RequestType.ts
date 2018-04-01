@@ -1,5 +1,3 @@
 export enum RequestType {
-  DEV_TEAM_INVITE,
   KANBAN_MASTER_INVITE,
-  PRODUCT_OWNER_INVITE,
 }

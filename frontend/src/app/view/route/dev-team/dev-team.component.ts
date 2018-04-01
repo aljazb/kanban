@@ -40,38 +40,12 @@ export class DevTeamComponent implements OnInit {
     this.api.devTeam.getProductOwner(this.id).subscribe(po => this.productOwner = po);
   }
 
-  kick(user: UserAccount) {
-    this.api.devTeam.kickMember(this.id, user.id).subscribe(() => this.loadData());
-  }
-
-  demotePO(po: UserAccount) {
-    this.api.devTeam.demotePO(this.id, po.id).subscribe(() => this.loadData());
-  }
-
-  sendDevInvite() {
-    const modalRef = this.modalService.open(UserSelectionFormComponent);
-    (<UserSelectionFormComponent>modalRef.componentInstance).filterUsersWith(user => !this.developers.find(u => u.id == user.id));
-    modalRef.result
-      .then(ua => this.api.request
-        .createDevTeamInvite(this.id, ua.id, `Invite to team ${this.devTeam.name}`).subscribe())
-      .catch(reason => console.log(reason));
-  }
-
   sendKMInvite() {
     const modalRef = this.modalService.open(UserSelectionFormComponent);
     (<UserSelectionFormComponent>modalRef.componentInstance).filterUsersWith(user => (this.kanbanMaster) ? user.id != this.kanbanMaster.id : true);
     modalRef.result
       .then(ua => this.api.request
         .createKanbanMasterInvite(this.id, ua.id, `Invite to become Kanban Master of ${this.devTeam.name}`).subscribe())
-      .catch(reason => console.log(reason));
-  }
-
-  sendPOInvite() {
-    const modalRef = this.modalService.open(UserSelectionFormComponent);
-    (<UserSelectionFormComponent>modalRef.componentInstance).filterUsersWith(user => (this.productOwner) ? user.id != this.productOwner.id : true);
-    modalRef.result
-      .then(ua => this.api.request
-        .createProductOwnerInvite(this.id, ua.id, `Invite to become Product Owner of ${this.devTeam.name}`).subscribe())
       .catch(reason => console.log(reason));
   }
 }
