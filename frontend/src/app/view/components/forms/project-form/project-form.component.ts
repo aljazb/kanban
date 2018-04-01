@@ -100,7 +100,6 @@ export class ProjectFormComponent {
       }
     } else {
       this.emptyFields = true;
-      this.activeModal.close(p)
     }
   }
 
