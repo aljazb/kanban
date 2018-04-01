@@ -6,7 +6,7 @@
 
     </div>
 
-    <div *ngIf="keycloak.getKeycloakInstance().authenticated" class="col-md-6">
+    <div *ngIf="isLoggedIn" class="col-md-6">
 
       <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="ngb-panel-0">
 

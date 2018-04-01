@@ -6,6 +6,7 @@ import {ProjectFormComponent} from '../../components/forms/project-form/project-
 import {DevTeam} from '../../../api/models/DevTeam';
 import {Board} from '../../../api/models/Board';
 import {Router} from '@angular/router';
+import {LoginService} from '../../../api/login.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,13 +15,16 @@ import {Router} from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
 
+  isLoggedIn: boolean;
+
   constructor(
     private router: Router,
-    private keycloak:KeycloakService,
+    private loginService: LoginService,
     private modalService: NgbModal) { }
 
   ngOnInit() {
-
+    this.loginService.isLoggedIn()
+      .subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn);
   }
 
   openProjectCreateModal() {

@@ -39,6 +39,19 @@ export class LoginService {
     }
   }
 
+  isLoggedIn(): Observable<boolean> {
+    if(this._isLoggedIn){
+      return of(this._isLoggedIn);
+    } else if(this._userRequest){
+      return this._userRequest.map(user => user != null);
+    } else {
+      this._userRequest = Observable.fromPromise(this.keycloak.isLoggedIn())
+        .switchMap(isLoggedIn => this.getUserRequest(isLoggedIn)).share();
+
+      return this._userRequest.map(u => u == null);
+    }
+  }
+
   login(): void {
     this.keycloak.login();
   }
