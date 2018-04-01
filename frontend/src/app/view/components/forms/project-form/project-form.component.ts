@@ -75,7 +75,7 @@ export class ProjectFormComponent {
       p.endDate = Utility.cDpToTs(this.fcEndDate.value);
       p.devTeam = this.devTeams.filter(e => e.id === this.fcDevTeam.value)[0];
 
-      this.activeModal.dismiss(p)
+      this.activeModal.close(p)
     }
   }
 

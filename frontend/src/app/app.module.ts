@@ -28,6 +28,7 @@ import { ProjectPagingComponent } from './view/components/paging/project-paging/
 import { BoardPagingComponent } from './view/components/paging/board-paging/board-paging.component';
 import { ProfileComponent } from './view/route/profile/profile.component';
 import {LoginService} from './api/login.service';
+import { UserAccountFormComponent } from './view/components/forms/user-account-form/user-account-form.component';
 
 
 @NgModule({
@@ -51,11 +52,12 @@ import {LoginService} from './api/login.service';
     AdminComponent,
     UserPagingComponent,
     UserDetailsComponent,
-    ProjectFormComponent,
     DevTeamPagingComponent,
     ProjectPagingComponent,
     BoardPagingComponent,
     ProfileComponent,
+    ProjectFormComponent,
+    UserAccountFormComponent,
   ],
   providers: [
     {
@@ -70,7 +72,8 @@ import {LoginService} from './api/login.service';
   ],
   bootstrap: [ AppComponent ],
   entryComponents: [
-    ProjectFormComponent
+    ProjectFormComponent,
+    UserAccountFormComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

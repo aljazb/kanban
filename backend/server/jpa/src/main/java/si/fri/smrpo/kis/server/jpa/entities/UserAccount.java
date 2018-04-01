@@ -17,6 +17,8 @@ import java.util.Set;
 })
 public class UserAccount extends UUIDEntity<UserAccount> {
 
+    @Column(length = Constants.DEF_STRING_LEN, nullable = false)
+    private String username;
 
     @Column(length = Constants.DEF_STRING_LEN, nullable = false)
     private String email;
@@ -27,8 +29,12 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     @Column(length = Constants.DEF_STRING_LEN)
     private String lastName;
 
-    @Column(length = Constants.DEF_STRING_LEN, nullable = false)
-    private String roles;
+
+    private Boolean inRoleKanbanMaster;
+    private Boolean inRoleAdministrator;
+    private Boolean inRoleDeveloper;
+    private Boolean inRoleProductOwner;
+
 
     @OneToMany(mappedBy = "userAccount")
     private Set<UserAccountMtmDevTeam> joinedDevTeams;
@@ -49,19 +55,16 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     private Set<SubTask> subTasks;
 
 
-    @JsonIgnore
-    protected boolean baseSkip(Field field){
-        boolean skip = super.baseSkip(field);
-        if(skip){
-            return skip;
-        } else {
-            switch (field.getName()) {
-                case "email":
-                    return true;
-                default:
-                    return false;
-            }
-        }
+    @Transient
+    private String password; // DTO only field
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -120,14 +123,6 @@ public class UserAccount extends UUIDEntity<UserAccount> {
         this.receivedRequests = receivedRequests;
     }
 
-    public String getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String roles) {
-        this.roles = roles;
-    }
-
     public Set<CardMove> getCardMoves() {
         return cardMoves;
     }
@@ -142,5 +137,45 @@ public class UserAccount extends UUIDEntity<UserAccount> {
 
     public void setSubTasks(Set<SubTask> subTasks) {
         this.subTasks = subTasks;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Boolean getInRoleKanbanMaster() {
+        return inRoleKanbanMaster;
+    }
+
+    public void setInRoleKanbanMaster(Boolean inRoleKanbanMaster) {
+        this.inRoleKanbanMaster = inRoleKanbanMaster;
+    }
+
+    public Boolean getInRoleAdministrator() {
+        return inRoleAdministrator;
+    }
+
+    public void setInRoleAdministrator(Boolean inRoleAdministrator) {
+        this.inRoleAdministrator = inRoleAdministrator;
+    }
+
+    public Boolean getInRoleDeveloper() {
+        return inRoleDeveloper;
+    }
+
+    public void setInRoleDeveloper(Boolean inRoleDeveloper) {
+        this.inRoleDeveloper = inRoleDeveloper;
+    }
+
+    public Boolean getInRoleProductOwner() {
+        return inRoleProductOwner;
+    }
+
+    public void setInRoleProductOwner(Boolean inRoleProductOwner) {
+        this.inRoleProductOwner = inRoleProductOwner;
     }
 }

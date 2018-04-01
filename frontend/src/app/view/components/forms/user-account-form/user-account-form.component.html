@@ -1,0 +1,103 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create user account</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="formUserAccount" (ngSubmit)="onSubmit()">
+
+    <div class="form-group row">
+      <label for="in-username" class="col-sm-4 col-form-label">Username</label>
+      <div class="col-sm-8">
+        <input type="text" name="user-name" class="form-control" id="in-username"  placeholder="foobar"
+               formControlName="username">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="email" class="col-sm-4 col-form-label">Email</label>
+      <div class="col-sm-8">
+        <input type="text" name="user-email" class="form-control" id="email"  placeholder="foo@bar.com"
+               formControlName="email">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="firstName" class="col-sm-4 col-form-label">First name</label>
+      <div class="col-sm-8">
+        <input type="text" name="user-firstName" class="form-control" id="firstName"  placeholder="John"
+               formControlName="firstName">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="lastName" class="col-sm-4 col-form-label">Last name</label>
+      <div class="col-sm-8">
+        <input type="text" name="user-lastName" class="form-control" id="lastName" placeholder="Doe"
+               formControlName="lastName">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="password" class="col-sm-4 col-form-label">Password</label>
+      <div class="col-sm-8">
+        <input type="password" name="user-password" class="form-control" id="password" placeholder="********"
+               formControlName="password">
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <div class="col-sm-4">Developer</div>
+      <div class="col-sm-8">
+        <div class="form-check">
+          <input type="checkbox" name="user-inRoleDeveloper" class="form-check-input" id="in-inRoleDeveloper"
+                 formControlName="inRoleDeveloper">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-4">Kanban Master</div>
+      <div class="col-sm-8">
+        <div class="form-check">
+          <input type="checkbox" name="user-inRoleKanbanMaster" class="form-check-input" id="in-inRoleKanbanMaster"
+                 formControlName="inRoleKanbanMaster">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-4">Product owner</div>
+      <div class="col-sm-8">
+        <div class="form-check">
+          <input type="checkbox" name="user-inRoleProductOwner" class="form-check-input" id="in-inRoleProductOwner"
+                 formControlName="inRoleProductOwner">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-4">Administrator</div>
+      <div class="col-sm-8">
+        <div class="form-check">
+          <input type="checkbox" name="user-inRoleAdministrator" class="form-check-input" id="in-inRoleAdministrator"
+                 formControlName="inRoleAdministrator">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <div class="container">
+        <button type="submit" class="btn btn-primary float-right">Submit</button>
+      </div>
+    </div>
+
+  </form>
+
+</div>

@@ -1,5 +1,5 @@
 export class RequestStatus {
   PENDING = "PENDING";
-  ACCEPTED = "ACCEEPTED";
+  ACCEPTED = "ACCEPTED";
   DECLINED = "DECLINED";
 }
