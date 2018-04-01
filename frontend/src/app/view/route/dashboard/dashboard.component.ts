@@ -47,9 +47,10 @@ export class DashboardComponent implements OnInit {
 
     modalRef.result
       .then(value =>
-        this.apiService.devTeam.post(value, true).subscribe(value =>
-          console.log(value)
-        ))
+        this.apiService.devTeam.post(value, true).subscribe(value => {
+          console.log(value);
+          // TODO refresh paging
+        }))
       .catch(reason => console.log(reason));
   }
 

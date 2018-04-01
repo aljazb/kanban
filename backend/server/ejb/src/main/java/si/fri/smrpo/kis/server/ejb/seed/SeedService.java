@@ -16,8 +16,6 @@ import javax.ejb.Startup;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
-
 @Startup
 @Singleton
 public class SeedService {
@@ -25,14 +23,21 @@ public class SeedService {
     private static final Faker FAKER = new Faker();
 
     private static final String TEST_USER_ID = "ccad0cc9-1786-4936-8525-3c325d1de0dd";
-    private static final String TEST_USER_ROLES = String.join(",",
-            ROLE_USER, ROLE_DEVELOPER, ROLE_PRODUCT_OWNER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR);
+    private static final String ADMIN_USER_ID = "29b3a75e-0c4f-4aa7-a505-5290af252abe";
+    private static final String DEVELOPER_USER_ID = "c8bca3a6-b49e-45fe-bd14-af82472933e9";
+    private static final String KANBAN_MASTER_USER_ID = "944848a6-be17-404e-8ecc-a9247a094702";
+    private static final String PRODUCT_OWNER_USER_ID = "37f2b970-63ee-4c36-bafb-2447d3a405ad";
 
+    private UserAccount testAccount;
+    private UserAccount adminAccount;
+    private UserAccount developerAccount;
+    private UserAccount kanbanMasterAccount;
+    private UserAccount productOwnerAccount;
 
-    private static final Integer USERS_NUMBER = 100;
-    private static final Integer DEV_TEAMS_NUMBER = 10;
-    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MIN = 7;
-    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MAX = 15;
+    private static final Integer USERS_NUMBER = 15;
+    private static final Integer DEV_TEAMS_NUMBER = 5;
+    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MIN = 3;
+    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MAX = 10;
     private static final Integer BOARD_PARTS_NUMBER = 4;
     private static final Integer CARD_NUMBER_MIN = 3;
     private static final Integer CARD_NUMBER_MAX = 20;
@@ -41,8 +46,7 @@ public class SeedService {
     @EJB
     private DatabaseServiceLocal database;
 
-    private UserAccount root;
-    private DevTeam rootDevTeam;
+    private DevTeam testDevTeam;
 
     private ArrayList<UserAccount> userAccounts = new ArrayList<>();
     private ArrayList<DevTeam> devTeams = new ArrayList<>();
@@ -93,10 +97,44 @@ public class SeedService {
 
             if(i == 0){
                 ua.setId(UUID.fromString(TEST_USER_ID));
+                ua.setEmail("test@test.com");
                 ua.setInRoleKanbanMaster(true);
                 ua.setInRoleAdministrator(true);
                 ua.setInRoleProductOwner(true);
-                root = ua;
+                ua.setInRoleDeveloper(true);
+                testAccount = ua;
+            } else if (i == 1) {
+                ua.setId(UUID.fromString(ADMIN_USER_ID));
+                ua.setEmail("admin@admin.com");
+                ua.setInRoleKanbanMaster(false);
+                ua.setInRoleAdministrator(true);
+                ua.setInRoleProductOwner(false);
+                ua.setInRoleDeveloper(false);
+                adminAccount = ua;
+            } else if (i == 2) {
+                ua.setId(UUID.fromString(DEVELOPER_USER_ID));
+                ua.setEmail("developer@developer.com");
+                ua.setInRoleKanbanMaster(false);
+                ua.setInRoleAdministrator(false);
+                ua.setInRoleProductOwner(false);
+                ua.setInRoleDeveloper(true);
+                developerAccount = ua;
+            } else if (i == 3) {
+                ua.setId(UUID.fromString(KANBAN_MASTER_USER_ID));
+                ua.setEmail("kanban@master.com");
+                ua.setInRoleKanbanMaster(true);
+                ua.setInRoleAdministrator(false);
+                ua.setInRoleProductOwner(false);
+                ua.setInRoleDeveloper(true);
+                kanbanMasterAccount = ua;
+            } else if (i == 4) {
+                ua.setId(UUID.fromString(PRODUCT_OWNER_USER_ID));
+                ua.setEmail("product@owner.com");
+                ua.setInRoleKanbanMaster(false);
+                ua.setInRoleAdministrator(false);
+                ua.setInRoleProductOwner(true);
+                ua.setInRoleDeveloper(false);
+                productOwnerAccount = ua;
             }
 
             ua = database.create(ua);
@@ -121,7 +159,9 @@ public class SeedService {
 
                 if(i == 0 && m == 0){
                     index = 0;
-                    rootDevTeam = dt;
+                    testDevTeam = dt;
+                    testDevTeam.setName("Test Dev Team");
+                    database.update(testDevTeam);
                 }
 
                 UserAccount ua = potentialMembers.get(index);
@@ -280,36 +320,14 @@ public class SeedService {
     }
 
     private void generateRequests() throws DatabaseException {
-        List<UserAccount> members = devTeamMembers.get(rootDevTeam.getId())
-                .stream()
-                .map(UserAccountMtmDevTeam::getUserAccount)
-                .collect(Collectors.toList());
-
-        List<UserAccount> potentialInvites = new ArrayList<>(userAccounts);
-        potentialInvites.removeAll(members);
-
-        DevTeam dt;
-        for (int i = 0; i < devTeams.size(); i++) {
-            dt = devTeams.get(i);
-            if (dt != rootDevTeam) {
-                break;
-            }
-        }
-        UserAccount ua;
-        for (int i = 0; i < userAccounts.size(); i++) {
-            ua = userAccounts.get(i);
-            if (ua != root) {
-                break;
-            }
-        }
 
         Request request = new Request();
         request.setRequestType(RequestType.KANBAN_MASTER_INVITE);
-        request.setContext("Invite to become kanban master for dev team " + rootDevTeam.getName());
+        request.setContext("Invite to become kanban master for dev team " + testDevTeam.getName());
         request.setRequestStatus(RequestStatus.PENDING);
-        request.setSender(root);
-        request.setReceiver(members.get(2));
-        request.setReferenceId(rootDevTeam.getId());
+        request.setSender(testAccount);
+        request.setReceiver(kanbanMasterAccount);
+        request.setReferenceId(testDevTeam.getId());
 
         database.create(request);
     }
