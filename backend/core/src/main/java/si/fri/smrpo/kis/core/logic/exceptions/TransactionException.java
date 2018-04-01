@@ -26,4 +26,5 @@ public class TransactionException extends LogicBaseException {
     public TransactionException(String message, Exception innerException) {
         super(message, innerException);
     }
+
 }

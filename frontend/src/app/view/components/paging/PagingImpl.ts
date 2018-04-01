@@ -40,7 +40,7 @@ export abstract class PagingImpl<E extends BaseEntity<E>> {
   }
 
   refresh(): void {
-    this.searchQuery.next(this.lastQuery);
+    this.nextSearch(this.lastQuery);
   }
 
   protected setPaging(paging: Paging<E>): void {

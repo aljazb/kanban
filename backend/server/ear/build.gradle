@@ -53,8 +53,10 @@ setEarLibs()
 
 def excludeEarLibs() {
     configurations.earlib.exclude group: 'javax'
-    configurations.earlib.exclude group: 'org.keycloak'
+    configurations.earlib.exclude group: 'org.jboss.resteasy'
+    //configurations.earlib.exclude group: 'org.keycloak'
     configurations.earlib.exclude group: 'org.hibernate'
+    //configurations.earlib.exclude module: 'keycloak-core'
 }
 excludeEarLibs()
 

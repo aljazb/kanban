@@ -21,6 +21,7 @@ export class UserPagingComponent extends PagingImpl<UserAccount> implements OnIn
 
   constructor(private apiService:ApiService) {
     super();
+    this.pageSize = 10;
   }
 
   ngOnInit(): void {
