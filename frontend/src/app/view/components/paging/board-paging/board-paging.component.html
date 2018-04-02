@@ -4,7 +4,7 @@
 
     <h4>Board list</h4>
 
-    <div *ngIf="paging" class="list-group">
+    <div *ngIf="paging && paging.count > 0" class="list-group">
       <div>
         <a (click)="itemSelected(item)" *ngFor="let item of paging.items" class="list-group-item list-group-item-action">
           {{item.name}}

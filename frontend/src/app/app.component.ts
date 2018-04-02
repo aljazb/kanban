@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {ToasterConfig} from 'angular5-toaster/dist';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Kanban';
+
+  public toasterconfig : ToasterConfig =
+    new ToasterConfig({
+      positionClass: 'toast-bottom-left'
+    });
 }

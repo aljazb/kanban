@@ -30,16 +30,20 @@ import { ProfileComponent } from './view/route/profile/profile.component';
 import {LoginService} from './api/login.service';
 import { UserAccountFormComponent } from './view/components/forms/user-account-form/user-account-form.component';
 import { ProjectDeleteConfirmationComponent } from './view/components/forms/project-delete-confirmation/project-delete-confirmation.component';
+import {ToasterModule} from 'angular5-toaster/dist';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
 @NgModule({
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
     KeycloakAngularModule,
+    ToasterModule,
     NgbModule.forRoot()
   ],
   declarations: [
