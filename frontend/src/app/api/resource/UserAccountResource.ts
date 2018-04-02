@@ -32,7 +32,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     console.log(entity);
     return this.api.httpClient.put<UserAccount>(this.url + "/" + entity.id, entity, { headers: this.getHeaders(xContent) })
       .pipe(
-        catchError(this.handleError<UserAccount>(`patch`))).map(content => this.api.jsog.serialize(content),
+        catchError(this.handleError<UserAccount>(`patch`)),
         map(content => this.api.jsog.serialize(content))
       );
   }
@@ -41,7 +41,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     console.log(id);
     return this.api.httpClient.delete<UserAccount>(this.url + "/" + id, { headers: this.getHeaders(xContent) })
       .pipe(
-        catchError(this.handleError<UserAccount>(`delete`))).map(content => this.api.jsog.serialize(content),
+        catchError(this.handleError<UserAccount>(`delete`)),
         map(content => this.api.jsog.serialize(content))
       );
   }
@@ -50,7 +50,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     console.log(id);
     return this.api.httpClient.put<UserAccount>(this.url + "/" + id + "/status/", null,{ headers: this.getHeaders(xContent) })
       .pipe(
-        catchError(this.handleError<UserAccount>(`status`))).map(content => this.api.jsog.serialize(content),
+        catchError(this.handleError<UserAccount>(`status`)),
         map(content => this.api.jsog.serialize(content))
       );
   }
