@@ -17,23 +17,22 @@ import {LoginService} from '../../../api/login.service';
 })
 export class DashboardComponent implements OnInit {
 
-  isKanbanMaster: boolean;
+  isLoggedIn: boolean = false;
+  isKanbanMaster: boolean = false;
 
   constructor(
     private router: Router,
-    private keycloak:KeycloakService,
     private apiService:ApiService,
     private modalService: NgbModal,
     public loginService: LoginService) { }
 
   ngOnInit() {
-    // this.keycloak.isLoggedIn()
-    //   .then(isLoggedIn => {
-    //     if(isLoggedIn){
-    //       this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
-    //       this.loginService.loginApi();
-    //     }
-    //   });
+    this.loginService.getUser().subscribe(user => {
+      if(user != null) {
+        this.isLoggedIn = true;
+        this.isKanbanMaster = user.inRoleKanbanMaster;
+      }
+    });
   }
 
   openProjectCreateModal() {

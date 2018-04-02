@@ -17,6 +17,7 @@ export class BoardPagingComponent extends PagingImpl<Board>  implements OnInit {
 
   constructor(private api:ApiService) {
     super();
+    this.pageSize = 8;
   }
 
   ngOnInit() {

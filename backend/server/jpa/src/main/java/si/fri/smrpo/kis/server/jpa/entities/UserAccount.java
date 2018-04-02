@@ -1,12 +1,10 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.Constants;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 import java.util.Set;
 
 @Entity

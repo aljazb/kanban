@@ -1,5 +1,6 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
+
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;

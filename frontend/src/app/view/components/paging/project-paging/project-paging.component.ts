@@ -16,6 +16,7 @@ export class ProjectPagingComponent extends PagingImpl<Project> implements OnIni
 
   constructor(private api:ApiService) {
     super();
+    this.pageSize = 8;
   }
 
   ngOnInit() {
