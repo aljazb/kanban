@@ -1,6 +1,8 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 
@@ -27,6 +29,7 @@ import java.util.Set;
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE dt.id = :id AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND " +
                         "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_PRODUCT_OWNER)"),
 })
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class DevTeam extends UUIDEntity<DevTeam> {
 
     @Column(name = "name", nullable = false)

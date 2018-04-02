@@ -1,6 +1,8 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
 
@@ -9,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="card_move")
 @Cacheable
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class CardMove extends UUIDEntity<CardMove> {
 
     @Column(nullable = false)

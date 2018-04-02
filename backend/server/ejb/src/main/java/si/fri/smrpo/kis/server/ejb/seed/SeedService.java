@@ -24,10 +24,7 @@ public class SeedService {
 
     private static final Faker FAKER = new Faker();
 
-    private static final String TEST_USER_ID = "ccad0cc9-1786-4936-8525-3c325d1de0dd";
-    private static final String TEST_USER_ROLES = String.join(",",
-            ROLE_USER, ROLE_DEVELOPER, ROLE_PRODUCT_OWNER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR);
-
+    private static final String TEST_USER_ID = "b0ee9324-e4bc-40a3-8068-d4f7042dae60";
 
     private static final Integer USERS_NUMBER = 100;
     private static final Integer DEV_TEAMS_NUMBER = 10;

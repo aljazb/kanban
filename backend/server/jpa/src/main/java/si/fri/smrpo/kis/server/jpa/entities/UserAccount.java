@@ -1,5 +1,7 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.Constants;
@@ -13,6 +15,7 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = "user-account.get-all", query = "SELECT ua FROM UserAccount ua")
 })
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class UserAccount extends UUIDEntity<UserAccount> {
 
     @Column(length = Constants.DEF_STRING_LEN, nullable = false)

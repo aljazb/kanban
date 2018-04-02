@@ -1,5 +1,7 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
@@ -8,6 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name="card")
 @Cacheable
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Card extends UUIDEntity<Card> {
 
     @Column(name = "name")

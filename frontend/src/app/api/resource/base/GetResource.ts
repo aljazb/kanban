@@ -13,19 +13,23 @@ export abstract class GetResource<T extends BaseEntity<T>> extends BaseResource<
   }
 
   private buildPaging(resp: HttpResponse<T[]>): Paging<T> {
-    return new Paging<T>(+resp.headers.get('X-Count'), resp.body);
+    return new Paging<T>(+resp.headers.get('X-Count'), this.api.jsog.serialize(resp.body));
   }
 
   getList (httpParams: HttpParams = null): Observable<Paging<T>> {
     return this.api.httpClient.get<T[]>(this.url, { headers: this.getHeaders(), params: httpParams, observe: 'response'})
-      .pipe(catchError(this.handleError<T[]>(`getList`)),
+      .pipe(
+        catchError(this.handleError<T[]>(`getList`)),
         map((resp: HttpResponse<T[]>) => this.buildPaging(resp))
       );
   }
 
   get (id: string): Observable<T> {
     return this.api.httpClient.get<T>(this.url + "/" + id, { headers: this.getHeaders()})
-      .pipe(catchError(this.handleError<T>(`get`)));
+      .pipe(
+        catchError(this.handleError<T>(`get`)),
+        map(content => this.api.jsog.serialize(content))
+      );
   }
 
 }
