@@ -12,6 +12,7 @@ import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
+import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.enums.RequestType;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
@@ -21,6 +22,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_ADMINISTRATOR;
 import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_DEVELOPER;
@@ -70,8 +72,13 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @PUT
     @Path("{id}")
     @Override
-    public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, DevTeam newObject) throws ApiException {
-        return super.update(xContent, id, newObject);
+    public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, DevTeam entity) throws ApiException {
+        try {
+            DevTeam devTeam = devTeamService.update(entity, manager.getUserId());
+            return buildResponse(devTeam, xContent, true).build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER})
@@ -110,7 +117,16 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @Path("{id}")
     @Override
     public Response get(@PathParam("id") UUID id) throws ApiException {
-        return super.get(id);
+        try {
+            DevTeam dt = devTeamService.getWithUsers(id);
+            for (UserAccountMtmDevTeam mtm : dt.getJoinedUsers()) {
+                mtm.setDevTeam(null);
+            }
+            dt.setJoinedUsers(dt.getJoinedUsers().stream().filter(e -> !e.getIsDeleted()).collect(Collectors.toSet()));
+            return buildResponse(dt, true).build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})

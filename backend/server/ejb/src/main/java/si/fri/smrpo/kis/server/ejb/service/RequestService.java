@@ -65,19 +65,23 @@ public class RequestService implements RequestServiceLocal {
             if(receiver == null || receiver.getIsDeleted()){
                 throw new OperationException("Request receiver does not exist or is marked as deleted.");
             }
+
+            request.setReceiver(receiver);
         }
     }
 
     private boolean isUserKanbanMaster(UUID userId, UUID devTeamId){
         List<UserAccount> kanbanMaster = database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
                 .setParameter("id", devTeamId).getResultList();
-        return kanbanMaster.stream().anyMatch(e -> e.getId().equals(userId));
+        return kanbanMaster.stream().anyMatch(e -> e.getId().equals(userId) &&
+                !e.getIsDeleted() && e.getInRoleKanbanMaster());
     }
 
     private boolean isUserProductOwner(UUID userId, UUID devTeamId){
         List<UserAccount> productOwner = database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
                 .setParameter("id", devTeamId).getResultList();
-        return productOwner.stream().anyMatch(e -> e.getId().equals(userId));
+        return productOwner.stream().anyMatch(e -> e.getId().equals(userId) &&
+                !e.getIsDeleted() && e.getInRoleProductOwner());
     }
 
     private boolean canBecomeRole(UUID userId, UUID devTeamId) {
@@ -110,7 +114,7 @@ public class RequestService implements RequestServiceLocal {
     private Request createRoleInvite(Request request, RequestType role) throws LogicBaseException {
         UUID devTeamId = request.getReferenceId();
         if(isUserKanbanMaster(request.getSender().getId(), devTeamId)) {
-            if(canBecomeRole(request.getReceiver().getId(), devTeamId)) {
+            if(canBecomeRole(request.getReceiver().getId(), devTeamId) && request.getReceiver().getInRoleKanbanMaster()) {
                 request.setRequestStatus(RequestStatus.PENDING);
                 return database.create(request);
             } else {
@@ -144,6 +148,9 @@ public class RequestService implements RequestServiceLocal {
                 request.setRequestStatus(RequestStatus.CANCELED);
                 database.update(request);
                 throw new OperationException("Request sender is (no longer) KanbanMaster of this development team.");
+            }
+            if (!request.getReceiver().getInRoleKanbanMaster()) {
+                throw new OperationException("Receiver (no longer) has KanbanMaster role.");
             }
             switch (request.getRequestType()){
                 case KANBAN_MASTER_INVITE:

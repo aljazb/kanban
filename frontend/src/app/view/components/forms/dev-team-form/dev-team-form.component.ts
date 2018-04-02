@@ -46,6 +46,14 @@ export class DevTeamFormComponent {
     this.api.userAccount.getDevelopers().subscribe(developers => {
       this.allDevelopers = developers;
       this.availableDevelopers = developers.map(x => Object.assign({}, x)); // copy
+
+      if (!isNullOrUndefined(this.devTeam)) {
+        this.fcName.setValue(this.devTeam.name);
+        this.fcProductOwner.setValue(DevTeam.getProductOwner(this.devTeam).id);
+
+        this.availableDevelopers = this.allDevelopers.filter(dev => !DevTeam.getDevelopersIds(this.devTeam).includes(dev.id));
+        this.selectedDevelopers = this.allDevelopers.filter( dev => DevTeam.getDevelopersIds(this.devTeam).includes(dev.id));
+      }
     });
     this.loginService.getUser().subscribe(u => this.kanbanMaster = u);
   }
@@ -71,11 +79,15 @@ export class DevTeamFormComponent {
     });
   }
 
+  setInitialDevTeam(devTeam: DevTeam) {
+    this.devTeam = devTeam;
+  }
+
   onSubmit() {
     if (this.formDevTeam.valid) {
       this.emptyFields = false;
 
-      let d = new DevTeam();
+      let d = this.devTeam;
       d.name = this.fcName.value;
 
       d.joinedUsers = [];

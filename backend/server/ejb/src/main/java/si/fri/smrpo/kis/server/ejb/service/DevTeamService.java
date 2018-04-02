@@ -15,9 +15,7 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @PermitAll
@@ -60,7 +58,8 @@ public class DevTeamService implements DevTeamServiceLocal {
         }
 
         List<UserAccountMtmDevTeam> productOwners = devTeam.getJoinedUsers().stream()
-                .filter(e -> e.getMemberType() == MemberType.PRODUCT_OWNER)
+                .filter(e -> e.getMemberType() == MemberType.PRODUCT_OWNER ||
+                        e.getMemberType() == MemberType.DEVELOPER_AND_PRODUCT_OWNER)
                 .collect(Collectors.toList());
 
         if(productOwners.isEmpty()) {
@@ -86,9 +85,37 @@ public class DevTeamService implements DevTeamServiceLocal {
         loadDevTeamMembers(devTeam);
     }
 
+    private void updateDevTeamMembers(DevTeam devTeam) throws LogicBaseException {
+        DevTeam fromDb = this.database.get(DevTeam.class, devTeam.getId());
 
-    private DevTeam persistDevTeam(DevTeam devTeam) throws DatabaseException {
-        devTeam = database.create(devTeam);
+        if (fromDb == null) {
+            throw new OperationException("Dev team does not exist.");
+        }
+
+        Set<UserAccountMtmDevTeam> existingUsers = fromDb.getJoinedUsers().stream()
+                .filter(e -> !e.getIsDeleted()).distinct().collect(Collectors.toSet());
+
+        for (UserAccountMtmDevTeam updatedUserMtm : devTeam.getJoinedUsers()) {
+            UserAccountMtmDevTeam existing = existingUsers.stream()
+                    .filter(userMtm -> userMtm.getUserAccount().getId().equals(updatedUserMtm.getUserAccount().getId()))
+                    .findFirst().orElse(null);
+
+            if (existing != null) {
+                existing.setMemberType(updatedUserMtm.getMemberType());
+                database.update(existing);
+                existingUsers.remove(existing);
+            } else {
+                updatedUserMtm.setDevTeam(fromDb);
+                database.create(updatedUserMtm);
+            }
+        }
+
+        for (UserAccountMtmDevTeam existing : existingUsers) {
+            database.delete(UserAccountMtmDevTeam.class, existing.getId());
+        }
+    }
+
+    private DevTeam persistDevTeamMembers(DevTeam devTeam) throws DatabaseException {
         for(UserAccountMtmDevTeam member : devTeam.getJoinedUsers()) {
             member.setDevTeam(devTeam);
             database.create(member);
@@ -100,12 +127,23 @@ public class DevTeamService implements DevTeamServiceLocal {
     public DevTeam create(DevTeam devTeam, UUID authId) throws LogicBaseException {
 
         validateDevTeam(devTeam, authId);
-        persistDevTeam(devTeam);
+        devTeam = database.create(devTeam);
+        persistDevTeamMembers(devTeam);
 
         devTeam.setJoinedUsers(null); // prevents recursive cycling when marshalling
         return devTeam;
     }
 
+    @Override
+    public DevTeam update(DevTeam devTeam, UUID authId) throws LogicBaseException {
+
+        validateDevTeam(devTeam, authId);
+        updateDevTeamMembers(devTeam);
+        devTeam = database.update(devTeam);
+
+        devTeam.setJoinedUsers(null); // prevents recursive cycling when marshalling
+        return devTeam;
+    }
 
 
     public Paging<UserAccount> getDevelopers(UUID devTeamId) {
@@ -163,6 +201,21 @@ public class DevTeamService implements DevTeamServiceLocal {
         }
 
         return memberMtm.getUserAccount();
+    }
+
+    @Override
+    public DevTeam getWithUsers(UUID id) throws LogicBaseException {
+        DevTeam dt = this.database.get(DevTeam.class, id);
+
+        if (dt == null) {
+            throw new OperationException("Dev team does not exist.");
+        }
+
+        for (UserAccountMtmDevTeam mtm: dt.getJoinedUsers()) {
+            mtm.getUserAccount().getId();
+        }
+
+        return dt;
     }
 
 }

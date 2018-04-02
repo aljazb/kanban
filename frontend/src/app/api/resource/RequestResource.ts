@@ -40,6 +40,8 @@ export class RequestResource extends GetResource<Request> {
     request.receiver.id = userId;
     request.context = context;
 
+    console.log(request);
+
     return this.api.httpClient.post<Request>(this.url, request, { headers: this.getHeaders()})
       .pipe(
         catchError(this.handleError<Request>(`createKanbanMasterInvite`))
