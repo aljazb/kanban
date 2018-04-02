@@ -24,9 +24,7 @@ import javax.ws.rs.core.Response;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_ADMINISTRATOR;
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_DEVELOPER;
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_KANBAN_MASTER;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
 
 @Path("DevTeam")
 @RequestScoped
@@ -105,14 +103,14 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         return super.toggleIsDeleted(xContent, id);
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Override
     public Response getList() throws ApiException {
         return super.getList();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}")
     @Override
@@ -129,21 +127,21 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         }
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}/developers")
     public Response getMembers(@PathParam("id") UUID id) {
         return buildResponse(devTeamService.getDevelopers(id)).build();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}/kanbanMaster")
     public Response getKanbanMaster(@PathParam("id") UUID id) {
         return buildResponse(devTeamService.getKanbanMaster(id), true).build();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}/productOwner")
     public Response getProductOwner(@PathParam("id") UUID id) {
