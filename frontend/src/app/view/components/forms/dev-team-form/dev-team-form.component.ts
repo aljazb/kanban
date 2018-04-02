@@ -119,7 +119,6 @@ export class DevTeamFormComponent {
         d.joinedUsers.push(dev_mtm);
       });
 
-      console.log(d); // TODO rem
       this.activeModal.close(d);
     } else {
       this.emptyFields = true;

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {ApiService} from '../../../../api/api.service';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-user-selection-form',
@@ -24,6 +25,10 @@ export class UserSelectionFormComponent implements OnInit {
   }
 
   selectUser() {
-    this.activeModal.close(this.users.find(u => u.email == this.selectedUser));
+    if (isNullOrUndefined(this.selectedUser)) {
+      this.activeModal.close();
+    } else {
+      this.activeModal.close(this.users.find(u => u.email == this.selectedUser));
+    }
   }
 }

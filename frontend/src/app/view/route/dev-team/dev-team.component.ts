@@ -7,7 +7,7 @@ import {LoginService} from '../../../api/login.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserSelectionFormComponent} from '../../components/forms/user-selection-form/user-selection-form.component';
 import {DevTeamFormComponent} from '../../components/forms/dev-team-form/dev-team-form.component';
-import {UserAccountMTMDevTeam} from '../../../api/models/mtm/UserAccountMTMDevTeam';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-dev-team',
@@ -39,7 +39,6 @@ export class DevTeamComponent implements OnInit {
   loadData() {
     this.api.devTeam.get(this.id).subscribe(dt => {
       this.devTeam = dt;
-      console.log(dt);
       this.developers = DevTeam.getDevelopers(dt);
       this.kanbanMaster = DevTeam.getKanbanMaster(dt);
       this.productOwner = DevTeam.getProductOwner(dt);
@@ -52,8 +51,12 @@ export class DevTeamComponent implements OnInit {
     this.api.userAccount.getKanbanMasters().subscribe(kanbanMasters =>
       (<UserSelectionFormComponent>modalRef.componentInstance).setUsers(kanbanMasters.filter(km => km.id != this.kanbanMaster.id)));
     modalRef.result
-      .then(ua => this.api.request
-        .createKanbanMasterInvite(this.id, ua.id, `Invite to become Kanban Master of ${this.devTeam.name}`).subscribe())
+      .then(ua => {
+        if (!isNullOrUndefined(ua)) {
+          this.api.request
+            .createKanbanMasterInvite(this.id, ua.id, `Invite to become Kanban Master of ${this.devTeam.name}`).subscribe()
+        }
+      })
       .catch(reason => console.log(reason));
   }
 
