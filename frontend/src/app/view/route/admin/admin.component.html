@@ -1,21 +1,22 @@
-
 <div class="row">
 
   <div class="col-md-5">
-    <div *ngIf="selectedUser">
+    <div class="border rounded" *ngIf="selectedUser">
+      <div id="userDetails">
 
-      <app-user-details [user]="selectedUser" ></app-user-details>
+        <app-user-details [user]="selectedUser" ></app-user-details>
 
-      <br>
+        <br>
 
-      <button class="btn btn-primary" (click)="openUserEditModal(selectedUser)">
-        Edit
-      </button>
+        <button class="btn btn-primary" (click)="openUserEditModal(selectedUser)">
+          Edit
+        </button>
 
-      <button class="btn waves-light" (click)="toggleDeleted()" [ngClass]="{'btn-danger': !selectedUser.isDeleted, 'btn-success': selectedUser.isDeleted}">
-        {{!selectedUser.isDeleted ? "Deactivate" : "Activate"}}
-      </button>
+        <button class="btn waves-light" (click)="toggleDeleted()" [ngClass]="{'btn-danger': !selectedUser.isDeleted, 'btn-success': selectedUser.isDeleted}">
+          {{!selectedUser.isDeleted ? "Deactivate" : "Activate"}}
+        </button>
 
+      </div>
     </div>
   </div>
 
