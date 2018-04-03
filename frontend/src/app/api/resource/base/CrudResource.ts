@@ -16,7 +16,7 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
     return this.api.httpClient.post<T>(this.url, entity, { headers: this.getHeaders(xContent)})
       .pipe(
         catchError(this.handleError<T>(`post`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -24,7 +24,7 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
     return this.api.httpClient.put<T>(this.url + "/" + entity.id, entity, { headers: this.getHeaders(xContent)})
       .pipe(
         catchError(this.handleError<T>(`put`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -32,7 +32,7 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
     return this.api.httpClient.patch<T>(this.url + "/" + entity.id, entity, { headers: this.getHeaders(xContent)})
       .pipe(
         catchError(this.handleError<T>(`patch`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -40,7 +40,7 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
     return this.api.httpClient.delete<T>(this.url + "/" + id, { headers: this.getHeaders(xContent)})
       .pipe(
         catchError(this.handleError<T>(`delete`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -48,7 +48,7 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
     return this.api.httpClient.put<T>(this.url + "/" + id + "/status/", null,{ headers: this.getHeaders(xContent)})
       .pipe(
         catchError(this.handleError<T>(`status`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 

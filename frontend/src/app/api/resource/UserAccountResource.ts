@@ -14,7 +14,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.get<UserAccount>(this.url + "/login", { headers: this.getHeaders() })
       .pipe(
         catchError(this.handleError<UserAccount>(`login`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -24,7 +24,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.post<UserAccount>(this.url, entity, { headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`post`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -33,7 +33,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.put<UserAccount>(this.url + "/" + entity.id, entity, { headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`patch`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -42,7 +42,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.delete<UserAccount>(this.url + "/" + id, { headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`delete`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
@@ -51,22 +51,31 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.put<UserAccount>(this.url + "/" + id + "/status/", null,{ headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`status`)),
-        map(content => this.api.jsog.serialize(content))
+        map(content => this.serialize(content))
       );
   }
 
   getKanbanMasters(): Observable<UserAccount[]> {
     return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleKanbanMaster:eq:true",{ headers: this.getHeaders()})
-      .pipe(catchError(this.handleError<UserAccount[]>(`get kanbanMasters`)));
+      .pipe(
+        catchError(this.handleError<UserAccount[]>(`get kanbanMasters`)),
+        map(content => this.serialize(content))
+      );
   }
 
   getProductOwners(): Observable<UserAccount[]> {
     return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleProductOwner:eq:true",{ headers: this.getHeaders()})
-      .pipe(catchError(this.handleError<UserAccount[]>(`get productOwners`)));
+      .pipe(
+        catchError(this.handleError<UserAccount[]>(`get productOwners`)),
+        map(content => this.serialize(content))
+      );
   }
 
   getDevelopers(): Observable<UserAccount[]> {
     return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleDeveloper:eq:true",{ headers: this.getHeaders()})
-      .pipe(catchError(this.handleError<UserAccount[]>(`get developers`)));
+      .pipe(
+        catchError(this.handleError<UserAccount[]>(`get developers`)),
+        map(content => this.serialize(content))
+      );
   }
 }
