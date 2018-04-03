@@ -26,7 +26,9 @@ export class DashboardComponent implements OnInit {
     private apiService:ApiService,
     private modalService: NgbModal,
     public loginService: LoginService) { }
-
+  login(): void {
+    this.loginService.login();
+  }
   ngOnInit() {
     this.loginService.getUser().subscribe(user => {
       if(user != null) {
