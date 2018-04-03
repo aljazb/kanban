@@ -9,15 +9,24 @@ import {AdminComponent} from './view/route/admin/admin.component';
 import {ROLE_ADMINISTRATOR} from './api/keycloak/keycloak-init';
 import {ROLE_KANBAN_MASTER} from './api/keycloak/keycloak-init';
 import {ProfileComponent} from './view/route/profile/profile.component';
+import {DevTeamDetailsComponent} from './view/route/dev-team-details/dev-team-details.component';
+import {ProjectDetailsComponent} from './view/route/project-details/project-details.component';
+import {BoardDetailsComponent} from './view/route/board-details/board-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'admin', component: AdminComponent, data: {roles: {ROLE_ADMINISTRATOR}} },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'dev-team/:id', component: DevTeamComponent },
-  { path: 'project/:id', component: ProjectComponent, data: {roles: {ROLE_KANBAN_MASTER}} },
-  { path: 'board/:id', component: BoardComponent },
   { path: 'profile', component: ProfileComponent },
+  { path: 'admin', component: AdminComponent, data: {roles: {ROLE_ADMINISTRATOR}} },
+
+  { path: 'dev-team', component: DevTeamComponent },
+  { path: 'dev-team/:id', component: DevTeamDetailsComponent },
+
+  { path: 'project', component: ProjectComponent },
+  { path: 'project/:id', component: ProjectDetailsComponent },
+
+  { path: 'board', component: BoardComponent },
+  { path: 'board/:id', component: BoardDetailsComponent },
 ];
 
 @NgModule({

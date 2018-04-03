@@ -1,0 +1,31 @@
+<div *ngIf="project">
+  <h4 class="modal-title">Project details</h4>
+
+  <div class="row">
+    <p class="col-sm-2 col-label">Name</p>
+    <p class="col-sm-2 col-label"><strong>{{ project.name }}</strong></p>
+  </div>
+
+  <div class="row">
+    <p class="col-sm-2 col-label">Buyer</p>
+    <p class="col-sm-2 col-label"><strong>{{ project.productBuyer }}</strong></p>
+  </div>
+
+  <div class="row">
+    <p class="col-sm-2 col-label">Start date</p>
+    <p class="col-sm-2 col-label"><strong>{{ project.startDate | date:'dd-MM-yyyy' }} </strong></p>
+  </div>
+
+  <div class="row">
+    <p class="col-sm-2 col-label">End date</p>
+    <p class="col-sm-2 col-label"><strong>{{ project.endDate | date:'dd-MM-yyyy' }} </strong></p>
+  </div>
+
+  <div class="row">
+    <p class="col-sm-2 col-label">Dev team</p>
+    <p class="col-sm-2 col-label"><strong>{{ project.devTeam.name }}</strong></p>
+  </div>
+  <button *ngIf="isKanbanMaster" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
+  <button *ngIf="isKanbanMaster" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
+
+</div>

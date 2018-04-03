@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
+import {Board} from '../../../api/models/Board';
 
 @Component({
   selector: 'app-board',
@@ -8,12 +9,14 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class BoardComponent implements OnInit {
 
-  id: string;
-
-  constructor( private route: ActivatedRoute) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id');
+
+  }
+
+  goToBoard(board: Board): void {
+    this.router.navigate(['/board/' + board.id]);
   }
 
 }

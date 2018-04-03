@@ -35,6 +35,9 @@ import { DevTeamFormComponent } from './view/components/forms/dev-team-form/dev-
 import {ToasterModule} from 'angular5-toaster/dist';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { UserAccountPasswordFormComponent } from './view/components/forms/user-account-password-form/user-account-password-form.component';
+import { DevTeamDetailsComponent } from './view/route/dev-team-details/dev-team-details.component';
+import { ProjectDetailsComponent } from './view/route/project-details/project-details.component';
+import { BoardDetailsComponent } from './view/route/board-details/board-details.component';
 
 
 @NgModule({
@@ -70,6 +73,9 @@ import { UserAccountPasswordFormComponent } from './view/components/forms/user-a
     UserSelectionFormComponent,
     DevTeamFormComponent,
     UserAccountPasswordFormComponent,
+    DevTeamDetailsComponent,
+    ProjectDetailsComponent,
+    BoardDetailsComponent,
   ],
   providers: [
     {

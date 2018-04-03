@@ -1,0 +1,32 @@
+<div *ngIf="devTeam">
+  <h2>{{ devTeam.name }}</h2>
+
+  <h3>Kanban Master:</h3>
+  <div *ngIf="kanbanMaster">
+    <ul class="list-group">
+      <li class="list-group-item">
+        {{ kanbanMaster.email }}
+      </li>
+    </ul>
+  </div>
+  <button *ngIf="isUserKanbanMaster" type="button" (click)="sendKMInvite()" class="btn btn-primary">Invite new Kanban Master</button>
+
+  <h3>Product Owner:</h3>
+  <div *ngIf="productOwner">
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ productOwner.email }}
+      </li>
+    </ul>
+  </div>
+
+  <h3>Developers:</h3>
+  <div *ngIf="developers">
+    <ul class="list-group">
+      <li *ngFor="let developer of developers" class="list-group-item d-flex justify-content-between align-items-center">
+        {{ developer.email }}
+      </li>
+    </ul>
+  </div>
+  <button *ngIf="isUserKanbanMaster" type="button" (click)="openDevTeamEditModal()" class="btn btn-primary">Edit development team</button>
+</div>
