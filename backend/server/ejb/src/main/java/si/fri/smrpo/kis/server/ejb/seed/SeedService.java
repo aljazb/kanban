@@ -86,7 +86,7 @@ public class SeedService {
     private void generateUserAccounts() throws DatabaseException {
         for(int i=0; i<USERS_NUMBER; i++){
             UserAccount ua = new UserAccount();
-            ua.setUsername(FAKER.app.author());
+            ua.setUsername(FAKER.name.firstName());
             ua.setEmail(FAKER.internet.email());
             ua.setFirstName(FAKER.name.firstName());
             ua.setLastName(FAKER.name.lastName());

@@ -16,6 +16,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class DevTeamDetailsComponent implements OnInit {
 
+  user: UserAccount;
+
   id: string;
   devTeam: DevTeam;
   developers: UserAccount[];
@@ -31,8 +33,10 @@ export class DevTeamDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-
-    this.loadData();
+    this.loginService.getUser().subscribe(user => {
+      this.user = user;
+      this.loadData();
+    });
   }
 
   loadData() {
@@ -41,7 +45,8 @@ export class DevTeamDetailsComponent implements OnInit {
       this.developers = DevTeam.getDevelopers(dt);
       this.kanbanMaster = DevTeam.getKanbanMaster(dt);
       this.productOwner = DevTeam.getProductOwner(dt);
-      this.loginService.getUser().subscribe(user => this.isUserKanbanMaster = user.id == this.kanbanMaster.id)
+
+      this.isUserKanbanMaster = this.user.id === this.kanbanMaster.id;
     });
   }
 

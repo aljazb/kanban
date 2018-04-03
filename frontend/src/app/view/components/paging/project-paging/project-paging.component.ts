@@ -39,7 +39,9 @@ class ProjectQuery extends Project implements QueryImpl<Project> {
   }
 
   addQuery(qb: QueryBuilder): QueryBuilder {
-    qb.isDeleted(true);
+
+    qb.isDeleted(false);
+
     return qb;
   }
 

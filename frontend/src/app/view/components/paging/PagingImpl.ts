@@ -55,7 +55,7 @@ export abstract class PagingImpl<E extends BaseEntity<E>> {
   }
 
   protected buildQuery(search: QueryImpl<E>): HttpParams {
-    let qb = QueryBuilder.query(false);
+    let qb = QueryBuilder.query();
 
     qb.limit(this.pageSize);
     qb.skip(this.pageSize * (this.page - 1));

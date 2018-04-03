@@ -37,7 +37,7 @@ export class QueryBuilder {
   constructor() {
   }
 
-  static query(defaultDeletedFalse: boolean=null): QueryBuilder {
+  static query(): QueryBuilder {
     return new QueryBuilder();
   }
 
