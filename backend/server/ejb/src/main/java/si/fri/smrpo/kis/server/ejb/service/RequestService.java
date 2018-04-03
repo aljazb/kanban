@@ -11,6 +11,7 @@ import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
+import si.fri.smrpo.kis.server.jpa.enums.RequestType;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -42,11 +43,10 @@ public class RequestService implements RequestServiceLocal {
         request.setSender(sender);
 
         switch (request.getRequestType()) {
-            case DEV_TEAM_KANBAN_MASTER_PROMOTION:
-                return createKanbanMasterPromotion(request);
-            case DEV_TEAM_INVITE:
+            case KANBAN_MASTER_INVITE:
+                return createRoleInvite(request, request.getRequestType());
             default:
-                return createDevTeamInvite(request);
+                throw new OperationException("Unknown request type");
         }
     }
 
@@ -65,17 +65,32 @@ public class RequestService implements RequestServiceLocal {
             if(receiver == null || receiver.getIsDeleted()){
                 throw new OperationException("Request receiver does not exist or is marked as deleted.");
             }
+
+            request.setReceiver(receiver);
         }
     }
 
-    private boolean isAuthUserKanbanMaster(UUID authUserId, UUID devTeamId){
+    private boolean isUserKanbanMaster(UUID userId, UUID devTeamId){
         List<UserAccount> kanbanMaster = database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
                 .setParameter("id", devTeamId).getResultList();
-        return kanbanMaster.stream().anyMatch(e -> e.getId().equals(authUserId));
+        return kanbanMaster.stream().anyMatch(e -> e.getId().equals(userId) &&
+                !e.getIsDeleted() && e.getInRoleKanbanMaster());
+    }
+
+    private boolean isUserProductOwner(UUID userId, UUID devTeamId){
+        List<UserAccount> productOwner = database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
+                .setParameter("id", devTeamId).getResultList();
+        return productOwner.stream().anyMatch(e -> e.getId().equals(userId) &&
+                !e.getIsDeleted() && e.getInRoleProductOwner());
+    }
+
+    private boolean canBecomeRole(UUID userId, UUID devTeamId) {
+        // cannot become role if already has a role
+        return !isUserKanbanMaster(userId, devTeamId) && !isUserProductOwner(userId, devTeamId);
     }
 
     private boolean isRecieverMemberOfDevTeam(UUID recieverID, UUID devTeamId){
-        List<UserAccount> user = database.getEntityManager().createNamedQuery("devTeam.isMember", UserAccount.class)
+        List<UserAccount> user = database.getEntityManager().createNamedQuery("devTeam.isDeveloper", UserAccount.class)
                 .setParameter("devTeamId", devTeamId).setParameter("userId", recieverID).getResultList();
         return !user.isEmpty();
     }
@@ -83,7 +98,7 @@ public class RequestService implements RequestServiceLocal {
     private Request createDevTeamInvite(Request request) throws LogicBaseException {
         UUID devTeamId = request.getReferenceId();
 
-         if(isAuthUserKanbanMaster(request.getSender().getId(), devTeamId)) {
+         if(isUserKanbanMaster(request.getSender().getId(), devTeamId)) {
              if(!isRecieverMemberOfDevTeam(request.getReceiver().getId(), devTeamId)) {
                  request.setRequestStatus(RequestStatus.PENDING);
                  return database.create(request);
@@ -96,13 +111,14 @@ public class RequestService implements RequestServiceLocal {
     }
 
 
-    private Request createKanbanMasterPromotion(Request request) throws LogicBaseException {
+    private Request createRoleInvite(Request request, RequestType role) throws LogicBaseException {
         UUID devTeamId = request.getReferenceId();
-        if(isAuthUserKanbanMaster(request.getSender().getId(), devTeamId)) {
-            if(isRecieverMemberOfDevTeam(request.getReceiver().getId(), devTeamId)) {
+        if(isUserKanbanMaster(request.getSender().getId(), devTeamId)) {
+            if(canBecomeRole(request.getReceiver().getId(), devTeamId) && request.getReceiver().getInRoleKanbanMaster()) {
+                request.setRequestStatus(RequestStatus.PENDING);
                 return database.create(request);
             } else {
-                throw new OperationException("Receiver is not member of dev team.");
+                throw new OperationException("Receiver cannot become specified role.");
             }
         } else {
             throw new OperationException("User is not kanban master of dev team.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
@@ -111,31 +127,43 @@ public class RequestService implements RequestServiceLocal {
 
     public Request update(UUID requestId, UUID authId, boolean statusDecision) throws LogicBaseException {
         Request request = database.get(Request.class, requestId);
+        validateRequest(request);
 
-        if(request != null) {
-            if(request.getRequestStatus() == RequestStatus.PENDING) {
-                if(request.getReceiver().getId().equals(authId)) {
-                    return processUpdate(request, statusDecision ? RequestStatus.ACCEPTED : RequestStatus.DECLINED);
-                } else if(request.getSender().getId().equals(authId) && !statusDecision) {
-                    return processUpdate(request, RequestStatus.CANCELED);
-                } else {
-                    throw new OperationException("User is not receiver or sender of request.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
-                }
+        if(request.getRequestStatus() == RequestStatus.PENDING) {
+            if(request.getReceiver().getId().equals(authId)) {
+                return processUpdate(request, statusDecision ? RequestStatus.ACCEPTED : RequestStatus.DECLINED);
+            } else if(request.getSender().getId().equals(authId) && !statusDecision) {
+                return processUpdate(request, RequestStatus.CANCELED);
             } else {
-                throw new OperationException("Request was already updated.");
+                throw new OperationException("User is not receiver or sender of request.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
             }
         } else {
-            throw new DatabaseException(String.format("Request with id %s does not exist", requestId.toString()), LogicBaseException.Metadata.ENTITY_DOES_NOT_EXISTS);
+            throw new OperationException("Request was already updated.");
         }
     }
 
-    private Request processUpdate(Request request, RequestStatus status) throws DatabaseException {
-        if(status == RequestStatus.ACCEPTED){
+    private Request processUpdate(Request request, RequestStatus status) throws DatabaseException, OperationException {
+        if(status == RequestStatus.ACCEPTED) {
+            if (!isUserKanbanMaster(request.getSender().getId(), request.getReferenceId())) {
+                request.setRequestStatus(RequestStatus.CANCELED);
+                database.update(request);
+                throw new OperationException("Request sender is (no longer) KanbanMaster of this development team.");
+            }
+            if (!request.getReceiver().getInRoleKanbanMaster()) {
+                throw new OperationException("Receiver (no longer) has KanbanMaster role.");
+            }
             switch (request.getRequestType()){
-                case DEV_TEAM_INVITE:
-                    processDevTeamInvite(request); break;
-                case DEV_TEAM_KANBAN_MASTER_PROMOTION:
-                    processKanbanMasterPromotion(request); break;
+                case KANBAN_MASTER_INVITE:
+                    if (canBecomeRole(request.getReceiver().getId(), request.getReferenceId())) {
+                        processRoleInvite(request);
+                    } else {
+                        request.setRequestStatus(RequestStatus.CANCELED);
+                        database.update(request);
+                        throw new OperationException("User can not become this role.");
+                    }
+                    break;
+                default:
+                    throw new OperationException("Unknown request type.");
             }
         }
 
@@ -157,33 +185,98 @@ public class RequestService implements RequestServiceLocal {
         mtm = database.create(mtm);
     }
 
-    private void processKanbanMasterPromotion(Request request) throws DatabaseException {
+    @Override
+    public void demotePO(UUID devTeamId, UUID authUserId) throws LogicBaseException {
+        DevTeam devTeam = database.getEntityManager().find(DevTeam.class, devTeamId);
+
+        if (devTeam == null) {
+            throw new OperationException("Development team does not exist.");
+        }
+
+        if (!isUserKanbanMaster(authUserId, devTeamId)) {
+            throw new OperationException("User not KanbanMaster.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+        }
+
+        demote(devTeam, MemberType.PRODUCT_OWNER);
+    }
+
+    private void demote(DevTeam devTeam, MemberType role) throws OperationException, DatabaseException {
+        final UserAccount user;
+        switch (role) {
+            case KANBAN_MASTER:
+                user = database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
+                        .setParameter("id", devTeam.getId()).getResultList().stream().findFirst().orElse(null);
+                break;
+            case PRODUCT_OWNER:
+                user = database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
+                        .setParameter("id", devTeam.getId()).getResultList().stream().findFirst().orElse(null);
+                break;
+            default:
+                throw new OperationException("Invalid role.");
+        }
+
+        if (user == null) {
+            return;
+        }
+
+        UserAccountMtmDevTeam mtm = devTeam.getJoinedUsers().stream().filter(e -> !e.getIsDeleted() &&
+                e.getUserAccount().getId().equals(user.getId())).findFirst().orElse(null);
+
+        if (mtm == null) {
+            throw new OperationException("Could not find mtm.");
+        }
+
+        if (mtm.getMemberType() == MemberType.DEVELOPER_AND_PRODUCT_OWNER ||
+                mtm.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER) {
+            mtm.setMemberType(MemberType.DEVELOPER);
+            database.update(mtm);
+        } else {
+            database.delete(UserAccountMtmDevTeam.class, mtm.getId());
+        }
+    }
+
+    private void processRoleInvite(Request request) throws DatabaseException, OperationException {
         DevTeam devTeam = database.getEntityManager().find(DevTeam.class, request.getReferenceId());
         Set<UserAccountMtmDevTeam> members = devTeam.getJoinedUsers();
 
-
-        UserAccountMtmDevTeam kanbanMaster = members.stream()
-                .filter(e -> e.getUserAccount().getId().equals(request.getSender().getId()))
-                .findFirst().orElse(null);
-
-        if(kanbanMaster != null){
-            kanbanMaster.setMemberType(MemberType.DEVELOPER);
-            database.update(kanbanMaster);
-        } else {
-            throw new DatabaseException("Error during updating demoting kanban master to developer.");
+        switch (request.getRequestType()) {
+            case KANBAN_MASTER_INVITE:
+                demote(devTeam, MemberType.KANBAN_MASTER);
+                break;
+            default:
+                throw new OperationException("Unknown request type.");
         }
 
-        UserAccountMtmDevTeam member = members.stream()
-                .filter(e -> e.getUserAccount().getId().equals(request.getReceiver().getId()))
+        UserAccountMtmDevTeam receiverMtm = members.stream()
+                .filter(e -> !e.getIsDeleted() && e.getUserAccount().getId().equals(request.getReceiver().getId()))
                 .findFirst().orElse(null);
 
-        if(member != null) {
-            member.setMemberType(MemberType.DEVELOPER_AND_KANBAN_MASTER);
-            database.update(member);
-        } else {
-            throw new DatabaseException("Error during updating developer to kanban master.");
+        boolean create = false;
+        if (receiverMtm == null) {
+            create = true;
+            receiverMtm = new UserAccountMtmDevTeam();
+            receiverMtm.setUserAccount(request.getReceiver());
+            receiverMtm.setDevTeam(devTeam);
         }
 
+        boolean isAlreadyDev = receiverMtm.getMemberType() == MemberType.DEVELOPER;
+        switch (request.getRequestType()) {
+            case KANBAN_MASTER_INVITE:
+                if (isAlreadyDev) {
+                    receiverMtm.setMemberType(MemberType.DEVELOPER_AND_KANBAN_MASTER);
+                } else {
+                    receiverMtm.setMemberType(MemberType.KANBAN_MASTER);
+                }
+                break;
+            default:
+                throw new OperationException("Invalid request type.");
+        }
+
+        if (create) {
+            database.create(receiverMtm);
+        } else {
+            database.update(receiverMtm);
+        }
     }
 
 }

@@ -7,12 +7,14 @@ import {CardResource} from './resource/CardResource';
 import {environment} from '../../environments/environment';
 import {BoardResource} from './resource/BoardResource';
 import {RequestResource} from './resource/RequestResource';
+import {JsogService} from 'jsog-typescript';
 
 @Injectable()
 export class ApiService {
 
   public url: string;
   private _xContent: boolean;
+  public jsog = new JsogService();
 
   public board: BoardResource;
   public card: CardResource;

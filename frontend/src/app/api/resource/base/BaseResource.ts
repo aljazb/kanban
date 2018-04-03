@@ -1,8 +1,9 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
-import {ApiService} from '../../Api';
+import {ApiService} from '../../api.service';
 import {HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
+import {isNullOrUndefined} from 'util';
 
 export abstract class BaseResource<T extends BaseEntity<T>> {
 
@@ -35,6 +36,29 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
 
       return of(result as T);
     };
+  }
+
+  protected serialize(content) {
+    let obj = this.api.jsog.serialize(content);
+
+    this.deleteIds(obj);
+
+    return obj;
+  }
+
+  protected deleteIds(obj: any) {
+
+    if (!Array.isArray(obj)) {
+      if (isNullOrUndefined(obj["@id"])) {
+        return;
+      }
+
+      delete obj["@id"];
+    }
+
+    for (let key in obj) {
+      this.deleteIds(obj[key]);
+    }
   }
 
 }

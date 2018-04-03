@@ -1,6 +1,7 @@
 import {HttpParams} from '@angular/common/http';
 
-export enum OrderByType {
+
+export enum OrderType {
   ASC, DESC
 }
 
@@ -27,8 +28,8 @@ export class QueryBuilder {
   private _select: Set<string> = new Set();
   private _where: Set<string> = new Set();
 
-  private _orderBy: string = null;
-  private _orderByType: OrderByType = OrderByType.ASC;
+  private _order: string = null;
+  private _orderType: OrderType = OrderType.ASC;
   private _limit: number = 30;
   private _skip: number = 0;
 
@@ -36,12 +37,8 @@ export class QueryBuilder {
   constructor() {
   }
 
-  static query(isDeleted: boolean=true): QueryBuilder {
-    if(isDeleted){
-      return new QueryBuilder().eq("isDeleted", "false");
-    } else {
-      return new QueryBuilder();
-    }
+  static query(defaultDeletedFalse: boolean=null): QueryBuilder {
+    return new QueryBuilder();
   }
 
   build(): HttpParams {
@@ -55,8 +52,8 @@ export class QueryBuilder {
       params = params.append("skip", this._skip.toString());
     }
 
-    if(this._orderBy){
-      params = params.append("orderBy", this._orderBy + " " + this._orderByType);
+    if(this._order){
+      params = params.append("order", this._order + " " + OrderType[this._orderType]);
     }
 
     if(this._select.size > 0){
@@ -172,9 +169,9 @@ export class QueryBuilder {
     return QueryBuilder.PAR + value + QueryBuilder.PAR;
   }
 
-  orderBy(orderBy: string, orderByType: OrderByType=OrderByType.ASC): QueryBuilder {
-    this._orderBy = orderBy;
-    this._orderByType = orderByType;
+  orderBy(orderBy: string, orderByType: OrderType=OrderType.ASC): QueryBuilder {
+    this._order = orderBy;
+    this._orderType = orderByType;
     return this;
   }
 

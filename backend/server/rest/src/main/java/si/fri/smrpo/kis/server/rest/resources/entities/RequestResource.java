@@ -21,9 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_DEVELOPER;
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_KANBAN_MASTER;
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_USER;
+import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
 
 @Path("Request")
 @RequestScoped
@@ -49,21 +47,21 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
     }
 
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Override
     public Response getList() throws ApiException {
         return super.getList();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("/userRequests")
     public Response getUserRequests() {
         return Response.ok(requestService.getUserRequests(manager.getUserId())).build();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}")
     @Override
@@ -82,7 +80,7 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
         }
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @PUT
     @Path("{id}")
     public Response accept(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
@@ -94,7 +92,7 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
         }
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @DELETE
     @Path("{id}")
     public Response decline(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {

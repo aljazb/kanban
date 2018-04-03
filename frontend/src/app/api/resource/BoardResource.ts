@@ -1,5 +1,5 @@
 import {CrudResource} from './base/CrudResource';
-import {ApiService} from '../Api';
+import {ApiService} from '../api.service';
 import {BoardPart} from '../models/BoardPart';
 import {Board} from '../models/Board';
 

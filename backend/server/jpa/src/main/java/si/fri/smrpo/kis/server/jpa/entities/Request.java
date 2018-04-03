@@ -1,7 +1,8 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
 import si.fri.smrpo.kis.server.jpa.enums.RequestType;
@@ -17,6 +18,7 @@ import java.util.UUID;
                 query="SELECT req FROM Request req JOIN FETCH req.sender s JOIN FETCH req.receiver r " +
                     "WHERE (r.id = :uid OR s.id = :uid)"),
 })
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Request extends UUIDEntity<Request> {
 
     @Enumerated(EnumType.STRING)

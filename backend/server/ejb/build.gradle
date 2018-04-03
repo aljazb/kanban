@@ -3,5 +3,10 @@ dependencies {
 
     compile group: 'com.github.blocoio', name: 'faker'
 
+    compile group: 'org.keycloak', name: 'keycloak-admin-client'
+
+    compile group: 'org.jboss.resteasy', name: 'resteasy-client'
+    compile group: 'org.jboss.resteasy', name: 'resteasy-jackson2-provider'
+
     testCompile group: 'junit', name: 'junit'
 }

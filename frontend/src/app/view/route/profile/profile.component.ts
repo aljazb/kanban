@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {ApiService} from '../../../api/Api';
+import {ApiService} from '../../../api/api.service';
 import {LoginService} from '../../../api/login.service';
 import {Request} from '../../../api/models/Request';
 import {RequestStatus} from '../../../api/models/enums/RequestStatus';
+import {isNullOrUndefined} from 'util';
+import {UserAccount} from '../../../api/models/UserAccount';
 
 @Component({
   selector: 'app-profile',
@@ -11,26 +13,54 @@ import {RequestStatus} from '../../../api/models/enums/RequestStatus';
 })
 export class ProfileComponent implements OnInit {
 
+  user: UserAccount;
+
   sentRequests: Request[];
   receivedRequests: Request[];
-
   requestStatus = new RequestStatus();
 
-  constructor(private api: ApiService, public loginService: LoginService) { }
+  constructor(
+    private api: ApiService,
+    public loginService: LoginService) { }
 
   ngOnInit() {
-    this.loadRequests()
+    this.loginService.getUser().subscribe(user => {
+      this.user = user;
+      if(this.user != null){
+        this.loadRequests()
+      }
+    });
   }
 
   loadRequests() {
     this.api.request.getUserRequests().subscribe(requests => {
-      this.sentRequests = requests.filter(rq => rq.sender.id == this.loginService.user.id);
-      this.receivedRequests = requests.filter(rq => rq.receiver.id == this.loginService.user.id);
+      if (isNullOrUndefined(requests)) {
+        this.sentRequests = this.receivedRequests = null;
+        return;
+      }
+      this.sentRequests = requests.filter(rq => rq.sender.id == this.user.id);
+      this.receivedRequests = requests.filter(rq => rq.receiver.id == this.user.id);
     })
   }
 
+  private replaceRequest(array: Request[], request: Request) {
+    if (isNullOrUndefined(request)) {
+      this.loadRequests();
+      return;
+    }
+    array[array.findIndex(arrayRequest => request.id == arrayRequest.id)] = request
+  }
+
   acceptRequest(rq: Request) {
-    this.api.request.accept(rq.id).subscribe(() => this.loadRequests());
+    this.api.request.accept(rq.id).subscribe(request => this.replaceRequest(this.receivedRequests, request));
+  }
+
+  declineRequest(rq: Request) {
+    this.api.request.decline(rq.id).subscribe(request => this.replaceRequest(this.receivedRequests, request));
+  }
+
+  cancelRequest(rq: Request) {
+    this.api.request.decline(rq.id).subscribe(request => this.replaceRequest(this.sentRequests, request));
   }
 
 }

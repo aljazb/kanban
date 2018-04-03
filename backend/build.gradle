@@ -34,6 +34,7 @@ allprojects {
             dependency group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
 
             dependency group: 'org.hibernate', name: 'hibernate-core', version: '5.1.0.Final'
+            dependency group: 'com.voodoodyne.jackson.jsog', name: 'jackson-jsog', version: '1.1.1'
             dependency group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.9.4'
             dependencySet(group:'com.fasterxml.jackson.core', version: '2.9.4') {
                 entry 'jackson-annotations'

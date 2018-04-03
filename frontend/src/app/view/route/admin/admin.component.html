@@ -1,18 +1,38 @@
-
 <div class="row">
 
-  <div class="col-md-6">
-    <div *ngIf="selectedUser">
-      <app-user-details [user]="selectedUser" ></app-user-details>
-      <button class="btn waves-light" (click)="toggleDeleted()" [ngClass]="{'btn-danger': !selectedUser.isDeleted, 'btn-success': selectedUser.isDeleted}">
-        {{!selectedUser.isDeleted ? "Delete" : "Activate"}}
-      </button>
+  <div class="col-md-5">
+    <div class="border rounded" *ngIf="selectedUser">
+      <div id="userDetails">
+
+        <app-user-details [user]="selectedUser" ></app-user-details>
+
+        <br>
+
+        <button class="btn btn-primary" (click)="openUserEditModal(selectedUser)">
+          Edit
+        </button>
+
+        <button class="btn waves-light" (click)="toggleDeleted()" [ngClass]="{'btn-danger': !selectedUser.isDeleted, 'btn-success': selectedUser.isDeleted}">
+          {{!selectedUser.isDeleted ? "Deactivate" : "Activate"}}
+        </button>
+
+      </div>
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-7">
     <app-user-paging [enableSearch]="true" (onSelect)="selectedUserCallback($event)"> </app-user-paging>
+
+    <div class="col-md-12">
+      <div class="pull-right">
+
+        <button class="btn btn-primary" (click)="openUserCreateModal()">
+          Create
+        </button>
+
+      </div>
+    </div>
+
   </div>
 
 </div>
-

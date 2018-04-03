@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {Paging} from '../../../../api/dto/Paging';
 import {Project} from '../../../../api/models/Project';
 import {QueryBuilder} from '../../../../api/query/query-builder';
-import {ApiService} from '../../../../api/Api';
+import {ApiService} from '../../../../api/api.service';
 
 @Component({
   selector: 'app-project-paging',
@@ -16,6 +16,7 @@ export class ProjectPagingComponent extends PagingImpl<Project> implements OnIni
 
   constructor(private api:ApiService) {
     super();
+    this.pageSize = 8;
   }
 
   ngOnInit() {
@@ -38,6 +39,7 @@ class ProjectQuery extends Project implements QueryImpl<Project> {
   }
 
   addQuery(qb: QueryBuilder): QueryBuilder {
+    qb.isDeleted(true);
     return qb;
   }
 

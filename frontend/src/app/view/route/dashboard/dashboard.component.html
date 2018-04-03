@@ -2,34 +2,31 @@
 
   <div class="row">
 
-    <div class="col-md-6">
+    <div class="col-md-12" *ngIf="isLoggedIn">
 
-    </div>
+      <ngb-tabset>
 
-    <div *ngIf="keycloak.getKeycloakInstance().authenticated" class="col-md-6">
-
-      <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="ngb-panel-0">
-
-        <ngb-panel id="ngb-panel-0" title="DevTeam">
-          <ng-template ngbPanelContent>
+        <ngb-tab title="Dev team">
+          <ng-template ngbTabContent>
             <app-dev-team-paging (onSelect)="goToDevTeam($event)"></app-dev-team-paging>
+            <button *ngIf="isKanbanMaster" class="btn btn-primary" (click)="openDevTeamCreateModal()">Create development team</button>
           </ng-template>
-        </ngb-panel>
+        </ngb-tab>
 
-        <ngb-panel id="ngb-panel-1" title="Projects">
-          <ng-template ngbPanelContent>
+        <ngb-tab title="Projects">
+          <ng-template ngbTabContent>
             <app-project-paging (onSelect)="goToProject($event)" ></app-project-paging>
-            <button class="btn btn-primary" (click)="openProjectCreateModal()">Create project</button>
+            <button *ngIf="isKanbanMaster" class="btn btn-primary" (click)="openProjectCreateModal()">Create project</button>
           </ng-template>
-        </ngb-panel>
+        </ngb-tab>
 
-        <ngb-panel id="ngb-panel-2" title="Boards">
-          <ng-template ngbPanelContent>
+        <ngb-tab title="Boards">
+          <ng-template ngbTabContent>
             <app-board-paging (onSelect)="goToBoard($event)"></app-board-paging>
           </ng-template>
-        </ngb-panel>
+        </ngb-tab>
 
-      </ngb-accordion>
+      </ngb-tabset>
 
     </div>
 

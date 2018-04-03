@@ -1,13 +1,12 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 
 @Entity
@@ -18,6 +17,7 @@ import java.util.UUID;
                 query = "SELECT p.id FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua " +
                         "WHERE p.id = :projectId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND ua.id = :userId")
 })
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Project extends UUIDEntity<Project> {
 
     @Column(name = "name", nullable = false)
@@ -48,9 +48,6 @@ public class Project extends UUIDEntity<Project> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_account_id")
     private UserAccount owner;
-
-
-
 
 
     public DevTeam getDevTeam() {

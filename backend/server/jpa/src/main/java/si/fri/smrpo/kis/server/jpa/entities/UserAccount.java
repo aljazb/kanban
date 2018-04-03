@@ -1,14 +1,12 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.Constants;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 import java.util.Set;
 
 @Entity
@@ -17,8 +15,11 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = "user-account.get-all", query = "SELECT ua FROM UserAccount ua")
 })
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class UserAccount extends UUIDEntity<UserAccount> {
 
+    @Column(length = Constants.DEF_STRING_LEN, nullable = false)
+    private String username;
 
     @Column(length = Constants.DEF_STRING_LEN, nullable = false)
     private String email;
@@ -30,12 +31,17 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     private String lastName;
 
 
+    private Boolean inRoleKanbanMaster;
+    private Boolean inRoleAdministrator;
+    private Boolean inRoleDeveloper;
+    private Boolean inRoleProductOwner;
+
+
     @OneToMany(mappedBy = "userAccount")
     private Set<UserAccountMtmDevTeam> joinedDevTeams;
 
     @OneToMany(mappedBy = "owner")
     private Set<Project> projects;
-
 
     @OneToMany(mappedBy = "sender")
     private Set<Request> sentRequests;
@@ -43,21 +49,23 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     @OneToMany(mappedBy = "receiver")
     private Set<Request> receivedRequests;
 
+    @OneToMany(mappedBy = "movedBy")
+    private Set<CardMove> cardMoves;
+
+    @OneToMany(mappedBy = "assignedTo")
+    private Set<SubTask> subTasks;
 
 
-    @JsonIgnore
-    protected boolean baseSkip(Field field){
-        boolean skip = super.baseSkip(field);
-        if(skip){
-            return skip;
-        } else {
-            switch (field.getName()) {
-                case "email":
-                    return true;
-                default:
-                    return false;
-            }
-        }
+    @Transient
+    private String password; // DTO only field
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -112,7 +120,63 @@ public class UserAccount extends UUIDEntity<UserAccount> {
         return receivedRequests;
     }
 
-    public void setReceivedRequests(Set<Request> recivedRequests) {
-        this.receivedRequests = recivedRequests;
+    public void setReceivedRequests(Set<Request> receivedRequests) {
+        this.receivedRequests = receivedRequests;
+    }
+
+    public Set<CardMove> getCardMoves() {
+        return cardMoves;
+    }
+
+    public void setCardMoves(Set<CardMove> cardMoves) {
+        this.cardMoves = cardMoves;
+    }
+
+    public Set<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(Set<SubTask> subTasks) {
+        this.subTasks = subTasks;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Boolean getInRoleKanbanMaster() {
+        return inRoleKanbanMaster;
+    }
+
+    public void setInRoleKanbanMaster(Boolean inRoleKanbanMaster) {
+        this.inRoleKanbanMaster = inRoleKanbanMaster;
+    }
+
+    public Boolean getInRoleAdministrator() {
+        return inRoleAdministrator;
+    }
+
+    public void setInRoleAdministrator(Boolean inRoleAdministrator) {
+        this.inRoleAdministrator = inRoleAdministrator;
+    }
+
+    public Boolean getInRoleDeveloper() {
+        return inRoleDeveloper;
+    }
+
+    public void setInRoleDeveloper(Boolean inRoleDeveloper) {
+        this.inRoleDeveloper = inRoleDeveloper;
+    }
+
+    public Boolean getInRoleProductOwner() {
+        return inRoleProductOwner;
+    }
+
+    public void setInRoleProductOwner(Boolean inRoleProductOwner) {
+        this.inRoleProductOwner = inRoleProductOwner;
     }
 }

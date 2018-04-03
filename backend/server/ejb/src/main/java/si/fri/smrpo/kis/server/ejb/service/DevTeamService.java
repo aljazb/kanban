@@ -2,8 +2,8 @@ package si.fri.smrpo.kis.server.ejb.service;
 
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
-import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
@@ -15,10 +15,8 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @PermitAll
 @Stateless
@@ -28,26 +26,125 @@ public class DevTeamService implements DevTeamServiceLocal {
     @EJB
     private DatabaseServiceLocal database;
 
-    public DevTeam create(DevTeam devTeam, UUID userId) throws DatabaseException {
+    private void checkForDuplicateEntry(DevTeam devTeam) throws OperationException {
+        HashSet<UUID> membersIds = new HashSet<>();
 
-        UserAccount ua = database.getEntityManager().getReference(UserAccount.class, userId);
+        for(UserAccountMtmDevTeam member : devTeam.getJoinedUsers()) {
+            UUID id = member.getUserAccount().getId();
+            if(membersIds.contains(id)) {
+                throw new OperationException(String.format("Duplicate entry for id: %s .", id.toString()));
+            } else {
+                membersIds.add(id);
+            }
+        }
+    }
 
-        devTeam = database.create(devTeam);
+    private void checkStructure(DevTeam devTeam, UUID authId) throws OperationException {
+        List<UserAccountMtmDevTeam> kanbanMasters = devTeam.getJoinedUsers().stream()
+                .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER ||
+                        e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER)
+                .collect(Collectors.toList());
 
-        UserAccountMtmDevTeam member = new UserAccountMtmDevTeam();
-        member.setMemberType(MemberType.KANBAN_MASTER);
-        member.setDevTeam(devTeam);
-        member.setUserAccount(ua);
+        if(kanbanMasters.isEmpty()){
+            throw new OperationException("No kanban master specified.");
+        } else if(kanbanMasters.size() > 1) {
+            throw new OperationException("Only one kanban master can be specified.");
+        }
 
-        member = database.create(member);
+        UserAccount kanbanMaster = kanbanMasters.get(0).getUserAccount();
 
-        HashSet<UserAccountMtmDevTeam> members = new HashSet<>();
-        members.add(member);
+        if(!kanbanMaster.getId().equals(authId)){
+            throw new OperationException("User creating dev team must be kanban master.");
+        }
 
-        devTeam.setJoinedUsers(members);
+        List<UserAccountMtmDevTeam> productOwners = devTeam.getJoinedUsers().stream()
+                .filter(e -> e.getMemberType() == MemberType.PRODUCT_OWNER ||
+                        e.getMemberType() == MemberType.DEVELOPER_AND_PRODUCT_OWNER)
+                .collect(Collectors.toList());
+
+        if(productOwners.isEmpty()) {
+            throw new OperationException("No product owner specified.");
+        }
+    }
+
+    private void loadDevTeamMembers(DevTeam devTeam) throws DatabaseException {
+        for(UserAccountMtmDevTeam member : devTeam.getJoinedUsers()) {
+            UUID id = member.getUserAccount().getId();
+            UserAccount ua = database.getEntityManager().find(UserAccount.class, id);
+            if(ua == null){
+                throw new DatabaseException(String.format("User with id '%s' does not exist.", id));
+            } else {
+                member.setUserAccount(ua);
+            }
+        }
+    }
+
+    private void validateDevTeam(DevTeam devTeam, UUID authId) throws LogicBaseException {
+        checkForDuplicateEntry(devTeam);
+        checkStructure(devTeam, authId);
+        loadDevTeamMembers(devTeam);
+    }
+
+    private void updateDevTeamMembers(DevTeam devTeam) throws LogicBaseException {
+        DevTeam fromDb = this.database.get(DevTeam.class, devTeam.getId());
+
+        if (fromDb == null) {
+            throw new OperationException("Dev team does not exist.");
+        }
+
+        Set<UserAccountMtmDevTeam> existingUsers = fromDb.getJoinedUsers().stream()
+                .filter(e -> !e.getIsDeleted()).distinct().collect(Collectors.toSet());
+
+        for (UserAccountMtmDevTeam updatedUserMtm : devTeam.getJoinedUsers()) {
+            UserAccountMtmDevTeam existing = existingUsers.stream()
+                    .filter(userMtm -> userMtm.getUserAccount().getId().equals(updatedUserMtm.getUserAccount().getId()))
+                    .findFirst().orElse(null);
+
+            if (existing != null) {
+                existing.setMemberType(updatedUserMtm.getMemberType());
+                database.update(existing);
+                existingUsers.remove(existing);
+            } else {
+                updatedUserMtm.setDevTeam(fromDb);
+                database.create(updatedUserMtm);
+            }
+        }
+
+        for (UserAccountMtmDevTeam existing : existingUsers) {
+            database.delete(UserAccountMtmDevTeam.class, existing.getId());
+        }
+    }
+
+    private DevTeam persistDevTeamMembers(DevTeam devTeam) throws DatabaseException {
+        for(UserAccountMtmDevTeam member : devTeam.getJoinedUsers()) {
+            member.setDevTeam(devTeam);
+            database.create(member);
+        }
 
         return devTeam;
     }
+
+    public DevTeam create(DevTeam devTeam, UUID authId) throws LogicBaseException {
+
+        validateDevTeam(devTeam, authId);
+        devTeam = database.create(devTeam);
+        persistDevTeamMembers(devTeam);
+
+        devTeam.setJoinedUsers(null); // prevents recursive cycling when marshalling
+        return devTeam;
+    }
+
+    @Override
+    public DevTeam update(DevTeam devTeam, UUID authId) throws LogicBaseException {
+
+        validateDevTeam(devTeam, authId);
+        updateDevTeamMembers(devTeam);
+        devTeam = database.update(devTeam);
+
+        devTeam.setJoinedUsers(null); // prevents recursive cycling when marshalling
+        return devTeam;
+    }
+
 
     public Paging<UserAccount> getDevelopers(UUID devTeamId) {
         List<UserAccount> uaList = database.getEntityManager().createNamedQuery("devTeam.getDevelopers", UserAccount.class)
@@ -69,6 +166,56 @@ public class DevTeamService implements DevTeamServiceLocal {
             return database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
                     .setParameter("id", devTeamId)
                     .getResultList().stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException {
+        if (!getKanbanMaster(devTeamId).getId().equals(authId)) {
+            throw new OperationException("User is not KanbanMaster of this group",
+                    LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+        }
+
+        DevTeam devTeam = database.get(DevTeam.class, devTeamId);
+
+        UserAccountMtmDevTeam memberMtm = devTeam.getJoinedUsers().stream().filter(e -> e.getUserAccount().getId()
+                .equals(memberId) && !e.getIsDeleted()).findFirst().orElse(null);
+
+        if (memberMtm == null) {
+            throw new OperationException("Member is not in the development team.");
+        }
+
+        switch (memberMtm.getMemberType()) {
+            case DEVELOPER_AND_KANBAN_MASTER:
+                memberMtm.setMemberType(MemberType.KANBAN_MASTER);
+                memberMtm = database.update(memberMtm);
+                break;
+            case DEVELOPER_AND_PRODUCT_OWNER:
+                memberMtm.setMemberType(MemberType.PRODUCT_OWNER);
+                memberMtm = database.update(memberMtm);
+                break;
+            case DEVELOPER:
+                memberMtm = database.delete(UserAccountMtmDevTeam.class, memberMtm.getId());
+                break;
+            default:
+                throw new OperationException("Member is not developer");
+        }
+
+        return memberMtm.getUserAccount();
+    }
+
+    @Override
+    public DevTeam getWithUsers(UUID id) throws LogicBaseException {
+        DevTeam dt = this.database.get(DevTeam.class, id);
+
+        if (dt == null) {
+            throw new OperationException("Dev team does not exist.");
+        }
+
+        for (UserAccountMtmDevTeam mtm: dt.getJoinedUsers()) {
+            mtm.getUserAccount().getId();
+        }
+
+        return dt;
     }
 
 }

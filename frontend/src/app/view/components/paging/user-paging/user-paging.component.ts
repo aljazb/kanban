@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ApiService} from '../../../../api/Api';
+import {ApiService} from '../../../../api/api.service';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {debounceTime, switchMap, tap} from 'rxjs/operators';
-import {QueryBuilder} from '../../../../api/query/query-builder';
+import {OrderType, QueryBuilder} from '../../../../api/query/query-builder';
 import {HttpParams} from '@angular/common/http';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Paging} from '../../../../api/dto/Paging';
@@ -21,6 +21,7 @@ export class UserPagingComponent extends PagingImpl<UserAccount> implements OnIn
 
   constructor(private apiService:ApiService) {
     super();
+    this.pageSize = 8;
   }
 
   ngOnInit(): void {
@@ -62,10 +63,12 @@ class UserQuery extends UserAccount implements QueryImpl<UserAccount> {
 
   addQuery(qb: QueryBuilder): QueryBuilder {
 
+    qb.orderBy("createdOn", OrderType.DESC);
+
     if(this.email) qb.like("email", this.email + "%");
     if(this.firstName) qb.like("firstName", this.firstName + "%");
     if(this.lastName) qb.like("lastName", this.lastName + "%");
-    if(this.isDeleted != null) qb.eq("isDeleted", this.isDeleted ? "true" : "false");
+    if(this.isDeleted != null) qb.isDeleted(this.isDeleted);
 
     return qb;
   }

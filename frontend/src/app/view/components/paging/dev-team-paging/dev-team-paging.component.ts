@@ -4,7 +4,7 @@ import {DevTeam} from '../../../../api/models/DevTeam';
 import {HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {Paging} from '../../../../api/dto/Paging';
-import {ApiService} from '../../../../api/Api';
+import {ApiService} from '../../../../api/api.service';
 import {QueryBuilder} from '../../../../api/query/query-builder';
 
 @Component({
@@ -16,6 +16,7 @@ export class DevTeamPagingComponent extends PagingImpl<DevTeam> implements OnIni
 
   constructor(private api:ApiService) {
     super();
+    this.pageSize = 8;
   }
 
   ngOnInit() {

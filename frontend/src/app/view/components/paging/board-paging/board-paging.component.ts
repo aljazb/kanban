@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PagingImpl, QueryImpl} from '../PagingImpl';
 import {Board} from '../../../../api/models/Board';
-import {ApiService} from '../../../../api/Api';
+import {ApiService} from '../../../../api/api.service';
 import {Paging} from '../../../../api/dto/Paging';
 import {Observable} from 'rxjs/Observable';
 import {HttpParams} from '@angular/common/http';
@@ -17,6 +17,7 @@ export class BoardPagingComponent extends PagingImpl<Board>  implements OnInit {
 
   constructor(private api:ApiService) {
     super();
+    this.pageSize = 8;
   }
 
   ngOnInit() {
