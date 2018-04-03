@@ -27,8 +27,8 @@ export class UserPagingComponent extends PagingImpl<UserAccount> implements OnIn
   ngOnInit(): void {
   }
 
-  search(email: string, firstName: string, lastName: string, isDeleted: boolean): void {
-    this.nextSearch(new UserQuery(isDeleted, email, firstName, lastName));
+  search(search: string, isDeleted: boolean): void {
+    this.nextSearch(new UserQuery(isDeleted, search));
   }
 
   protected initialQuery(): UserQuery {
@@ -42,22 +42,14 @@ export class UserPagingComponent extends PagingImpl<UserAccount> implements OnIn
 }
 
 class UserQuery extends UserAccount implements QueryImpl<UserAccount> {
-  email: string;
-  firstName: string;
-  lastName: string;
-  isDeleted: boolean;
+  search: string;
 
   constructor(
     isDeleted: boolean=false,
-    email: string=null,
-    firstName: string=null,
-    lastName: string=null)
+    search: string=null)
   {
     super();
-
-    this.email = email;
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.search = search;
     this.isDeleted = isDeleted;
   }
 
@@ -65,9 +57,7 @@ class UserQuery extends UserAccount implements QueryImpl<UserAccount> {
 
     qb.orderBy("createdOn", OrderType.DESC);
 
-    if(this.email) qb.like("email", this.email + "%");
-    if(this.firstName) qb.like("firstName", this.firstName + "%");
-    if(this.lastName) qb.like("lastName", this.lastName + "%");
+    if(this.search) qb.addHeader({ name: "search", value: this.search + "%"});
     if(this.isDeleted != null) qb.isDeleted(this.isDeleted);
 
     return qb;

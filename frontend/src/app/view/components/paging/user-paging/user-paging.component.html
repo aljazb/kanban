@@ -4,38 +4,23 @@
 
     <h4>User list</h4>
 
-    <div *ngIf="enableSearch">
-        <div class="row" (keyup)="search(email.value, firstName.value, lastName.value, isDeleted.checked)">
-          <div class="col-md-4">
-            <div class="md-form">
-              <input #email type="text" id="in-email" class="form-control" placeholder="john.doe@gmail.com">
-              <label for="in-email" class="">Email</label>
-            </div>
-          </div>
+    <div class="row" *ngIf="enableSearch">
 
-          <div class="col-md-3">
-            <div class="md-form">
-              <input #firstName type="text" id="in-firstName" class="form-control">
-              <label for="in-firstName" class="">First name</label>
-            </div>
-          </div>
-
-          <div class="col-md-3">
-            <div class="md-form">
-              <input #lastName type="text" id="in-lastName" class="form-control">
-              <label for="in-lastName" class="">Last name</label>
-            </div>
-          </div>
-
-          <div class="col-md-2">
-            <div class="form-group">
-              <input (click)="search(email.value, firstName.value, lastName.value, isDeleted.checked)"
-                     #isDeleted type="checkbox" id="in-isDeleted">
-              <label for="in-isDeleted">Deleted</label>
-            </div>
-          </div>
-
+      <div class="col-md-5">
+        <div class="form-group">
+          <input #searchIn type="text" class="form-control" placeholder="search"
+                 (keyup)="search(searchIn.value, isDeleted.checked)">
         </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <input #isDeleted type="checkbox" id="in-isDeleted"
+                 (click)="search(searchIn.value, isDeleted.checked)">
+          <label for="in-isDeleted">Deleted</label>
+        </div>
+      </div>
+
     </div>
 
     <div *ngIf="paging && paging.count > 0" class="list-group">

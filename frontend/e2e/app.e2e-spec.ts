@@ -65,8 +65,8 @@ describe('Tutorial part 6', () => {
 
       heroDetail: element(by.css('app-root app-hero-detail > div')),
 
-      searchBox: element(by.css('#search-box')),
-      searchResults: element.all(by.css('.search-result li'))
+      searchBox: element(by.css('#email-box')),
+      searchResults: element.all(by.css('.email-result li'))
     };
   }
 
@@ -215,7 +215,7 @@ describe('Tutorial part 6', () => {
 
   });
 
-  describe('Progressive hero search', () => {
+  describe('Progressive hero email', () => {
 
     beforeAll(() => browser.get(''));
 

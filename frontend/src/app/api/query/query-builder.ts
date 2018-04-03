@@ -33,6 +33,7 @@ export class QueryBuilder {
   private _limit: number = 30;
   private _skip: number = 0;
 
+  private _customHeader: Set<{name: string, value: string}> = new Set();
 
   constructor() {
   }
@@ -82,6 +83,12 @@ export class QueryBuilder {
         content += where;
       });
       params = params.append("where", content);
+    }
+
+    if(this._customHeader.size > 0){
+      this._customHeader.forEach(header => {
+        params = params.append(header.name, header.value)
+      });
     }
 
     return params;
@@ -188,6 +195,10 @@ export class QueryBuilder {
   isDeleted(value: boolean): QueryBuilder {
     this.eq("isDeleted", value ? "true" : "false");
     return this;
+  }
+
+  addHeader(header: {name: string, value: string}){
+    this._customHeader.add(header);
   }
 
 }
