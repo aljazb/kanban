@@ -19,6 +19,7 @@ export class ProjectComponent implements OnInit {
   id: string;
   project: Project;
   isKanbanMaster: boolean;
+  cardsAssigned: boolean = false;
 
   constructor( private route: ActivatedRoute,
                private apiService:ApiService,
@@ -55,6 +56,7 @@ export class ProjectComponent implements OnInit {
   openProjectCreateModal() {
     const modalRef = this.modalService.open(ProjectFormComponent);
     (<ProjectFormComponent> modalRef.componentInstance).setInitialProject(this.project);
+    (<ProjectFormComponent> modalRef.componentInstance).setStartDateState(this.cardsAssigned);
 
     modalRef.result
       .then(value =>

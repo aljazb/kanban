@@ -25,6 +25,8 @@ export class ProjectFormComponent {
   fcEndDate: FormControl;
   fcDevTeam: FormControl;
 
+  startDateDisabled: boolean;
+
   emptyFields = false;
   earlyDate = false;
   dateSwitch = false;
@@ -67,6 +69,10 @@ export class ProjectFormComponent {
 
     if(project.devTeam)
       this.fcDevTeam.setValue(project.devTeam.id);
+  }
+
+  setStartDateState(isDisabled) {
+    this.startDateDisabled = isDisabled;
   }
 
   loadDevTeams(): void {
