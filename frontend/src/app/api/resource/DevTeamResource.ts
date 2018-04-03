@@ -14,7 +14,7 @@ export class DevTeamResource extends CrudResource<DevTeam> {
   getDevelopers(devTeamId: string): Observable<UserAccount[]> {
     return this.api.httpClient.get<UserAccount[]>(`${this.url}/${devTeamId}/developers`).pipe(
       catchError(this.handleError<UserAccount[]>("developers")),
-      map(content => this.serialize(content))
+      map(content => this.serializeArray(content))
     );
   }
 

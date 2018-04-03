@@ -6,6 +6,7 @@ import {UserPagingComponent} from '../../components/paging/user-paging/user-pagi
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserAccountFormComponent} from '../../components/forms/user-account-form/user-account-form.component';
 import {ToasterService} from 'angular5-toaster/dist';
+import {UserAccountPasswordFormComponent} from '../../components/forms/user-account-password-form/user-account-password-form.component';
 
 
 @Component({
@@ -42,43 +43,69 @@ export class AdminComponent implements OnInit {
         this.toasterService.pop('success', actionStr);
         this.selectedUser = value;
         this.userPagingComp.refresh();
-      }, error2 => {
+      }, error => {
         let actionStr = this.selectedUser.isDeleted ?
           'Error activating user: ' + this.selectedUser.username:
           'Error deactivating user: ' + this.selectedUser.username;
 
         this.toasterService.pop('error', actionStr);
-        console.log(error2);
       });
   }
 
-  openUserEditModal(user: UserAccount): void {
+  openUserEditModal(): void {
     const modalRef = this.modalService.open(UserAccountFormComponent);
-    (<UserAccountFormComponent> modalRef.componentInstance).setInitialProject(user);
-    modalRef.result.then(user => {
-      this.api.userAccount.put(user, true).subscribe(value => {
-        this.toasterService.pop('success', 'Updated user: ' + user.username);
-        this.selectedUser = value;
-        this.userPagingComp.refresh();
-      }, error2 => {
-        this.toasterService.pop('error', 'Error updating user: ' + user.username);
-        console.log(error2);
-      });
-    }).catch(reason => console.log(reason));
+    (<UserAccountFormComponent> modalRef.componentInstance).setInitialProject(this.selectedUser);
+
+    modalRef.result
+      .then(user => this.updateUser(user))
+      .catch(reason => console.log(reason));
   }
+
+  private updateUser(user: UserAccount): void {
+    this.api.userAccount.put(user, true).subscribe(value => {
+      this.toasterService.pop('success', 'Updated user: ' + user.username);
+      this.selectedUser = value;
+      this.userPagingComp.refresh();
+
+    }, error => {
+      this.toasterService.pop('error', 'Error updating user: ' + user.username);
+    });
+  }
+
+
+  openUserPasswordModal(): void {
+    const modalRef = this.modalService.open(UserAccountPasswordFormComponent);
+    modalRef.result
+      .then(password => this.setUserPassword(this.selectedUser, password))
+      .catch(reason => console.log(reason));
+  }
+
+  private setUserPassword(user: UserAccount, password: string){
+    this.api.userAccount.setPassword(user.id, password).subscribe(value => {
+      this.toasterService.pop('success', 'Set password user: ' + user.username);
+      this.selectedUser = value;
+      this.userPagingComp.refresh();
+    }, error => {
+      this.toasterService.pop('error', 'Error setting password user: ' + user.username);
+    });
+  }
+
 
   openUserCreateModal(): void {
     const modalRef = this.modalService.open(UserAccountFormComponent);
-    modalRef.result.then(user => {
-      this.api.userAccount.post(user, true).subscribe(value => {
-        this.toasterService.pop('success', 'Created new user: ' + user.username);
-        this.selectedUser = value;
-        this.userPagingComp.refresh();
-      }, error2 => {
-        this.toasterService.pop('error', 'Error creating user: ' + user.username);
-        console.log(error2);
-      });
-    }).catch(reason => console.log(reason));
+    modalRef.result
+      .then(user => this.createUser(user))
+      .catch(reason => console.log(reason));
+  }
+
+  private createUser(user: UserAccount): void {
+    this.api.userAccount.post(user, true).subscribe(value => {
+      this.toasterService.pop('success', 'Created new user: ' + user.username);
+      this.selectedUser = value;
+      this.userPagingComp.refresh();
+    }, error => {
+      this.toasterService.pop('error', 'Error creating user: ' + user.username);
+    });
   }
 
 }

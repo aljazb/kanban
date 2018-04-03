@@ -19,8 +19,6 @@ export class UserAccountResource extends GetResource<UserAccount> {
   }
 
   post (entity: UserAccount, xContent = this.api.xContent): Observable<UserAccount> {
-    console.log(entity);
-    console.log(this.url);
     return this.api.httpClient.post<UserAccount>(this.url, entity, { headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`post`)),
@@ -29,7 +27,6 @@ export class UserAccountResource extends GetResource<UserAccount> {
   }
 
   put (entity: UserAccount, xContent = this.api.xContent): Observable<UserAccount> {
-    console.log(entity);
     return this.api.httpClient.put<UserAccount>(this.url + "/" + entity.id, entity, { headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`patch`)),
@@ -37,8 +34,15 @@ export class UserAccountResource extends GetResource<UserAccount> {
       );
   }
 
+  setPassword (id: string, password: string, xContent=this.api.xContent): Observable<UserAccount> {
+    return this.api.httpClient.put<UserAccount>(this.url + "/" + id + "/password", password, { headers: this.getHeaders(xContent) })
+      .pipe(
+        catchError(this.handleError<UserAccount>(`patch`)),
+        //map(content => this.serialize(content))
+      );
+  }
+
   delete (id: string, xContent = this.api.xContent): Observable<UserAccount> {
-    console.log(id);
     return this.api.httpClient.delete<UserAccount>(this.url + "/" + id, { headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`delete`)),
@@ -47,7 +51,6 @@ export class UserAccountResource extends GetResource<UserAccount> {
   }
 
   changeStatus (id: string, xContent = this.api.xContent): Observable<UserAccount> {
-    console.log(id);
     return this.api.httpClient.put<UserAccount>(this.url + "/" + id + "/status/", null,{ headers: this.getHeaders(xContent) })
       .pipe(
         catchError(this.handleError<UserAccount>(`status`)),
@@ -59,7 +62,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleKanbanMaster:eq:true",{ headers: this.getHeaders()})
       .pipe(
         catchError(this.handleError<UserAccount[]>(`get kanbanMasters`)),
-        map(content => this.serialize(content))
+        map(content => this.serializeArray(content))
       );
   }
 
@@ -67,7 +70,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleProductOwner:eq:true",{ headers: this.getHeaders()})
       .pipe(
         catchError(this.handleError<UserAccount[]>(`get productOwners`)),
-        map(content => this.serialize(content))
+        map(content => this.serializeArray(content))
       );
   }
 
@@ -75,7 +78,7 @@ export class UserAccountResource extends GetResource<UserAccount> {
     return this.api.httpClient.get<UserAccount[]>(this.url + "?where=inRoleDeveloper:eq:true",{ headers: this.getHeaders()})
       .pipe(
         catchError(this.handleError<UserAccount[]>(`get developers`)),
-        map(content => this.serialize(content))
+        map(content => this.serializeArray(content))
       );
   }
 }

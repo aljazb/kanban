@@ -4,6 +4,8 @@ import {HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {isNullOrUndefined} from 'util';
+import {UserAccount} from '../../models/UserAccount';
+import {Class} from 'jsog-typescript/dist/support/Class';
 
 export abstract class BaseResource<T extends BaseEntity<T>> {
 
@@ -38,24 +40,25 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
     };
   }
 
-  protected serialize(content) {
-    let obj = this.api.jsog.serialize(content);
-
+  protected serialize<E extends BaseEntity<E>>(content: any): E {
+    let obj = <E> this.api.jsog.deserialize(content);
     this.deleteIds(obj);
+    return obj;
+  }
 
+  protected serializeArray<E extends BaseEntity<E>>(content: any): E[] {
+    let obj = <E[]> this.api.jsog.deserialize(content);
+    this.deleteIds(obj);
     return obj;
   }
 
   protected deleteIds(obj: any) {
-
     if (!Array.isArray(obj)) {
       if (isNullOrUndefined(obj["@id"])) {
         return;
       }
-
       delete obj["@id"];
     }
-
     for (let key in obj) {
       this.deleteIds(obj[key]);
     }

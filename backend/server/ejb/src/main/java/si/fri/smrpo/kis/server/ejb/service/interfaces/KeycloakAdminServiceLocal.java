@@ -10,5 +10,6 @@ public interface KeycloakAdminServiceLocal {
     String create(UserAccount userAccount) throws TransactionException;
     void update(UserAccount userAccount) throws TransactionException;
     void setEnabled(String id, boolean enabled) throws TransactionException;
+    void setPassword(String id, String password);
 
 }

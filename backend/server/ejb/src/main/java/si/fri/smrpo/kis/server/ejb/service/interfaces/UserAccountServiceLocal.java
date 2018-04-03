@@ -12,5 +12,6 @@ public interface UserAccountServiceLocal {
     UserAccount create(UserAccount authEntity) throws LogicBaseException;
     UserAccount update(UserAccount authEntity) throws LogicBaseException;
     UserAccount setEnabled(UUID id, Boolean enabled) throws LogicBaseException;
+    void setPassword(UUID id, String password) throws LogicBaseException;
 
 }

@@ -25,10 +25,53 @@ public class UserAccountService implements UserAccountServiceLocal {
     @EJB
     private KeycloakAdminServiceLocal keycloak;
 
-    private void validate(UserAccount userAccount, boolean isPasswordSet) throws TransactionException {
-        if(isPasswordSet && userAccount.getPassword() == null){
-            throw new TransactionException("Password not specified.");
-        } else if(userAccount.getUsername() == null) {
+
+
+    @Override
+    public UserAccount login(UserAccount authEntity) throws LogicBaseException {
+        return database.get(UserAccount.class, authEntity.getId());
+    }
+
+    @Override
+    public UserAccount create(UserAccount authEntity) throws LogicBaseException {
+        validate(authEntity);
+
+        String id = keycloak.create(authEntity);
+        authEntity.setId(UUID.fromString(id));
+
+        return database.create(authEntity);
+    }
+
+    @Override
+    public UserAccount update(UserAccount authEntity) throws LogicBaseException {
+        validate(authEntity);
+
+        keycloak.update(authEntity);
+
+        return database.update(authEntity);
+    }
+
+    @Override
+    public UserAccount setEnabled(UUID id, Boolean isDeleted) throws LogicBaseException {
+        UserAccount ua = database.get(UserAccount.class, id);
+
+        if(isDeleted == null) isDeleted = !ua.getIsDeleted();
+        ua.setIsDeleted(isDeleted);
+
+        keycloak.setEnabled(id.toString(), !isDeleted);
+
+        return database.update(ua);
+    }
+
+    @Override
+    public void setPassword(UUID id, String password) throws LogicBaseException {
+        keycloak.setPassword(id.toString(), password);
+    }
+
+
+
+    private void validate(UserAccount userAccount) throws TransactionException {
+        if(userAccount.getUsername() == null) {
             throw new TransactionException("Username not specified.");
         } else if(userAccount.getEmail() == null) {
             throw new TransactionException("Email not specified.");
@@ -45,44 +88,6 @@ public class UserAccountService implements UserAccountServiceLocal {
         } else if(userAccount.getInRoleProductOwner() == null) {
             throw new TransactionException("Role product owner not specified.");
         }
-    }
-
-    @Override
-    public UserAccount login(UserAccount authEntity) throws LogicBaseException {
-        return database.get(UserAccount.class, authEntity.getId());
-    }
-
-    @Override
-    public UserAccount create(UserAccount authEntity) throws LogicBaseException {
-        validate(authEntity, true);
-
-        UUID id = UUID.fromString(keycloak.create(authEntity));
-        authEntity.setId(id);
-        return database.create(authEntity);
-    }
-
-    @Override
-    public UserAccount update(UserAccount authEntity) throws LogicBaseException {
-        validate(authEntity, false);
-
-        keycloak.update(authEntity);
-        return database.update(authEntity);
-    }
-
-    @Override
-    public UserAccount setEnabled(UUID id, Boolean isDeleted) throws LogicBaseException {
-        UserAccount ua = database.get(UserAccount.class, id);
-
-        if(isDeleted == null){
-            isDeleted = !ua.getIsDeleted();
-        }
-
-        ua.setIsDeleted(isDeleted);
-        ua = database.update(ua);
-
-        keycloak.setEnabled(id.toString(), !isDeleted);
-
-        return ua;
     }
 
 }

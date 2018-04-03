@@ -13,7 +13,7 @@ export abstract class GetResource<T extends BaseEntity<T>> extends BaseResource<
   }
 
   private buildPaging(resp: HttpResponse<T[]>): Paging<T> {
-    return new Paging<T>(+resp.headers.get('X-Count'), this.serialize(resp.body));
+    return new Paging<T>(+resp.headers.get('X-Count'), this.serializeArray(resp.body));
   }
 
   getList (httpParams: HttpParams = null): Observable<Paging<T>> {

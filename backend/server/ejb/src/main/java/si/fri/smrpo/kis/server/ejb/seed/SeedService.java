@@ -22,7 +22,7 @@ public class SeedService {
 
     private static final Faker FAKER = new Faker();
 
-    private static final String TEST_USER_ID = "ccad0cc9-1786-4936-8525-3c325d1de0dd";
+    private static final String TEST_USER_ID = "b0ee9324-e4bc-40a3-8068-d4f7042dae60";
     private static final String ADMIN_USER_ID = "29b3a75e-0c4f-4aa7-a505-5290af252abe";
     private static final String DEVELOPER_USER_ID = "c8bca3a6-b49e-45fe-bd14-af82472933e9";
     private static final String KANBAN_MASTER_USER_ID = "944848a6-be17-404e-8ecc-a9247a094702";

@@ -34,6 +34,7 @@ import { ProjectDeleteConfirmationComponent } from './view/components/forms/proj
 import { DevTeamFormComponent } from './view/components/forms/dev-team-form/dev-team-form.component';
 import {ToasterModule} from 'angular5-toaster/dist';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { UserAccountPasswordFormComponent } from './view/components/forms/user-account-password-form/user-account-password-form.component';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ProjectDeleteConfirmationComponent,
     UserSelectionFormComponent,
     DevTeamFormComponent,
+    UserAccountPasswordFormComponent,
   ],
   providers: [
     {
@@ -84,6 +86,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
   entryComponents: [
     ProjectFormComponent,
     UserSelectionFormComponent,
+    UserAccountPasswordFormComponent,
     ProjectFormComponent,
     ProjectDeleteConfirmationComponent,
     UserAccountFormComponent,

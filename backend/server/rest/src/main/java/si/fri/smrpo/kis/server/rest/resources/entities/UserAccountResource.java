@@ -84,6 +84,18 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
         }
     }
 
+    @RolesAllowed({ROLE_ADMINISTRATOR})
+    @PUT
+    @Path("{id}/password")
+    public Response setPassword(@PathParam("id") UUID id, String password) throws ApiException {
+        try {
+            accountManager.setPassword(id, password);
+            return buildResponse().build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
+    }
+
     @RolesAllowed({ROLE_USER})
     @PUT
     @Path("{id}")

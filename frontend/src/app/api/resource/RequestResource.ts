@@ -15,7 +15,7 @@ export class RequestResource extends GetResource<Request> {
   getUserRequests(): Observable<Request[]> {
     return this.api.httpClient.get<Request[]>(`${this.url}/userRequests`).pipe(
       catchError(this.handleError<Request[]>("userRequests")),
-      map(content => this.serialize(content))
+      map(content => this.serializeArray(content))
     );
   }
 

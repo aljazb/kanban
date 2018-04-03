@@ -56,18 +56,6 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     private Set<SubTask> subTasks;
 
 
-    @Transient
-    private String password; // DTO only field
-
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getFirstName() {
         return firstName;
     }

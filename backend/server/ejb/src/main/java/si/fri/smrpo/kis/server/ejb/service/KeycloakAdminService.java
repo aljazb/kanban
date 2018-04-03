@@ -18,6 +18,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ws.rs.core.Response;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
 
@@ -37,14 +38,12 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
 
     private static Keycloak KEYCLOAK;
     private static RealmResource REALM_RESOURCE;
-    private static RoleRepresentation RP_ADMINISTRATOR;
-    private static RoleRepresentation RP_PRODUCT_OWNER;
-    private static RoleRepresentation RP_KANBAN_MASTER;
-    private static RoleRepresentation RP_DEVELOPER;
+    private static HashMap<String, RoleRepresentation> REALM_ROLES;
 
     @PostConstruct
     private void init(){
-        if(KEYCLOAK == null){
+        if(KEYCLOAK == null) {
+
             KEYCLOAK = KeycloakBuilder.builder()
                     .serverUrl(KC_URL).realm(KC_REALM).username(KC_USER).password(KC_PASSWORD).clientId(KC_CLIENT)
                     .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
@@ -52,12 +51,10 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
 
             REALM_RESOURCE = KEYCLOAK.realm(KC_KIS_REALM);
 
-            List<RoleRepresentation> rr = KEYCLOAK.realm(KC_KIS_REALM).roles().list();
-
-            RP_ADMINISTRATOR = rr.stream().filter(e -> e.getName().equals(ROLE_ADMINISTRATOR)).findFirst().orElse(null);
-            RP_PRODUCT_OWNER = rr.stream().filter(e -> e.getName().equals(ROLE_PRODUCT_OWNER)).findFirst().orElse(null);
-            RP_KANBAN_MASTER = rr.stream().filter(e -> e.getName().equals(ROLE_KANBAN_MASTER)).findFirst().orElse(null);
-            RP_DEVELOPER = rr.stream().filter(e -> e.getName().equals(ROLE_DEVELOPER)).findFirst().orElse(null);
+            REALM_ROLES = new HashMap<>();
+            for(RoleRepresentation rr : REALM_RESOURCE.roles().list()) {
+                REALM_ROLES.put(rr.getName(), rr);
+            }
         }
     }
 
@@ -88,70 +85,45 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
         return ur;
     }
 
-    public void setEnabled(String id, boolean enabled) throws TransactionException {
-        UserRepresentation ur = getUserRepresentation(id);
-        ur.setEnabled(enabled);
-        REALM_RESOURCE.users().get(id).update(ur);
+    private Set<String> getUserRoles(UserAccount userAccount){
+        HashSet<String> roles = new HashSet<>();
+        roles.add(ROLE_USER);
+
+        if(userAccount.getInRoleAdministrator()) roles.add(ROLE_ADMINISTRATOR);
+        if(userAccount.getInRoleKanbanMaster()) roles.add(ROLE_KANBAN_MASTER);
+        if(userAccount.getInRoleProductOwner()) roles.add(ROLE_PRODUCT_OWNER);
+        if(userAccount.getInRoleDeveloper()) roles.add(ROLE_DEVELOPER);
+
+        return roles;
     }
 
-    private void updateDetails(UserAccount userAccount) throws TransactionException {
+    private void updateKeycloakUserRoles(String id, Set<String> newUserRoles){
+        Set<String> userRoles = REALM_RESOURCE.users().get(id).roles().realmLevel().listAll()
+                .stream().map(RoleRepresentation::getName).collect(Collectors.toSet());
+
+        Set<String> rolesToAdd = new HashSet<>(newUserRoles);
+        rolesToAdd.removeAll(userRoles);
+        List<RoleRepresentation> toAdd = rolesToAdd.stream().map(e -> REALM_ROLES.get(e)).collect(Collectors.toList());
+        if(!toAdd.isEmpty()) {
+            REALM_RESOURCE.users().get(id).roles().realmLevel().add(toAdd);
+        }
+
+
+        Set<String> rolesToRemove = new HashSet<>(userRoles);
+        rolesToRemove.removeAll(newUserRoles);
+        List<RoleRepresentation> toRemove = rolesToRemove.stream().map(e -> REALM_ROLES.get(e)).collect(Collectors.toList());
+        if(!toRemove.isEmpty()) {
+            REALM_RESOURCE.users().get(id).roles().realmLevel().remove(toRemove);
+        }
+    }
+
+    private void updateKeycloakUserDetails(UserAccount userAccount) throws TransactionException {
         String id = userAccount.getId().toString();
         UserRepresentation ur = buildUserRepresentation(userAccount, id);
         REALM_RESOURCE.users().get(id).update(ur);
     }
 
-    private void updateRoles(UserAccount userAccount){
-        String id = userAccount.getId().toString();
-
-        List<RoleRepresentation> toAdd = new ArrayList<>();
-        List<RoleRepresentation> toRemove = new ArrayList<>();
-
-        HashMap<String, RoleRepresentation> userRealmRoles = new HashMap<>();
-        for(RoleRepresentation role : KEYCLOAK.realm(KC_KIS_REALM).users().get(id).roles().realmLevel().listAll()){
-            userRealmRoles.put(role.getName(), role);
-        }
-
-        boolean isDeveloper = userAccount.getInRoleDeveloper();
-        boolean hasDeveloper = userRealmRoles.containsKey(ROLE_DEVELOPER);
-        if(isDeveloper && !hasDeveloper) {
-                toAdd.add(RP_DEVELOPER);
-        } else if(!isDeveloper && hasDeveloper) {
-            toRemove.add(RP_DEVELOPER);
-        }
-
-        boolean isKanbanMaster = userAccount.getInRoleKanbanMaster();
-        boolean hasKanbanMaster = userRealmRoles.containsKey(ROLE_KANBAN_MASTER);
-        if(isKanbanMaster && !hasKanbanMaster) {
-            toAdd.add(RP_KANBAN_MASTER);
-        } else if(!isKanbanMaster && hasKanbanMaster) {
-            toRemove.add(RP_KANBAN_MASTER);
-        }
-
-        boolean isProductOwner = userAccount.getInRoleProductOwner();
-        boolean hasProductOwner = userRealmRoles.containsKey(ROLE_PRODUCT_OWNER);
-        if(isProductOwner && !hasProductOwner) {
-            toAdd.add(RP_PRODUCT_OWNER);
-        } else if(!isProductOwner && hasProductOwner) {
-            toRemove.add(RP_PRODUCT_OWNER);
-        }
-
-        boolean isAdministrator = userAccount.getInRoleAdministrator();
-        boolean hasAdministrator = userRealmRoles.containsKey(ROLE_ADMINISTRATOR);
-        if(isAdministrator && !hasAdministrator) {
-            toAdd.add(RP_ADMINISTRATOR);
-        } else if(!isAdministrator && hasAdministrator) {
-            toRemove.add(RP_ADMINISTRATOR);
-        }
-
-        if(!toAdd.isEmpty()){
-            REALM_RESOURCE.users().get(id).roles().realmLevel().add(toAdd);
-        }
-        if(!toRemove.isEmpty()){
-            REALM_RESOURCE.users().get(id).roles().realmLevel().remove(toRemove);
-        }
-    }
-
-    private String createUser(UserAccount userAccount) throws TransactionException {
+    private String createKeycloakUser(UserAccount userAccount) throws TransactionException {
         UserRepresentation user = buildUserRepresentation(userAccount);
         Response result = REALM_RESOURCE.users().create(user);
 
@@ -163,31 +135,34 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
         }
     }
 
-    private void updatePassword(UserAccount userAccount) {
-        if(userAccount.getPassword() != null) {
-            CredentialRepresentation credential = new CredentialRepresentation();
-            credential.setType(CredentialRepresentation.PASSWORD);
-            credential.setValue(userAccount.getPassword());
-            credential.setTemporary(false);
 
-            String id = userAccount.getId().toString();
-            REALM_RESOURCE.users().get(id).resetPassword(credential);
-        }
+
+    public void setPassword(String id, String password) {
+        CredentialRepresentation credential = new CredentialRepresentation();
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue(password);
+        credential.setTemporary(false);
+
+        REALM_RESOURCE.users().get(id).resetPassword(credential);
     }
 
     public void update(UserAccount userAccount) throws TransactionException {
-        updateDetails(userAccount);
-        updateRoles(userAccount);
-        updatePassword(userAccount);
+        updateKeycloakUserDetails(userAccount);
+
+        String id = userAccount.getId().toString();
+        updateKeycloakUserRoles(id, getUserRoles(userAccount));
     }
 
     public String create(UserAccount userAccount) throws TransactionException {
-        String id = createUser(userAccount);
-        userAccount.setId(UUID.fromString(id));
-
-        updateRoles(userAccount);
-        updatePassword(userAccount);
-
+        String id = createKeycloakUser(userAccount);
+        updateKeycloakUserRoles(id, getUserRoles(userAccount));
         return id;
     }
+
+    public void setEnabled(String id, boolean enabled) throws TransactionException {
+        UserRepresentation ur = getUserRepresentation(id);
+        ur.setEnabled(enabled);
+        REALM_RESOURCE.users().get(id).update(ur);
+    }
+
 }

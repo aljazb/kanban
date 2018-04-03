@@ -2,7 +2,7 @@ import {BaseEntity} from './base/BaseEntity';
 import {UserAccountMTMDevTeam} from './mtm/UserAccountMTMDevTeam';
 import {Project} from './Project';
 
-export class UserAccount extends BaseEntity<UserAccount> {
+export class UserAccount extends BaseEntity<UserAccount>{
 
   username: string;
   email: string;

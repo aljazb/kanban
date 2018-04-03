@@ -50,6 +50,9 @@ public abstract class BaseResource<
         this.type = type;
     }
 
+    protected <B extends BaseEntity> Response.ResponseBuilder buildResponse() {
+        return buildResponse(null, false, false, null);
+    }
 
     protected <B extends BaseEntity> Response.ResponseBuilder buildResponse(B dbEntity) {
         return buildResponse(dbEntity, false, false, null);
