@@ -84,13 +84,13 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
         ur.setFirstName(userAccount.getFirstName());
         ur.setLastName(userAccount.getLastName());
         ur.setEnabled(true);
+        ur.setEmailVerified(true);
         return ur;
     }
 
     public void setEnabled(String id, boolean enabled) throws TransactionException {
         UserRepresentation ur = getUserRepresentation(id);
         ur.setEnabled(enabled);
-
         REALM_RESOURCE.users().get(id).update(ur);
     }
 
@@ -151,7 +151,19 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
         }
     }
 
-    private void updatePassword(UserAccount userAccount){
+    private String createUser(UserAccount userAccount) throws TransactionException {
+        UserRepresentation user = buildUserRepresentation(userAccount);
+        Response result = REALM_RESOURCE.users().create(user);
+
+        if(result.getStatus() == 201) {
+            String locationHeader = result.getHeaderString("Location");
+            return locationHeader.replaceAll(".*/(.*)$", "$1");
+        } else {
+            throw new TransactionException("Could not create account on Keycloak server.");
+        }
+    }
+
+    private void updatePassword(UserAccount userAccount) {
         if(userAccount.getPassword() != null) {
             CredentialRepresentation credential = new CredentialRepresentation();
             credential.setType(CredentialRepresentation.PASSWORD);
@@ -170,17 +182,12 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
     }
 
     public String create(UserAccount userAccount) throws TransactionException {
-        UserRepresentation user = buildUserRepresentation(userAccount);
+        String id = createUser(userAccount);
+        userAccount.setId(UUID.fromString(id));
 
-        Response result = REALM_RESOURCE.users().create(user);
+        updateRoles(userAccount);
+        updatePassword(userAccount);
 
-        if(result.getStatus() != 201) {
-            throw new TransactionException("Could not create account on KEYCLOAK server.");
-        } else {
-            String locationHeader = result.getHeaderString("Location");
-            String userId = locationHeader.replaceAll(".*/(.*)$", "$1");
-
-            return userId;
-        }
+        return id;
     }
 }

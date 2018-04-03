@@ -1,7 +1,8 @@
 package si.fri.smrpo.kis.server.jpa.entities.mtm;
 
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="user_account_mtm_dev_team")
 @Cacheable
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class UserAccountMtmDevTeam extends UUIDEntity<UserAccountMtmDevTeam> {
 
     @Enumerated(EnumType.STRING)

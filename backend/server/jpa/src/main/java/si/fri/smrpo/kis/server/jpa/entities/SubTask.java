@@ -1,5 +1,7 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
@@ -7,6 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="sub_task")
 @Cacheable
+@JsonIdentityInfo(generator=JSOGGenerator.class)
 public class SubTask extends UUIDEntity<SubTask> {
 
     @Column(name = "name", nullable = false)

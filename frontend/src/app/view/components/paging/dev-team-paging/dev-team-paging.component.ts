@@ -16,6 +16,7 @@ export class DevTeamPagingComponent extends PagingImpl<DevTeam> implements OnIni
 
   constructor(private api:ApiService) {
     super();
+    this.pageSize = 8;
   }
 
   ngOnInit() {

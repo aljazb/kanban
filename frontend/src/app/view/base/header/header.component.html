@@ -1,6 +1,8 @@
 <header>
   <nav class="navbar navbar-light bg-light navbar-fixed-top navbar-expand-lg">
-    <a class="navbar-brand" [routerLink]="['/']" (click)="navbarCollapsed = true">Kanban</a>
+    <a class="navbar-brand" [routerLink]="['/']" (click)="navbarCollapsed = true">
+      <h2>Kanban</h2>
+    </a>
 
     <button class="navbar-toggler navbar-toggler-right" type="button" (click)="navbarCollapsed = !navbarCollapsed"
             [attr.aria-expanded]="!navbarCollapsed" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,18 +15,18 @@
 
         <div *ngIf="!user">
           <li class="nav-item">
-            <a class="btn" (click)="navbarCollapsed = true; login()">
+            <button class="btn btn-outline-primary ho-pointer" role="button" (click)="navbarCollapsed = true; login()">
               Log in
-            </a>
+            </button>
           </li>
         </div>
 
         <div *ngIf="user">
           <li class="nav-item">
             <div ngbDropdown class="d-inline-block">
-              <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>{{user.email}}</button>
+              <button class="btn btn-outline-primary ho-pointer" ngbDropdownToggle>{{user.email}}</button>
               <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                <a *ngIf="user.inRoleAdministrator" class="btn btn-info dropdown-item" role="button" routerLink="/admin">Admin</a>
+                <a class="btn btn-info dropdown-item" role="button" routerLink="/admin" *ngIf="user.inRoleAdministrator">Admin</a>
                 <a class="btn btn-info dropdown-item" role="button" routerLink="/profile">Profile</a>
                 <a class="btn btn-info dropdown-item" role="button" (click)="logout()">Log out</a>
               </div>

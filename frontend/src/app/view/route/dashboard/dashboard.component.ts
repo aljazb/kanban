@@ -18,28 +18,22 @@ import {DevTeamFormComponent} from '../../components/forms/dev-team-form/dev-tea
 })
 export class DashboardComponent implements OnInit {
 
-  isKanbanMaster: boolean;
-  isLoggedIn: boolean;
+  isLoggedIn: boolean = false;
+  isKanbanMaster: boolean = false;
 
   constructor(
     private router: Router,
-    private keycloak:KeycloakService,
     private apiService:ApiService,
     private modalService: NgbModal,
     public loginService: LoginService) { }
 
   ngOnInit() {
-    this.checkStatus();
-  }
-
-  checkStatus() {
-    this.keycloak.isLoggedIn()
-      .then(isLoggedIn => {
-        this.isLoggedIn = isLoggedIn;
-        if(isLoggedIn){
-          this.isKanbanMaster = this.keycloak.isUserInRole(ROLE_KANBAN_MASTER);
-        }
-      });
+    this.loginService.getUser().subscribe(user => {
+      if(user != null) {
+        this.isLoggedIn = true;
+        this.isKanbanMaster = user.inRoleKanbanMaster;
+      }
+    });
   }
 
   openDevTeamCreateModal() {

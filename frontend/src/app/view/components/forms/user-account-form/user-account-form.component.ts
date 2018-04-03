@@ -2,18 +2,21 @@ import { Component } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserAccount} from '../../../../api/models/UserAccount';
+import {FormImpl} from '../form-impl';
 
 @Component({
   selector: 'app-user-account-form',
   templateUrl: './user-account-form.component.html',
   styleUrls: ['./user-account-form.component.css']
 })
-export class UserAccountFormComponent {
+export class UserAccountFormComponent extends FormImpl {
 
   private PASSWORD_BLANK: string = '******';
 
   userAccount: UserAccount = new UserAccount();
 
+  isFormSubmitted: boolean = false;
+  isFormChanged: boolean = true;
   formUserAccount: FormGroup;
 
   fcUsername: FormControl;
@@ -30,6 +33,7 @@ export class UserAccountFormComponent {
 
 
   constructor(public activeModal: NgbActiveModal) {
+    super();
     this.initFormControls();
     this.initFormGroup();
   }
@@ -65,9 +69,16 @@ export class UserAccountFormComponent {
   }
 
   setInitialProject(user: UserAccount) {
+    this.isFormChanged = false;
+    this.formUserAccount.valueChanges.subscribe(value => {
+      this.isFormChanged = this.isSetValueChanged();
+    });
+
     this.userAccount = user;
 
     this.fcUsername.setValue(user.username);
+    this.fcUsername.disable({ onlySelf: true});
+
     this.fcEmail.setValue(user.email);
     this.fcFirstName.setValue(user.firstName);
     this.fcLastName.setValue(user.lastName);
@@ -80,7 +91,19 @@ export class UserAccountFormComponent {
     this.fcInRoleAdministrator.setValue(user.inRoleAdministrator);
   }
 
+  isSetValueChanged(): boolean {
+    return this.fcEmail.value != this.userAccount.email ||
+      this.fcFirstName.value != this.userAccount.firstName ||
+      this.fcLastName.value != this.userAccount.lastName ||
+      this.fcPassword.value != this.PASSWORD_BLANK ||
+      this.fcInRoleDeveloper.value != this.userAccount.inRoleDeveloper ||
+      this.fcInRoleKanbanMaster.value != this.userAccount.inRoleKanbanMaster ||
+      this.fcInRoleProductOwner.value != this.userAccount.inRoleProductOwner ||
+      this.fcInRoleAdministrator.value != this.userAccount.inRoleAdministrator;
+  }
+
   onSubmit() {
+    this.isFormSubmitted = true;
     if(this.formUserAccount.valid) {
 
       let ua = this.userAccount;
@@ -100,6 +123,8 @@ export class UserAccountFormComponent {
       ua.inRoleAdministrator = this.fcInRoleAdministrator.value;
 
       this.activeModal.close(ua);
+    } else {
+      this.validateForm(this.formUserAccount);
     }
   }
 

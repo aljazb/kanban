@@ -47,7 +47,9 @@ export class DevTeamFormComponent {
       this.allDevelopers = developers;
       this.availableDevelopers = developers.map(x => Object.assign({}, x)); // copy
 
-      if (!isNullOrUndefined(this.devTeam)) {
+      console.log(this.devTeam);
+
+      if (!isNullOrUndefined(this.devTeam) && !isNullOrUndefined(this.devTeam.name)) {
         this.fcName.setValue(this.devTeam.name);
         this.fcProductOwner.setValue(DevTeam.getProductOwner(this.devTeam).id);
 
