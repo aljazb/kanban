@@ -1,16 +1,16 @@
 <div *ngIf="devTeam">
   <div class="list-group">
-    <a class="list-group-item list-group-item-light">Team name:</a>
-    <a class="list-group-item list-group-item-primary list-group-item-action">{{devTeam.name}}</a>
+    <div class="list-group-item list-group-item-primary">Team name:</div>
+    <a class="list-group-item list-group-item-action">{{devTeam.name}}</a>
   </div>
   <br>
 
   <div *ngIf="kanbanMaster">
     <a class="list-group">
-      <a class="list-group-item list-group-item-light">Kanban Master:
+      <div class="list-group-item list-group-item-primary">Kanban Master:
         <button *ngIf="isUserKanbanMaster" type="button" (click)="sendKMInvite()" class="btn btn-primary" style="float: right">
-          Invite new Kanban Master</button></a>
-      <a class="list-group-item list-group-item-danger list-group-item-action list-group-item-warning">
+          Invite new Kanban Master</button></div>
+      <a class="list-group-item list-group-item-action">
         {{ kanbanMaster.email }}
       </a>
     </a>
@@ -19,18 +19,18 @@
 
   <div *ngIf="productOwner">
     <div class="list-group">
-      <a class="list-group-item list-group-item-light">Product owner</a>
-      <a class="list-group-item list-group-item-success list-group-item-action">{{productOwner.email}}</a>
+      <div class="list-group-item list-group-item-primary">Product owner</div>
+      <a class="list-group-item list-group-item-action">{{productOwner.email}}</a>
     </div>
   </div>
   <br>
   <div *ngIf="developers">
     <div class="list-group">
-      <a class="list-group-item list-group-item-light">Developers:
+      <div class="list-group-item list-group-item-primary">Developers:
         <button *ngIf="isUserKanbanMaster" type="button" (click)="openDevTeamEditModal()" class="btn btn-primary" style="float: right">
           Edit development team</button>
-      </a>
-      <a *ngFor="let developer of developers" class="list-group-item list-group-item-action list-group-item-warning d-flex" >
+      </div>
+      <a *ngFor="let developer of developers" class="list-group-item list-group-item-action d-flex" >
         {{ developer.email }}
       </a>
     </div>
