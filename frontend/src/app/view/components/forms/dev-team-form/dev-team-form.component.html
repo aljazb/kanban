@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title">Create project</h4>
+  <h4 class="modal-title">Create development team</h4>
   <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -9,24 +9,24 @@
 
   <form [formGroup]="formDevTeam" (ngSubmit)="onSubmit()">
 
-    <div class="form-group row">
-      <label for="in-name" class="col-sm-2 col-form-label">Name</label>
-      <div class="col-sm-10">
+    <div class="form-group">
+      <label for="in-name" class="col-sm-12 col-form-label">Name:</label>
+      <div class="col-sm-12">
         <input type="text" name="devteam-name" class="form-control" id="in-name"  placeholder="Name"
                formControlName="name">
       </div>
     </div>
 
-    <div class="form-group row">
-      <label class="col-sm-2 col-form-label">Kanban Master</label>
-      <div class="col-sm-10">
-        {{ kanbanMaster.email }} (Your account, can be changed after creation)
+    <div class="form-group">
+      <label class="col-sm-12 col-form-label">Kanban Master (Can be changed after creation)</label>
+      <div class="col-sm-12 text-muted">
+        <input disabled type="text" name="devteam-name" class="form-control" placeholder="{{ kanbanMaster.email }}">
       </div>
     </div>
 
-    <div class="form-group row">
-      <label for="in-productOwner" class="col-sm-2 col-form-label">Product Owner</label>
-      <div class="col-sm-10">
+    <div class="form-group">
+      <label for="in-productOwner" class="col-sm-12 col-form-label">Product Owner</label>
+      <div class="col-sm-12">
         <select name="devteam-productOwner" class="form-control" id="in-productOwner"
                 formControlName="productOwner">
           <option [ngValue]="null">Select Product Owner</option>
@@ -35,23 +35,23 @@
       </div>
     </div>
 
-    <div class="form-group row">
-      <label for="in-addDeveloper" class="col-sm-2 col-form-label">Add developer</label>
-      <div class="col-sm-10">
+    <div class="form-group">
+      <label for="in-addDeveloper" class="col-sm-12 col-form-label">Add developer</label>
+      <div class="col-sm-12">
         <select name="devteam-addDeveloper" class="form-control" id="in-addDeveloper"
                 formControlName="selectDeveloper">
-          <option [ngValue]="null">Select Developer</option>
+          <option [ngValue]="null">Add Developer</option>
           <option *ngFor="let dev of availableDevelopers" [ngValue]="dev.id">{{dev.email}}</option>
         </select>
       </div>
     </div>
 
-    <div class="col-sm-2 div-form-label">Selected developers:</div>
-    <div class="form-group row">
-      <ul *ngIf="selectedDevelopers" class="list-group">
+    <div class="form-group col-12">Developer team:</div>
+    <div class="form-group row col-12">
+      <ul *ngIf="selectedDevelopers" class="list-group col-12">
         <li *ngFor="let selectedDev of selectedDevelopers" class="list-group-item">
           {{ selectedDev.email }}
-          <button (click)="removeDeveloper(selectedDev.id)" type="button" class="btn btn-danger">x</button>
+          <button (click)="removeDeveloper(selectedDev.id)" type="button" class="btn-sml btn-danger" style="float: right">x</button>
         </li>
       </ul>
     </div>
