@@ -53,6 +53,9 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
   }
 
   protected deleteIds(obj: any) {
+    if (isNullOrUndefined(obj)) {
+      return;
+    }
     if (!Array.isArray(obj)) {
       if (isNullOrUndefined(obj["@id"])) {
         return;
