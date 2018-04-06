@@ -38,7 +38,7 @@ export class ProjectComponent implements OnInit {
     modalRef.result
       .then(value =>
         this.apiService.project.post(value, true).subscribe(value =>
-          console.log(value)
+          this.router.navigate([`/project/${value.id}`])
         ))
       .catch(reason => console.log(reason));
   }
