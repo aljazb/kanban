@@ -15,7 +15,7 @@ export class RequestResource extends GetResource<Request> {
   getUserRequests(): Observable<Request[]> {
     return this.api.httpClient.get<Request[]>(`${this.url}/userRequests`).pipe(
       catchError(this.handleError<Request[]>("userRequests")),
-      map(content => this.serializeArray(content))
+      map(content => this.deserializeArray(content))
     );
   }
 
@@ -23,7 +23,7 @@ export class RequestResource extends GetResource<Request> {
     return this.api.httpClient.put<Request>(this.url + "/" + requestId, null, { headers: this.getHeaders(true)})
       .pipe(
         catchError(this.handleError<Request>(`accept`)),
-        map(content => this.serialize(content))
+        map(content => this.deserialize(content))
       );
   }
 
@@ -31,7 +31,7 @@ export class RequestResource extends GetResource<Request> {
     return this.api.httpClient.delete<Request>(this.url + "/" + requestId, { headers: this.getHeaders(true)})
       .pipe(
         catchError(this.handleError<Request>(`decline`)),
-        map(content => this.serialize(content))
+        map(content => this.deserialize(content))
       );
   }
 
@@ -45,10 +45,10 @@ export class RequestResource extends GetResource<Request> {
 
     console.log(request);
 
-    return this.api.httpClient.post<Request>(this.url, request, { headers: this.getHeaders()})
+    return this.api.httpClient.post<Request>(this.url, this.serialize(request), { headers: this.getHeaders()})
       .pipe(
         catchError(this.handleError<Request>(`createKanbanMasterInvite`)),
-        map(content => this.serialize(content))
+        map(content => this.deserialize(content))
       );
   }
 }

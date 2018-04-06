@@ -40,13 +40,13 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
     };
   }
 
-  protected serialize<E extends BaseEntity<E>>(content: any): E {
+  protected deserialize<E extends BaseEntity<E>>(content: any): E {
     let obj = <E> this.api.jsog.deserialize(content);
     this.deleteIds(obj);
     return obj;
   }
 
-  protected serializeArray<E extends BaseEntity<E>>(content: any): E[] {
+  protected deserializeArray<E extends BaseEntity<E>>(content: any): E[] {
     let obj = <E[]> this.api.jsog.deserialize(content);
     this.deleteIds(obj);
     return obj;
@@ -62,6 +62,10 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
     for (let key in obj) {
       this.deleteIds(obj[key]);
     }
+  }
+
+  protected serialize(entity) {
+    return this.api.jsog.serialize(entity);
   }
 
 }
