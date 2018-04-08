@@ -7,6 +7,7 @@ import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 
 @Entity
@@ -37,9 +38,9 @@ public class Project extends UUIDEntity<Project> {
     @Temporal(TemporalType.TIMESTAMP)
     protected Date endDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "boardLane_id")
-    private BoardLane boardLane;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dev_team_id")
@@ -48,6 +49,9 @@ public class Project extends UUIDEntity<Project> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_account_id")
     private UserAccount owner;
+
+    @OneToMany(mappedBy = "project")
+    private Set<Card> cards;
 
 
     public DevTeam getDevTeam() {
@@ -106,12 +110,19 @@ public class Project extends UUIDEntity<Project> {
         this.endDate = endDate;
     }
 
-    public BoardLane getBoardLane() {
-        return boardLane;
+    public Board getBoard() {
+        return board;
     }
 
-    public void setBoardLane(BoardLane boardLane) {
-        this.boardLane = boardLane;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
+    public Set<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(Set<Card> cards) {
+        this.cards = cards;
+    }
 }

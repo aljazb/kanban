@@ -4,7 +4,6 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
-import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -39,20 +38,17 @@ public class DevTeam extends UUIDEntity<DevTeam> {
     private String name;
 
     @OneToMany(mappedBy = "devTeam")
-    private Set<UserAccountMtmDevTeam> joinedUsers;
+    private Set<Membership> joinedUsers;
 
     @OneToMany(mappedBy = "devTeam")
     private Set<Project> projects;
 
-    @OneToOne(mappedBy = "devTeam", fetch = FetchType.LAZY)
-    private Board board;
 
-
-    public Set<UserAccountMtmDevTeam> getJoinedUsers() {
+    public Set<Membership> getJoinedUsers() {
         return joinedUsers;
     }
 
-    public void setJoinedUsers(Set<UserAccountMtmDevTeam> joinedUsers) {
+    public void setJoinedUsers(Set<Membership> joinedUsers) {
         this.joinedUsers = joinedUsers;
     }
 
@@ -62,14 +58,6 @@ public class DevTeam extends UUIDEntity<DevTeam> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
     }
 
     public Set<Project> getProjects() {

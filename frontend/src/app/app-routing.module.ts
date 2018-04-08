@@ -12,6 +12,7 @@ import {ProfileComponent} from './view/route/profile/profile.component';
 import {DevTeamDetailsComponent} from './view/route/dev-team-details/dev-team-details.component';
 import {ProjectDetailsComponent} from './view/route/project-details/project-details.component';
 import {BoardDetailsComponent} from './view/route/board-details/board-details.component';
+import {BoardEditComponent} from './view/route/board-edit/board-edit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -27,6 +28,7 @@ const routes: Routes = [
 
   { path: 'board', component: BoardComponent },
   { path: 'board/:id', component: BoardDetailsComponent },
+  { path: 'board-edit', component: BoardEditComponent },
 ];
 
 @NgModule({

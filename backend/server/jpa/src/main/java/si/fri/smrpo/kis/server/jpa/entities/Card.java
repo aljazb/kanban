@@ -31,10 +31,6 @@ public class Card extends UUIDEntity<Card> {
     @JoinColumn(name = "board_part_id", nullable = false)
     private BoardPart boardPart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_lane_id", nullable = false)
-    private BoardLane boardLane;
-
     @OneToMany(mappedBy = "card")
     private Set<CardMove> cardMoves;
 
@@ -80,14 +76,6 @@ public class Card extends UUIDEntity<Card> {
 
     public void setBoardPart(BoardPart boardPart) {
         this.boardPart = boardPart;
-    }
-
-    public BoardLane getBoardLane() {
-        return boardLane;
-    }
-
-    public void setBoardLane(BoardLane boardLane) {
-        this.boardLane = boardLane;
     }
 
     public Set<CardMove> getCardMoves() {

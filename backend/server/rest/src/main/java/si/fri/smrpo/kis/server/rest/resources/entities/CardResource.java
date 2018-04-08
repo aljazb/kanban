@@ -15,11 +15,13 @@ import java.util.UUID;
 public class CardResource extends CrudResource<Card, CrudSource<Card, UUID>> {
 
     @EJB
-    private DatabaseServiceLocal databaseService;
+    private DatabaseServiceLocal database;
+
+
 
     @Override
     protected void initSource() {
-        source = new CrudSource<>(databaseService);
+        source = new CrudSource<>(database);
     }
 
     public CardResource() {

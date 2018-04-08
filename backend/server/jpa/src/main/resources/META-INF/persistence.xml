@@ -22,7 +22,7 @@
         <class>si.fri.smrpo.kis.server.jpa.entities.BoardPart</class>
 
         <class>si.fri.smrpo.kis.server.jpa.entities.Request</class>
-        <class>si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.Membership</class>
 
 
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>

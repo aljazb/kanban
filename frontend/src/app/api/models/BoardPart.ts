@@ -5,6 +5,8 @@ import {Card} from './Card';
 export class BoardPart extends BaseEntity<BoardPart> {
   name: string;
   maxWip: number;
+
+  orderIndex: number;
   isLeaf: boolean;
 
   board: Board;

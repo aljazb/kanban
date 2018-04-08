@@ -17,7 +17,7 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "max_wip", nullable = false)
+    @Column(name = "max_wip")
     private Integer maxWip;
 
     @Column(name = "order_index", nullable = false)

@@ -8,7 +8,7 @@ import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
-import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
+import si.fri.smrpo.kis.server.jpa.entities.Membership;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.annotation.security.PermitAll;
@@ -29,7 +29,7 @@ public class DevTeamService implements DevTeamServiceLocal {
     private void checkForDuplicateEntry(DevTeam devTeam) throws OperationException {
         HashSet<UUID> membersIds = new HashSet<>();
 
-        for(UserAccountMtmDevTeam member : devTeam.getJoinedUsers()) {
+        for(Membership member : devTeam.getJoinedUsers()) {
             UUID id = member.getUserAccount().getId();
             if(membersIds.contains(id)) {
                 throw new OperationException(String.format("Duplicate entry for id: %s .", id.toString()));
@@ -40,7 +40,7 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
     private void checkStructure(DevTeam devTeam, UUID authId) throws OperationException {
-        List<UserAccountMtmDevTeam> kanbanMasters = devTeam.getJoinedUsers().stream()
+        List<Membership> kanbanMasters = devTeam.getJoinedUsers().stream()
                 .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER ||
                         e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER)
                 .collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class DevTeamService implements DevTeamServiceLocal {
             throw new OperationException("User creating dev team must be kanban master.");
         }
 
-        List<UserAccountMtmDevTeam> productOwners = devTeam.getJoinedUsers().stream()
+        List<Membership> productOwners = devTeam.getJoinedUsers().stream()
                 .filter(e -> e.getMemberType() == MemberType.PRODUCT_OWNER ||
                         e.getMemberType() == MemberType.DEVELOPER_AND_PRODUCT_OWNER)
                 .collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
     private void loadDevTeamMembers(DevTeam devTeam) throws DatabaseException {
-        for(UserAccountMtmDevTeam member : devTeam.getJoinedUsers()) {
+        for(Membership member : devTeam.getJoinedUsers()) {
             UUID id = member.getUserAccount().getId();
             UserAccount ua = database.getEntityManager().find(UserAccount.class, id);
             if(ua == null){
@@ -92,11 +92,11 @@ public class DevTeamService implements DevTeamServiceLocal {
             throw new OperationException("Dev team does not exist.");
         }
 
-        Set<UserAccountMtmDevTeam> existingUsers = fromDb.getJoinedUsers().stream()
+        Set<Membership> existingUsers = fromDb.getJoinedUsers().stream()
                 .filter(e -> !e.getIsDeleted()).distinct().collect(Collectors.toSet());
 
-        for (UserAccountMtmDevTeam updatedUserMtm : devTeam.getJoinedUsers()) {
-            UserAccountMtmDevTeam existing = existingUsers.stream()
+        for (Membership updatedUserMtm : devTeam.getJoinedUsers()) {
+            Membership existing = existingUsers.stream()
                     .filter(userMtm -> userMtm.getUserAccount().getId().equals(updatedUserMtm.getUserAccount().getId()))
                     .findFirst().orElse(null);
 
@@ -110,13 +110,13 @@ public class DevTeamService implements DevTeamServiceLocal {
             }
         }
 
-        for (UserAccountMtmDevTeam existing : existingUsers) {
-            database.delete(UserAccountMtmDevTeam.class, existing.getId());
+        for (Membership existing : existingUsers) {
+            database.delete(Membership.class, existing.getId());
         }
     }
 
     private DevTeam persistDevTeamMembers(DevTeam devTeam) throws DatabaseException {
-        for(UserAccountMtmDevTeam member : devTeam.getJoinedUsers()) {
+        for(Membership member : devTeam.getJoinedUsers()) {
             member.setDevTeam(devTeam);
             database.create(member);
         }
@@ -177,7 +177,7 @@ public class DevTeamService implements DevTeamServiceLocal {
 
         DevTeam devTeam = database.get(DevTeam.class, devTeamId);
 
-        UserAccountMtmDevTeam memberMtm = devTeam.getJoinedUsers().stream().filter(e -> e.getUserAccount().getId()
+        Membership memberMtm = devTeam.getJoinedUsers().stream().filter(e -> e.getUserAccount().getId()
                 .equals(memberId) && !e.getIsDeleted()).findFirst().orElse(null);
 
         if (memberMtm == null) {
@@ -194,7 +194,7 @@ public class DevTeamService implements DevTeamServiceLocal {
                 memberMtm = database.update(memberMtm);
                 break;
             case DEVELOPER:
-                memberMtm = database.delete(UserAccountMtmDevTeam.class, memberMtm.getId());
+                memberMtm = database.delete(Membership.class, memberMtm.getId());
                 break;
             default:
                 throw new OperationException("Member is not developer");
@@ -211,7 +211,7 @@ public class DevTeamService implements DevTeamServiceLocal {
             throw new OperationException("Dev team does not exist.");
         }
 
-        for (UserAccountMtmDevTeam mtm: dt.getJoinedUsers()) {
+        for (Membership mtm: dt.getJoinedUsers()) {
             mtm.getUserAccount().getId();
         }
 

@@ -16,7 +16,8 @@ import {UserAccountPasswordFormComponent} from '../../components/forms/user-acco
 })
 export class AdminComponent implements OnInit {
 
-  @ViewChild(UserPagingComponent) userPagingComp;
+  @ViewChild(UserPagingComponent)
+  userPagingComp;
 
   selectedUser: UserAccount;
 

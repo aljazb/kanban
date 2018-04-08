@@ -1,20 +1,18 @@
-package si.fri.smrpo.kis.server.jpa.entities.mtm;
+package si.fri.smrpo.kis.server.jpa.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
-import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
-import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name="user_account_mtm_dev_team")
+@Table(name="membership")
 @Cacheable
 @JsonIdentityInfo(generator=JSOGGenerator.class)
-public class UserAccountMtmDevTeam extends UUIDEntity<UserAccountMtmDevTeam> {
+public class Membership extends UUIDEntity<Membership> {
 
     @Enumerated(EnumType.STRING)
     private MemberType memberType;

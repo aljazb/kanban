@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col">
+    <form [formGroup]="formBoard">
+
+      <div class="form-group row">
+        <label for="in-name" class="col-sm-2 col-form-label">Name</label>
+        <div class="col-sm-10">
+          <input type="text" name="board-part-name" class="form-control" id="in-name"  placeholder="Name"
+                 formControlName="name">
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="row" *ngIf="board.boardParts">
+  <div class="col" *ngFor="let bp of board.boardParts">
+
+    <app-board-part-form [boardPart]="bp"></app-board-part-form>
+
+  </div>
+</div>
+
+

@@ -1,18 +1,13 @@
 package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
-import si.fri.smrpo.kis.core.logic.dto.Paging;
-import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
-import si.fri.smrpo.kis.core.rest.enums.CacheControlType;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.managers.ProjectAuthManager;
-import si.fri.smrpo.kis.server.ejb.managers.UserAccountAuthManager;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
-import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -29,14 +24,14 @@ import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
 public class ProjectResource extends CrudResource<Project, CrudSource<Project, UUID>> {
 
     @EJB
-    private DatabaseServiceLocal databaseService;
+    private DatabaseServiceLocal database;
 
     private ProjectAuthManager manager;
 
     @Override
     protected void initSource() {
         manager = new ProjectAuthManager(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
-        source = new CrudSource<>(databaseService, manager);
+        source = new CrudSource<>(database, manager);
     }
 
     public ProjectResource() {

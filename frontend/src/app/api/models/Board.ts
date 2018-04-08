@@ -1,7 +1,7 @@
 import {BaseEntity} from './base/BaseEntity';
-import {DevTeam} from './DevTeam';
 import {BoardPart} from './BoardPart';
-import {BoardLane} from './BoardLane';
+import {Project} from './Project';
+import {UserAccount} from './UserAccount';
 
 export class Board extends BaseEntity<Board> {
   name: string;
@@ -10,7 +10,7 @@ export class Board extends BaseEntity<Board> {
   endDev: number;
   acceptanceTesting: number;
 
-  devTeam: DevTeam;
+  owner: UserAccount;
   boardParts: BoardPart[];
-  boardLanes: BoardLane[];
+  projects: Project[];
 }

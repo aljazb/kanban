@@ -4,7 +4,7 @@ import io.bloco.faker.Faker;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
-import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
+import si.fri.smrpo.kis.server.jpa.entities.Membership;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
 import si.fri.smrpo.kis.server.jpa.enums.RequestType;
@@ -50,11 +50,10 @@ public class SeedService {
 
     private ArrayList<UserAccount> userAccounts = new ArrayList<>();
     private ArrayList<DevTeam> devTeams = new ArrayList<>();
-    private HashMap<UUID, ArrayList<UserAccountMtmDevTeam>> devTeamMembers = new HashMap<>();
-    private HashMap<UUID, Board> devTeamBoard = new HashMap<>();
+    private HashMap<UUID, ArrayList<Membership>> devTeamMembers = new HashMap<>();
+    private HashMap<UUID, Board> userBoard = new HashMap<>();
     private HashMap<UUID, ArrayList<BoardPart>> boardParts = new HashMap<>();
     private ArrayList<Project> projects = new ArrayList<>();
-    private HashMap<UUID, BoardLane> projectBoardLane = new HashMap<>();
 
 
 
@@ -151,7 +150,7 @@ public class SeedService {
 
             devTeams.add(dt);
 
-            ArrayList<UserAccountMtmDevTeam> dtMembers = new ArrayList<>();
+            ArrayList<Membership> dtMembers = new ArrayList<>();
             ArrayList<UserAccount> potentialMembers = new ArrayList<>(userAccounts);
             int members = FAKER.number.between(DEV_TEAM_MEMBERS_NUMBER_MIN, DEV_TEAM_MEMBERS_NUMBER_MAX);
             for(int m=0; m<members; m++) {
@@ -167,7 +166,7 @@ public class SeedService {
                 UserAccount ua = potentialMembers.get(index);
                 potentialMembers.remove(index);
 
-                UserAccountMtmDevTeam uaMTMdt = new UserAccountMtmDevTeam();
+                Membership uaMTMdt = new Membership();
                 uaMTMdt.setUserAccount(ua);
                 uaMTMdt.setDevTeam(dt);
 
@@ -192,9 +191,9 @@ public class SeedService {
     }
 
     private void generateBoard() throws DatabaseException {
-        for(DevTeam dt : devTeams) {
+        for(UserAccount ua : userAccounts) {
             Board b = new Board();
-            b.setDevTeam(dt);
+            b.setOwner(ua);
             b.setName(FAKER.app.name());
             b.setHighestPriority(0);
             b.setStartDev(1);
@@ -203,12 +202,12 @@ public class SeedService {
 
             b = database.create(b);
 
-            devTeamBoard.put(dt.getId(), b);
+            userBoard.put(ua.getId(), b);
         }
     }
 
     private void generateBoardParts() throws DatabaseException {
-        for(Board board : devTeamBoard.values()){
+        for(Board board : userBoard.values()){
             ArrayList<BoardPart> leafParts = new ArrayList<>();
 
             for(int i=0; i<BOARD_PARTS_NUMBER; i++){
@@ -251,7 +250,7 @@ public class SeedService {
 
             int projectNum = FAKER.number.between(1,2);
             for(int i=0; i<projectNum; i++){
-                UserAccountMtmDevTeam uaMTMdt = devTeamMembers.get(dt.getId()).stream()
+                Membership uaMTMdt = devTeamMembers.get(dt.getId()).stream()
                         .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER ||
                                 e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER).findFirst().get();
 
@@ -268,16 +267,8 @@ public class SeedService {
                 p = database.create(p);
 
                 projects.add(p);
-                Board b = devTeamBoard.get(dt.getId());
+                Board b = userBoard.get(dt.getId());
 
-                BoardLane bl = new BoardLane();
-                bl.setBoard(b);
-                bl.setProject(p);
-                bl.setName(FAKER.app.name());
-
-                bl = database.create(bl);
-
-                projectBoardLane.put(p.getId(), bl);
             }
         }
     }
@@ -285,8 +276,14 @@ public class SeedService {
     private void generateCards() throws DatabaseException {
         for(Project p : projects) {
 
-            BoardLane bl = projectBoardLane.get(p.getId());
-            ArrayList<BoardPart> bpLeaves = boardParts.get(bl.getBoard().getId());
+            ArrayList<Membership> members = devTeamMembers.get(p.getDevTeam().getId());
+
+            Membership m = members.stream().filter(e ->
+                    e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER ||
+                    e.getMemberType() == MemberType.KANBAN_MASTER).findFirst().orElse(null);
+
+            Board b = userBoard.get(m.getUserAccount().getId());
+            ArrayList<BoardPart> bpLeaves = boardParts.get(b.getId());
 
             int cardsNumber = FAKER.number.between(CARD_NUMBER_MIN, CARD_NUMBER_MAX);
             for(int i=0; i<cardsNumber; i++){
@@ -294,7 +291,7 @@ public class SeedService {
 
                 Card c = new Card();
 
-                c.setBoardLane(bl);
+                c.setProject(p);
                 c.setBoardPart(bp);
                 c.setProject(p);
 

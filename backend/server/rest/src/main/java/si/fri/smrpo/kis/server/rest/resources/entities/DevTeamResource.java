@@ -1,7 +1,6 @@
 package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
-import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
@@ -12,8 +11,7 @@ import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
-import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
-import si.fri.smrpo.kis.server.jpa.enums.RequestType;
+import si.fri.smrpo.kis.server.jpa.entities.Membership;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -31,13 +29,13 @@ import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
 public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, UUID>> {
 
     @EJB
-    private DevTeamServiceLocal devTeamService;
+    private DatabaseServiceLocal databaseService;
+
+    @EJB
+    private DevTeamServiceLocal service;
 
     @EJB
     private RequestServiceLocal requestService;
-
-    @EJB
-    private DatabaseServiceLocal databaseService;
 
 
     private DevTeamAuthManager manager;
@@ -59,7 +57,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @Override
     public Response create(@HeaderParam("X-Content") Boolean xContent, DevTeam entity) throws ApiException {
         try {
-            DevTeam devTeam = devTeamService.create(entity, manager.getUserId());
+            DevTeam devTeam = service.create(entity, manager.getUserId());
             return buildResponse(devTeam, xContent, true ,Response.Status.CREATED).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
@@ -72,7 +70,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @Override
     public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, DevTeam entity) throws ApiException {
         try {
-            DevTeam devTeam = devTeamService.update(entity, manager.getUserId());
+            DevTeam devTeam = service.update(entity, manager.getUserId());
             return buildResponse(devTeam, xContent, true).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
@@ -116,8 +114,8 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @Override
     public Response get(@PathParam("id") UUID id) throws ApiException {
         try {
-            DevTeam dt = devTeamService.getWithUsers(id);
-            for (UserAccountMtmDevTeam mtm : dt.getJoinedUsers()) {
+            DevTeam dt = service.getWithUsers(id);
+            for (Membership mtm : dt.getJoinedUsers()) {
                 mtm.setDevTeam(null);
             }
             dt.setJoinedUsers(dt.getJoinedUsers().stream().filter(e -> !e.getIsDeleted()).collect(Collectors.toSet()));
@@ -131,21 +129,21 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @GET
     @Path("{id}/developers")
     public Response getMembers(@PathParam("id") UUID id) {
-        return buildResponse(devTeamService.getDevelopers(id)).build();
+        return buildResponse(service.getDevelopers(id)).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}/kanbanMaster")
     public Response getKanbanMaster(@PathParam("id") UUID id) {
-        return buildResponse(devTeamService.getKanbanMaster(id), true).build();
+        return buildResponse(service.getKanbanMaster(id), true).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}/productOwner")
     public Response getProductOwner(@PathParam("id") UUID id) {
-        return buildResponse(devTeamService.getProductOwner(id), true).build();
+        return buildResponse(service.getProductOwner(id), true).build();
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER})
@@ -153,7 +151,7 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     @Path("{devTeamId}/user/{uid}")
     public Response kickMember(@HeaderParam("X-Content") Boolean xContent, @PathParam("devTeamId") UUID devTeamId, @PathParam("uid") UUID userId) throws ApiException {
         try {
-            return buildResponse(devTeamService.kickMember(devTeamId, userId, manager.getUserId()), xContent).build();
+            return buildResponse(service.kickMember(devTeamId, userId, manager.getUserId()), xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
         }

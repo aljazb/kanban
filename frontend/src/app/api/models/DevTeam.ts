@@ -1,5 +1,5 @@
 import {BaseEntity} from './base/BaseEntity';
-import {UserAccountMTMDevTeam} from './mtm/UserAccountMTMDevTeam';
+import {Membership} from './Membership';
 import {Project} from './Project';
 import {Board} from './Board';
 import {MemberType} from './enums/MemberType';
@@ -8,7 +8,7 @@ import {UserAccount} from './UserAccount';
 export class DevTeam extends BaseEntity<DevTeam> {
   name: string;
 
-  joinedUsers: UserAccountMTMDevTeam[];
+  joinedUsers: Membership[];
   project: Project[];
   board: Board;
 

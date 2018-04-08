@@ -5,7 +5,7 @@ import {ApiService} from '../../../../api/api.service';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DevTeam} from '../../../../api/models/DevTeam';
 import {isNullOrUndefined} from 'util';
-import {UserAccountMTMDevTeam} from '../../../../api/models/mtm/UserAccountMTMDevTeam';
+import {Membership} from '../../../../api/models/Membership';
 import {MemberType} from '../../../../api/models/enums/MemberType';
 import {LoginService} from '../../../../api/login.service';
 
@@ -94,18 +94,18 @@ export class DevTeamFormComponent {
 
       d.joinedUsers = [];
       let po = this.productOwners.filter(e => e.id == this.fcProductOwner.value)[0];
-      let po_mtm = new UserAccountMTMDevTeam();
+      let po_mtm = new Membership();
       po_mtm.memberType = MemberType.PRODUCT_OWNER;
       po_mtm.userAccount = po;
       d.joinedUsers.push(po_mtm);
 
-      let km_mtm = new UserAccountMTMDevTeam();
+      let km_mtm = new Membership();
       km_mtm.memberType = MemberType.KANBAN_MASTER;
       km_mtm.userAccount = this.kanbanMaster;
       d.joinedUsers.push(km_mtm);
 
       this.selectedDevelopers.forEach(dev => {
-        let dev_mtm = new UserAccountMTMDevTeam();
+        let dev_mtm = new Membership();
 
         if (this.kanbanMaster.id == dev.id) {
           km_mtm.memberType = MemberType.DEVELOPER_AND_KANBAN_MASTER;

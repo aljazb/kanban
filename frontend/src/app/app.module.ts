@@ -38,6 +38,9 @@ import { UserAccountPasswordFormComponent } from './view/components/forms/user-a
 import { DevTeamDetailsComponent } from './view/route/dev-team-details/dev-team-details.component';
 import { ProjectDetailsComponent } from './view/route/project-details/project-details.component';
 import { BoardDetailsComponent } from './view/route/board-details/board-details.component';
+import { BoardPartFormComponent } from './view/components/forms/board-form/board-part-form/board-part-form.component';
+import { BoardBaseFormComponent } from './view/components/forms/board-form/board-base-form/board-base-form.component';
+import { BoardEditComponent } from './view/route/board-edit/board-edit.component';
 
 
 @NgModule({
@@ -76,6 +79,9 @@ import { BoardDetailsComponent } from './view/route/board-details/board-details.
     DevTeamDetailsComponent,
     ProjectDetailsComponent,
     BoardDetailsComponent,
+    BoardPartFormComponent,
+    BoardBaseFormComponent,
+    BoardEditComponent,
   ],
   providers: [
     {

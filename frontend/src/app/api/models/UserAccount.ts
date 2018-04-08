@@ -1,5 +1,5 @@
 import {BaseEntity} from './base/BaseEntity';
-import {UserAccountMTMDevTeam} from './mtm/UserAccountMTMDevTeam';
+import {Membership} from './Membership';
 import {Project} from './Project';
 
 export class UserAccount extends BaseEntity<UserAccount>{
@@ -16,7 +16,7 @@ export class UserAccount extends BaseEntity<UserAccount>{
   inRoleDeveloper: boolean;
   inRoleProductOwner: boolean;
 
-  joinedDevTeams: UserAccountMTMDevTeam[];
+  joinedDevTeams: Membership[];
   projects: Project[];
   sentRequests: Request[];
   receivedRequests: Request[];

@@ -17,8 +17,8 @@ export class ProjectFormComponent {
 
   devTeams: DevTeam[];
   project: Project = new Project();
-  formProject: FormGroup;
 
+  formProject: FormGroup;
   fcName: FormControl;
   fcProductBuyer: FormControl;
   fcStartDate: FormControl;

@@ -1,7 +1,7 @@
 import {BaseEntity} from './base/BaseEntity';
 import {DevTeam} from './DevTeam';
 import {UserAccount} from './UserAccount';
-import {BoardLane} from './BoardLane';
+import {Card} from './Card';
 
 export class Project extends BaseEntity<Project> {
   name: string;
@@ -11,8 +11,7 @@ export class Project extends BaseEntity<Project> {
   startDate: number;
   endDate: number;
 
-  boardLane: BoardLane;
-  devTeam: DevTeam;
   owner: UserAccount;
-
+  devTeam: DevTeam;
+  cards: Card;
 }

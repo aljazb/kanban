@@ -9,15 +9,12 @@ import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.managers.RequestAuthManager;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Request;
-import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
@@ -31,7 +28,7 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
     private DatabaseServiceLocal databaseService;
 
     @EJB
-    private RequestServiceLocal requestService;
+    private RequestServiceLocal service;
 
 
     private RequestAuthManager manager;
@@ -58,7 +55,7 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
     @GET
     @Path("/userRequests")
     public Response getUserRequests() {
-        return Response.ok(requestService.getUserRequests(manager.getUserId())).build();
+        return Response.ok(service.getUserRequests(manager.getUserId())).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
@@ -73,7 +70,7 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
     @POST
     public Response create(@HeaderParam("X-Content") Boolean xContent, Request request) throws ApiException {
         try {
-            Request dbRequest = requestService.create(request, manager.getUserId());
+            Request dbRequest = service.create(request, manager.getUserId());
             return buildResponse(dbRequest, xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
@@ -85,7 +82,7 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
     @Path("{id}")
     public Response accept(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
         try {
-            Request dbRequest = requestService.update(id, manager.getUserId(), true);
+            Request dbRequest = service.update(id, manager.getUserId(), true);
             return buildResponse(dbRequest, xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
@@ -97,7 +94,7 @@ public class RequestResource extends GetResource<Request, GetSource<Request, UUI
     @Path("{id}")
     public Response decline(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
         try {
-            Request dbRequest = requestService.update(id, manager.getUserId(), false);
+            Request dbRequest = service.update(id, manager.getUserId(), false);
             return buildResponse(dbRequest, xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);

@@ -8,7 +8,7 @@ import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.Request;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
-import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
+import si.fri.smrpo.kis.server.jpa.entities.Membership;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
 import si.fri.smrpo.kis.server.jpa.enums.RequestType;
@@ -177,7 +177,7 @@ public class RequestService implements RequestServiceLocal {
         DevTeam devTeam = database.getEntityManager().getReference(DevTeam.class, request.getReferenceId());
         UserAccount user = database.getEntityManager().getReference(UserAccount.class, request.getReceiver().getId());
 
-        UserAccountMtmDevTeam mtm = new UserAccountMtmDevTeam();
+        Membership mtm = new Membership();
         mtm.setMemberType(MemberType.DEVELOPER);
         mtm.setUserAccount(user);
         mtm.setDevTeam(devTeam);
@@ -219,7 +219,7 @@ public class RequestService implements RequestServiceLocal {
             return;
         }
 
-        UserAccountMtmDevTeam mtm = devTeam.getJoinedUsers().stream().filter(e -> !e.getIsDeleted() &&
+        Membership mtm = devTeam.getJoinedUsers().stream().filter(e -> !e.getIsDeleted() &&
                 e.getUserAccount().getId().equals(user.getId())).findFirst().orElse(null);
 
         if (mtm == null) {
@@ -231,13 +231,13 @@ public class RequestService implements RequestServiceLocal {
             mtm.setMemberType(MemberType.DEVELOPER);
             database.update(mtm);
         } else {
-            database.delete(UserAccountMtmDevTeam.class, mtm.getId());
+            database.delete(Membership.class, mtm.getId());
         }
     }
 
     private void processRoleInvite(Request request) throws DatabaseException, OperationException {
         DevTeam devTeam = database.getEntityManager().find(DevTeam.class, request.getReferenceId());
-        Set<UserAccountMtmDevTeam> members = devTeam.getJoinedUsers();
+        Set<Membership> members = devTeam.getJoinedUsers();
 
         switch (request.getRequestType()) {
             case KANBAN_MASTER_INVITE:
@@ -247,14 +247,14 @@ public class RequestService implements RequestServiceLocal {
                 throw new OperationException("Unknown request type.");
         }
 
-        UserAccountMtmDevTeam receiverMtm = members.stream()
+        Membership receiverMtm = members.stream()
                 .filter(e -> !e.getIsDeleted() && e.getUserAccount().getId().equals(request.getReceiver().getId()))
                 .findFirst().orElse(null);
 
         boolean create = false;
         if (receiverMtm == null) {
             create = true;
-            receiverMtm = new UserAccountMtmDevTeam();
+            receiverMtm = new Membership();
             receiverMtm.setUserAccount(request.getReceiver());
             receiverMtm.setDevTeam(devTeam);
         }

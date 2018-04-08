@@ -15,7 +15,7 @@ import java.util.Set;
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Board extends UUIDEntity<Board> {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
 
@@ -33,23 +33,16 @@ public class Board extends UUIDEntity<Board> {
 
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dev_team_id", nullable = false)
-    public DevTeam devTeam;
+    @JoinColumn(name = "owner_id", nullable = false)
+    public UserAccount owner;
 
     @OneToMany(mappedBy = "board")
     private Set<BoardPart> boardParts;
 
+
     @OneToMany(mappedBy = "board")
-    private Set<BoardLane> boardLanes;
+    private Set<Project> projects;
 
-
-    public DevTeam getDevTeam() {
-        return devTeam;
-    }
-
-    public void setDevTeam(DevTeam owner) {
-        this.devTeam = owner;
-    }
 
     public Set<BoardPart> getBoardParts() {
         return boardParts;
@@ -65,14 +58,6 @@ public class Board extends UUIDEntity<Board> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<BoardLane> getBoardLanes() {
-        return boardLanes;
-    }
-
-    public void setBoardLanes(Set<BoardLane> boardLanes) {
-        this.boardLanes = boardLanes;
     }
 
     public Integer getHighestPriority() {
@@ -105,5 +90,29 @@ public class Board extends UUIDEntity<Board> {
 
     public void setAcceptenceTesting(Integer acceptanceTesting) {
         this.acceptanceTesting = acceptanceTesting;
+    }
+
+    public Integer getAcceptanceTesting() {
+        return acceptanceTesting;
+    }
+
+    public void setAcceptanceTesting(Integer acceptanceTesting) {
+        this.acceptanceTesting = acceptanceTesting;
+    }
+
+    public UserAccount getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserAccount owner) {
+        this.owner = owner;
+    }
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
     }
 }

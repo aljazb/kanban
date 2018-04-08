@@ -33,7 +33,7 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     private DatabaseServiceLocal databaseService;
 
     @EJB
-    private UserAccountServiceLocal accountManager;
+    private UserAccountServiceLocal service;
 
     private UserAccountAuthManager manager;
 
@@ -67,7 +67,7 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     @Path("login")
     public Response loginUserInfo() throws ApiException {
         try {
-            UserAccount userAccount = accountManager.login(manager.getUserAccount());
+            UserAccount userAccount = service.login(manager.getUserAccount());
             return buildResponse(userAccount, true).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
@@ -78,7 +78,7 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     @POST
     public Response create(@HeaderParam("X-Content") Boolean xContent, UserAccount entity) throws ApiException {
         try {
-            return buildResponse(accountManager.create(entity), xContent).build();
+            return buildResponse(service.create(entity), xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
         }
@@ -89,7 +89,7 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     @Path("{id}/password")
     public Response setPassword(@PathParam("id") UUID id, String password) throws ApiException {
         try {
-            accountManager.setPassword(id, password);
+            service.setPassword(id, password);
             return buildResponse().build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
@@ -102,7 +102,7 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, UserAccount entity) throws ApiException {
         entity.setId(id);
         try {
-            return buildResponse(accountManager.update(entity), xContent).build();
+            return buildResponse(service.update(entity), xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
         }
@@ -113,7 +113,7 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     @Path("{id}")
     public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
         try {
-            return buildResponse(accountManager.setEnabled(id, false), xContent).build();
+            return buildResponse(service.setEnabled(id, false), xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
         }
@@ -124,7 +124,7 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     @Path("{id}/status")
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
         try {
-            return buildResponse(accountManager.setEnabled(id, null), xContent).build();
+            return buildResponse(service.setEnabled(id, null), xContent).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);
         }

@@ -3,7 +3,6 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
-import si.fri.smrpo.kis.server.jpa.entities.mtm.UserAccountMtmDevTeam;
 import si.fri.smrpo.kis.server.jpa.Constants;
 
 import javax.persistence.*;
@@ -38,7 +37,7 @@ public class UserAccount extends UUIDEntity<UserAccount> {
 
 
     @OneToMany(mappedBy = "userAccount")
-    private Set<UserAccountMtmDevTeam> joinedDevTeams;
+    private Set<Membership> joinedDevTeams;
 
     @OneToMany(mappedBy = "owner")
     private Set<Project> projects;
@@ -80,11 +79,11 @@ public class UserAccount extends UUIDEntity<UserAccount> {
         this.email = email;
     }
 
-    public Set<UserAccountMtmDevTeam> getJoinedDevTeams() {
+    public Set<Membership> getJoinedDevTeams() {
         return joinedDevTeams;
     }
 
-    public void setJoinedDevTeams(Set<UserAccountMtmDevTeam> joinedDevTeams) {
+    public void setJoinedDevTeams(Set<Membership> joinedDevTeams) {
         this.joinedDevTeams = joinedDevTeams;
     }
 
