@@ -1,10 +1,59 @@
-<div class="container">
-
+<div *ngIf="!board">
   <div class="row">
+    <div class="col-sm-12">
 
-    <app-board-base-form [board]="board" ></app-board-base-form>
+      <div *ngIf="boards == null || boards.length == 0">
+        No boards saved
+      </div>
+
+      <div *ngIf="boards && boards.length > 0">
+        <div class="list-group">
+          <div class="list-group-item list-group-item-primary">Saved boards:</div>
+
+          <div class="list-group-item list-group-item-action hover-pointer" *ngFor="let b of boards" (click)="goToBoardDetails(b)">
+            <div class="row">
+              <div class="col-sm-11">
+                {{b.name ? b.name : "-- No name --"}}
+              </div>
+
+              <div class="col-sm-1">
+                <div class="pull-right">
+                  <button class="btn btn-danger" (click)="boardDelete(index)"><i class="fa fa-times-circle"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-sm-12 mt-3">
+      <div class="pull-right">
+        <button class="btn btn-primary" (click)="newBoard()">New</button>
+      </div>
+    </div>
 
   </div>
+</div>
 
 
+<div *ngIf="board">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="pull-right">
+        <button class="btn btn-primary" (click)="back()">Back</button>
+        <button class="btn btn-success" (click)="create()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+
+      <app-board-base-form [board]="board"></app-board-base-form>
+
+    </div>
+  </div>
 </div>

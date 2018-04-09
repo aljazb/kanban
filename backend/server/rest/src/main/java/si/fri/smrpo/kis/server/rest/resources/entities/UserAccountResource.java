@@ -49,7 +49,8 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
 
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
     @GET
-    public Response getList(@QueryParam("search") String search) throws ApiException {
+    public Response getList() throws ApiException {
+        String search = uriInfo.getQueryParameters().getFirst("search");
         manager.setSearch(search);
         return super.getList();
     }

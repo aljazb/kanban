@@ -46,14 +46,13 @@ public class BoardResource extends CrudResource<Board, CrudSource<Board, UUID>> 
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
     @GET
-    public Response getList(@QueryParam("search") String search) throws ApiException {
+    public Response getList() throws ApiException {
         return super.getList();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
     @GET
     @Path("{id}")
-    @Override
     public Response get(@PathParam("id") UUID id) throws ApiException {
         try {
             return buildResponse(service.get(id), true).build();
@@ -79,6 +78,13 @@ public class BoardResource extends CrudResource<Board, CrudSource<Board, UUID>> 
     @PUT
     @Path("{id}")
     public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, Board entity) throws ApiException {
+        throw ApiException.buildNotImplemented();
+    }
+
+    @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @PATCH
+    @Path("{id}")
+    public Response patch(Boolean xContent, UUID id, Board entity) throws ApiException {
         throw ApiException.buildNotImplemented();
     }
 

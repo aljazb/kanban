@@ -1,25 +1,107 @@
-<div class="row">
-  <div class="col">
-    <form [formGroup]="formBoard">
+<div>
+  <div class="board-base">
+    <div class="row">
+      <div class="col-sm-12">
+        <form [formGroup]="formBoard">
 
-      <div class="form-group row">
-        <label for="in-name" class="col-sm-2 col-form-label">Name</label>
-        <div class="col-sm-10">
-          <input type="text" name="board-part-name" class="form-control" id="in-name"  placeholder="Name"
-                 formControlName="name">
+          <div class="row">
+
+            <div class="col-sm-3">
+              <div class="form-group row">
+                <label for="in-name" class="col-sm-5 col-form-label">Name</label>
+                <div class="col-sm-5">
+                  <input type="text" name="board-part-name" class="form-control" id="in-name"  placeholder="Name"
+                         formControlName="name">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+
+              <div class="form-group row">
+                <label for="in-highest-priority" class="col-sm-5 col-form-label">Highest priority</label>
+                <div class="col-sm-5">
+                  <select name="board-highest-priority" class="form-control" id="in-highest-priority"
+                          formControlName="highestPriority">
+                    <option [ngValue]="null">Select column</option>
+                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="in-acceptance-testing" class="col-sm-5 col-form-label">Acceptance testing</label>
+                <div class="col-sm-5">
+                  <select name="board-acceptance-testing" class="form-control" id="in-acceptance-testing"
+                          formControlName="acceptanceTesting">
+                    <option [ngValue]="null">Select column</option>
+                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-sm-3">
+
+              <div class="form-group row">
+                <label for="in-start-dev" class="col-sm-5 col-form-label">Start dev</label>
+                <div class="col-sm-5">
+                  <select name="board-start-dev" class="form-control" id="in-start-dev"
+                          formControlName="startDev">
+                    <option [ngValue]="null">Select column</option>
+                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="in-end-dev" class="col-sm-5 col-form-label">End dev</label>
+                <div class="col-sm-5">
+                  <select name="board-end-dev" class="form-control" id="in-end-dev"
+                          formControlName="endDev">
+                    <option [ngValue]="null">Select column</option>
+                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4 mx-auto">
+
+        <div class="pull-left">
+          <button class="btn btn-primary" (click)="addLeft()">
+            <i class="fa fa-caret-left"></i>
+          </button>
+        </div>
+
+        <div class="pull-right">
+          <button class="btn btn-primary" (click)="addRight()">
+            <i class="fa fa-caret-right"></i>
+          </button>
         </div>
       </div>
 
-    </form>
+    </div>
+  </div>
+
+  <div class="scroll-group" *ngIf="board.boardParts">
+
+    <div class="row">
+
+      <div class="scroll-item align-top" *ngFor="let bp of board.boardParts">
+        <app-board-part-form (onDelete)="onDeleteChild(bp.orderIndex)" [boardPart]="bp"></app-board-part-form>
+      </div>
+
+    </div>
+
   </div>
 </div>
-
-<div class="row" *ngIf="board.boardParts">
-  <div class="col" *ngFor="let bp of board.boardParts">
-
-    <app-board-part-form [boardPart]="bp"></app-board-part-form>
-
-  </div>
-</div>
-
-

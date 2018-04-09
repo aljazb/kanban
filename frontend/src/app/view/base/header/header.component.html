@@ -13,7 +13,7 @@
 
       <ul class="navbar-nav ml-auto" *ngIf="!user">
         <li class="nav-item">
-          <button class="btn btn-outline-primary ho-pointer" role="button" (click)="navbarCollapsed = true; login()">
+          <button class="btn btn-outline-primary hover-pointer" role="button" (click)="navbarCollapsed = true; login()">
             Log in
           </button>
         </li>
@@ -38,7 +38,7 @@
 
         <li class="nav-item">
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-primary ho-pointer" ngbDropdownToggle>{{user.email}}</button>
+            <button class="btn btn-outline-primary hover-pointer" ngbDropdownToggle>{{user.email}}</button>
             <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
               <a class="btn btn-info dropdown-item" role="button" routerLink="/admin" *ngIf="user.inRoleAdministrator">Admin</a>
               <a class="btn btn-info dropdown-item" role="button" routerLink="/profile">Profile</a>

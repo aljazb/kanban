@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Board} from '../../../api/models/Board';
-import {BoardPart} from '../../../api/models/BoardPart';
 import {BoardBaseFormComponent} from '../../components/forms/board-form/board-base-form/board-base-form.component';
+import {JsogService} from 'jsog-typescript';
 
 @Component({
   selector: 'app-board-edit',
@@ -10,53 +10,55 @@ import {BoardBaseFormComponent} from '../../components/forms/board-form/board-ba
 })
 export class BoardEditComponent implements OnInit {
 
+  private STORAGE_KEY: string = "STORED-BOARDS";
+  private jsog = new JsogService();
+
   @ViewChild(BoardBaseFormComponent)
   boardBaseFormComp;
 
-  board: Board = new Board();
+  board: Board;
+  boards: Board[];
 
-  constructor() {
-
-    let bpc = new BoardPart();
-    bpc.name = "Part 1.1";
-    bpc.maxWip = 2;
-    bpc.orderIndex = 0;
-
-    let bp1 = new BoardPart();
-    bp1.name = "Part 1";
-    bp1.maxWip = 6;
-    bp1.orderIndex = 0;
-    bp1.children = [bpc];
-
-    let bpc1 = new BoardPart();
-    bpc1.name = "Part 2.1";
-    bpc1.maxWip = 2;
-    bpc1.orderIndex = 0;
-
-    let bpc2 = new BoardPart();
-    bpc2.name = "Part 2.2";
-    bpc2.maxWip = 2;
-    bpc2.orderIndex = 1;
-
-    let bp2 = new BoardPart();
-    bp2.name = "Part 2";
-    bp2.maxWip = 4;
-    bp2.orderIndex = 0;
-    bp2.children = [bpc1, bpc2];
-
-    let b = this.board;
-
-    b.name = "Test";
-    b.highestPriority = 1;
-    b.startDev = 2;
-    b.endDev = 3;
-    b.acceptanceTesting = 4;
-    b.boardParts = [bp1, bp2];
-
-  }
+  constructor() { }
 
   ngOnInit() {
+    let content = window.localStorage.getItem(this.STORAGE_KEY);
+    if(content == null){
+      this.boards = [];
+    } else {
+      this.boards = <Board[]> this.jsog.deserialize(JSON.parse(content));
+    }
+  }
 
+  create(): void {
+    console.log(this.board);
+    if(this.boardBaseFormComp.isValid()) {
+
+    }
+  }
+
+  back(): void {
+    this.board = null;
+    this.persist();
+  }
+
+  newBoard(): void {
+    this.board = new Board();
+    this.board.name = "New Board";
+    this.boards.push(this.board);
+  }
+
+  goToBoardDetails(board: Board): void {
+    this.board = board;
+  }
+
+  boardDelete(index: number): void {
+    this.boards.splice(index, 1);
+  }
+
+  private persist(): void {
+    let content = JSON.stringify(this.jsog.serialize(this.boards));
+    window.localStorage.setItem(this.STORAGE_KEY, content);
   }
 
 }
