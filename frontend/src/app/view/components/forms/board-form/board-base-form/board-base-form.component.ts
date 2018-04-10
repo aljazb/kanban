@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Board} from '../../../../../api/models/Board';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {BoardPartFormComponent} from '../board-part-form/board-part-form.component';
