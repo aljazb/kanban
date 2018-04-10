@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ProjectDeleteConfirmationComponent} from '../../components/forms/project-delete-confirmation/project-delete-confirmation.component';
 import {ProjectFormComponent} from '../../components/forms/project-form/project-form.component';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ApiService} from '../../../api/api.service';
 import {Project} from '../../../api/models/Project';
@@ -20,6 +20,7 @@ export class ProjectDetailsComponent implements OnInit {
   cardsAssigned: boolean = false;
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private apiService:ApiService,
               private loginService: LoginService,
               private modalService: NgbModal) { }
@@ -70,7 +71,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   deleteProject() {
     this.apiService.project.delete(this.id, true).subscribe(value =>
-      console.log(value)
+        this.router.navigate([`/project`])
     );
 
   }
