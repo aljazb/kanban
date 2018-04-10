@@ -1,6 +1,10 @@
 <div *ngIf="devTeam">
   <div class="list-group">
-    <div class="list-group-item list-group-item-primary">Team name:</div>
+    <div class="list-group-item list-group-item-primary">Team name:
+      <button *ngIf="isUserKanbanMaster" type="button" (click)="openDevTeamEditModal()" class="btn btn-primary" style="float: right">
+        Edit development team</button>
+    </div>
+
     <a class="list-group-item list-group-item-action">{{devTeam.name}}</a>
   </div>
   <br>
@@ -27,8 +31,7 @@
   <div *ngIf="developers">
     <div class="list-group">
       <div class="list-group-item list-group-item-primary">Developers:
-        <button *ngIf="isUserKanbanMaster" type="button" (click)="openDevTeamEditModal()" class="btn btn-primary" style="float: right">
-          Edit development team</button>
+
       </div>
       <a *ngFor="let developer of developers" class="list-group-item list-group-item-action d-flex" >
         {{ developer.email }}
