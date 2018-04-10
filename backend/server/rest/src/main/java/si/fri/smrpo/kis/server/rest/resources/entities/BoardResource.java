@@ -54,11 +54,7 @@ public class BoardResource extends CrudResource<Board, CrudSource<Board, UUID>> 
     @GET
     @Path("{id}")
     public Response get(@PathParam("id") UUID id) throws ApiException {
-        try {
-            return buildResponse(service.get(id), true).build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+        return super.get(id);
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})

@@ -77,6 +77,7 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   private createChild(): BoardPart {
     let bp = new BoardPart();
     bp.name = `-- Column ${this.board.boardParts.length} --`;
+    bp.maxWip = 0;
     return bp;
   }
 

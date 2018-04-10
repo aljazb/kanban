@@ -14,9 +14,9 @@ import java.util.Set;
 @Table(name="project")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "project.isMember",
-                query = "SELECT p.id FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua " +
-                        "WHERE p.id = :projectId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND ua.id = :userId")
+        @NamedQuery(name = "project.access",
+                query = "SELECT p.id FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers m JOIN m.userAccount ua " +
+                        "WHERE p.id = :projectId AND (p.owner.id = :userId OR dt = m.devTeam AND m.userAccount = ua AND ua.id = :userId)")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Project extends UUIDEntity<Project> {

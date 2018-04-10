@@ -1,4 +1,27 @@
 <div>
-  {{id}}
-</div>
 
+  <div *ngIf="boardRepresentation && boardRepresentation.table">
+    <table class="table table-bordered">
+      <thead>
+        <tr *ngFor="let tr of boardRepresentation.table">
+          <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan">
+            {{td.name}}
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tr of boardRepresentation.projectTable">
+          <td *ngFor="let td of tr">
+            {{td.name}}
+            <ul>
+              <li *ngFor="let c of td.cards">
+                {{c.name}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -11,10 +11,7 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @PermitAll
 @Stateless
@@ -23,14 +20,6 @@ public class BoardService implements BoardServiceLocal {
 
     @EJB
     private DatabaseServiceLocal database;
-
-
-    @Override
-    public Board get(UUID id) throws LogicBaseException {
-        Board b = database.get(Board.class, id);
-        b.getBoardParts(); // LAZY fetch
-        return b;
-    }
 
     @Override
     public Board create(Board board) throws LogicBaseException {

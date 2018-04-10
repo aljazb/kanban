@@ -41,7 +41,7 @@ public class ProjectAuthManager extends AuthManager<Project> {
     public void authGet(DatabaseCore db, Project entity) throws DatabaseException {
         if(!isUserInRole(ROLE_ADMINISTRATOR)) {
             List<Project> devTeamQueryList = db.getEntityManager()
-                    .createNamedQuery("project.isMember", Project.class)
+                    .createNamedQuery("project.access", Project.class)
                     .setMaxResults(1).setParameter("projectId", entity.getId())
                     .setParameter("userId", getUserId()).getResultList();
 

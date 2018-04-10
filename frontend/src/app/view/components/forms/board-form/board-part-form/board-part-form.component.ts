@@ -36,7 +36,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
     this.fcName = new FormControl(this.boardPart.name, Validators.required);
     this.fcName.valueChanges.subscribe(name => this.boardPart.name = name);
 
-    this.fcMaxWip = new FormControl(this.boardPart.maxWip, Validators.pattern('(^$|[0-9]+)'));
+    this.fcMaxWip = new FormControl(this.boardPart.maxWip, Validators.pattern('([0-9]+)'));
     this.fcMaxWip.valueChanges.subscribe(maxWip => this.boardPart.maxWip = maxWip);
   }
 
@@ -63,6 +63,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
   private createChild(): BoardPart {
     let bp = new BoardPart();
     bp.parent = this.boardPart;
+    bp.maxWip = 0;
     return bp;
   }
 

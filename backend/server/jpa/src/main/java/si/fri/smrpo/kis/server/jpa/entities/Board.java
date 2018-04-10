@@ -12,6 +12,10 @@ import java.util.Set;
 @Entity
 @Table(name="board")
 @Cacheable
+@NamedQueries({
+        @NamedQuery(name = "board.access", query = "SELECT b.id FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+                "WHERE b.id = :boardId AND (b.owner.id = :userId OR m.userAccount.id = :userId)")
+})
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Board extends UUIDEntity<Board> {
 
@@ -42,6 +46,7 @@ public class Board extends UUIDEntity<Board> {
 
     @OneToMany(mappedBy = "board")
     private Set<Project> projects;
+
 
 
     public Set<BoardPart> getBoardParts() {
