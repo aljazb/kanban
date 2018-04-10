@@ -4,7 +4,7 @@ import {Board} from '../../../api/models/Board';
 import {Card} from '../../../api/models/Card';
 import {BoardPart} from '../../../api/models/BoardPart';
 import {ApiService} from '../../../api/api.service';
-import {BoardRepresentation} from '../board-edit/utility/board-representation';
+import {BoardRepresentation} from './utility/board-representation';
 
 @Component({
   selector: 'app-board-details',
@@ -16,7 +16,7 @@ export class BoardDetailsComponent implements OnInit {
   id: string;
 
   board: Board;
-  rootBoardParts: BoardPart[] = [];
+  rootBoardParts: BoardPart[];
 
   cards: Card[];
 
@@ -27,24 +27,26 @@ export class BoardDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.api.board.get(this.id).subscribe(board => this.initBoard(board));
+    this.api.board.get(this.id).subscribe(board => this.init(board));
   }
 
-  private initBoard(board: Board): void {
+  private init(board: Board): void {
     this.board = board;
-    this.board.boardParts.forEach(boardPart => {
+    this.rootBoardParts = this.buildRootBoardParts(this.board);
+    this.boardRepresentation = this.buildBoardRepresentation(this.rootBoardParts);
+  }
+
+  private buildRootBoardParts(board: Board): BoardPart[] {
+    let rootBoardParts = [];
+    board.boardParts.forEach(boardPart => {
       if(boardPart.parent == null) {
-        this.rootBoardParts.push(boardPart);
+        rootBoardParts.push(boardPart);
       }
     });
 
-    this.sortBoardParts(this.rootBoardParts);
-    this.initBoardRepresentation();
-  }
+    this.sortBoardParts(rootBoardParts);
 
-  private initBoardRepresentation(): void {
-    this.boardRepresentation = new BoardRepresentation();
-    this.boardRepresentation.init(this.rootBoardParts);
+    return rootBoardParts;
   }
 
   private sortBoardParts(boardParts: BoardPart[]): void {
@@ -54,6 +56,12 @@ export class BoardDetailsComponent implements OnInit {
       }
     });
     boardParts.sort((a, b) => a.orderIndex - b.orderIndex);
+  }
+
+  private buildBoardRepresentation(rootBoardParts: BoardPart[]): BoardRepresentation {
+    let bp = new BoardRepresentation();
+    bp.init(rootBoardParts);
+    return bp;
   }
 
 }

@@ -22,6 +22,8 @@ public class Card extends UUIDEntity<Card> {
     @Column(name = "work_load")
     private Integer workload;
 
+    @Column(name = "order_index", nullable = false)
+    private Integer orderIndex;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
@@ -92,5 +94,13 @@ public class Card extends UUIDEntity<Card> {
 
     public void setSubTasks(Set<SubTask> subTasks) {
         this.subTasks = subTasks;
+    }
+
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
     }
 }

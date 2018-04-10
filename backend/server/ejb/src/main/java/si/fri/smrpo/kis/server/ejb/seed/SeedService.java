@@ -294,6 +294,7 @@ public class SeedService {
                 c.setProject(p);
                 c.setBoardPart(bp);
                 c.setProject(p);
+                c.setOrderIndex(i);
 
                 c.setName(FAKER.app.name());
                 c.setDescription(FAKER.lorem.characters(50));

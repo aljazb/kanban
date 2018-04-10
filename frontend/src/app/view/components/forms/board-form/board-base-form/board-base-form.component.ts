@@ -69,6 +69,7 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
           return false;
         }
       });
+      return true;
     } else {
       return false;
     }
