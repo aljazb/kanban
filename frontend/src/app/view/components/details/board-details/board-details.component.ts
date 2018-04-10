@@ -23,59 +23,68 @@ export class BoardDetailsComponent implements OnInit {
   ngOnInit() {
 
 
-
   }
 
 }
 
 class BoardBuilder {
 
-  boardPartTable: BoardPartTable[];
+  private boardParts: BoardPart[];
+  private _boardPartCardMap = {};
+  private _boardPartTable: BoardPartTable[];
   maxDepth: number;
-  maxWidth: number;
 
   constructor() {
-    this.boardPartTable = [];
+    this._boardPartTable = [];
     this.maxDepth = 0;
-    this.maxWidth = 0;
   }
 
-  build(boardParts: BoardPart[]): BoardPartTable[] {
-    this.buildBoardPartTable(boardParts);
-    this.indexBoardPartTable();
+  build(boardParts: BoardPart[]): void {
+    this.boardParts = boardParts;
 
-    return this.boardPartTable;
+    this.buildBoardPartTable();
+    this.setRowSpanBoardPartTable();
   }
 
-  private indexBoardPartTable(): void {
+  private setRowSpanBoardPartTable(): void {
+    this.boardPartTable.forEach(boardPart => {
 
+    });
   }
 
-  private buildBoardPartTable(boardParts: BoardPart[]): void {
-    boardParts.forEach(boardPart => {
-      let bpt = this.recBuild(boardPart, 0);
-      this.boardPartTable.push(bpt);
+  private buildBoardPartTable(): void {
+    this.boardParts.forEach(boardPart => {
+      let bpt = this.recBuild(boardPart, 1);
+      this._boardPartTable.push(bpt);
     });
   }
 
   private recBuild(boardPart: BoardPart, deep: number): BoardPartTable {
     let bpt = new BoardPartTable(boardPart.name, boardPart.maxWip);
 
-    if(this.maxDepth < deep) {
-      this.maxDepth = deep;
-    }
+    if(this.maxDepth < deep) this.maxDepth = deep;
 
-    if(boardPart.children) {
+    if(boardPart.children || boardPart.children.length == 0) {
       bpt.children = [];
       boardPart.children.forEach(boardPart => {
         let cBpt = this.recBuild(boardPart, deep + 1);
         bpt.children.push(cBpt);
+        bpt.colspan += cBpt.colspan;
       });
     } else {
-      this.maxWidth++;
+      bpt.colspan = 1;
+      this._boardPartCardMap[boardPart.id] = new CardsTable(boardPart.orderIndex);
     }
 
     return bpt;
+  }
+
+  get boardPartCardMap(): {} {
+    return this._boardPartCardMap;
+  }
+
+  get boardPartTable(): BoardPartTable[] {
+    return this._boardPartTable;
   }
 
 }
@@ -92,5 +101,15 @@ class BoardPartTable {
   constructor(name: string, wip: number) {
     this.name = name;
     this.wip = wip;
+  }
+}
+
+class CardsTable {
+  orderIndex: number;
+  cards: Card[];
+
+  constructor(orderIndex: number) {
+    this.orderIndex = orderIndex;
+    this.cards = [];
   }
 }
