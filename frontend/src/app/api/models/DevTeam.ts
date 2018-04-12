@@ -31,4 +31,5 @@ export class DevTeam extends BaseEntity<DevTeam> {
     return dt.joinedUsers.filter(mtm => [MemberType.PRODUCT_OWNER, MemberType.DEVELOPER_AND_PRODUCT_OWNER]
       .includes(mtm.memberType)).map(mtm => mtm.userAccount)[0];
   }
+
 }

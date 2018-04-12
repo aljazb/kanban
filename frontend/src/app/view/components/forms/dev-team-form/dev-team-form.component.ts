@@ -16,7 +16,7 @@ import {LoginService} from '../../../../api/login.service';
 })
 export class DevTeamFormComponent {
 
-  devTeam = new DevTeam();
+  devTeam;
 
   formDevTeam: FormGroup;
   fcName: FormControl;
@@ -25,11 +25,11 @@ export class DevTeamFormComponent {
 
   kanbanMaster: UserAccount;
   previousSelectedProductOwner: UserAccount;
-  productOwners: UserAccount[];
-  availableDevelopers: UserAccount[];
 
-  allDevelopers: UserAccount[];
-  selectedDevelopers: UserAccount[];
+  allDevelopers: Map<string, UserAccount>;
+  productOwners: Array<UserAccount>;
+  availableDevelopers: Array<UserAccount>;
+  selectedDevelopers: Array<UserAccount>;
 
   emptyFields = false;
 
@@ -37,17 +37,15 @@ export class DevTeamFormComponent {
               private api: ApiService,
               private loginService: LoginService)
   {
-    this.selectedDevelopers = [];
     this.initFormControls();
     this.initFormGroup();
-    this.loadUsers();
   }
 
   initFormControls(): void {
     this.fcName = new FormControl('', Validators.required);
 
     this.fcProductOwner = new FormControl(null, Validators.required);
-    this.fcProductOwner.valueChanges.subscribe(id => this.selectProductOwner(this.productOwners.find(user => user.id == id)));
+    this.fcProductOwner.valueChanges.subscribe(id => this.selectProductOwner(id));
 
     this.fcSelectDeveloper = new FormControl(null);
     this.fcSelectDeveloper.valueChanges.subscribe(value => {
@@ -66,108 +64,109 @@ export class DevTeamFormComponent {
     });
   }
 
-  loadUsers() {
-    this.api.userAccount.getProductOwners().subscribe(productOwners => this.productOwners = productOwners);
-    this.api.userAccount.getDevelopers().subscribe(developers => {
-      this.allDevelopers = developers;
-      this.availableDevelopers = developers.map(x => Object.assign({}, x)); // copy
-    });
-    this.loginService.getUser().subscribe(u => this.kanbanMaster = u);
+  private buildMap(users: UserAccount[]): Map<string, UserAccount> {
+    let map: Map<string, UserAccount> = new Map<string, UserAccount>();
+    users.forEach(user => map.set(user.id, user));
+    return map;
   }
 
-  selectProductOwner(productOwner: UserAccount): void {
-    console.log(productOwner);
+  selectProductOwner(productOwnerId: string): void {
+    let productOwner = this.productOwners.find(user => user.id == productOwnerId);
     if(productOwner.inRoleDeveloper) {
-      this.availableDevelopers = this.availableDevelopers.filter(value => value.id != productOwner.id);
+      this.deleteUser(this.availableDevelopers, productOwnerId);
     }
     if(this.previousSelectedProductOwner && this.previousSelectedProductOwner.inRoleDeveloper) {
-      this.availableDevelopers.push(this.previousSelectedProductOwner)
+      this.availableDevelopers.push(this.previousSelectedProductOwner);
     }
     this.previousSelectedProductOwner = productOwner;
   }
 
   addDeveloper(developerId: string) {
-    let developer: UserAccount = this.availableDevelopers.find(e => e.id == developerId);
+    let developer = this.allDevelopers.get(developerId);
 
     if(developer.inRoleProductOwner) {
-      this.productOwners = this.productOwners.filter(productOwner => productOwner.id != developer.id);
+      this.deleteUser(this.productOwners, developerId);
     }
 
     this.selectedDevelopers.push(developer);
-
-    let idx = this.availableDevelopers.findIndex(e => e.id == developerId);
-    this.availableDevelopers.splice(idx, 1)
+    this.deleteUser(this.availableDevelopers, developerId);
   }
 
   removeDeveloper(developerId: string) {
-    let developer = this.selectedDevelopers.find(developer => developer.id == developerId);
+    let developer = this.allDevelopers.get(developerId);
+
     if(developer.inRoleProductOwner){
       this.productOwners.push(developer);
     }
 
-    let idx = this.selectedDevelopers.findIndex(e => e.id == developerId);
-    this.selectedDevelopers.splice(idx, 1);
-
-
-    this.availableDevelopers.push(this.allDevelopers.find(e => e.id == developerId))
+    this.deleteUser(this.selectedDevelopers, developerId);
+    this.availableDevelopers.push(developer)
   }
 
-  setInitialDevTeam(devTeam: DevTeam) {
+  initialize(devTeam: DevTeam) {
     this.devTeam = devTeam;
-    this.previousSelectedProductOwner = DevTeam.getProductOwner(this.devTeam);
-
-
-    let devIds = DevTeam.getDevelopersIds(this.devTeam);
-    this.availableDevelopers = this.allDevelopers.filter(dev => !devIds.includes(dev.id));
-    this.selectedDevelopers = this.allDevelopers.filter( dev => devIds.includes(dev.id));
-
-    if(this.previousSelectedProductOwner != null && this.previousSelectedProductOwner.inRoleDeveloper) {
-      this.availableDevelopers = this.availableDevelopers.filter( dev => dev.id != this.previousSelectedProductOwner.id);
-    }
 
     this.fcName.setValue(this.devTeam.name);
-    if(this.previousSelectedProductOwner != null){
-      this.fcProductOwner.setValue(this.previousSelectedProductOwner.id);
+
+    this.kanbanMaster = DevTeam.getKanbanMaster(this.devTeam);
+    this.previousSelectedProductOwner = DevTeam.getProductOwner(this.devTeam);
+
+    let devIds = DevTeam.getDevelopersIds(this.devTeam);
+
+    this.api.userAccount.getDevelopers().subscribe(developers => {
+      this.allDevelopers = this.buildMap(developers);
+      this.availableDevelopers = Array.from(developers);
+
+      this.selectedDevelopers = this.availableDevelopers.filter( dev => devIds.includes(dev.id));
+      this.availableDevelopers = this.availableDevelopers.filter(dev => !devIds.includes(dev.id));
+
+      this.api.userAccount.getProductOwners().subscribe(productOwners => {
+        this.productOwners = productOwners.filter(productOwner => !devIds.includes(productOwner.id));
+        if(this.kanbanMaster.inRoleProductOwner) {
+          this.deleteUser(this.productOwners, this.kanbanMaster.id);
+        }
+        if(this.previousSelectedProductOwner != null) {
+          this.fcProductOwner.setValue(this.previousSelectedProductOwner.id);
+        }
+        if(this.previousSelectedProductOwner != null && this.previousSelectedProductOwner.inRoleDeveloper) {
+          this.deleteUser(this.availableDevelopers, this.previousSelectedProductOwner.id);
+        }
+      });
+    });
+  }
+
+  private deleteUser(users: UserAccount[], userId: string) {
+    let index = users.findIndex(user => user.id == userId);
+    if(index >= 0) {
+      users.splice(index,  1);
     }
   }
 
   onSubmit() {
     if (this.formDevTeam.valid) {
-      this.emptyFields = false;
+      let dt = this.devTeam;
+      dt.name = this.fcName.value;
 
-      let d = this.devTeam;
-      d.name = this.fcName.value;
+      dt.joinedUsers = [];
 
-      d.joinedUsers = [];
       let po = this.productOwners.filter(e => e.id == this.fcProductOwner.value)[0];
-      let po_mtm = new Membership();
-      po_mtm.memberType = MemberType.PRODUCT_OWNER;
-      po_mtm.userAccount = po;
-      d.joinedUsers.push(po_mtm);
+      let po_mtm = new Membership(MemberType.PRODUCT_OWNER, po);
+      dt.joinedUsers.push(po_mtm);
 
-      let km_mtm = new Membership();
-      km_mtm.memberType = MemberType.KANBAN_MASTER;
-      km_mtm.userAccount = this.kanbanMaster;
-      d.joinedUsers.push(km_mtm);
+      let km_mtm = new Membership(MemberType.KANBAN_MASTER, this.kanbanMaster);
+      dt.joinedUsers.push(km_mtm);
 
       this.selectedDevelopers.forEach(dev => {
-        let dev_mtm = new Membership();
-
         if (this.kanbanMaster.id == dev.id) {
           km_mtm.memberType = MemberType.DEVELOPER_AND_KANBAN_MASTER;
-          return;
         } else if (po.id == dev.id) {
           po_mtm.memberType = MemberType.DEVELOPER_AND_PRODUCT_OWNER;
-          return;
         } else {
-          dev_mtm.memberType = MemberType.DEVELOPER;
+          dt.joinedUsers.push(new Membership(MemberType.DEVELOPER, dev));
         }
-
-        dev_mtm.userAccount = dev;
-        d.joinedUsers.push(dev_mtm);
       });
 
-      this.activeModal.close(d);
+      this.activeModal.close(dt);
     } else {
       this.emptyFields = true;
     }

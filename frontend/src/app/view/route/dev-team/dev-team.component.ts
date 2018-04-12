@@ -5,6 +5,8 @@ import {DevTeamFormComponent} from '../../components/forms/dev-team-form/dev-tea
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ApiService} from '../../../api/api.service';
 import {LoginService} from '../../../api/login.service';
+import {Membership} from '../../../api/models/Membership';
+import {MemberType} from '../../../api/models/enums/MemberType';
 
 @Component({
   selector: 'app-dev-team',
@@ -31,14 +33,20 @@ export class DevTeamComponent implements OnInit {
   }
 
   openDevTeamCreateModal() {
-    const modalRef = this.modalService.open(DevTeamFormComponent);
+    this.loginService.getUser().subscribe(value => {
+      let dt = new DevTeam();
+      dt.joinedUsers = [];
+      dt.joinedUsers.push(new Membership(MemberType.KANBAN_MASTER, value));
 
-    modalRef.result
-      .then(value =>
+      const modalRef = this.modalService.open(DevTeamFormComponent);
+      (<DevTeamFormComponent> modalRef.componentInstance).initialize(dt);
+
+      modalRef.result.then(value =>
         this.apiService.devTeam.post(value, true).subscribe(devTeam => {
           this.router.navigate([`/dev-team/${devTeam.id}`]);
-        }))
-      .catch(reason => console.log(reason));
+        })
+      ).catch(reason => console.log(reason));
+    });
   }
 
 }

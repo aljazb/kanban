@@ -67,7 +67,7 @@ export class DevTeamDetailsComponent implements OnInit {
   openDevTeamEditModal() {
     const modalRef = this.modalService.open(DevTeamFormComponent);
 
-    (<DevTeamFormComponent> modalRef.componentInstance).setInitialDevTeam(this.devTeam);
+    (<DevTeamFormComponent> modalRef.componentInstance).initialize(this.devTeam);
 
     modalRef.result
       .then(value =>
