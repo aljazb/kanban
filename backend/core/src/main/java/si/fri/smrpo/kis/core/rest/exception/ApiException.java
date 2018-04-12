@@ -34,7 +34,7 @@ public class ApiException extends Exception {
     }
 
     private static Response.Status getStatus(LogicBaseException e){
-        switch (e.getMetadata()){
+        switch (e.getType()){
             case ENTITY_DOES_NOT_EXISTS:
                 return Response.Status.NOT_FOUND;
             case INSUFFICIENT_RIGHTS:

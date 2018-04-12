@@ -1,5 +1,6 @@
 package si.fri.smrpo.kis.core.logic.exceptions;
 
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 
 import javax.ejb.ApplicationException;
@@ -11,16 +12,16 @@ public class TransactionException extends LogicBaseException {
         super(message);
     }
 
-    public TransactionException(Metadata metadata) {
-        super(metadata);
+    public TransactionException(ExceptionType type) {
+        super(type);
     }
 
-    public TransactionException(String message, Metadata metadata) {
-        super(message, metadata);
+    public TransactionException(String message, ExceptionType type) {
+        super(message, type);
     }
 
-    public TransactionException(String message, Exception innerException, Metadata metadata) {
-        super(message, innerException, metadata);
+    public TransactionException(String message, Exception innerException, ExceptionType type) {
+        super(message, innerException, type);
     }
 
     public TransactionException(String message, Exception innerException) {

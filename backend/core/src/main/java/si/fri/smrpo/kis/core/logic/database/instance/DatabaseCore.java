@@ -5,6 +5,7 @@ import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseCoreImpl
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
@@ -76,7 +77,7 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
             throw e;
         } catch (Exception e){
             throw new DatabaseException(String.format("Error finding entity with id: %s", id.toString()) , e,
-                    LogicBaseException.Metadata.ENTITY_DOES_NOT_EXISTS);
+                    ExceptionType.ENTITY_DOES_NOT_EXISTS);
         }
     }
 
@@ -201,6 +202,7 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
             }
 
             dbEntity.setIsDeleted(true);
+            dbEntity.preUpdate();
             entityManager.merge(dbEntity);
 
             return dbEntity;
@@ -226,6 +228,7 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
                         c.getClass().getSimpleName(), id.toString()));
             }
 
+            dbEntity.preUpdate();
             dbEntity.setIsDeleted(!dbEntity.getIsDeleted());
             entityManager.merge(dbEntity);
 

@@ -1,5 +1,6 @@
 package si.fri.smrpo.kis.core.logic.exceptions;
 
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 
 import javax.ejb.ApplicationException;
@@ -11,20 +12,20 @@ public class DatabaseException extends LogicBaseException {
         super(message);
     }
 
-    public DatabaseException(Metadata metadata) {
-        super(metadata);
+    public DatabaseException(ExceptionType type) {
+        super(type);
     }
 
-    public DatabaseException(String message, Metadata metadata) {
-        super(message, metadata);
+    public DatabaseException(String message, ExceptionType type) {
+        super(message, type);
     }
 
     public DatabaseException(String message, Exception innerException) {
         super(message, innerException);
     }
 
-    public DatabaseException(String message, Exception innerException, Metadata metadata) {
-        super(message, innerException, metadata);
+    public DatabaseException(String message, Exception innerException, ExceptionType type) {
+        super(message, innerException, type);
     }
 
 }

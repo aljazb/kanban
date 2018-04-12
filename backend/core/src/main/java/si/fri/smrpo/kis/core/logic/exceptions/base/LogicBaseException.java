@@ -3,44 +3,40 @@ package si.fri.smrpo.kis.core.logic.exceptions.base;
 
 public abstract class LogicBaseException extends Exception {
 
-    protected Metadata metadata = Metadata.GENERAL;
+    protected ExceptionType type = ExceptionType.GENERAL;
 
     public LogicBaseException(String message) {
         super(message);
     }
 
-    public LogicBaseException(Metadata metadata) {
+    public LogicBaseException(ExceptionType type) {
         super();
-        this.metadata = metadata;
+        this.type = type;
     }
 
-    public LogicBaseException(String message, Metadata metadata) {
+    public LogicBaseException(String message, ExceptionType type) {
         super(message);
-        this.metadata = metadata;
+        this.type = type;
     }
 
     public LogicBaseException(String message, Exception innerException) {
         super(message, innerException);
     }
 
-    public LogicBaseException(String message, Exception innerException, Metadata metadata) {
+    public LogicBaseException(String message, Exception innerException, ExceptionType type) {
         super(message, innerException);
-        this.metadata = metadata;
+        this.type = type;
     }
 
 
-    public Metadata getMetadata() {
-        return metadata;
+    public ExceptionType getType() {
+        return type;
     }
 
-    public void setMetadata(Metadata metadata) {
-        this.metadata = metadata;
+    public void setType(ExceptionType type) {
+        this.type = type;
     }
 
-    public enum Metadata {
-        GENERAL,
-        ENTITY_DOES_NOT_EXISTS,
-        INSUFFICIENT_RIGHTS
-    }
+
 
 }

@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.managers;
 
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
@@ -42,7 +43,7 @@ public class UserAccountAuthManager extends AuthManager<UserAccount> {
         if(!isUserInRole(ROLE_ADMINISTRATOR)){
             if(!entity.getId().equals(getUserId())) {
                 throw new DatabaseException("User does not have permission.",
-                        LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+                        ExceptionType.INSUFFICIENT_RIGHTS);
             }
         }
     }

@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.service;
 
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
@@ -106,7 +107,7 @@ public class RequestService implements RequestServiceLocal {
                  throw new OperationException("Receiver is already member.");
              }
          } else {
-            throw new OperationException("User is has insufficient rights.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+            throw new OperationException("User is has insufficient rights.", ExceptionType.INSUFFICIENT_RIGHTS);
          }
     }
 
@@ -121,7 +122,7 @@ public class RequestService implements RequestServiceLocal {
                 throw new OperationException("Receiver cannot become specified role.");
             }
         } else {
-            throw new OperationException("User is not kanban master of dev team.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+            throw new OperationException("User is not kanban master of dev team.", ExceptionType.INSUFFICIENT_RIGHTS);
         }
     }
 
@@ -135,7 +136,7 @@ public class RequestService implements RequestServiceLocal {
             } else if(request.getSender().getId().equals(authId) && !statusDecision) {
                 return processUpdate(request, RequestStatus.CANCELED);
             } else {
-                throw new OperationException("User is not receiver or sender of request.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+                throw new OperationException("User is not receiver or sender of request.", ExceptionType.INSUFFICIENT_RIGHTS);
             }
         } else {
             throw new OperationException("Request was already updated.");
@@ -194,7 +195,7 @@ public class RequestService implements RequestServiceLocal {
         }
 
         if (!isUserKanbanMaster(authUserId, devTeamId)) {
-            throw new OperationException("User not KanbanMaster.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+            throw new OperationException("User not KanbanMaster.", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
         demote(devTeam, MemberType.PRODUCT_OWNER);

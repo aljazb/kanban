@@ -2,14 +2,15 @@ package si.fri.smrpo.kis.server.ejb.managers;
 
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
-import si.fri.smrpo.kis.server.jpa.entities.Project;
 
+import javax.persistence.criteria.From;
 import java.util.*;
 
 public class BoardAuthManager extends AuthManager<Board> {
@@ -22,9 +23,12 @@ public class BoardAuthManager extends AuthManager<Board> {
     public CriteriaFilter<Board> authCriteria() {
         return (p, cb, r) -> {
             if(!isUserInRole(ROLE_ADMINISTRATOR)) {
+                From membership = r.join("projects").join("devTeam").join("joinedUsers");
                 return cb.and(p, cb.or(
-                        cb.equal(r.join("projects").join("devTeam").join("joinedUsers")
-                                .join("userAccount").get("id"), getUserId()),
+                        cb.and(
+                                cb.equal(membership.get("isDeleted"), false),
+                                cb.equal(membership.join("userAccount").get("id"), getUserId())
+                        ),
                         cb.equal(r.join("owner").get("id"),  getUserId())
                 ));
             } else {
@@ -43,16 +47,17 @@ public class BoardAuthManager extends AuthManager<Board> {
 
             if (boardAuth.isEmpty()) {
                 throw new DatabaseException("User does not have permission.",
-                        LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+                        ExceptionType.INSUFFICIENT_RIGHTS);
             }
         }
 
-        setReferences(entity);
+        setBoardPartsReferences(entity);
+        entity.getProjects().size(); // Fetch project
 
         super.authGet(db, entity);
     }
 
-    private void setReferences(Board board) {
+    private void setBoardPartsReferences(Board board) {
         Set<BoardPart> boardParts = board.getBoardParts();
         HashMap<UUID, BoardPart> map = new HashMap<>();
 

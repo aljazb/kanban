@@ -1,5 +1,6 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
+import org.apache.http.util.EntityUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -8,7 +9,7 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
-import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.KeycloakAdminServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
@@ -62,7 +63,7 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
         try {
             return REALM_RESOURCE.users().get(id).toRepresentation();
         } catch (Exception e){
-            throw new TransactionException( "Could not retrieve KEYCLOAK user.", LogicBaseException.Metadata.ENTITY_DOES_NOT_EXISTS);
+            throw new TransactionException( "Could not retrieve KEYCLOAK user.", ExceptionType.ENTITY_DOES_NOT_EXISTS);
         }
     }
 
@@ -131,7 +132,7 @@ public class KeycloakAdminService implements KeycloakAdminServiceLocal {
             String locationHeader = result.getHeaderString("Location");
             return locationHeader.replaceAll(".*/(.*)$", "$1");
         } else {
-            throw new TransactionException("Could not create account on Keycloak server.");
+            throw new TransactionException("Could not create account on Keycloak server: " + result.getEntity().toString());
         }
     }
 

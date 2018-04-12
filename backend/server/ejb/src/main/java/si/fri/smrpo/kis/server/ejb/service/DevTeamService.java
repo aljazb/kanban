@@ -3,6 +3,7 @@ package si.fri.smrpo.kis.server.ejb.service;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
@@ -72,7 +73,7 @@ public class DevTeamService implements DevTeamServiceLocal {
             UUID id = member.getUserAccount().getId();
             UserAccount ua = database.getEntityManager().find(UserAccount.class, id);
             if(ua == null){
-                throw new DatabaseException(String.format("User with id '%s' does not exist.", id));
+                throw new DatabaseException(String.format("User with id '%s' does not exist.", id), ExceptionType.ENTITY_DOES_NOT_EXISTS);
             } else {
                 member.setUserAccount(ua);
             }
@@ -89,7 +90,7 @@ public class DevTeamService implements DevTeamServiceLocal {
         DevTeam fromDb = this.database.get(DevTeam.class, devTeam.getId());
 
         if (fromDb == null) {
-            throw new OperationException("Dev team does not exist.");
+            throw new OperationException("Dev team does not exist.", ExceptionType.ENTITY_DOES_NOT_EXISTS);
         }
 
         Set<Membership> existingUsers = fromDb.getJoinedUsers().stream()
@@ -101,9 +102,11 @@ public class DevTeamService implements DevTeamServiceLocal {
                     .findFirst().orElse(null);
 
             if (existing != null) {
-                existing.setMemberType(updatedUserMtm.getMemberType());
-                database.update(existing);
                 existingUsers.remove(existing);
+                if(existing.getMemberType() != updatedUserMtm.getMemberType()){
+                    existing.setMemberType(updatedUserMtm.getMemberType());
+                    database.update(existing);
+                }
             } else {
                 updatedUserMtm.setDevTeam(fromDb);
                 database.create(updatedUserMtm);
@@ -172,7 +175,7 @@ public class DevTeamService implements DevTeamServiceLocal {
     public UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException {
         if (!getKanbanMaster(devTeamId).getId().equals(authId)) {
             throw new OperationException("User is not KanbanMaster of this group",
-                    LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+                    ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
         DevTeam devTeam = database.get(DevTeam.class, devTeamId);
@@ -181,7 +184,7 @@ public class DevTeamService implements DevTeamServiceLocal {
                 .equals(memberId) && !e.getIsDeleted()).findFirst().orElse(null);
 
         if (memberMtm == null) {
-            throw new OperationException("Member is not in the development team.");
+            throw new OperationException("Member is not in the development team.", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
         switch (memberMtm.getMemberType()) {
@@ -197,7 +200,7 @@ public class DevTeamService implements DevTeamServiceLocal {
                 memberMtm = database.delete(Membership.class, memberMtm.getId());
                 break;
             default:
-                throw new OperationException("Member is not developer");
+                throw new OperationException("Member is not developer", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
         return memberMtm.getUserAccount();
@@ -208,12 +211,13 @@ public class DevTeamService implements DevTeamServiceLocal {
         DevTeam dt = this.database.get(DevTeam.class, id);
 
         if (dt == null) {
-            throw new OperationException("Dev team does not exist.");
+            throw new OperationException("Dev team does not exist.", ExceptionType.ENTITY_DOES_NOT_EXISTS);
         }
 
-        for (Membership mtm: dt.getJoinedUsers()) {
-            mtm.getUserAccount().getId();
-        }
+        List<Membership> activeMembersList = database.getEntityManager().createNamedQuery("devTeam.get.active.members", Membership.class)
+                .setParameter("devTeamId", dt.getId()).getResultList();
+
+        dt.setJoinedUsers(new HashSet<>(activeMembersList));
 
         return dt;
     }

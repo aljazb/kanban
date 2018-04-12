@@ -5,6 +5,7 @@ import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.database.manager.DatabaseManager;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
@@ -37,7 +38,7 @@ public class GetSource<E extends BaseEntity<E, I>, I extends Serializable> exten
             if(entity != null){
                 return entity;
             } else {
-                throw new DatabaseException(LogicBaseException.Metadata.ENTITY_DOES_NOT_EXISTS);
+                throw new DatabaseException(ExceptionType.ENTITY_DOES_NOT_EXISTS);
             }
         } catch (DatabaseException e) {
             throw ApiException.transform(e);

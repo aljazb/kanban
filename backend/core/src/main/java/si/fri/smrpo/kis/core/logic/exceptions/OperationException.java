@@ -1,5 +1,6 @@
 package si.fri.smrpo.kis.core.logic.exceptions;
 
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 
 import javax.ejb.ApplicationException;
@@ -11,16 +12,16 @@ public class OperationException extends LogicBaseException {
         super(message);
     }
 
-    public OperationException(Metadata metadata) {
-        super(metadata);
+    public OperationException(ExceptionType type) {
+        super(type);
     }
 
-    public OperationException(String message, Metadata metadata) {
-        super(message, metadata);
+    public OperationException(String message, ExceptionType type) {
+        super(message, type);
     }
 
-    public OperationException(String message, Exception innerException, Metadata metadata) {
-        super(message, innerException, metadata);
+    public OperationException(String message, Exception innerException, ExceptionType type) {
+        super(message, innerException, type);
     }
 
     public OperationException(String message, Exception innerException) {

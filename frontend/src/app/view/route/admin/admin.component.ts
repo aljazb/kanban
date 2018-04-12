@@ -84,8 +84,6 @@ export class AdminComponent implements OnInit {
   private setUserPassword(user: UserAccount, password: string){
     this.api.userAccount.setPassword(user.id, password).subscribe(value => {
       this.toasterService.pop('success', 'Set password user: ' + user.username);
-      this.selectedUser = value;
-      this.userPagingComp.refresh();
     }, error => {
       this.toasterService.pop('error', 'Error setting password user: ' + user.username);
     });

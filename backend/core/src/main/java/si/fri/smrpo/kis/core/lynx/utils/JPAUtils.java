@@ -105,7 +105,10 @@ public class JPAUtils {
 
             CriteriaWhereQuery criteriaWhereQuery = createWhereQueryInternal(cb, r, q);
 
-            requiresDistinct = criteriaWhereQuery.containsToMany();
+            if(!requiresDistinct) {
+                requiresDistinct = criteriaWhereQuery.containsToMany();
+            }
+
             wherePredicate = criteriaWhereQuery.getPredicate();
         }
 

@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name="board")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "board.access", query = "SELECT b.id FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+        @NamedQuery(name = "board.access", query = "SELECT b FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
                 "WHERE b.id = :boardId AND (b.owner.id = :userId OR m.userAccount.id = :userId)")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)

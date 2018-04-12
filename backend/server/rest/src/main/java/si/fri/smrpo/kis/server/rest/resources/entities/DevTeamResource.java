@@ -115,10 +115,6 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
     public Response get(@PathParam("id") UUID id) throws ApiException {
         try {
             DevTeam dt = service.getWithUsers(id);
-            for (Membership mtm : dt.getJoinedUsers()) {
-                mtm.setDevTeam(null);
-            }
-            dt.setJoinedUsers(dt.getJoinedUsers().stream().filter(e -> !e.getIsDeleted()).collect(Collectors.toSet()));
             return buildResponse(dt, true).build();
         } catch (LogicBaseException e) {
             throw ApiException.transform(e);

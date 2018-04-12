@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.ejb.managers;
 
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
@@ -37,7 +38,7 @@ public class RequestAuthManager extends AuthManager<Request> {
         if(!isUserInRole(ROLE_ADMINISTRATOR)) {
             if (!(entity.getSender().getId().equals(getUserId()) ||
                     entity.getReceiver().getId().equals(getUserId()))) {
-                throw new DatabaseException("User is neither sender or receiver.", LogicBaseException.Metadata.INSUFFICIENT_RIGHTS);
+                throw new DatabaseException("User is neither sender or receiver.", ExceptionType.INSUFFICIENT_RIGHTS);
             }
         }
     }

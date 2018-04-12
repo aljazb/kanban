@@ -28,13 +28,11 @@ export class ProjectComponent implements OnInit {
   }
 
   goToProject(project: Project): void {
-    console.log(project);
     this.router.navigate(['/project/' + project.id]);
   }
 
   openProjectCreateModal() {
     const modalRef = this.modalService.open(ProjectFormComponent);
-    (<ProjectFormComponent> modalRef.componentInstance).setInitialProject(new Project());
     modalRef.result
       .then(value =>
         this.apiService.project.post(value, true).subscribe(value =>
