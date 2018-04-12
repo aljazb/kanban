@@ -50,8 +50,16 @@
     <div class="form-group row col-12">
       <ul *ngIf="selectedDevelopers" class="list-group col-12">
         <li *ngFor="let selectedDev of selectedDevelopers" class="list-group-item">
-          {{ selectedDev.email }}
-          <button (click)="removeDeveloper(selectedDev.id)" type="button" class="btn-sml btn-danger" style="float: right">x</button>
+          <div class="row">
+            <div class="col-sm-8">
+              {{ selectedDev.email }}
+            </div>
+            <div class="col-sm-4">
+              <button class="btn-sm btn-danger pull-right" type="button" (click)="removeDeveloper(selectedDev.id)">
+                <i class="fa fa-times-circle"></i>
+              </button>
+            </div>
+          </div>
         </li>
       </ul>
     </div>

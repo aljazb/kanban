@@ -17,60 +17,45 @@ import {LoginService} from '../../../../api/login.service';
 export class DevTeamFormComponent {
 
   devTeam = new DevTeam();
+
   formDevTeam: FormGroup;
-  kanbanMaster: UserAccount;
-
-  allDevelopers: UserAccount[];
-
-  productOwners: UserAccount[];
-  availableDevelopers: UserAccount[];
-
   fcName: FormControl;
   fcProductOwner: FormControl;
   fcSelectDeveloper: FormControl;
+
+  kanbanMaster: UserAccount;
+  previousSelectedProductOwner: UserAccount;
+  productOwners: UserAccount[];
+  availableDevelopers: UserAccount[];
+
+  allDevelopers: UserAccount[];
   selectedDevelopers: UserAccount[];
 
   emptyFields = false;
 
   constructor(public activeModal: NgbActiveModal,
               private api: ApiService,
-              private loginService: LoginService) {
-    this.loadUsers();
+              private loginService: LoginService)
+  {
+    this.selectedDevelopers = [];
     this.initFormControls();
     this.initFormGroup();
-    this.selectedDevelopers = [];
-  }
-
-  loadUsers() {
-    this.api.userAccount.getProductOwners().subscribe(productOwners => this.productOwners = productOwners);
-    this.api.userAccount.getDevelopers().subscribe(developers => {
-      this.allDevelopers = developers;
-      this.availableDevelopers = developers.map(x => Object.assign({}, x)); // copy
-
-      console.log(this.devTeam);
-
-      if (!isNullOrUndefined(this.devTeam) && !isNullOrUndefined(this.devTeam.name)) {
-        this.fcName.setValue(this.devTeam.name);
-        this.fcProductOwner.setValue(DevTeam.getProductOwner(this.devTeam).id);
-
-        this.availableDevelopers = this.allDevelopers.filter(dev => !DevTeam.getDevelopersIds(this.devTeam).includes(dev.id));
-        this.selectedDevelopers = this.allDevelopers.filter( dev => DevTeam.getDevelopersIds(this.devTeam).includes(dev.id));
-      }
-    });
-    this.loginService.getUser().subscribe(u => this.kanbanMaster = u);
+    this.loadUsers();
   }
 
   initFormControls(): void {
     this.fcName = new FormControl('', Validators.required);
-    this.fcProductOwner = new FormControl(null, Validators.required);
-    this.fcSelectDeveloper = new FormControl(null);
 
+    this.fcProductOwner = new FormControl(null, Validators.required);
+    this.fcProductOwner.valueChanges.subscribe(id => this.selectProductOwner(this.productOwners.find(user => user.id == id)));
+
+    this.fcSelectDeveloper = new FormControl(null);
     this.fcSelectDeveloper.valueChanges.subscribe(value => {
       if (!isNullOrUndefined(value)) {
         this.addDeveloper(value);
         this.fcSelectDeveloper.setValue(null);
       }
-    })
+    });
   }
 
   initFormGroup(): void {
@@ -81,8 +66,69 @@ export class DevTeamFormComponent {
     });
   }
 
+  loadUsers() {
+    this.api.userAccount.getProductOwners().subscribe(productOwners => this.productOwners = productOwners);
+    this.api.userAccount.getDevelopers().subscribe(developers => {
+      this.allDevelopers = developers;
+      this.availableDevelopers = developers.map(x => Object.assign({}, x)); // copy
+    });
+    this.loginService.getUser().subscribe(u => this.kanbanMaster = u);
+  }
+
+  selectProductOwner(productOwner: UserAccount): void {
+    console.log(productOwner);
+    if(productOwner.inRoleDeveloper) {
+      this.availableDevelopers = this.availableDevelopers.filter(value => value.id != productOwner.id);
+    }
+    if(this.previousSelectedProductOwner && this.previousSelectedProductOwner.inRoleDeveloper) {
+      this.availableDevelopers.push(this.previousSelectedProductOwner)
+    }
+    this.previousSelectedProductOwner = productOwner;
+  }
+
+  addDeveloper(developerId: string) {
+    let developer: UserAccount = this.availableDevelopers.find(e => e.id == developerId);
+
+    if(developer.inRoleProductOwner) {
+      this.productOwners = this.productOwners.filter(productOwner => productOwner.id != developer.id);
+    }
+
+    this.selectedDevelopers.push(developer);
+
+    let idx = this.availableDevelopers.findIndex(e => e.id == developerId);
+    this.availableDevelopers.splice(idx, 1)
+  }
+
+  removeDeveloper(developerId: string) {
+    let developer = this.selectedDevelopers.find(developer => developer.id == developerId);
+    if(developer.inRoleProductOwner){
+      this.productOwners.push(developer);
+    }
+
+    let idx = this.selectedDevelopers.findIndex(e => e.id == developerId);
+    this.selectedDevelopers.splice(idx, 1);
+
+
+    this.availableDevelopers.push(this.allDevelopers.find(e => e.id == developerId))
+  }
+
   setInitialDevTeam(devTeam: DevTeam) {
     this.devTeam = devTeam;
+    this.previousSelectedProductOwner = DevTeam.getProductOwner(this.devTeam);
+
+
+    let devIds = DevTeam.getDevelopersIds(this.devTeam);
+    this.availableDevelopers = this.allDevelopers.filter(dev => !devIds.includes(dev.id));
+    this.selectedDevelopers = this.allDevelopers.filter( dev => devIds.includes(dev.id));
+
+    if(this.previousSelectedProductOwner != null && this.previousSelectedProductOwner.inRoleDeveloper) {
+      this.availableDevelopers = this.availableDevelopers.filter( dev => dev.id != this.previousSelectedProductOwner.id);
+    }
+
+    this.fcName.setValue(this.devTeam.name);
+    if(this.previousSelectedProductOwner != null){
+      this.fcProductOwner.setValue(this.previousSelectedProductOwner.id);
+    }
   }
 
   onSubmit() {
@@ -127,17 +173,4 @@ export class DevTeamFormComponent {
     }
   }
 
-  private addDeveloper(developerId: string) {
-    this.selectedDevelopers.push(this.availableDevelopers.find(e => e.id == developerId));
-
-    let idx = this.availableDevelopers.findIndex(e => e.id == developerId);
-    this.availableDevelopers.splice(idx, 1)
-  }
-
-  removeDeveloper(developerId: string) {
-    let idx = this.selectedDevelopers.findIndex(e => e.id == developerId);
-    this.selectedDevelopers.splice(idx, 1);
-
-    this.availableDevelopers.push(this.allDevelopers.find(e => e.id == developerId))
-  }
 }
