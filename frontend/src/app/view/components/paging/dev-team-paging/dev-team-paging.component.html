@@ -3,7 +3,7 @@
   <div class="col-md-12">
     <div *ngIf="paging && paging.count > 0" class="list-group">
       <div>
-        <div class="list-group-item list-group-item-primary">Development team:</div>
+        <div class="list-group-item list-group-item-primary">Development teams</div>
         <a (click)="itemSelected(item)" *ngFor="let item of paging.items" class="list-group-item list-group-item-action">
           {{item.name}}
         </a>
