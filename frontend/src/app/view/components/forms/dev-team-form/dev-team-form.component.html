@@ -71,6 +71,7 @@
     </div>
 
     <div *ngIf='emptyFields' class="alert alert-warning">Please fill in all of the fields.</div>
+    <div *ngIf='emptyFields && selectedDevelopers.length == 0' class="alert alert-warning">Please add one or more developer.</div>
   </form>
 
 </div>
