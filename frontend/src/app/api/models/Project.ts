@@ -4,6 +4,7 @@ import {UserAccount} from './UserAccount';
 import {Card} from './Card';
 
 export class Project extends BaseEntity<Project> {
+  code: string;
   name: string;
   description: string;
   productBuyer: string;

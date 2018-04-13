@@ -21,6 +21,9 @@ import java.util.Set;
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Project extends UUIDEntity<Project> {
 
+    @Column(name = "code", nullable = false)
+    private String code;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -124,5 +127,13 @@ public class Project extends UUIDEntity<Project> {
 
     public void setCards(Set<Card> cards) {
         this.cards = cards;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

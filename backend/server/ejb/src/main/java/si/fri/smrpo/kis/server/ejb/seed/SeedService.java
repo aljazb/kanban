@@ -255,6 +255,7 @@ public class SeedService {
                                 e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER).findFirst().get();
 
                 Project p = new Project();
+                p.setCode(FAKER.app.name().toLowerCase().replaceAll(" ", "-"));
                 p.setName(FAKER.app.name());
                 p.setProductBuyer(FAKER.company.name());
                 p.setDescription(FAKER.lorem.characters(150));
