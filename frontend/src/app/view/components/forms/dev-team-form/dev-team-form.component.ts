@@ -143,7 +143,7 @@ export class DevTeamFormComponent {
   }
 
   onSubmit() {
-    if (this.formDevTeam.valid) {
+    if (this.formDevTeam.valid && this.selectedDevelopers.length > 0) {
       let dt = this.devTeam;
       dt.name = this.fcName.value;
 

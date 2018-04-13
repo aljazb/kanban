@@ -46,7 +46,7 @@ export class ProjectFormComponent extends FormImpl {
 
     this.fcName = new FormControl('', Validators.required);
     this.fcProductBuyer = new FormControl('', Validators.required);
-    this.fcStartDate = new FormControl(start, [Validators.required, this.dateAfterNow(start)]);
+    this.fcStartDate = new FormControl(start, [Validators.required, this.dateBeforeNow(start)]);
     this.fcStartDate.valueChanges.subscribe(value => this.fcEndDate.patchValue(this.fcEndDate.value));
     this.fcEndDate = new FormControl(end, [Validators.required, this.dateAfterValidator(this.fcStartDate)]);
     this.fcDevTeam = new FormControl(null, Validators.required);
@@ -103,18 +103,18 @@ export class ProjectFormComponent extends FormImpl {
     }
   }
 
-  dateAfterNow(nowDate: DTDateFormat): ValidatorFn {
+  dateBeforeNow(nowDate: DTDateFormat): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
-      let valid = true;
+      let valid = false;
 
       let startDate: DTDateFormat = control.value;
 
       if (nowDate.year > startDate.year) {
-        valid = false;
+        valid = true;
       } else if (nowDate.month > startDate.month) {
-        valid = false;
-      } else if (nowDate.day > startDate.day) {
-        valid = false;
+        valid = true;
+      } else if (nowDate.day >= startDate.day) {
+        valid = true;
       }
 
       this.invalidStartDate = !valid;
