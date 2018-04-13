@@ -72,21 +72,21 @@ export class DevTeamFormComponent {
 
   selectProductOwner(productOwnerId: string): void {
     let productOwner = this.productOwners.find(user => user.id == productOwnerId);
-    if(productOwner.inRoleDeveloper) {
+    /*if(productOwner.inRoleDeveloper) {
       this.deleteUser(this.availableDevelopers, productOwnerId);
     }
     if(this.previousSelectedProductOwner && this.previousSelectedProductOwner.inRoleDeveloper) {
       this.availableDevelopers.push(this.previousSelectedProductOwner);
-    }
+    }*/
     this.previousSelectedProductOwner = productOwner;
   }
 
   addDeveloper(developerId: string) {
     let developer = this.allDevelopers.get(developerId);
 
-    if(developer.inRoleProductOwner) {
+    /*if(developer.inRoleProductOwner) {
       this.deleteUser(this.productOwners, developerId);
-    }
+    }*/
 
     this.selectedDevelopers.push(developer);
     this.deleteUser(this.availableDevelopers, developerId);
@@ -95,9 +95,9 @@ export class DevTeamFormComponent {
   removeDeveloper(developerId: string) {
     let developer = this.allDevelopers.get(developerId);
 
-    if(developer.inRoleProductOwner){
+    /*if(developer.inRoleProductOwner){
       this.productOwners.push(developer);
-    }
+    }*/
 
     this.deleteUser(this.selectedDevelopers, developerId);
     this.availableDevelopers.push(developer)
@@ -128,9 +128,9 @@ export class DevTeamFormComponent {
         if(this.previousSelectedProductOwner != null) {
           this.fcProductOwner.setValue(this.previousSelectedProductOwner.id);
         }
-        if(this.previousSelectedProductOwner != null && this.previousSelectedProductOwner.inRoleDeveloper) {
+        /*if(this.previousSelectedProductOwner != null && this.previousSelectedProductOwner.inRoleDeveloper) {
           this.deleteUser(this.availableDevelopers, this.previousSelectedProductOwner.id);
-        }
+        }*/
       });
     });
   }
