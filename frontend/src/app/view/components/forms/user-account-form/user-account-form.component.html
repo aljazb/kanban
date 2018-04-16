@@ -16,7 +16,10 @@
       <div class="col-sm-8">
         <input type="text" name="user-name" class="form-control" id="in-username" placeholder="foobar"
                formControlName="username"
-               [ngClass]="{'is-invalid': fcUsername.touched && fcUsername.invalid }">
+               [ngClass]="{ 'is-invalid': fcUsername.touched && fcUsername.invalid }">
+        <div class="invalid-feedback" *ngIf="fcUsername.hasError('required')">
+          Username required
+        </div>
         <div class="invalid-feedback" *ngIf="fcUsername.hasError('takenUsername')" >
           Username taken
         </div>
@@ -30,17 +33,16 @@
       <div class="col-sm-8">
         <input type="text" name="user-email" class="form-control" id="email"  placeholder="foo@bar.com"
                formControlName="email"
-               [ngClass]="{'is-invalid': fcEmail.touched && fcEmail.invalid }">
-        <div class="invalid-feedback" *ngIf="fcEmail.hasError('required')" >
+               [ngClass]="{ 'is-invalid': fcEmail.touched && fcEmail.invalid }">
+        <div class="invalid-feedback" *ngIf="fcEmail.hasError('required')">
           Email required
         </div>
-        <div class="invalid-feedback" *ngIf="fcEmail.hasError('email')" >
+        <div class="invalid-feedback" *ngIf="!fcEmail.hasError('required') && fcEmail.hasError('email')">
           Invalid email
         </div>
-        <div class="invalid-feedback" *ngIf="fcEmail.hasError('takenEmail')" >
+        <div class="invalid-feedback" *ngIf="fcEmail.hasError('takenEmail')">
           Email taken
         </div>
-
       </div>
     </div>
 
@@ -48,7 +50,11 @@
       <label for="firstName" class="col-sm-4 col-form-label">First name</label>
       <div class="col-sm-8">
         <input type="text" name="user-firstName" class="form-control" id="firstName"  placeholder="John"
-               formControlName="firstName">
+               formControlName="firstName"
+               [ngClass]="{ 'is-invalid': fcFirstName.touched && fcFirstName.invalid }">
+        <div class="invalid-feedback" *ngIf="fcFirstName.hasError('required')">
+          First name required
+        </div>
       </div>
     </div>
 
@@ -56,7 +62,11 @@
       <label for="lastName" class="col-sm-4 col-form-label">Last name</label>
       <div class="col-sm-8">
         <input type="text" name="user-lastName" class="form-control" id="lastName" placeholder="Doe"
-               formControlName="lastName">
+               formControlName="lastName"
+               [ngClass]="{ 'is-invalid': fcLastName.touched && fcLastName.invalid }">
+        <div class="invalid-feedback" *ngIf="fcLastName.hasError('required')">
+          Last name name required
+        </div>
       </div>
     </div>
 

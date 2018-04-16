@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {FormImpl} from '../form-impl';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {DTDateFormat} from '../../../../utility';
 
 @Component({
   selector: 'app-user-account-password-form',
@@ -11,7 +12,6 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 export class UserAccountPasswordFormComponent extends FormImpl {
 
   isSubmitted: boolean = false;
-  isConfirmPasswordValid: boolean = false;
 
   form: FormGroup;
 
@@ -27,11 +27,8 @@ export class UserAccountPasswordFormComponent extends FormImpl {
 
   initFormControls(): void {
     this.fcPassword = new FormControl('', [Validators.required, Validators.minLength(6)]);
-    this.fcConfirmPassword = new FormControl('');
-
-    this.fcConfirmPassword.valueChanges.subscribe(value => {
-      this.isConfirmPasswordValid = this.fcPassword.value === this.fcConfirmPassword.value;
-    });
+    this.fcPassword.valueChanges.subscribe(value => this.fcConfirmPassword.patchValue(this.fcConfirmPassword.value));
+    this.fcConfirmPassword = new FormControl('', this.matchesPassword(this.fcPassword));
   }
 
   initFormGroup(): void {
@@ -45,7 +42,16 @@ export class UserAccountPasswordFormComponent extends FormImpl {
     this.isSubmitted = true;
     if(this.form.valid) {
       this.activeModal.close(this.fcPassword.value);
+    } else {
+      this.validateForm(this.form);
     }
+  }
+
+  matchesPassword(source: FormControl): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      let valid = source.value == control.value;
+      return valid ? null : {'passwordNotMatched': {value: control.value}};
+    };
   }
 
 }
