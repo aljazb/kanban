@@ -130,4 +130,16 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
             throw ApiException.transform(e);
         }
     }
+
+    @RolesAllowed(ROLE_ADMINISTRATOR)
+    @PUT
+    @Path("available")
+    public Response checkAvailability(UserAccount entity) throws ApiException {
+        try {
+            service.checkAvailability(entity);
+            return buildResponse(null, false).build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
+    }
 }

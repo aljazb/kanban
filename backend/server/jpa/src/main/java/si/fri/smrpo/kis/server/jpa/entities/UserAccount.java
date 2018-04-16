@@ -12,7 +12,9 @@ import java.util.Set;
 @Table(name="user_account")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "user-account.get-all", query = "SELECT ua FROM UserAccount ua")
+        @NamedQuery(name = "user-account.get-all", query = "SELECT ua FROM UserAccount ua"),
+        @NamedQuery(name = "user-account.where.email", query = "SELECT ua FROM UserAccount ua WHERE ua.email = :email"),
+        @NamedQuery(name = "user-account.where.username", query = "SELECT ua FROM UserAccount ua WHERE ua.username = :username")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class UserAccount extends UUIDEntity<UserAccount> {

@@ -81,4 +81,12 @@ export class UserAccountResource extends GetResource<UserAccount> {
         map(content => this.deserializeArray(content))
       );
   }
+
+  isAvailable(entity: UserAccount): Observable<UserAccount> {
+    return this.api.httpClient.put<UserAccount>(this.url + "/available", entity)
+      /*.pipe(
+        catchError(this.handleError<UserAccount>(`patch`)),
+        map(content => this.deserialize(content))
+      )*/;
+  }
 }

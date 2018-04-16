@@ -1,8 +1,17 @@
 import { Component } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {FormImpl} from '../form-impl';
+import {ApiService} from '../../../../api/api.service';
+import {AsyncValidatorFn} from '@angular/forms/src/directives/validators';
+import {Observable} from 'rxjs/Observable';
+import {map, switchMap, catchError} from 'rxjs/operators'
+import {of} from 'rxjs/observable/of';
+import {timer} from 'rxjs/observable/timer';
+
+
+
 
 @Component({
   selector: 'app-user-account-form',
@@ -10,6 +19,8 @@ import {FormImpl} from '../form-impl';
   styleUrls: ['./user-account-form.component.css']
 })
 export class UserAccountFormComponent extends FormImpl {
+
+  private DEBOUNC_TIME = 1000;
 
   userAccount: UserAccount = new UserAccount();
 
@@ -29,15 +40,16 @@ export class UserAccountFormComponent extends FormImpl {
   fcInRoleAdministrator: FormControl;
 
 
-  constructor(public activeModal: NgbActiveModal) {
+  constructor(public activeModal: NgbActiveModal,
+              private api: ApiService) {
     super();
     this.initFormControls();
     this.initFormGroup();
   }
 
   initFormControls(): void {
-    this.fcUsername = new FormControl('', Validators.required);
-    this.fcEmail = new FormControl('', [Validators.required, Validators.email]);
+    this.fcUsername = new FormControl('', Validators.required, this.isUsernameValid());
+    this.fcEmail = new FormControl('', [Validators.required, Validators.email], this.isEmailValid());
     this.fcFirstName = new FormControl('', Validators.required);
     this.fcLastName = new FormControl('', Validators.required);
 
@@ -112,6 +124,46 @@ export class UserAccountFormComponent extends FormImpl {
     } else {
       this.validateForm(this.formUserAccount);
     }
+  }
+
+  isUsernameValid(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<{ [key: string]: any }> => {
+      return timer(this.DEBOUNC_TIME).pipe(
+        switchMap(()=> {
+          let ua = new UserAccount();
+          ua.username = control.value;
+          return this.api.userAccount.isAvailable(ua).pipe(
+            catchError(err => of(err.error)),
+            map(value => {
+              if(value && value.error) {
+                return {'takenUsername': {value: value.error}};
+              } else {
+                return null;
+              }
+            })
+          );
+        }));
+    };
+  }
+
+  isEmailValid(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<{ [key: string]: any }> => {
+      return timer(this.DEBOUNC_TIME).pipe(
+        switchMap(()=> {
+          let ua = new UserAccount();
+          ua.email = control.value;
+          return this.api.userAccount.isAvailable(ua).pipe(
+            catchError(err => of(err.error)),
+            map(value => {
+              if(value && value.error) {
+                return {'takenEmail': {value: value.error}};
+              } else {
+                return null;
+              }
+            })
+          );
+        }));
+    };
   }
 
 }

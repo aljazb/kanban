@@ -14,4 +14,5 @@ public interface UserAccountServiceLocal {
     UserAccount setEnabled(UUID id, Boolean enabled) throws LogicBaseException;
     void setPassword(UUID id, String password) throws LogicBaseException;
 
+    void checkAvailability(UserAccount userAccount) throws LogicBaseException;
 }

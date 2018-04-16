@@ -14,7 +14,7 @@ export class BoardRepresentation {
   private _maxWidth: number;
   private _boardPartTable: BoardPartTable[];
 
-  private _boardPartIdToIndexMap: Map<string, number>;
+  private _boardPartIdToIndexMap: Map<string, BoardPartTable>;
 
   public boardPartTable: BoardPartTable[][];
   public projectTable: ProjectTable[];
@@ -24,7 +24,7 @@ export class BoardRepresentation {
     this._maxWidth = 0;
     this._boardPartTable = [];
 
-    this._boardPartIdToIndexMap = new Map<string, number>();
+    this._boardPartIdToIndexMap = new Map<string, BoardPartTable>();
     this.projectTable = [];
   }
 
@@ -71,9 +71,27 @@ export class BoardRepresentation {
       this.projectTable.push(pt);
     }
 
-    let index = this._boardPartIdToIndexMap.get(card.boardPart.id);
-    pt.add(card, index);
+    let bpt = this._boardPartIdToIndexMap.get(card.boardPart.id);
+    pt.add(card, bpt.index);
+    this.incWip(bpt);
   }
+
+  private incWip(boardPartTable: BoardPartTable){
+    let bpt = boardPartTable;
+    while(bpt != null){
+      bpt.currentWip++;
+      bpt = bpt.parent;
+    }
+  }
+
+  private decWip(boardPartTable: BoardPartTable){
+    let bpt = boardPartTable;
+    while(bpt != null){
+      bpt.currentWip--;
+      bpt = bpt.parent;
+    }
+  }
+
 
   private setRowSpanBoardPartTable(): void {
     this._boardPartTable.forEach(boardPartTable => {
@@ -106,7 +124,7 @@ export class BoardRepresentation {
       this.boardPartTable[deep] = [];
     }
 
-    let bpt = new BoardPartTable(boardPart.name, boardPart.maxWip);
+    let bpt = new BoardPartTable(boardPart);
 
     if(this._maxDepth < deep) this._maxDepth = deep;
 
@@ -115,12 +133,14 @@ export class BoardRepresentation {
       bpt.colspan = 0;
       boardPart.children.forEach(boardPart => {
         let cBpt = this.recInitBoardPartTable(boardPart, deep + 1);
+        cBpt.parent = bpt;
         bpt.children.push(cBpt);
         bpt.colspan += cBpt.colspan;
       });
     } else {
       bpt.colspan = 1;
-      this._boardPartIdToIndexMap.set(boardPart.id, this._maxWidth);
+      bpt.index = this._maxWidth;
+      this._boardPartIdToIndexMap.set(boardPart.id, bpt);
       this._maxWidth++;
     }
 

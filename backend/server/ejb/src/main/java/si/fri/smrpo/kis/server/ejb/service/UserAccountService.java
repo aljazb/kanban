@@ -1,5 +1,6 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
+import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
@@ -11,6 +12,7 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -68,9 +70,32 @@ public class UserAccountService implements UserAccountServiceLocal {
         keycloak.setPassword(id.toString(), password);
     }
 
+    private boolean isEmailAvailable(String email) {
+        List<UserAccount> users = database.getEntityManager().createNamedQuery("user-account.where.email", UserAccount.class)
+                .setParameter("email", email).setMaxResults(1).getResultList();
+        return users.isEmpty();
+    }
 
+    private boolean isUsernameAvailable(String username) {
+        List<UserAccount> users = database.getEntityManager().createNamedQuery("user-account.where.username", UserAccount.class)
+                .setParameter("username", username).setMaxResults(1).getResultList();
+        return users.isEmpty();
+    }
 
-    private void validate(UserAccount userAccount) throws TransactionException {
+    @Override
+    public void checkAvailability(UserAccount userAccount) throws LogicBaseException {
+        if(userAccount.getEmail() != null) {
+            if(!isEmailAvailable(userAccount.getEmail())) {
+                throw new OperationException("Email is taken");
+            }
+        } else if(userAccount.getUsername() != null){
+            if(!isUsernameAvailable(userAccount.getUsername())) {
+                throw new OperationException("Username is taken");
+            }
+        }
+    }
+
+    private void validate(UserAccount userAccount) throws LogicBaseException {
         if(userAccount.getUsername() == null) {
             throw new TransactionException("Username not specified.");
         } else if(userAccount.getEmail() == null) {
@@ -87,6 +112,8 @@ public class UserAccountService implements UserAccountServiceLocal {
             throw new TransactionException("Role kanban master not specified.");
         } else if(userAccount.getInRoleProductOwner() == null) {
             throw new TransactionException("Role product owner not specified.");
+        } else {
+            checkAvailability(userAccount);
         }
     }
 
