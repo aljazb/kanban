@@ -7,12 +7,12 @@ import {ProjectComponent} from './view/route/project/project.component';
 import {BoardComponent} from './view/route/board/board.component';
 import {AdminComponent} from './view/route/admin/admin.component';
 import {ROLE_ADMINISTRATOR} from './api/keycloak/keycloak-init';
-import {ROLE_KANBAN_MASTER} from './api/keycloak/keycloak-init';
 import {ProfileComponent} from './view/route/profile/profile.component';
 import {DevTeamDetailsComponent} from './view/route/dev-team-details/dev-team-details.component';
 import {ProjectDetailsComponent} from './view/route/project-details/project-details.component';
 import {BoardDetailsComponent} from './view/route/board-details/board-details.component';
 import {BoardEditComponent} from './view/route/board-edit/board-edit.component';
+import {CardDetailsComponent} from './view/route/card-details/card-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -29,6 +29,8 @@ const routes: Routes = [
   { path: 'board', component: BoardComponent },
   { path: 'board/edit', component: BoardEditComponent },
   { path: 'board/:id', component: BoardDetailsComponent },
+
+  { path: 'card/:id', component: CardDetailsComponent },
 ];
 
 @NgModule({

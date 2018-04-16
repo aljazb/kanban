@@ -1,0 +1,22 @@
+<div *ngIf="card" class="card">
+  <div class="card-body">
+
+    <h4 class="card-title">Card details</h4>
+
+    <div class="row">
+      <p class="col-sm-2 col-label">Name</p>
+      <p class="col-sm-2 col-label"><strong>{{card.name}}</strong></p>
+    </div>
+
+    <div class="row">
+      <p class="col-sm-2 col-label">Workload</p>
+      <p class="col-sm-2 col-label"><strong>{{ card.workload }}</strong></p>
+    </div>
+
+    <div class="row">
+      <p class="col-sm-12 col-label">Description</p>
+      <p class="col-sm-12 col-label">{{card.description}}</p>
+    </div>
+
+  </div>
+</div>

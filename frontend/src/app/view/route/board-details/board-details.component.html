@@ -14,7 +14,7 @@
           <td *ngFor="let td of tr.cardTables">
 
             <div class="list-group">
-                <div *ngFor="let c of td.cards" class="list-group-item list-group-item-action">{{c.name}}</div>
+                <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards" routerLink="/card/{{c.id}}">{{c.name}}</div>
             </div>
 
           </td>

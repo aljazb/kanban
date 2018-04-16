@@ -57,11 +57,13 @@ export class BoardRepresentation {
   }
 
   private initCards(){
-    this.board.projects.forEach(project => {
-      project.cards.forEach(card => {
-        this.add(card, project);
-      })
-    });
+    if(Array.isArray(this.board.projects)){
+      this.board.projects.forEach(project => {
+        project.cards.forEach(card => {
+          this.add(card, project);
+        })
+      });
+    }
   }
 
   private add(card: Card, project: Project): void {
