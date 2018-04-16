@@ -383,6 +383,175 @@
     "notBefore" : 0,
     "groups" : [ ]
   }, {
+    "id" : "69adf5aa-1024-4e03-b2b4-ad5c3b70ab2d",
+    "createdTimestamp" : 1523882197651,
+    "username" : "jadmin",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "jan",
+    "lastName" : "naj",
+    "email" : "j@admin",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "vGocH/9BwTBemKXF1VnyclG4CYE2UXQtogGl0OM7o9o8bhzeO0drrWofJfS4QzIOkAUHu2Q4nDAAPOeb6Hiw5Q==",
+      "salt" : "YFjtwI27qh3RRlkfByzyCw==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523882284280,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ADMINISTRATOR", "USER", "PRODUCT_OWNER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "0b3b6530-65cd-4595-b55c-4ba04241ffde",
+    "createdTimestamp" : 1523882351632,
+    "username" : "jdev",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "jan",
+    "lastName" : "naj",
+    "email" : "j@dev",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "DEVELOPER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "b2a36737-4190-4edf-ab1b-214974f9b461",
+    "createdTimestamp" : 1523882211056,
+    "username" : "jjkbm",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "jan",
+    "lastName" : "naj",
+    "email" : "jj@kbm",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "b5Txh62dbhjwsBVNgu5stEUvd6lhtEH/rma0XjBF1Fjl9RgLiqOVdkqN0uK0sMgg/QWz0opTVkSZ8dGyqxl4dQ==",
+      "salt" : "LdP/PRdI3e29arr9Snuaxw==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523882273831,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "KANBAN_MASTER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "66083183-e4dd-40fb-b43d-780cf5995884",
+    "createdTimestamp" : 1523596100951,
+    "username" : "jkbm",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "asd",
+    "lastName" : "asd",
+    "email" : "j@kbm",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "Oad/alA5n/JRt5e0tO6GbkX3QBDnqjxwaqbULOM+F/T3YM29vwomN2z6bM9HlHQBeT8PErO1uGnK8g6vILTXDg==",
+      "salt" : "Wsn5ohryu0aCEaozViJsdw==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523596111788,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "KANBAN_MASTER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "4f748d47-7670-4045-a0c0-713737368722",
+    "createdTimestamp" : 1523882331722,
+    "username" : "jmaster",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "naj",
+    "lastName" : "jan",
+    "email" : "j@master",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "x4q4EdQSblTIPazFamadeUWwbvASFO9XJSQK2LOFK6KuG08RxKRVrKq9NF320vGF/z4KLmfMaiWu7KRknNJ7eg==",
+      "salt" : "eXcnd7SEiGpEWW+XH1XntQ==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523882339250,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "ADMINISTRATOR", "USER", "PRODUCT_OWNER", "DEVELOPER", "KANBAN_MASTER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "45d0aa20-196b-48a8-a2de-34071bd7f7d3",
+    "createdTimestamp" : 1523882122002,
+    "username" : "jpdo",
+    "enabled" : false,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "jan",
+    "lastName" : "naj",
+    "email" : "j@pdo",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "14vsSF/HE6q+0ZzQnNfZvK9BUuPKrXpQTlP6S9u6mZyoo68bdSoipLL1RSHTkjw4R3FuJ6gKvljkHcaeV4J8nw==",
+      "salt" : "Ox757LSE4Uu+NxAGQpMoww==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523882292940,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "DEVELOPER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
     "id" : "944848a6-be17-404e-8ecc-a9247a094702",
     "createdTimestamp" : 1522405689233,
     "username" : "kanban_master",
@@ -391,19 +560,49 @@
     "emailVerified" : true,
     "credentials" : [ {
       "type" : "password",
-      "hashedSaltedValue" : "Zu2vtNXiWlmrJBfiYzH+RWzGSRD/veMDUcN3oxm3Qrb5gvtvSNmxrJk01GafkndChydxrVbE5pPdO9Y2GwbWHQ==",
-      "salt" : "mb7OKGo+QCsA9Q/Xu8K+1A==",
+      "hashedSaltedValue" : "zIvZ5i2HPZ3xjZX2lXGH+jD0J6aiujjhjxwDBH542h4DV2CvSWq4qwuZJSx5Gi4cdG1Eios3CJ8J6X4kO3Ox8g==",
+      "salt" : "gjl6qKnVd2mekZn4eVzHeQ==",
       "hashIterations" : 27500,
       "counter" : 0,
       "algorithm" : "pbkdf2-sha256",
       "digits" : 0,
       "period" : 0,
-      "createdDate" : 1522405703237,
+      "createdDate" : 1523615756581,
       "config" : { }
     } ],
     "disableableCredentialTypes" : [ "password" ],
     "requiredActions" : [ ],
     "realmRoles" : [ "offline_access", "USER", "DEVELOPER", "KANBAN_MASTER", "uma_authorization" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "0297d7ed-e57b-4a64-bccf-9be321a9ad66",
+    "createdTimestamp" : 1523615055177,
+    "username" : "km-test",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Kanban",
+    "lastName" : "Master",
+    "email" : "km@test.com",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "2Ru+jpLXdIun14JP/XRBr4w1xZSIB3K0uH9rUbHC7Uj+X7bfzcmCG9ysUy0M3xcxr9P9H2h+h2AitcGPAHjGlw==",
+      "salt" : "G8Woz3gdeokORGb3hZHeGQ==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523615065831,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "KANBAN_MASTER" ],
     "clientRoles" : {
       "account" : [ "view-profile", "manage-account" ]
     },
@@ -479,9 +678,9 @@
     "enabled" : true,
     "totp" : false,
     "emailVerified" : true,
-    "firstName" : "Angelita",
-    "lastName" : "Schuppe",
-    "email" : "delbert.pagac@ziemekulasandborer.co",
+    "firstName" : "Crystal",
+    "lastName" : "Larkin",
+    "email" : "test@test.com",
     "credentials" : [ {
       "type" : "password",
       "hashedSaltedValue" : "MQUsZbAzCqAhtUsnhKngKdwrDsFNtNbGEAE8lu0Id/rriX+2eFd8XNMQ+C8OthTm4GZ2KDi4rdWUngQYW7KBJA==",
@@ -496,37 +695,146 @@
     } ],
     "disableableCredentialTypes" : [ "password" ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "ADMINISTRATOR", "offline_access", "USER", "DEVELOPER", "KANBAN_MASTER", "uma_authorization" ],
+    "realmRoles" : [ "ADMINISTRATOR", "USER", "PRODUCT_OWNER", "DEVELOPER", "KANBAN_MASTER" ],
     "clientRoles" : {
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
     "groups" : [ ]
   }, {
-    "id" : "8a91bc32-f564-4799-9d92-9a936e1dd96f",
-    "createdTimestamp" : 1522691353703,
-    "username" : "test-dev",
+    "id" : "c92b3a57-36ff-4aae-8847-516686163c51",
+    "createdTimestamp" : 1523889106306,
+    "username" : "test1234",
     "enabled" : true,
     "totp" : false,
     "emailVerified" : true,
     "firstName" : "Test",
-    "lastName" : "Dev",
-    "email" : "test@dev.com",
+    "lastName" : "test1234",
+    "email" : "test1234@gmail.com",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "DEVELOPER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "8139162d-8234-47f6-b691-f3a0db0502c0",
+    "createdTimestamp" : 1523558747850,
+    "username" : "tester-dev1",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Dev1",
+    "lastName" : "Tester",
+    "email" : "dev@tester.com",
     "credentials" : [ {
       "type" : "password",
-      "hashedSaltedValue" : "wk048PO8jRmxPKsUVtXCltFJi3g9I+UFuIvYTzqBY5axFgKwSswgX1YzWjLhol/xnDhQehzykPkhhr7i0Wn4Qg==",
-      "salt" : "P+qLoiM489WugS1LcBx+pA==",
+      "hashedSaltedValue" : "7wDgRzJavnq4vqLpfGQmgQ87aZE8gFjeRvnad6DPYXRQOnoz4fY7heK1v1jIn8mFW3tz5i44qiuQ9gT0IJPCdg==",
+      "salt" : "6ETQDeXLKsBsBbmFoZ9fUA==",
       "hashIterations" : 27500,
       "counter" : 0,
       "algorithm" : "pbkdf2-sha256",
       "digits" : 0,
       "period" : 0,
-      "createdDate" : 1522691353802,
+      "createdDate" : 1523558754450,
       "config" : { }
     } ],
     "disableableCredentialTypes" : [ "password" ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "ADMINISTRATOR", "offline_access", "USER", "PRODUCT_OWNER", "DEVELOPER", "uma_authorization" ],
+    "realmRoles" : [ "USER", "DEVELOPER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "52564454-f6c4-4e8e-b569-1ed1228d27b9",
+    "createdTimestamp" : 1523558775388,
+    "username" : "tester-dev2",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "Dev2",
+    "lastName" : "Tester",
+    "email" : "dev2@tester.com",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "yGG3wqr/CwITjTIkHUqyFZyzKPYjc1vnYt/+YvczHMP/djzgfEFDTmH6uKA18vU0x1hncR8KlJ/saudfhRRfJA==",
+      "salt" : "+UH7oCIXs2m9ptb1pFdtmw==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523558785139,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "DEVELOPER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "1388cb45-5156-4563-896c-43470e621f81",
+    "createdTimestamp" : 1523558669560,
+    "username" : "tester-km",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "KM",
+    "lastName" : "Tester",
+    "email" : "km@tester",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "2i6FuFZGqnLgKdKgkFadNOVqhS46eRX+5nzVBGM6BtUeXxxCi8Co2w5Gs0At7gssLwKnY2bqOfPO1k8T6t5xuQ==",
+      "salt" : "xPIqKDZftYMt81I4Fibj9g==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523558681285,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "KANBAN_MASTER" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "8ca769e3-acad-4766-9ee4-cdf2ca0bdb31",
+    "createdTimestamp" : 1523558703805,
+    "username" : "tester-po",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : true,
+    "firstName" : "PO",
+    "lastName" : "Tester",
+    "email" : "po@tester.com",
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "x9EJMzC42xjj2DQoKa60OgPzig48QqDntWZHMAJ/GubkViHShmNN6gO6ukZXMO9L7FO2RICydSy1xA5W337UwQ==",
+      "salt" : "PDSjhkFrFb3oSO6/gah3Sg==",
+      "hashIterations" : 27500,
+      "counter" : 0,
+      "algorithm" : "pbkdf2-sha256",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1523558793544,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "USER", "PRODUCT_OWNER", "DEVELOPER" ],
     "clientRoles" : {
       "account" : [ "view-profile", "manage-account" ]
     },
