@@ -9,6 +9,7 @@ import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
+import si.fri.smrpo.kis.server.jpa.entities.Project;
 
 import javax.persistence.criteria.From;
 import java.util.*;
@@ -52,7 +53,10 @@ public class BoardAuthManager extends AuthManager<Board> {
         }
 
         setBoardPartsReferences(entity);
-        entity.getProjects().size(); // Fetch project
+
+        for(Project p : entity.getProjects()) { // Fetch project
+            p.getCards().size(); // Fetch project card
+        }
 
         super.authGet(db, entity);
     }

@@ -2,8 +2,13 @@ import {BoardPart} from '../../../../api/models/BoardPart';
 import {BoardPartTable} from './board-part-table';
 import {Card} from '../../../../api/models/Card';
 import {ProjectTable} from './project-table';
+import {Board} from '../../../../api/models/Board';
+import {Project} from '../../../../api/models/Project';
 
 export class BoardRepresentation {
+
+  private board: Board;
+  private rootBoardParts: BoardPart[];
 
   private _maxDepth: number;
   private _maxWidth: number;
@@ -11,7 +16,7 @@ export class BoardRepresentation {
 
   private _boardPartIdToIndexMap: Map<string, number>;
 
-  public table: BoardPartTable[][];
+  public boardPartTable: BoardPartTable[][];
   public projectTable: ProjectTable[];
 
   constructor() {
@@ -23,15 +28,46 @@ export class BoardRepresentation {
     this.projectTable = [];
   }
 
-  init(boardParts: BoardPart[]): void {
-    this.initBoardPartTable(boardParts);
+  init(board: Board): void {
+    this.board = board;
+    this.buildRootBoardParts();
+    this.initBoardPartTable();
     this.setRowSpanBoardPartTable();
+    this.initCards();
   }
 
-  add(card: Card): void {
-    let pt = this.projectTable.find(value => value.id == card.project.id);
+  private buildRootBoardParts(): void {
+    this.rootBoardParts = [];
+    this.board.boardParts.forEach(boardPart => {
+      if(boardPart.parent == null) {
+        this.rootBoardParts.push(boardPart);
+      }
+    });
+
+    this.sortBoardParts(this.rootBoardParts);
+  }
+
+  private sortBoardParts(boardParts: BoardPart[]): void {
+    boardParts.forEach(boardPart => {
+      if(boardPart.children != null){
+        this.sortBoardParts(boardPart.children);
+      }
+    });
+    boardParts.sort((a, b) => a.orderIndex - b.orderIndex);
+  }
+
+  private initCards(){
+    this.board.projects.forEach(project => {
+      project.cards.forEach(card => {
+        this.add(card, project);
+      })
+    });
+  }
+
+  private add(card: Card, project: Project): void {
+    let pt = this.projectTable.find(value => value.id == project.id);
     if(pt == null) {
-      pt = new ProjectTable(card.project.id, "Test - " + this.projectTable.length);
+      pt = new ProjectTable(card.project.id, project.name, this._maxWidth);
       this.projectTable.push(pt);
     }
 
@@ -56,9 +92,9 @@ export class BoardRepresentation {
     }
   }
 
-  private initBoardPartTable(boardParts: BoardPart[]): void {
-    this.table = [];
-    boardParts.forEach(boardPart => {
+  private initBoardPartTable(): void {
+    this.boardPartTable = [];
+    this.rootBoardParts.forEach(boardPart => {
       let bpt = this.recInitBoardPartTable(boardPart, 0);
       this._boardPartTable.push(bpt);
     });
@@ -66,8 +102,8 @@ export class BoardRepresentation {
   }
 
   private recInitBoardPartTable(boardPart: BoardPart, deep: number): BoardPartTable {
-    if(!Array.isArray(this.table[deep])) {
-      this.table[deep] = [];
+    if(!Array.isArray(this.boardPartTable[deep])) {
+      this.boardPartTable[deep] = [];
     }
 
     let bpt = new BoardPartTable(boardPart.name, boardPart.maxWip);
@@ -88,7 +124,7 @@ export class BoardRepresentation {
       this._maxWidth++;
     }
 
-    this.table[deep].push(bpt);
+    this.boardPartTable[deep].push(bpt);
 
     return bpt;
   }

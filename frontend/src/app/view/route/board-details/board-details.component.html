@@ -1,9 +1,9 @@
 <div>
 
-  <div *ngIf="boardRepresentation && boardRepresentation.table">
+  <div *ngIf="boardRepresentation && boardRepresentation.boardPartTable">
     <table class="table table-bordered">
       <thead>
-        <tr *ngFor="let tr of boardRepresentation.table">
+        <tr *ngFor="let tr of boardRepresentation.boardPartTable">
           <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan">
             {{td.name}}
           </td>
@@ -11,8 +11,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let tr of boardRepresentation.projectTable">
-          <td *ngFor="let td of tr">
-            {{td.name}}
+          <td *ngFor="let td of tr.cardTables">
             <ul>
               <li *ngFor="let c of td.cards">
                 {{c.name}}

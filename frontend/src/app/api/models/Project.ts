@@ -14,5 +14,5 @@ export class Project extends BaseEntity<Project> {
 
   owner: UserAccount;
   devTeam: DevTeam;
-  cards: Card;
+  cards: Card[];
 }

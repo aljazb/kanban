@@ -265,10 +265,13 @@ public class SeedService {
                 p.setOwner(uaMTMdt.getUserAccount());
                 p.setDevTeam(dt);
 
+                Board b = userBoard.get(uaMTMdt.getUserAccount().getId());
+                p.setBoard(b);
+
                 p = database.create(p);
 
                 projects.add(p);
-                Board b = userBoard.get(dt.getId());
+
 
             }
         }

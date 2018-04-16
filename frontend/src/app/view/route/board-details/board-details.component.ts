@@ -14,12 +14,7 @@ import {BoardRepresentation} from './utility/board-representation';
 export class BoardDetailsComponent implements OnInit {
 
   id: string;
-
   board: Board;
-  rootBoardParts: BoardPart[];
-
-  cards: Card[];
-
   boardRepresentation: BoardRepresentation;
 
   constructor(private route: ActivatedRoute,
@@ -32,35 +27,12 @@ export class BoardDetailsComponent implements OnInit {
 
   private init(board: Board): void {
     this.board = board;
-    this.rootBoardParts = this.buildRootBoardParts(this.board);
-    this.boardRepresentation = this.buildBoardRepresentation(this.rootBoardParts);
+    this.boardRepresentation = this.buildBoardRepresentation();
   }
 
-  private buildRootBoardParts(board: Board): BoardPart[] {
-    let rootBoardParts = [];
-    board.boardParts.forEach(boardPart => {
-      if(boardPart.parent == null) {
-        rootBoardParts.push(boardPart);
-      }
-    });
-
-    this.sortBoardParts(rootBoardParts);
-
-    return rootBoardParts;
-  }
-
-  private sortBoardParts(boardParts: BoardPart[]): void {
-    boardParts.forEach(boardPart => {
-      if(boardPart.children != null){
-        this.sortBoardParts(boardPart.children);
-      }
-    });
-    boardParts.sort((a, b) => a.orderIndex - b.orderIndex);
-  }
-
-  private buildBoardRepresentation(rootBoardParts: BoardPart[]): BoardRepresentation {
+  private buildBoardRepresentation(): BoardRepresentation {
     let bp = new BoardRepresentation();
-    bp.init(rootBoardParts);
+    bp.init(this.board);
     return bp;
   }
 

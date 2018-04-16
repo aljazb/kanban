@@ -4,15 +4,20 @@ import {Card} from '../../../../api/models/Card';
 export class ProjectTable {
   id: string;
   name: string;
-  cards: CardTable[];
+  cardTables: CardTable[];
 
-  constructor(id: string, name: string) {
+  constructor(id: string, name: string, rows: number) {
     this.id = id;
     this.name = name;
+    this.cardTables = [];
+
+    for(let i=0; i<rows; i++) {
+      this.cardTables.push(new CardTable());
+    }
   }
 
   add(card: Card, index: number): void {
-    this.cards[index].add(card);
+    this.cardTables[index].add(card);
   }
 
 }
