@@ -19,6 +19,7 @@ export class ProjectFormComponent extends FormImpl {
 
   formProject: FormGroup;
   fcName: FormControl;
+  fcCode: FormControl;
   fcProductBuyer: FormControl;
   fcStartDate: FormControl;
   fcEndDate: FormControl;
@@ -45,6 +46,7 @@ export class ProjectFormComponent extends FormImpl {
     let end = cTsToDp(d.getTime());
 
     this.fcName = new FormControl('', Validators.required);
+    this.fcCode = new FormControl('', Validators.required);
     this.fcProductBuyer = new FormControl('', Validators.required);
     this.fcStartDate = new FormControl(start, [Validators.required, this.dateBeforeNow(start)]);
     this.fcStartDate.valueChanges.subscribe(value => this.fcEndDate.patchValue(this.fcEndDate.value));
@@ -55,6 +57,7 @@ export class ProjectFormComponent extends FormImpl {
   initFormGroup(): void {
     this.formProject = new FormGroup({
       name: this.fcName,
+      code: this.fcCode,
       productBuyer: this.fcProductBuyer,
       startDate: this.fcStartDate,
       endDate: this.fcEndDate,
@@ -65,6 +68,7 @@ export class ProjectFormComponent extends FormImpl {
   setInitialProject(project: Project) {
     this.project = project;
     this.fcName.setValue(project.name);
+    this.fcCode.setValue(project.code);
     this.fcProductBuyer.setValue(project.productBuyer);
     this.fcStartDate.setValue(cTsToDp(project.startDate));
     this.fcEndDate.setValue(cTsToDp(project.endDate));
@@ -94,6 +98,7 @@ export class ProjectFormComponent extends FormImpl {
       let p = this.project;
 
       p.name = this.fcName.value;
+      p.code = this.fcCode.value;
       p.productBuyer = this.fcProductBuyer.value;
       p.startDate = cDpToTs(this.fcStartDate.value);
       p.endDate = cDpToTs(this.fcEndDate.value);
