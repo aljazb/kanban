@@ -27,14 +27,31 @@
     </div>
   </div>
   <br>
-  <div *ngIf="developers">
-    <div class="list-group">
-      <div class="list-group-item list-group-item-primary">Developers:
 
-      </div>
-      <a *ngFor="let developer of developers" class="list-group-item list-group-item-action d-flex" >
-        {{ developer.email }}
-      </a>
+  <ngb-tabset>
+    <div *ngIf="developers">
+      <ngb-tab title="Developers">
+        <ng-template ngbTabContent>
+          <div class="list-group">
+            <a *ngFor="let developer of developers" class="list-group-item list-group-item-action d-flex" >
+              {{ developer.email }}
+            </a>
+          </div>
+        </ng-template>
+      </ngb-tab>
     </div>
-  </div>
+    <br>
+
+    <div *ngIf="events">
+      <ngb-tab title="Membership History">
+        <ng-template ngbTabContent>
+          <div class="list-group">
+            <a *ngFor="let event of events" class="list-group-item list-group-item-action d-flex" >
+              {{ getEventDate(event) | date: "d. M. yyyy H:mm" }} - {{ event.event }}
+            </a>
+          </div>
+        </ng-template>
+      </ngb-tab>
+    </div>
+  </ngb-tabset>
 </div>

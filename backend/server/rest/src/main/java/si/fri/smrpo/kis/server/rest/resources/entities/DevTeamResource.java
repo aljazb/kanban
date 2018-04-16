@@ -130,6 +130,17 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @GET
+    @Path("{id}/events")
+    public Response getEvents(@PathParam("id") UUID id) throws ApiException {
+        try {
+            return Response.ok(service.getDevTeamEvents(id)).build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
+    }
+
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
+    @GET
     @Path("{id}/kanbanMaster")
     public Response getKanbanMaster(@PathParam("id") UUID id) {
         return buildResponse(service.getKanbanMaster(id), true).build();

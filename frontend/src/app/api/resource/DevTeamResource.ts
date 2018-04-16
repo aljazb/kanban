@@ -4,6 +4,7 @@ import {DevTeam} from '../models/DevTeam';
 import {Observable} from 'rxjs/Observable';
 import {UserAccount} from '../models/UserAccount';
 import {catchError, map} from 'rxjs/operators';
+import {HistoryEvent} from '../models/HistoryEvent';
 
 export class DevTeamResource extends CrudResource<DevTeam> {
 
@@ -43,6 +44,13 @@ export class DevTeamResource extends CrudResource<DevTeam> {
     return this.api.httpClient.delete<UserAccount>(`${this.url}/${devTeamId}/po/${poId}`).pipe(
       catchError(this.handleError<UserAccount>("demotePO")),
       map(content => this.deserialize(content))
+    );
+  }
+
+  getEvents(devTeamId: string): Observable<HistoryEvent[]> {
+    return this.api.httpClient.get<HistoryEvent[]>(`${this.url}/${devTeamId}/events`).pipe(
+      catchError(this.handleError<HistoryEvent[]>("events")),
+      map(content => this.deserializeArray(content))
     );
   }
 }

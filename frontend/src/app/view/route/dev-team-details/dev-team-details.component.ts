@@ -8,6 +8,7 @@ import {isNullOrUndefined} from "util";
 import {UserAccount} from '../../../api/models/UserAccount';
 import {ApiService} from '../../../api/api.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {HistoryEvent} from '../../../api/models/HistoryEvent';
 
 @Component({
   selector: 'app-dev-team-details',
@@ -23,6 +24,7 @@ export class DevTeamDetailsComponent implements OnInit {
   developers: UserAccount[];
   kanbanMaster: UserAccount;
   productOwner: UserAccount;
+  events: HistoryEvent[];
 
   isUserKanbanMaster: boolean;
 
@@ -45,6 +47,12 @@ export class DevTeamDetailsComponent implements OnInit {
       this.developers = DevTeam.getDevelopers(dt);
       this.kanbanMaster = DevTeam.getKanbanMaster(dt);
       this.productOwner = DevTeam.getProductOwner(dt);
+
+      this.api.devTeam.getEvents(this.id).subscribe(events => {
+        this.events = events.sort((a: HistoryEvent, b: HistoryEvent) =>
+          this.getEventDate(a).getTime() - this.getEventDate(b).getTime());
+        console.log(events);
+      });
 
       this.isUserKanbanMaster = this.user.id === this.kanbanMaster.id;
     });
@@ -75,6 +83,10 @@ export class DevTeamDetailsComponent implements OnInit {
           this.loadData();
         }))
       .catch(reason => console.log(reason));
+  }
+
+  getEventDate(historyEvent: HistoryEvent) {
+    return HistoryEvent.getDate(historyEvent);
   }
 
 }

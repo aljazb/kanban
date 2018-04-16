@@ -6,6 +6,7 @@ import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.models.HistoryEvent;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
@@ -220,6 +221,37 @@ public class DevTeamService implements DevTeamServiceLocal {
         dt.setJoinedUsers(new HashSet<>(activeMembersList));
 
         return dt;
+    }
+
+    @Override
+    public List<HistoryEvent> getDevTeamEvents(UUID devTeamId) throws LogicBaseException {
+
+        DevTeam dt = this.database.get(DevTeam.class, devTeamId);
+
+        if (dt == null) {
+            throw new OperationException("Dev team does not exist.", ExceptionType.ENTITY_DOES_NOT_EXISTS);
+        }
+
+        List<Membership> activeMembersList = database.getEntityManager().createNamedQuery("devTeam.get.all.memberships", Membership.class)
+                .setParameter("devTeamId", dt.getId()).getResultList();
+
+        List<HistoryEvent> events = new LinkedList<>();
+
+        for (Membership m : activeMembersList) {
+            HistoryEvent createdEvent = new HistoryEvent();
+            createdEvent.setDate(m.getCreatedOn());
+            createdEvent.setEvent(String.format("User %s joined development team.", m.getUserAccount().getEmail()));
+            events.add(createdEvent);
+
+            if (m.getIsDeleted()) {
+                HistoryEvent deletedEvent = new HistoryEvent();
+                deletedEvent.setDate(m.getEditedOn());
+                deletedEvent.setEvent(String.format("User %s left development team.", m.getUserAccount().getEmail()));
+                events.add(deletedEvent);
+            }
+        }
+
+        return events;
     }
 
 }

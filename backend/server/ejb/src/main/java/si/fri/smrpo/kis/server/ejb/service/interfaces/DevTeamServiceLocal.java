@@ -3,9 +3,11 @@ package si.fri.smrpo.kis.server.ejb.service.interfaces;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.server.ejb.models.HistoryEvent;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface DevTeamServiceLocal {
@@ -22,4 +24,6 @@ public interface DevTeamServiceLocal {
     UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException;
 
     DevTeam getWithUsers(UUID id) throws LogicBaseException;
+
+    List<HistoryEvent> getDevTeamEvents(UUID devTeamId) throws LogicBaseException;
 }

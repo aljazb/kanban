@@ -30,7 +30,8 @@ import java.util.Set;
         @NamedQuery(name = "devTeam.isDeveloper",
                 query = "SELECT ua FROM DevTeam dt JOIN dt.joinedUsers uaMTMdt JOIN uaMTMdt.userAccount ua WHERE uaMTMdt.isDeleted = FALSE AND dt.id = :devTeamId AND ua.id = :userId AND dt = uaMTMdt.devTeam AND uaMTMdt.userAccount = ua AND " +
                         "(uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER OR uaMTMdt.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_PRODUCT_OWNER)"),
-        @NamedQuery(name = "devTeam.get.active.members", query = "SELECT m FROM Membership m JOIN FETCH m.userAccount WHERE m.devTeam.id = :devTeamId AND m.isDeleted = false")
+        @NamedQuery(name = "devTeam.get.active.members", query = "SELECT m FROM Membership m JOIN FETCH m.userAccount WHERE m.devTeam.id = :devTeamId AND m.isDeleted = false"),
+        @NamedQuery(name = "devTeam.get.all.memberships", query = "SELECT m FROM Membership m JOIN FETCH m.userAccount WHERE m.devTeam.id = :devTeamId"),
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class DevTeam extends UUIDEntity<DevTeam> {
