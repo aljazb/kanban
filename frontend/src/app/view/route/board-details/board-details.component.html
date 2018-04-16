@@ -12,11 +12,11 @@
       <tbody>
         <tr *ngFor="let tr of boardRepresentation.projectTable">
           <td *ngFor="let td of tr.cardTables">
-            <ul>
-              <li *ngFor="let c of td.cards">
-                {{c.name}}
-              </li>
-            </ul>
+
+            <div class="list-group">
+                <div *ngFor="let c of td.cards" class="list-group-item list-group-item-action">{{c.name}}</div>
+            </div>
+
           </td>
         </tr>
       </tbody>
