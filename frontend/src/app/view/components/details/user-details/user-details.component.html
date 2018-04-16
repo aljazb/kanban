@@ -1,8 +1,8 @@
 <a class="list-group-item list-group-item-action">
-  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleDeveloper, 'btn-success': user.inRoleDeveloper}">Dev</button>
-  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleAdministrator, 'btn-success': user.inRoleAdministrator}">Admin</button>
-  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleKanbanMaster, 'btn-success': user.inRoleKanbanMaster}">KBmaster</button>
-  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleProductOwner, 'btn-success': user.inRoleProductOwner}">POwner</button>
+  <button class="btn btn-group-sm" style="padding: 3px 9px" [ngClass]="{'btn-danger': !user.inRoleDeveloper, 'btn-success': user.inRoleDeveloper}">Dev</button>
+  <button class="btn btn-group-sm" style="padding: 3px 9px" [ngClass]="{'btn-danger': !user.inRoleAdministrator, 'btn-success': user.inRoleAdministrator}">Admin</button>
+  <button class="btn btn-group-sm" style="padding: 3px 9px" [ngClass]="{'btn-danger': !user.inRoleKanbanMaster, 'btn-success': user.inRoleKanbanMaster}">KBmaster</button>
+  <button class="btn btn-group-sm" style="padding: 3px 9px" [ngClass]="{'btn-danger': !user.inRoleProductOwner, 'btn-success': user.inRoleProductOwner}">POwner</button>
 </a>
 <a class="list-group-item list-group-item-action">Username: <strong>{{user.username}}</strong></a>
 <a class="list-group-item list-group-item-action">Email: <strong>{{user.email}}</strong></a>
