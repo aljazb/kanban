@@ -1,16 +1,19 @@
 <div *ngIf="user">
-  <h2>{{ user.email }}</h2>
+  <div class="card-header"><strong>Welcome this is your profile page</strong></div>
 
-  <h3>User Info:</h3>
   <ul class="list-group">
+    <li class="list-group-item list-group-item-primary"><strong>User Info:</strong></li>
+    <li class="list-group-item">Username: {{ user.username }}</li>
+    <li class="list-group-item">Email: {{ user.email }}</li>
     <li class="list-group-item">First Name: {{ user.firstName }}</li>
     <li class="list-group-item">Last Name: {{ user.lastName }}</li>
   </ul>
 </div>
-
+<br>
 <div *ngIf="receivedRequests">
-  <h3>Received Requests:</h3>
   <ul class="list-group">
+    <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center"><strong>Received Requests:</strong></li>
+
     <li *ngFor="let request of receivedRequests" class="list-group-item d-flex justify-content-between align-items-center">
       {{ request.sender.email }}:
       {{ request.context }}
@@ -24,10 +27,12 @@
     </li>
   </ul>
 </div>
+<br>
 
 <div *ngIf="sentRequests">
-  <h3>Sent Requests:</h3>
+
   <ul class="list-group">
+    <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center"><strong>Sent Requests:</strong></li>
     <li *ngFor="let request of sentRequests" class="list-group-item d-flex justify-content-between align-items-center">
       {{ request.receiver.email }}:
       {{ request.context }}
@@ -40,4 +45,3 @@
     </li>
   </ul>
 </div>
-
