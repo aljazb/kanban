@@ -44,9 +44,7 @@ public abstract class GetResource<
 
         Response.ResponseBuilder rb = buildResponse(paging);
 
-        if(!listCacheControl.equals(CacheControlType.NONE)){
-            rb.cacheControl(buildCacheControl(listCacheControlMaxAge, listCacheControl));
-        }
+        rb.cacheControl(buildCacheControl(listCacheControlMaxAge, listCacheControl));
 
         return rb.build();
     }
@@ -64,9 +62,8 @@ public abstract class GetResource<
             rb.tag(tag);
         }
 
-        if(!getCacheControl.equals(CacheControlType.NONE)){
-            rb.cacheControl(buildCacheControl(getCacheControlMaxAge, getCacheControl));
-        }
+        rb.cacheControl(buildCacheControl(getCacheControlMaxAge, getCacheControl));
+
         return rb.build();
     }
 
@@ -82,7 +79,12 @@ public abstract class GetResource<
             case PRIVATE:
                 cc.setPrivate(true);
                 break;
-
+            case NO_CACHE:
+                cc.setNoCache(true);
+                break;
+            case NONE:
+                cc.setMaxAge(0);
+                break;
         }
         return cc;
     }
