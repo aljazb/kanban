@@ -1,9 +1,16 @@
-<div class="row">
-  <div class="col-md-12 mb-r">
-    <h5 class="font-bold blue-text">Username: {{user.username}}<br>Email: {{user.email}}</h5>
-    First name: {{user.firstName}} <br>
-    Second name: {{user.lastName}} <br>
-    Join date: {{user.createdOn | date:'dd-MM-yyyy'}} <br>
-    Last edited: {{user.editedOn | date:'dd-MM-yyyy'}} <br>
-  </div>
-</div>
+<a class="list-group-item list-group-item-action">
+  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleDeveloper, 'btn-success': user.inRoleDeveloper}">Dev</button>
+  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleAdministrator, 'btn-success': user.inRoleAdministrator}">Admin</button>
+  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleKanbanMaster, 'btn-success': user.inRoleKanbanMaster}">KBmaster</button>
+  <button class="btn btn-group-sm" [ngClass]="{'btn-danger': !user.inRoleProductOwner, 'btn-success': user.inRoleProductOwner}">POwner</button>
+</a>
+<a class="list-group-item list-group-item-action">Username: <strong>{{user.username}}</strong></a>
+<a class="list-group-item list-group-item-action">Email: <strong>{{user.email}}</strong></a>
+<a class="list-group-item list-group-item-action">First name: <strong>{{user.firstName}}</strong></a>
+<a class="list-group-item list-group-item-action">Second name: <strong>{{user.lastName}}</strong></a>
+<a class="list-group-item list-group-item-action">Join date: <strong>{{user.createdOn | date:'dd-MM-yyyy'}}</strong></a>
+<a class="list-group-item list-group-item-action">Last edited: <strong>{{user.editedOn | date:'dd-MM-yyyy'}}</strong></a>
+
+
+
+

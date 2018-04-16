@@ -2,18 +2,18 @@
 
   <div class="col-md-12">
 
-    <h4>Users</h4>
+    <div class="list-group-item list-group-item-primary">Users</div>
 
     <div class="row" *ngIf="enableSearch">
 
-      <div class="col-md-5">
+      <div class="col-md-6">
         <div class="form-group">
           <input #searchIn type="text" class="form-control" placeholder="search"
                  (keyup)="search(searchIn.value, isDeleted.checked)">
         </div>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-6">
         <div class="form-group">
           <input #isDeleted type="checkbox" id="in-isDeleted"
                  (click)="search(searchIn.value, isDeleted.checked)">
