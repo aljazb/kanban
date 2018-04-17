@@ -114,11 +114,9 @@ export class ProjectFormComponent extends FormImpl {
 
       let startDate: DTDateFormat = control.value;
 
-      if (nowDate.year > startDate.year) {
-        valid = true;
-      } else if (nowDate.month > startDate.month) {
-        valid = true;
-      } else if (nowDate.day >= startDate.day) {
+      if (nowDate.year >= startDate.year &&
+        nowDate.month >= startDate.month &&
+        nowDate.day >= startDate.day) {
         valid = true;
       }
 
@@ -130,20 +128,18 @@ export class ProjectFormComponent extends FormImpl {
 
   dateAfterValidator(source: FormControl): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
-      let valid = true;
+      let valid = false;
 
       let startDate: DTDateFormat = source.value;
       let endDate: DTDateFormat = control.value;
 
-      if (startDate.year > endDate.year) {
-        valid = false;
-      } else if (startDate.month > endDate.month) {
-        valid = false;
-      } else if (startDate.day >= endDate.day) {
-        valid = false;
+      if (startDate.year <= endDate.year &&
+        startDate.month <= endDate.month &&
+        startDate.day < endDate.day) {
+        valid = true;
       }
 
-      this.invalidEndDate = !valid && this.fcEndDate.touched;
+      this.invalidEndDate = !valid && control.touched;
 
       return valid ? null : {'invalidDateAfterStartDate': {value: control.value}};
     };
