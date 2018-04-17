@@ -22,6 +22,10 @@
       </ngb-pagination>
     </div>
 
+    <div *ngIf="paging == null || paging.count == 0" class="list-group">
+      No projects.
+    </div>
+
   </div>
 
 </div>

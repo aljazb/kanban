@@ -21,6 +21,10 @@
       </ngb-pagination>
     </div>
 
+    <div *ngIf="paging == null || paging.count == 0" class="list-group">
+      No boards.
+    </div>
+
   </div>
 
 </div>

@@ -20,6 +20,10 @@
       </ngb-pagination>
     </div>
 
+    <div *ngIf="paging == null || paging.count == 0" class="list-group">
+      No development teams.
+    </div>
+
   </div>
 
 </div>
