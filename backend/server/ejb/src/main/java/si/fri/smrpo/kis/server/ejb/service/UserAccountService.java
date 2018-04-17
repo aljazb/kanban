@@ -70,26 +70,38 @@ public class UserAccountService implements UserAccountServiceLocal {
         keycloak.setPassword(id.toString(), password);
     }
 
-    private boolean isEmailAvailable(String email) {
+    private boolean isEmailAvailable(String email, UUID id) {
         List<UserAccount> users = database.getEntityManager().createNamedQuery("user-account.where.email", UserAccount.class)
                 .setParameter("email", email).setMaxResults(1).getResultList();
-        return users.isEmpty();
+        if(users.isEmpty()) {
+            return true;
+        } else if(id != null) {
+            return users.get(0).getId().equals(id);
+        } else {
+            return false;
+        }
     }
 
-    private boolean isUsernameAvailable(String username) {
+    private boolean isUsernameAvailable(String username, UUID id) {
         List<UserAccount> users = database.getEntityManager().createNamedQuery("user-account.where.username", UserAccount.class)
                 .setParameter("username", username).setMaxResults(1).getResultList();
-        return users.isEmpty();
+        if(users.isEmpty()) {
+            return true;
+        } else if(id != null) {
+            return users.get(0).getId().equals(id);
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void checkAvailability(UserAccount userAccount) throws LogicBaseException {
         if(userAccount.getEmail() != null) {
-            if(!isEmailAvailable(userAccount.getEmail())) {
+            if(!isEmailAvailable(userAccount.getEmail(), userAccount.getId())) {
                 throw new OperationException("Email is taken");
             }
         } else if(userAccount.getUsername() != null){
-            if(!isUsernameAvailable(userAccount.getUsername())) {
+            if(!isUsernameAvailable(userAccount.getUsername(), userAccount.getId())) {
                 throw new OperationException("Username is taken");
             }
         }

@@ -39,14 +39,14 @@ public class ProjectResource extends CrudResource<Project, CrudSource<Project, U
     }
 
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_USER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR, ROLE_PRODUCT_OWNER})
     @GET
     @Override
     public Response getList() throws ApiException {
         return super.getList();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_USER, ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}")
     @Override

@@ -101,14 +101,14 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         return super.toggleIsDeleted(xContent, id);
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR, ROLE_USER})
     @GET
     @Override
     public Response getList() throws ApiException {
         return super.getList();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR, ROLE_USER})
     @GET
     @Path("{id}")
     @Override
