@@ -148,21 +148,26 @@ export class UserAccountFormComponent extends FormImpl {
 
   isEmailValid(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<{ [key: string]: any }> => {
-      return timer(this.DEBOUNC_TIME).pipe(
-        switchMap(()=> {
-          let ua = new UserAccount();
-          ua.email = control.value;
-          return this.api.userAccount.isAvailable(ua).pipe(
-            catchError(err => of(err.error)),
-            map(value => {
-              if(value && value.error) {
-                return {'takenEmail': {value: value.error}};
-              } else {
-                return null;
-              }
-            })
-          );
-        }));
+      let email = control.value;
+      if(this.userAccount != null && this.userAccount.email != email) {
+        return timer(this.DEBOUNC_TIME).pipe(
+          switchMap(()=> {
+            let ua = new UserAccount();
+            ua.email = email;
+            return this.api.userAccount.isAvailable(ua).pipe(
+              catchError(err => of(err.error)),
+              map(value => {
+                if(value && value.error) {
+                  return {'takenEmail': {value: value.error}};
+                } else {
+                  return null;
+                }
+              })
+            );
+          }));
+      } else {
+        return of(null);
+      }
     };
   }
 
