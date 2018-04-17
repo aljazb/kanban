@@ -121,14 +121,14 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         }
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
     @GET
     @Path("{id}/developers")
     public Response getMembers(@PathParam("id") UUID id) {
         return buildResponse(service.getDevelopers(id)).build();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
     @GET
     @Path("{id}/events")
     public Response getEvents(@PathParam("id") UUID id) throws ApiException {
@@ -139,14 +139,14 @@ public class DevTeamResource extends CrudResource<DevTeam, CrudSource<DevTeam, U
         }
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
     @GET
     @Path("{id}/kanbanMaster")
     public Response getKanbanMaster(@PathParam("id") UUID id) {
         return buildResponse(service.getKanbanMaster(id), true).build();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
     @GET
     @Path("{id}/productOwner")
     public Response getProductOwner(@PathParam("id") UUID id) {
