@@ -18,5 +18,11 @@
       <p class="col-sm-12 col-label">{{card.description}}</p>
     </div>
 
+    <div class="list-group" *ngIf="card.subTasks">
+      <div *ngFor="let t of card.subTasks" class="list-group-item list-group-item-action">
+        {{t.name}} - {{t.workingHours}}
+      </div>
+    </div>
+
   </div>
 </div>

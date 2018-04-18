@@ -4,6 +4,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {BoardPartFormComponent} from '../board-part-form/board-part-form.component';
 import {BoardPart} from '../../../../../api/models/BoardPart';
 import {FormImpl} from '../../form-impl';
+import {v4} from 'uuid';
 
 @Component({
   selector: 'app-board-base-form',
@@ -77,26 +78,33 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
 
   private createChild(): BoardPart {
     let bp = new BoardPart();
-    bp.name = `-- Column ${this.board.boardParts.length} --`;
+    bp.id = v4();
+    bp.name = `Column ${this.board.boardParts.length}`;
+    bp.board = this.board;
     bp.maxWip = 0;
+    bp.orderIndex = 0;
     return bp;
   }
 
-  private initArray(): void {
+  addBoardPart(): void {
     if(!Array.isArray(this.board.boardParts)) {
       this.board.boardParts = [];
     }
+    this.board.boardParts.splice(0,0, this.createChild());
   }
 
-  addRight(): void {
-    this.initArray();
-    this.board.boardParts.push(this.createChild());
+  addRight(orderIndex: number): void {
+    this.board.boardParts.splice(orderIndex+1,0, this.createChild());
     this.setOrderIndexes();
   }
 
-  addLeft(): void {
-    this.initArray();
-    this.board.boardParts.splice(0,0, this.createChild());
+  addLeft(orderIndex: number): void {
+    this.board.boardParts.splice(orderIndex,0, this.createChild());
+    this.setOrderIndexes();
+  }
+
+  onDeleteChild(orderIndex: number): void {
+    this.board.boardParts.splice(orderIndex, 1);
     this.setOrderIndexes();
   }
 
@@ -106,9 +114,21 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     }
   }
 
-  onDeleteChild(orderIndex: number): void {
-    this.board.boardParts.splice(orderIndex, 1);
-    this.setOrderIndexes();
+  private buildAllBoardParts(boardParts: BoardPart[]): BoardPart[] {
+    let bp = [];
+    boardParts.forEach(value => {
+      if(value.children) {
+        let cBp = this.buildAllBoardParts(value.children);
+        bp = bp.concat(cBp)
+      } else {
+        bp.push(value);
+      }
+    });
+    return bp;
+  }
+
+  get allBoardParts(): BoardPart[] {
+    return this.buildAllBoardParts(this.board.boardParts);
   }
 
 }

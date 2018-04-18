@@ -27,6 +27,7 @@ const routes: Routes = [
   { path: 'project/:id', component: ProjectDetailsComponent },
 
   { path: 'board', component: BoardComponent },
+  { path: 'board/edit:id', component: BoardEditComponent },
   { path: 'board/edit', component: BoardEditComponent },
   { path: 'board/:id', component: BoardDetailsComponent },
 

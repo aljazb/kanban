@@ -5,10 +5,11 @@ import {UserAccount} from './UserAccount';
 
 export class Board extends BaseEntity<Board> {
   name: string;
-  highestPriority: number;
-  startDev: number;
-  endDev: number;
-  acceptanceTesting: number;
+
+  highestPriority: string;
+  startDev: string;
+  endDev: string;
+  acceptanceTesting: string;
 
   owner: UserAccount;
   boardParts: BoardPart[];

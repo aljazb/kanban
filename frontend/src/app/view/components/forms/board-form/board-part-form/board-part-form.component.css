@@ -9,6 +9,11 @@
   flex-wrap: nowrap;
 }
 
+.sub-group-padding {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
 .sub-item {
   margin: 10px;
   display: inline-block;

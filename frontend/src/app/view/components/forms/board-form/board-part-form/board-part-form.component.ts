@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren}
 import {BoardPart} from '../../../../../api/models/BoardPart';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FormImpl} from '../../form-impl';
+import {v4} from 'uuid';
 
 @Component({
   selector: 'app-board-part-form',
@@ -18,6 +19,12 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
 
   @Output()
   onDelete: EventEmitter<any> = new EventEmitter();
+
+  @Output()
+  onAddLeft: EventEmitter<any> = new EventEmitter();
+
+  @Output()
+  onAddRight: EventEmitter<any> = new EventEmitter();
 
   formBoardPart: FormGroup;
   fcName: FormControl;
@@ -62,26 +69,39 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
 
   private createChild(): BoardPart {
     let bp = new BoardPart();
+    bp.id = v4();
     bp.parent = this.boardPart;
+    bp.board = this.boardPart.board;
     bp.maxWip = 0;
+    bp.orderIndex = 0;
+    bp.name = this.getChildName();
     return bp;
   }
 
-  private initArray(): void {
-    if(!Array.isArray(this.boardPart.children)){
-      this.boardPart.children = [];
-    }
+  triggerOnAddRight(): void {
+    this.onAddRight.emit(this.boardPart.orderIndex);
   }
 
-  addRight(): void {
-    this.initArray();
-    this.boardPart.children.push(this.createChild());
+  triggerOnAddLeft(): void {
+    this.onAddLeft.emit(this.boardPart.orderIndex);
+  }
+
+  handleOnAddRight(index: number): void {
+    this.boardPart.children.splice(index+1, 0, this.createChild());
     this.setOrderIndexes();
   }
 
-  addLeft(): void {
-    this.initArray();
-    this.boardPart.children.splice(0,0, this.createChild());
+  addDown(): void {
+    if(!Array.isArray(this.boardPart.children)){
+      this.boardPart.children = [];
+    }
+
+    this.boardPart.children.splice(0, 0, this.createChild());
+    this.setOrderIndexes();
+  }
+
+  handleOnAddLeft(index: number): void {
+    this.boardPart.children.splice(index,0, this.createChild());
     this.setOrderIndexes();
   }
 
@@ -100,15 +120,36 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
     }
   }
 
-  getName(): string {
-    let name = `${this.boardPart.orderIndex}`;
-    let parent = this.boardPart.parent;
+  getChildName() {
+    return `Column ${this.getName(this.boardPart)}.${this.boardPart.children.length}`;
+  }
+
+  getName(boardPart: BoardPart=this.boardPart): string {
+    let name = `${boardPart.orderIndex}`;
+    let parent = boardPart.parent;
     while(parent) {
       name = `${parent.orderIndex}.` + name;
       parent = parent.parent;
     }
     return name;
   }
+
+  get isAcceptanceTesting(): boolean {
+    return this.boardPart.id == this.boardPart.board.acceptanceTesting
+  }
+
+  get isHighestPriority(): boolean {
+    return this.boardPart.id == this.boardPart.board.highestPriority
+  }
+
+  get isStartDev(): boolean {
+    return this.boardPart.id == this.boardPart.board.startDev
+  }
+
+  get isEndDev(): boolean {
+    return this.boardPart.id == this.boardPart.board.endDev;
+  }
+
 
 }
 

@@ -3,6 +3,7 @@ import {Board} from '../../../api/models/Board';
 import {BoardBaseFormComponent} from '../../components/forms/board-form/board-base-form/board-base-form.component';
 import {JsogService} from 'jsog-typescript';
 import {ApiService} from '../../../api/api.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-board-edit',

@@ -9,6 +9,7 @@ import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
+import si.fri.smrpo.kis.server.jpa.entities.Card;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 
 import javax.persistence.criteria.From;
@@ -18,6 +19,11 @@ public class BoardAuthManager extends AuthManager<Board> {
 
     public BoardAuthManager(AuthUser userAccount) {
         super(userAccount);
+    }
+
+    @Override
+    public boolean authCriteriaRequiresDistinct() {
+        return true;
     }
 
     @Override
@@ -55,7 +61,9 @@ public class BoardAuthManager extends AuthManager<Board> {
         setBoardPartsReferences(entity);
 
         for(Project p : entity.getProjects()) { // Fetch project
-            p.getCards().size(); // Fetch project card
+            for(Card c : p.getCards()) { // Fetch cards
+                c.getSubTasks().size(); // Fetch sub tasks
+            }
         }
 
         super.authGet(db, entity);

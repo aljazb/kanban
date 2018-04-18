@@ -7,6 +7,7 @@ import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Entity
@@ -23,17 +24,17 @@ public class Board extends UUIDEntity<Board> {
     private String name;
 
 
-    @Column(name = "highest_priority", nullable = false)
-    private Integer highestPriority;
+    @Column(name = "highest_priority")
+    private UUID highestPriority;
 
-    @Column(name = "start_dev", nullable = false)
-    private Integer startDev;
+    @Column(name = "start_dev")
+    private UUID startDev;
 
-    @Column(name = "end_dev", nullable = false)
-    private Integer endDev;
+    @Column(name = "end_dev")
+    private UUID endDev;
 
-    @Column(name = "acceptance_testing", nullable = false)
-    private Integer acceptanceTesting;
+    @Column(name = "acceptance_testing")
+    private UUID acceptanceTesting;
 
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -65,43 +66,35 @@ public class Board extends UUIDEntity<Board> {
         this.name = name;
     }
 
-    public Integer getHighestPriority() {
+    public UUID getHighestPriority() {
         return highestPriority;
     }
 
-    public void setHighestPriority(Integer higestPriority) {
-        this.highestPriority = higestPriority;
+    public void setHighestPriority(UUID highestPriority) {
+        this.highestPriority = highestPriority;
     }
 
-    public Integer getStartDev() {
+    public UUID getStartDev() {
         return startDev;
     }
 
-    public void setStartDev(Integer startDev) {
+    public void setStartDev(UUID startDev) {
         this.startDev = startDev;
     }
 
-    public Integer getEndDev() {
+    public UUID getEndDev() {
         return endDev;
     }
 
-    public void setEndDev(Integer endDev) {
+    public void setEndDev(UUID endDev) {
         this.endDev = endDev;
     }
 
-    public Integer getAcceptenceTesting() {
+    public UUID getAcceptanceTesting() {
         return acceptanceTesting;
     }
 
-    public void setAcceptenceTesting(Integer acceptanceTesting) {
-        this.acceptanceTesting = acceptanceTesting;
-    }
-
-    public Integer getAcceptanceTesting() {
-        return acceptanceTesting;
-    }
-
-    public void setAcceptanceTesting(Integer acceptanceTesting) {
+    public void setAcceptanceTesting(UUID acceptanceTesting) {
         this.acceptanceTesting = acceptanceTesting;
     }
 

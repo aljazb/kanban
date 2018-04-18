@@ -6,7 +6,7 @@
 
           <div class="row">
 
-            <div class="col-sm-3">
+            <div class="col-sm-4">
               <div class="form-group row">
                 <label for="in-name" class="col-sm-5 col-form-label">Name</label>
                 <div class="col-sm-5">
@@ -16,52 +16,52 @@
               </div>
             </div>
 
-            <div class="col-sm-3">
+            <div class="col-sm-4">
 
               <div class="form-group row">
                 <label for="in-highest-priority" class="col-sm-5 col-form-label">Highest priority</label>
-                <div class="col-sm-5">
-                  <select name="board-highest-priority" class="form-control" id="in-highest-priority"
+                <div class="col-sm-7">
+                  <select name="board-highest-priority" class="form-control highest-priority" id="in-highest-priority"
                           formControlName="highestPriority">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group row">
                 <label for="in-acceptance-testing" class="col-sm-5 col-form-label">Acceptance testing</label>
-                <div class="col-sm-5">
-                  <select name="board-acceptance-testing" class="form-control" id="in-acceptance-testing"
+                <div class="col-sm-7">
+                  <select name="board-acceptance-testing" class="form-control acceptance-ready" id="in-acceptance-testing"
                           formControlName="acceptanceTesting">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
 
             </div>
 
-            <div class="col-sm-3">
+            <div class="col-sm-4">
 
               <div class="form-group row">
                 <label for="in-start-dev" class="col-sm-5 col-form-label">Start dev</label>
-                <div class="col-sm-5">
-                  <select name="board-start-dev" class="form-control" id="in-start-dev"
+                <div class="col-sm-7">
+                  <select name="board-start-dev" class="form-control dev-start" id="in-start-dev"
                           formControlName="startDev">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
 
               <div class="form-group row">
                 <label for="in-end-dev" class="col-sm-5 col-form-label">End dev</label>
-                <div class="col-sm-5">
-                  <select name="board-end-dev" class="form-control" id="in-end-dev"
+                <div class="col-sm-7">
+                  <select name="board-end-dev" class="form-control dev-end" id="in-end-dev"
                           formControlName="endDev">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of board.boardParts" [ngValue]="b.orderIndex">{{b.name}}</option>
+                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -75,17 +75,10 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-4 mx-auto">
-
-        <div class="pull-left">
-          <button class="btn btn-primary" (click)="addLeft()">
-            <i class="fa fa-caret-left"></i>
-          </button>
-        </div>
-
-        <div class="pull-right">
-          <button class="btn btn-primary" (click)="addRight()">
-            <i class="fa fa-caret-right"></i>
+      <div class="col-sm-4">
+        <div>
+          <button class="btn btn-primary" (click)="addBoardPart()" [disabled]="board.boardParts != null && board.boardParts.length > 0">
+            <i class="fa fa-plus-square"></i>
           </button>
         </div>
       </div>
@@ -98,7 +91,12 @@
     <div class="row">
 
       <div class="scroll-item align-top" *ngFor="let bp of board.boardParts">
-        <app-board-part-form (onDelete)="onDeleteChild(bp.orderIndex)" [boardPart]="bp"></app-board-part-form>
+        <app-board-part-form
+          (onDelete)="onDeleteChild(bp.orderIndex)"
+          (onAddLeft)="addLeft(bp.orderIndex)"
+          (onAddRight)="addRight(bp.orderIndex)"
+          [boardPart]="bp">
+        </app-board-part-form>
       </div>
 
     </div>

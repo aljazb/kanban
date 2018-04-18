@@ -14,7 +14,13 @@
           <td *ngFor="let td of tr.cardTables">
 
             <div class="list-group">
-                <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards" routerLink="/card/{{c.id}}">{{c.name}}</div>
+                <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards" routerLink="/card/{{c.id}}">{{c.name}}
+                  <div class="list-group" *ngIf="c.subTasks">
+                    <div *ngFor="let t of c.subTasks" class="list-group-item list-group-item-action">
+                      {{t.name}} - {{t.workingHours}}
+                    </div>
+                  </div>
+                </div>
             </div>
 
           </td>

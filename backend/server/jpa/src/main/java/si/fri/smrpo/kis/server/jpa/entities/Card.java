@@ -10,6 +10,10 @@ import java.util.Set;
 @Entity
 @Table(name="card")
 @Cacheable
+@NamedQueries({
+        @NamedQuery(name = "card.access", query = "SELECT c FROM Card c JOIN c.project p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+                "WHERE c.id = :cardId AND m.isDeleted = false AND m.userAccount.id = :userId")
+})
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Card extends UUIDEntity<Card> {
 
@@ -21,6 +25,9 @@ public class Card extends UUIDEntity<Card> {
 
     @Column(name = "work_load")
     private Integer workload;
+
+    @Column(name = "color")
+    private String color;
 
     @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
@@ -102,5 +109,13 @@ public class Card extends UUIDEntity<Card> {
 
     public void setOrderIndex(Integer orderIndex) {
         this.orderIndex = orderIndex;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

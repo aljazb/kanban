@@ -42,6 +42,7 @@ import { BoardPartFormComponent } from './view/components/forms/board-form/board
 import { BoardBaseFormComponent } from './view/components/forms/board-form/board-base-form/board-base-form.component';
 import { BoardEditComponent } from './view/route/board-edit/board-edit.component';
 import { CardDetailsComponent } from './view/route/card-details/card-details.component';
+import { BoardDetailsEditComponent } from './view/route/board-details-edit/board-details-edit.component';
 
 
 @NgModule({
@@ -83,7 +84,8 @@ import { CardDetailsComponent } from './view/route/card-details/card-details.com
     BoardPartFormComponent,
     BoardBaseFormComponent,
     BoardEditComponent,
-    CardDetailsComponent
+    CardDetailsComponent,
+    BoardDetailsEditComponent
   ],
   providers: [
     {

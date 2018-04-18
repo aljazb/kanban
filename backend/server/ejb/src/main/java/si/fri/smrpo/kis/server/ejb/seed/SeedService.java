@@ -34,27 +34,18 @@ public class SeedService {
     private UserAccount kanbanMasterAccount;
     private UserAccount productOwnerAccount;
 
-    private static final Integer USERS_NUMBER = 15;
-    private static final Integer DEV_TEAMS_NUMBER = 5;
-    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MIN = 3;
-    private static final Integer DEV_TEAM_MEMBERS_NUMBER_MAX = 10;
     private static final Integer BOARD_PARTS_NUMBER = 4;
     private static final Integer CARD_NUMBER_MIN = 3;
-    private static final Integer CARD_NUMBER_MAX = 20;
+    private static final Integer CARD_NUMBER_MAX = 10;
 
 
     @EJB
     private DatabaseServiceLocal database;
 
     private DevTeam testDevTeam;
-
-    private ArrayList<UserAccount> userAccounts = new ArrayList<>();
-    private ArrayList<DevTeam> devTeams = new ArrayList<>();
-    private HashMap<UUID, ArrayList<Membership>> devTeamMembers = new HashMap<>();
-    private HashMap<UUID, Board> userBoard = new HashMap<>();
-    private HashMap<UUID, ArrayList<BoardPart>> boardParts = new HashMap<>();
-    private ArrayList<Project> projects = new ArrayList<>();
-
+    private Project testProject;
+    private Board testBoard;
+    private ArrayList<BoardPart> testBoardPartLeafs;
 
 
     @PostConstruct
@@ -82,242 +73,181 @@ public class SeedService {
         return userAccounts.isEmpty();
     }
 
+    private UserAccount genUserAccount() {
+        UserAccount ua = new UserAccount();
+        ua.setUsername(FAKER.name.firstName());
+        ua.setEmail(FAKER.internet.email());
+        ua.setFirstName(FAKER.name.firstName());
+        ua.setLastName(FAKER.name.lastName());
+        ua.setInRoleDeveloper(false);
+        ua.setInRoleKanbanMaster(false);
+        ua.setInRoleAdministrator(false);
+        ua.setInRoleProductOwner(false);
+        return ua;
+    }
+
     private void generateUserAccounts() throws DatabaseException {
-        for(int i=0; i<USERS_NUMBER; i++){
-            UserAccount ua = new UserAccount();
-            ua.setUsername(FAKER.name.firstName());
-            ua.setEmail(FAKER.internet.email());
-            ua.setFirstName(FAKER.name.firstName());
-            ua.setLastName(FAKER.name.lastName());
-            ua.setInRoleDeveloper(true);
-            ua.setInRoleKanbanMaster(false);
-            ua.setInRoleAdministrator(false);
-            ua.setInRoleProductOwner(false);
 
-            if(i == 0){
-                ua.setId(UUID.fromString(TEST_USER_ID));
-                ua.setEmail("test@test.com");
-                ua.setInRoleKanbanMaster(true);
-                ua.setInRoleAdministrator(true);
-                ua.setInRoleProductOwner(true);
-                ua.setInRoleDeveloper(true);
-                testAccount = ua;
-            } else if (i == 1) {
-                ua.setId(UUID.fromString(ADMIN_USER_ID));
-                ua.setEmail("admin@admin.com");
-                ua.setInRoleKanbanMaster(false);
-                ua.setInRoleAdministrator(true);
-                ua.setInRoleProductOwner(false);
-                ua.setInRoleDeveloper(false);
-                adminAccount = ua;
-            } else if (i == 2) {
-                ua.setId(UUID.fromString(DEVELOPER_USER_ID));
-                ua.setEmail("developer@developer.com");
-                ua.setInRoleKanbanMaster(false);
-                ua.setInRoleAdministrator(false);
-                ua.setInRoleProductOwner(false);
-                ua.setInRoleDeveloper(true);
-                developerAccount = ua;
-            } else if (i == 3) {
-                ua.setId(UUID.fromString(KANBAN_MASTER_USER_ID));
-                ua.setEmail("kanban@master.com");
-                ua.setInRoleKanbanMaster(true);
-                ua.setInRoleAdministrator(false);
-                ua.setInRoleProductOwner(false);
-                ua.setInRoleDeveloper(true);
-                kanbanMasterAccount = ua;
-            } else if (i == 4) {
-                ua.setId(UUID.fromString(PRODUCT_OWNER_USER_ID));
-                ua.setEmail("product@owner.com");
-                ua.setInRoleKanbanMaster(false);
-                ua.setInRoleAdministrator(false);
-                ua.setInRoleProductOwner(true);
-                ua.setInRoleDeveloper(false);
-                productOwnerAccount = ua;
-            }
+        testAccount = genUserAccount();
+        testAccount.setId(UUID.fromString(TEST_USER_ID));
+        testAccount.setEmail("test@test.com");
+        testAccount.setInRoleKanbanMaster(true);
+        testAccount.setInRoleAdministrator(true);
+        testAccount.setInRoleProductOwner(true);
+        testAccount.setInRoleDeveloper(true);
+        testAccount = database.create(testAccount);
 
-            ua = database.create(ua);
-            userAccounts.add(ua);
-        }
+        adminAccount = genUserAccount();
+        adminAccount.setId(UUID.fromString(ADMIN_USER_ID));
+        adminAccount.setEmail("admin@admin.com");
+        adminAccount.setInRoleAdministrator(true);
+        adminAccount = database.create(adminAccount);
+
+        developerAccount = genUserAccount();
+        developerAccount.setId(UUID.fromString(DEVELOPER_USER_ID));
+        developerAccount.setEmail("developer@developer.com");
+        developerAccount.setInRoleDeveloper(true);
+        developerAccount = database.create(developerAccount);
+
+        kanbanMasterAccount = genUserAccount();
+        kanbanMasterAccount.setId(UUID.fromString(KANBAN_MASTER_USER_ID));
+        kanbanMasterAccount.setEmail("kanban@master.com");
+        kanbanMasterAccount.setInRoleKanbanMaster(true);
+        kanbanMasterAccount = database.create(kanbanMasterAccount);
+
+        productOwnerAccount = genUserAccount();
+        productOwnerAccount.setId(UUID.fromString(PRODUCT_OWNER_USER_ID));
+        productOwnerAccount.setEmail("product@owner.com");
+        productOwnerAccount.setInRoleProductOwner(true);
+        productOwnerAccount = database.create(productOwnerAccount);
     }
 
     private void generateDevTeams() throws DatabaseException {
-        for(int i=0; i<DEV_TEAMS_NUMBER; i++){
-            DevTeam dt = new DevTeam();
-            dt.setName(FAKER.company.name());
 
-            dt = database.create(dt);
+        testDevTeam = new DevTeam();
+        testDevTeam.setName(FAKER.company.name());
+        testDevTeam = database.create(testDevTeam);
 
-            devTeams.add(dt);
+        Membership m = new Membership();
+        m.setUserAccount(kanbanMasterAccount);
+        m.setDevTeam(testDevTeam);
+        m.setMemberType(MemberType.KANBAN_MASTER);
+        database.create(m);
 
-            ArrayList<Membership> dtMembers = new ArrayList<>();
-            ArrayList<UserAccount> potentialMembers = new ArrayList<>(userAccounts);
-            int members = FAKER.number.between(DEV_TEAM_MEMBERS_NUMBER_MIN, DEV_TEAM_MEMBERS_NUMBER_MAX);
-            for(int m=0; m<members; m++) {
-                int index = FAKER.number.between(0, potentialMembers.size());
+        m = new Membership();
+        m.setUserAccount(productOwnerAccount);
+        m.setDevTeam(testDevTeam);
+        m.setMemberType(MemberType.PRODUCT_OWNER);
+        database.create(m);
 
-                if(i == 0 && m == 0){
-                    index = 0;
-                    testDevTeam = dt;
-                    testDevTeam.setName("Test Dev Team");
-                    database.update(testDevTeam);
-                }
-
-                UserAccount ua = potentialMembers.get(index);
-                potentialMembers.remove(index);
-
-                Membership uaMTMdt = new Membership();
-                uaMTMdt.setUserAccount(ua);
-                uaMTMdt.setDevTeam(dt);
-
-                if(m == 0) {
-                    ua.setInRoleKanbanMaster(true);
-                    uaMTMdt.setMemberType(MemberType.DEVELOPER_AND_KANBAN_MASTER);
-                } else if(m == 1) {
-                    ua.setInRoleProductOwner(true);
-                    uaMTMdt.setMemberType(MemberType.PRODUCT_OWNER);
-                } else {
-                    ua.setInRoleDeveloper(true);
-                    uaMTMdt.setMemberType(MemberType.DEVELOPER);
-                }
-
-                uaMTMdt = database.create(uaMTMdt);
-
-                dtMembers.add(uaMTMdt);
-            }
-
-            devTeamMembers.put(dt.getId(), dtMembers);
-        }
+        m = new Membership();
+        m.setUserAccount(developerAccount);
+        m.setDevTeam(testDevTeam);
+        m.setMemberType(MemberType.DEVELOPER);
+        database.create(m);
     }
 
     private void generateBoard() throws DatabaseException {
-        for(UserAccount ua : userAccounts) {
-            Board b = new Board();
-            b.setOwner(ua);
-            b.setName(FAKER.app.name());
-            b.setHighestPriority(0);
-            b.setStartDev(1);
-            b.setEndDev(2);
-            b.setAcceptenceTesting(3);
 
-            b = database.create(b);
+        testBoard = new Board();
+        testBoard.setOwner(kanbanMasterAccount);
+        testBoard.setName(FAKER.app.name());
+        testBoard = database.create(testBoard);
 
-            userBoard.put(ua.getId(), b);
-        }
     }
 
     private void generateBoardParts() throws DatabaseException {
-        for(Board board : userBoard.values()){
-            ArrayList<BoardPart> leafParts = new ArrayList<>();
+        testBoardPartLeafs = new ArrayList<>();
 
-            for(int i=0; i<BOARD_PARTS_NUMBER; i++){
-                BoardPart bp = new BoardPart();
-                bp.setOrderIndex(i);
-                bp.setBoard(board);
-                bp.setMaxWip(FAKER.number.between(5, 15));
-                bp.setName(FAKER.app.name());
-                bp.setLeaf(true);
+        for(int i=0; i<4; i++){
+            BoardPart bp = new BoardPart();
+            bp.setOrderIndex(i);
+            bp.setBoard(testBoard);
+            bp.setMaxWip(FAKER.number.between(5, 15));
+            bp.setName(FAKER.app.name());
+            bp.setLeaf(true);
 
-                bp = database.create(bp);
+            bp = database.create(bp);
 
-                if(Math.random() > 0.5){
-                    bp.setLeaf(false);
-                    database.update(bp);
-                    for(int j=0; j<2; j++){
-                        BoardPart sbp = new BoardPart();
-                        sbp.setOrderIndex(j);
-                        sbp.setBoard(board);
-                        sbp.setMaxWip(FAKER.number.between(5, 15));
-                        sbp.setName(FAKER.app.name());
-                        sbp.setParent(bp);
-                        sbp.setLeaf(true);
-
-                        sbp = database.create(sbp);
-
-                        leafParts.add(sbp);
-                    }
-                } else {
-                    leafParts.add(bp);
-                }
+            switch (i) {
+                case 0: testBoard.setHighestPriority(bp.getId()); break;
+                case 1: testBoard.setStartDev(bp.getId()); break;
+                case 2: testBoard.setEndDev(bp.getId()); break;
+                case 3: testBoard.setAcceptanceTesting(bp.getId()); break;
             }
+            testBoard = database.update(testBoard);
 
-            boardParts.put(board.getId(), leafParts);
+            if(Math.random() > 0.5) {
+
+                bp.setLeaf(false);
+                database.update(bp);
+
+                for(int j=0; j<2; j++){
+                    BoardPart sbp = new BoardPart();
+                    sbp.setOrderIndex(j);
+                    sbp.setBoard(testBoard);
+                    sbp.setMaxWip(FAKER.number.between(5, 15));
+                    sbp.setName(FAKER.app.name());
+                    sbp.setParent(bp);
+                    sbp.setLeaf(true);
+
+                    sbp = database.create(sbp);
+
+                    testBoardPartLeafs.add(sbp);
+                }
+            } else {
+                testBoardPartLeafs.add(bp);
+            }
         }
     }
 
     private void generateProjects() throws DatabaseException {
-        for(DevTeam dt : devTeams) {
 
-            int projectNum = FAKER.number.between(1,2);
-            for(int i=0; i<projectNum; i++){
-                Membership uaMTMdt = devTeamMembers.get(dt.getId()).stream()
-                        .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER ||
-                                e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER).findFirst().get();
+        testProject = new Project();
+        testProject.setCode(FAKER.app.name().toLowerCase().replaceAll(" ", "-"));
+        testProject.setName(FAKER.app.name());
+        testProject.setProductBuyer(FAKER.company.name());
+        testProject.setDescription(FAKER.lorem.characters(150));
+        testProject.setStartDate(FAKER.date.forward(1));
+        testProject.setEndDate(FAKER.date.forward(FAKER.number.between(40, 100)));
 
-                Project p = new Project();
-                p.setCode(FAKER.app.name().toLowerCase().replaceAll(" ", "-"));
-                p.setName(FAKER.app.name());
-                p.setProductBuyer(FAKER.company.name());
-                p.setDescription(FAKER.lorem.characters(150));
-                p.setStartDate(FAKER.date.forward(1));
-                p.setEndDate(FAKER.date.forward(FAKER.number.between(40, 100)));
+        testProject.setOwner(kanbanMasterAccount);
+        testProject.setDevTeam(testDevTeam);
 
-                p.setOwner(uaMTMdt.getUserAccount());
-                p.setDevTeam(dt);
+        testProject.setBoard(testBoard);
 
-                Board b = userBoard.get(uaMTMdt.getUserAccount().getId());
-                p.setBoard(b);
+        testProject = database.create(testProject);
 
-                p = database.create(p);
-
-                projects.add(p);
-
-
-            }
-        }
     }
 
     private void generateCards() throws DatabaseException {
-        for(Project p : projects) {
 
-            ArrayList<Membership> members = devTeamMembers.get(p.getDevTeam().getId());
+        for(int i=0; i<5; i++) {
+            BoardPart bp = testBoardPartLeafs.get(FAKER.number.between(0, testBoardPartLeafs.size()));
 
-            Membership m = members.stream().filter(e ->
-                    e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER ||
-                    e.getMemberType() == MemberType.KANBAN_MASTER).findFirst().orElse(null);
+            Card c = new Card();
 
-            Board b = userBoard.get(m.getUserAccount().getId());
-            ArrayList<BoardPart> bpLeaves = boardParts.get(b.getId());
+            c.setProject(testProject);
+            c.setBoardPart(bp);
+            c.setOrderIndex(i);
 
-            int cardsNumber = FAKER.number.between(CARD_NUMBER_MIN, CARD_NUMBER_MAX);
-            for(int i=0; i<cardsNumber; i++){
-                BoardPart bp = bpLeaves.get(FAKER.number.between(0, bpLeaves.size()-1));
+            c.setName(FAKER.app.name());
+            c.setDescription(FAKER.lorem.characters(50));
+            c.setWorkload(FAKER.number.between(1, 10));
+            c.setColor("#9cec9c");
 
-                Card c = new Card();
+            c = database.create(c);
 
-                c.setProject(p);
-                c.setBoardPart(bp);
-                c.setProject(p);
-                c.setOrderIndex(i);
+            int tasks = FAKER.number.between(1,5);
+            for(int t=0; t<tasks; t++){
+                SubTask st = new SubTask();
+                st.setName(FAKER.app.name());
+                st.setDescription(FAKER.lorem.characters(20));
+                st.setWorkingHours(FAKER.number.between(5, 40));
+                st.setCard(c);
 
-                c.setName(FAKER.app.name());
-                c.setDescription(FAKER.lorem.characters(50));
-                c.setWorkload(FAKER.number.between(1, 10));
-
-                c = database.create(c);
-
-                int tasks = FAKER.number.between(1,5);
-                for(int t=0; t<tasks; t++){
-                    SubTask st = new SubTask();
-                    st.setName(FAKER.app.name());
-                    st.setDescription(FAKER.lorem.characters(20));
-                    st.setWorkingHours(FAKER.number.between(5, 40));
-                    st.setCard(c);
-
-                    database.create(st);
-                }
+                database.create(st);
             }
-
         }
     }
 
@@ -327,8 +257,8 @@ public class SeedService {
         request.setRequestType(RequestType.KANBAN_MASTER_INVITE);
         request.setContext("Invite to become kanban master for dev team " + testDevTeam.getName());
         request.setRequestStatus(RequestStatus.PENDING);
-        request.setSender(testAccount);
-        request.setReceiver(kanbanMasterAccount);
+        request.setSender(kanbanMasterAccount);
+        request.setReceiver(testAccount);
         request.setReferenceId(testDevTeam.getId());
 
         database.create(request);

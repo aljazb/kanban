@@ -10,9 +10,9 @@
         <div class="list-group">
           <div class="list-group-item list-group-item-primary">Saved boards:</div>
 
-          <div class="list-group-item list-group-item-action hover-pointer" *ngFor="let b of boards" (click)="selectBoard(b)">
+          <div class="list-group-item list-group-item-action hover-pointer" *ngFor="let b of boards" >
             <div class="row">
-              <div class="col-sm-11">
+              <div class="col-sm-11" (click)="selectBoard(b)">
                 {{b.name ? b.name : "-- No name --"}}
               </div>
 
@@ -40,7 +40,7 @@
 
 
 <div *ngIf="selectedBoard">
-  <div class="row">
+  <div class="row mb-3">
     <div class="col-sm-12">
       <div class="pull-right">
         <button class="btn btn-primary" (click)="back()">Back</button>
