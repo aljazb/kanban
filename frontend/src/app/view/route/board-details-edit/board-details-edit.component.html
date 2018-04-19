@@ -1,3 +1,18 @@
-<p>
-  board-details-edit works!
-</p>
+<div *ngIf="board">
+  <div class="row mb-3">
+    <div class="col-sm-12">
+      <div class="pull-right">
+        <button class="btn btn-primary" (click)="back()">Back</button>
+        <button class="btn btn-success" (click)="update()">Update</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+
+      <app-board-base-form [board]="board"></app-board-base-form>
+
+    </div>
+  </div>
+</div>

@@ -76,8 +76,7 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
         } catch (DatabaseException e){
             throw e;
         } catch (Exception e){
-            throw new DatabaseException(String.format("Error finding entity with id: %s", id.toString()) , e,
-                    ExceptionType.ENTITY_DOES_NOT_EXISTS);
+            throw new DatabaseException(String.format("Error finding entity with id: %s", id.toString()) , e);
         }
     }
 

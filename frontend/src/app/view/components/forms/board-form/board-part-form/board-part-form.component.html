@@ -18,7 +18,11 @@
               <label for="in-name" class="col-sm-4 col-form-label">Name</label>
               <div class="col-sm-8">
                 <input type="text" name="project-name" class="form-control" id="in-name"  placeholder="Name"
-                       formControlName="name">
+                       formControlName="name"
+                       [ngClass]="{ 'is-invalid': fcName.touched && fcName.invalid }">
+                <div class="invalid-feedback" *ngIf="fcName.hasError('required')">
+                  Name is required
+                </div>
               </div>
             </div>
 
@@ -26,7 +30,14 @@
               <label for="in-wip" class="col-sm-4 col-form-label">WIP</label>
               <div class="col-sm-8">
                 <input type="text" name="board-part-wip" class="form-control" id="in-wip" placeholder="WIP"
-                       formControlName="maxWip">
+                       formControlName="maxWip"
+                       [ngClass]="{ 'is-invalid': fcMaxWip.touched && fcMaxWip.invalid }">
+                <div class="invalid-feedback" *ngIf="fcMaxWip.hasError('required')">
+                  Max wip is required
+                </div>
+                <div class="invalid-feedback" *ngIf="fcMaxWip.hasError('greaterThanParent')">
+                  Max wip is too big
+                </div>
               </div>
             </div>
 
@@ -45,17 +56,24 @@
               <i class="fa fa-caret-left"></i>
             </button>
 
-            <button class="btn btn-primary" (click)="addDown()" [disabled]="boardPart.children != null && boardPart.children.length > 0">
-              <i class="fa fa-caret-down"></i>
-            </button>
+            <span #pDown="ngbPopover" ngbPopover="Board part contains cards" popoverTitle="Contains cards" triggers="manual"
+                  (mouseenter)="!hasChildren && hasCards && pDown.open()" (mouseleave)="pDown.close()">
+              <button class="btn btn-primary" (click)="addDown()" [disabled]="hasCards || hasChildren">
+                <i class="fa fa-caret-down"></i>
+              </button>
+            </span>
 
             <button class="btn btn-primary" (click)="triggerOnAddRight()">
               <i class="fa fa-caret-right"></i>
             </button>
 
-            <button class="btn btn-danger" (click)="delete()">
-              <i class="fa fa-times-circle"></i>
-            </button>
+            <span #pDel="ngbPopover" ngbPopover="Board part contains cards" popoverTitle="Contains cards" triggers="manual"
+                  (mouseenter)="hasCards && pDel.open()" (mouseleave)="pDel.close()" placement="left">
+              <button class="btn btn-danger" (click)="triggerOnDelete()" [disabled]="hasCards">
+                <i class="fa fa-times-circle"></i>
+              </button>
+            </span>
+
           </div>
 
         </div>
@@ -66,9 +84,10 @@
           <div class="row">
 
             <div class="sub-item align-top" *ngFor="let bp of boardPart.children">
-              <app-board-part-form (onDelete)="onDeleteChild(bp.orderIndex)"
-                                   (onAddLeft)="handleOnAddLeft(bp.orderIndex)"
-                                   (onAddRight)="handleOnAddRight(bp.orderIndex)"
+              <app-board-part-form (onDelete)="handleOnDelete($event)"
+                                   (onAddLeft)="handleOnAddLeft($event)"
+                                   (onAddRight)="handleOnAddRight($event)"
+                                   (onHasCards)="handleOnHasCards($event)"
                                    [boardPart]="bp"></app-board-part-form>
             </div>
 

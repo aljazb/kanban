@@ -3,12 +3,10 @@ package si.fri.smrpo.kis.server.ejb.managers;
 import si.fri.smrpo.kis.core.logic.database.instance.DatabaseCore;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
-import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthManager;
 import si.fri.smrpo.kis.server.ejb.managers.base.AuthUser;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
-import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
 import si.fri.smrpo.kis.server.jpa.entities.Card;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 
@@ -48,7 +46,7 @@ public class BoardAuthManager extends AuthManager<Board> {
     public void authGet(DatabaseCore db, Board entity) throws DatabaseException {
         if(!isUserInRole(ROLE_ADMINISTRATOR)) {
             List<Board> boardAuth = db.getEntityManager()
-                    .createNamedQuery("board.access", Board.class)
+                    .createNamedQuery("board.access.view", Board.class)
                     .setMaxResults(1).setParameter("boardId", entity.getId())
                     .setParameter("userId", getUserId()).getResultList();
 
@@ -58,36 +56,11 @@ public class BoardAuthManager extends AuthManager<Board> {
             }
         }
 
-        setBoardPartsReferences(entity);
-
-        for(Project p : entity.getProjects()) { // Fetch project
-            for(Card c : p.getCards()) { // Fetch cards
-                c.getSubTasks().size(); // Fetch sub tasks
-            }
-        }
+        entity.buildBoardPartsReferences();
+        entity.fetchProjectsWithCards();
 
         super.authGet(db, entity);
     }
 
-    private void setBoardPartsReferences(Board board) {
-        Set<BoardPart> boardParts = board.getBoardParts();
-        HashMap<UUID, BoardPart> map = new HashMap<>();
 
-        for(BoardPart bp : boardParts) {
-            map.put(bp.getId(), bp);
-        }
-
-        for(BoardPart bp : boardParts) {
-            if(bp.getParent() != null) {
-                BoardPart parent = map.get(bp.getParent().getId());
-
-                if(parent.getChildren() == null){
-                    parent.setChildren(new HashSet<>());
-                }
-                parent.getChildren().add(bp);
-
-                bp.setParent(parent);
-            }
-        }
-    }
 }

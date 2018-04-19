@@ -7,7 +7,7 @@ export class BoardPart extends BaseEntity<BoardPart> {
   maxWip: number;
 
   orderIndex: number;
-  isLeaf: boolean;
+  leaf: boolean;
 
   board: Board;
 

@@ -1,32 +1,49 @@
 <div>
+  <div *ngIf="isKanbanMaster" class="row">
+    <div class="col-sm-12 mb-3">
+      <button class="btn btn-primary pull-right" routerLink="/board/{{id}}/edit">Edit</button>
+    </div>
+  </div>
 
-  <div *ngIf="boardRepresentation && boardRepresentation.boardPartTable">
-    <table class="table table-bordered">
-      <thead>
-        <tr *ngFor="let tr of boardRepresentation.boardPartTable">
-          <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan">
-            {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let tr of boardRepresentation.projectTable">
-          <td *ngFor="let td of tr.cardTables">
+  <div class="row">
+    <div class="col-sm-12">
 
-            <div class="list-group">
-                <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards" routerLink="/card/{{c.id}}">{{c.name}}
-                  <div class="list-group" *ngIf="c.subTasks">
-                    <div *ngFor="let t of c.subTasks" class="list-group-item list-group-item-action">
-                      {{t.name}} - {{t.workingHours}}
-                    </div>
+      <div class="scroll-group" *ngIf="boardRepresentation && boardRepresentation.boardPartTable">
+        <div class="row">
+
+          <table class="table table-bordered">
+            <thead>
+              <tr *ngFor="let tr of boardRepresentation.boardPartTable; let i = index">
+                <td class="lane-name" *ngIf="i == 0" [attr.rowspan]="boardRepresentation.maxDepth">Project name</td>
+                <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan">
+                  {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tr of boardRepresentation.projectTable">
+                <td class="lane-name">{{tr.name}}</td>
+                <td *ngFor="let td of tr.cardTables">
+
+                  <div class="list-group">
+                      <div class="list-group-item list-group-item-action hover-pointer" *ngFor="let c of td.cards" routerLink="/card/{{c.id}}" [style.background]="c.color">{{c.name}}
+                        <div class="list-group" *ngIf="c.subTasks">
+                          <div *ngFor="let t of c.subTasks" class="list-group-item list-group-item-action">
+                            {{t.name}} - {{t.workingHours}}
+                          </div>
+                        </div>
+                      </div>
                   </div>
-                </div>
-            </div>
 
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 
 </div>

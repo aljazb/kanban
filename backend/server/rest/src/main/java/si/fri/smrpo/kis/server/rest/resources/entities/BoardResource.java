@@ -74,7 +74,13 @@ public class BoardResource extends CrudResource<Board, CrudSource<Board, UUID>> 
     @PUT
     @Path("{id}")
     public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, Board entity) throws ApiException {
-        throw ApiException.buildNotImplemented();
+        try {
+            UserAccount authUser = manager.getUserAccount();
+
+            return buildResponse(service.update(authUser, entity), xContent).build();
+        } catch (LogicBaseException e) {
+            throw ApiException.transform(e);
+        }
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})

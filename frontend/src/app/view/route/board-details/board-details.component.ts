@@ -5,6 +5,7 @@ import {Card} from '../../../api/models/Card';
 import {BoardPart} from '../../../api/models/BoardPart';
 import {ApiService} from '../../../api/api.service';
 import {BoardRepresentation} from './utility/board-representation';
+import {LoginService} from '../../../api/login.service';
 
 @Component({
   selector: 'app-board-details',
@@ -17,12 +18,16 @@ export class BoardDetailsComponent implements OnInit {
   board: Board;
   boardRepresentation: BoardRepresentation;
 
+  isKanbanMaster: boolean = false;
+
   constructor(private route: ActivatedRoute,
-              private api: ApiService) { }
+              private api: ApiService,
+              private login: LoginService) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.api.board.get(this.id).subscribe(board => this.init(board));
+    this.login.getUser().subscribe(value => this.isKanbanMaster = value.inRoleKanbanMaster);
   }
 
   private init(board: Board): void {

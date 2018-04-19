@@ -150,4 +150,9 @@ export class BoardRepresentation {
 
     return bpt;
   }
+
+
+  get maxDepth(): number {
+    return this._maxDepth;
+  }
 }

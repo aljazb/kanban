@@ -18,18 +18,12 @@ export abstract class GetResource<T extends BaseEntity<T>> extends BaseResource<
 
   getList (httpParams: HttpParams = null): Observable<Paging<T>> {
     return this.api.httpClient.get<T[]>(this.url, { headers: this.getHeaders(), params: httpParams, observe: 'response'})
-      .pipe(
-        catchError(this.handleError<T[]>(`getList`)),
-        map((resp: HttpResponse<T[]>) => this.buildPaging(resp))
-      );
+      .pipe(map((resp: HttpResponse<T[]>) => this.buildPaging(resp)));
   }
 
   get (id: string): Observable<T> {
     return this.api.httpClient.get<T>(this.url + "/" + id, { headers: this.getHeaders()})
-      .pipe(
-        catchError(this.handleError<T>(`get`)),
-        map(content => this.deserialize(content))
-      );
+      .pipe(map(content => this.deserialize(content)));
   }
 
 }

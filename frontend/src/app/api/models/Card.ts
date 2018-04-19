@@ -9,6 +9,7 @@ export class Card extends BaseEntity<Card> {
   description: string;
   workload: number;
 
+  color: string;
   orderIndex: number;
 
   project: Project;

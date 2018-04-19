@@ -44,6 +44,7 @@ public class SeedService {
 
     private DevTeam testDevTeam;
     private Project testProject;
+    private Project testProject2;
     private Board testBoard;
     private ArrayList<BoardPart> testBoardPartLeafs;
 
@@ -73,9 +74,9 @@ public class SeedService {
         return userAccounts.isEmpty();
     }
 
-    private UserAccount genUserAccount() {
+    private UserAccount genUserAccount(String username) {
         UserAccount ua = new UserAccount();
-        ua.setUsername(FAKER.name.firstName());
+        ua.setUsername(username);
         ua.setEmail(FAKER.internet.email());
         ua.setFirstName(FAKER.name.firstName());
         ua.setLastName(FAKER.name.lastName());
@@ -88,7 +89,7 @@ public class SeedService {
 
     private void generateUserAccounts() throws DatabaseException {
 
-        testAccount = genUserAccount();
+        testAccount = genUserAccount("test");
         testAccount.setId(UUID.fromString(TEST_USER_ID));
         testAccount.setEmail("test@test.com");
         testAccount.setInRoleKanbanMaster(true);
@@ -97,25 +98,25 @@ public class SeedService {
         testAccount.setInRoleDeveloper(true);
         testAccount = database.create(testAccount);
 
-        adminAccount = genUserAccount();
+        adminAccount = genUserAccount("admin");
         adminAccount.setId(UUID.fromString(ADMIN_USER_ID));
         adminAccount.setEmail("admin@admin.com");
         adminAccount.setInRoleAdministrator(true);
         adminAccount = database.create(adminAccount);
 
-        developerAccount = genUserAccount();
+        developerAccount = genUserAccount("developer");
         developerAccount.setId(UUID.fromString(DEVELOPER_USER_ID));
         developerAccount.setEmail("developer@developer.com");
         developerAccount.setInRoleDeveloper(true);
         developerAccount = database.create(developerAccount);
 
-        kanbanMasterAccount = genUserAccount();
+        kanbanMasterAccount = genUserAccount("kanban_master");
         kanbanMasterAccount.setId(UUID.fromString(KANBAN_MASTER_USER_ID));
         kanbanMasterAccount.setEmail("kanban@master.com");
         kanbanMasterAccount.setInRoleKanbanMaster(true);
         kanbanMasterAccount = database.create(kanbanMasterAccount);
 
-        productOwnerAccount = genUserAccount();
+        productOwnerAccount = genUserAccount("product_owner");
         productOwnerAccount.setId(UUID.fromString(PRODUCT_OWNER_USER_ID));
         productOwnerAccount.setEmail("product@owner.com");
         productOwnerAccount.setInRoleProductOwner(true);
@@ -163,19 +164,13 @@ public class SeedService {
             BoardPart bp = new BoardPart();
             bp.setOrderIndex(i);
             bp.setBoard(testBoard);
-            bp.setMaxWip(FAKER.number.between(5, 15));
+            bp.setMaxWip(FAKER.number.between(7, 15));
             bp.setName(FAKER.app.name());
             bp.setLeaf(true);
 
             bp = database.create(bp);
 
-            switch (i) {
-                case 0: testBoard.setHighestPriority(bp.getId()); break;
-                case 1: testBoard.setStartDev(bp.getId()); break;
-                case 2: testBoard.setEndDev(bp.getId()); break;
-                case 3: testBoard.setAcceptanceTesting(bp.getId()); break;
-            }
-            testBoard = database.update(testBoard);
+            UUID markPart = bp.getId();
 
             if(Math.random() > 0.5) {
 
@@ -186,55 +181,84 @@ public class SeedService {
                     BoardPart sbp = new BoardPart();
                     sbp.setOrderIndex(j);
                     sbp.setBoard(testBoard);
-                    sbp.setMaxWip(FAKER.number.between(5, 15));
+
+                    int maxWip = FAKER.number.between(5, 10);
+                    sbp.setMaxWip(Math.min(maxWip, bp.getMaxWip()));
                     sbp.setName(FAKER.app.name());
                     sbp.setParent(bp);
                     sbp.setLeaf(true);
 
                     sbp = database.create(sbp);
 
+                    markPart = sbp.getId();
+
                     testBoardPartLeafs.add(sbp);
                 }
             } else {
                 testBoardPartLeafs.add(bp);
             }
+
+            switch (i) {
+                case 0: testBoard.setHighestPriority(markPart); break;
+                case 1: testBoard.setStartDev(markPart); break;
+                case 2: testBoard.setEndDev(markPart); break;
+                case 3: testBoard.setAcceptanceTesting(markPart); break;
+            }
+
+            testBoard = database.update(testBoard);
         }
     }
 
-    private void generateProjects() throws DatabaseException {
+    private Project createProject() throws DatabaseException {
+        Project p = new Project();
+        p.setCode(FAKER.app.name().toLowerCase().replaceAll(" ", "-"));
+        p.setName(FAKER.app.name());
+        p.setProductBuyer(FAKER.company.name());
+        p.setDescription(FAKER.lorem.characters(150));
+        p.setStartDate(FAKER.date.forward(1));
+        p.setEndDate(FAKER.date.forward(FAKER.number.between(40, 100)));
 
-        testProject = new Project();
-        testProject.setCode(FAKER.app.name().toLowerCase().replaceAll(" ", "-"));
-        testProject.setName(FAKER.app.name());
-        testProject.setProductBuyer(FAKER.company.name());
-        testProject.setDescription(FAKER.lorem.characters(150));
-        testProject.setStartDate(FAKER.date.forward(1));
-        testProject.setEndDate(FAKER.date.forward(FAKER.number.between(40, 100)));
+        p.setOwner(kanbanMasterAccount);
+        p.setDevTeam(testDevTeam);
 
-        testProject.setOwner(kanbanMasterAccount);
-        testProject.setDevTeam(testDevTeam);
+        p.setBoard(testBoard);
 
-        testProject.setBoard(testBoard);
+        p = database.create(p);
 
-        testProject = database.create(testProject);
-
+        return p;
     }
 
-    private void generateCards() throws DatabaseException {
+    private void generateProjects() throws DatabaseException {
+        testProject = createProject();
+        testProject2 = createProject();
+    }
 
+    private void createCards(Project project) throws DatabaseException {
         for(int i=0; i<5; i++) {
             BoardPart bp = testBoardPartLeafs.get(FAKER.number.between(0, testBoardPartLeafs.size()));
 
             Card c = new Card();
 
-            c.setProject(testProject);
+            c.setProject(project);
             c.setBoardPart(bp);
             c.setOrderIndex(i);
 
             c.setName(FAKER.app.name());
             c.setDescription(FAKER.lorem.characters(50));
             c.setWorkload(FAKER.number.between(1, 10));
-            c.setColor("#9cec9c");
+
+            String color = "#9cec9c";
+
+            switch (FAKER.number.between(0, 5)) {
+                case 0: color = "#0450fb"; break;
+                case 1: color = "#df541e"; break;
+                case 2: color = "#58fcc1"; break;
+                case 3: color = "#a10f6f"; break;
+                case 4: color = "#e81f3f"; break;
+                case 5: color = "#7bff47"; break;
+            }
+
+            c.setColor(color);
 
             c = database.create(c);
 
@@ -249,6 +273,11 @@ public class SeedService {
                 database.create(st);
             }
         }
+    }
+
+    private void generateCards() throws DatabaseException {
+        createCards(testProject);
+        createCards(testProject2);
     }
 
     private void generateRequests() throws DatabaseException {

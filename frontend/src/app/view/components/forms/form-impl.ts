@@ -8,7 +8,8 @@ export class FormImpl {
     Object.keys(form.controls).forEach(field => {
       const control = form.get(field);
       if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true });
+        control.markAsTouched();
+        control.patchValue(control.value);
       }
     });
   }

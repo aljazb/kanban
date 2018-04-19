@@ -40,16 +40,40 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     this.fcName.valueChanges.subscribe(name => this.board.name = name);
 
     this.fcHighestPriority = new FormControl(this.board.highestPriority, Validators.required);
-    this.fcHighestPriority.valueChanges.subscribe(value => this.board.highestPriority = value);
+    this.fcHighestPriority.valueChanges.subscribe(value => {
+      if(value != null && this.highestPriorityBoardParts.find(item => item.id == value) == null) {
+        value = null;
+        this.fcHighestPriority.patchValue(value);
+      }
+      this.board.highestPriority = value
+    });
 
     this.fcStartDev = new FormControl(this.board.startDev, Validators.required);
-    this.fcStartDev.valueChanges.subscribe(value => this.board.startDev = value);
+    this.fcStartDev.valueChanges.subscribe(value => {
+      if(value != null && this.startDevBoardParts.find(item => item.id == value) == null) {
+        value = null;
+        this.fcStartDev.patchValue(value);
+      }
+      this.board.startDev = value
+    });
 
     this.fcEndDev = new FormControl(this.board.endDev, Validators.required);
-    this.fcEndDev.valueChanges.subscribe(value => this.board.endDev = value);
+    this.fcEndDev.valueChanges.subscribe(value => {
+      if(value != null && this.endDevBoardParts.find(item => item.id == value) == null) {
+        value = null;
+        this.fcEndDev.patchValue(value);
+      }
+      this.board.endDev = value;
+    });
 
     this.fcAcceptanceTesting = new FormControl(this.board.acceptanceTesting, Validators.required);
-    this.fcAcceptanceTesting.valueChanges.subscribe(value => this.board.acceptanceTesting = value);
+    this.fcAcceptanceTesting.valueChanges.subscribe(value => {
+      if(value != null && this.acceptanceTestingBoardParts.find(item => item.id == value) == null) {
+        value = null;
+        this.fcAcceptanceTesting.patchValue(value);
+      }
+      this.board.acceptanceTesting = value
+    });
   }
 
   initFormGroup(): void {
@@ -83,6 +107,7 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     bp.board = this.board;
     bp.maxWip = 0;
     bp.orderIndex = 0;
+    bp.leaf = true;
     return bp;
   }
 
@@ -93,17 +118,18 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     this.board.boardParts.splice(0,0, this.createChild());
   }
 
-  addRight(orderIndex: number): void {
+  handleOnAddRight(orderIndex: number): void {
     this.board.boardParts.splice(orderIndex+1,0, this.createChild());
     this.setOrderIndexes();
+    console.log(this.board.boardParts);
   }
 
-  addLeft(orderIndex: number): void {
+  handleOnAddLeft(orderIndex: number): void {
     this.board.boardParts.splice(orderIndex,0, this.createChild());
     this.setOrderIndexes();
   }
 
-  onDeleteChild(orderIndex: number): void {
+  handleOnDeleteChild(orderIndex: number): void {
     this.board.boardParts.splice(orderIndex, 1);
     this.setOrderIndexes();
   }
@@ -114,21 +140,39 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     }
   }
 
-  private buildAllBoardParts(boardParts: BoardPart[]): BoardPart[] {
+  private buildAllBoardParts(boardParts: BoardPart[], ignore: string[]=[]): BoardPart[] {
     let bp = [];
     boardParts.forEach(value => {
-      if(value.children) {
-        let cBp = this.buildAllBoardParts(value.children);
+      if(value.children && value.children.length > 0) {
+        let cBp = this.buildAllBoardParts(value.children, ignore);
         bp = bp.concat(cBp)
       } else {
-        bp.push(value);
+        if(!ignore.includes(value.id)) {
+          bp.push(value);
+        }
       }
     });
     return bp;
   }
 
-  get allBoardParts(): BoardPart[] {
-    return this.buildAllBoardParts(this.board.boardParts);
+  get highestPriorityBoardParts(): BoardPart[] {
+    let ignore = [this.board.endDev, this.board.startDev, this.board.acceptanceTesting];
+    return this.buildAllBoardParts(this.board.boardParts, ignore);
+  }
+
+  get acceptanceTestingBoardParts(): BoardPart[] {
+    let ignore = [this.board.endDev, this.board.startDev, this.board.highestPriority];
+    return this.buildAllBoardParts(this.board.boardParts, ignore);
+  }
+
+  get startDevBoardParts(): BoardPart[] {
+    let ignore = [this.board.endDev, this.board.highestPriority, this.board.acceptanceTesting];
+    return this.buildAllBoardParts(this.board.boardParts, ignore);
+  }
+
+  get endDevBoardParts(): BoardPart[] {
+    let ignore = [this.board.highestPriority, this.board.startDev, this.board.acceptanceTesting];
+    return this.buildAllBoardParts(this.board.boardParts, ignore);
   }
 
 }

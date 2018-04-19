@@ -18,7 +18,7 @@
                formControlName="username"
                [ngClass]="{ 'is-invalid': fcUsername.touched && fcUsername.invalid }">
         <div class="invalid-feedback" *ngIf="fcUsername.hasError('required')">
-          Username required
+          Username is required
         </div>
         <div class="invalid-feedback" *ngIf="fcUsername.hasError('takenUsername')" >
           Username taken
@@ -35,7 +35,7 @@
                formControlName="email"
                [ngClass]="{ 'is-invalid': fcEmail.touched && fcEmail.invalid }">
         <div class="invalid-feedback" *ngIf="fcEmail.hasError('required')">
-          Email required
+          Email is required
         </div>
         <div class="invalid-feedback" *ngIf="!fcEmail.hasError('required') && fcEmail.hasError('email')">
           Invalid email
@@ -53,7 +53,7 @@
                formControlName="firstName"
                [ngClass]="{ 'is-invalid': fcFirstName.touched && fcFirstName.invalid }">
         <div class="invalid-feedback" *ngIf="fcFirstName.hasError('required')">
-          First name required
+          First name is required
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@
                formControlName="lastName"
                [ngClass]="{ 'is-invalid': fcLastName.touched && fcLastName.invalid }">
         <div class="invalid-feedback" *ngIf="fcLastName.hasError('required')">
-          Last name name required
+          Last name is required
         </div>
       </div>
     </div>

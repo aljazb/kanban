@@ -2,20 +2,25 @@ package si.fri.smrpo.kis.server.jpa.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
-import java.util.Set;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
 
 @Entity
 @Table(name="board")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "board.access", query = "SELECT b FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
-                "WHERE b.id = :boardId AND (b.owner.id = :userId OR m.userAccount.id = :userId)")
+        @NamedQuery(name = "board.access.view", query = "SELECT b FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+                "WHERE b.id = :boardId AND (b.owner.id = :userId OR m.userAccount.id = :userId)"),
+        @NamedQuery(name = "board.access.edit", query = "SELECT b FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+                "WHERE b.id = :boardId AND (b.owner.id = :userId OR (m.userAccount.id = :userId AND " +
+                "(m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER OR " +
+                "m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER)))")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Board extends UUIDEntity<Board> {
@@ -48,7 +53,52 @@ public class Board extends UUIDEntity<Board> {
     @OneToMany(mappedBy = "board")
     private Set<Project> projects;
 
+    @Override
+    protected boolean baseSkip(Field field) {
+        if(super.baseSkip(field)) {
+            return true;
+        } else {
+            switch (field.getName()) {
+                case "owner": return true;
+                default: return false;
+            }
+        }
+    }
 
+    @JsonIgnore
+    public void buildBoardPartsReferences() {
+        Set<BoardPart> root = new HashSet<>();
+        HashMap<UUID, BoardPart> map = new HashMap<>();
+
+        for(BoardPart bp : boardParts) {
+            map.put(bp.getId(), bp);
+            if(bp.getParent() == null) root.add(bp);
+        }
+
+        for(BoardPart bp : boardParts) {
+            if(bp.getParent() != null) {
+                BoardPart parent = map.get(bp.getParent().getId());
+
+                if(parent.getChildren() == null){
+                    parent.setChildren(new HashSet<>());
+                }
+                parent.getChildren().add(bp);
+
+                bp.setParent(parent);
+            }
+        }
+
+        boardParts = root;
+    }
+
+    @JsonIgnore
+    public void fetchProjectsWithCards() {
+        for(Project p : getProjects()) { // Fetch project
+            for(Card c : p.getCards()) { // Fetch cards
+                c.getSubTasks().size(); // Fetch sub tasks
+            }
+        }
+    }
 
     public Set<BoardPart> getBoardParts() {
         return boardParts;

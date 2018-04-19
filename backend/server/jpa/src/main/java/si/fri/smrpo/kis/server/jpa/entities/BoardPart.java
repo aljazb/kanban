@@ -2,11 +2,12 @@ package si.fri.smrpo.kis.server.jpa.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="board_part")
@@ -23,7 +24,7 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
 
-    private Boolean isLeaf;
+    private Boolean leaf;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
@@ -44,6 +45,29 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     @OneToMany(mappedBy = "to")
     private Set<CardMove> cardMovesTo;
+
+    @JsonIgnore
+    public ArrayList<BoardPart> buildChildrenArray() {
+        ArrayList<BoardPart> boardParts = new ArrayList<>(getChildren());
+        boardParts.sort(Comparator.comparingInt(BoardPart::getOrderIndex));
+        return boardParts;
+    }
+
+    @JsonIgnore
+    public HashMap<UUID, BoardPart> buildChildrenMap() {
+        return buildMap(getChildren());
+    }
+
+    @JsonIgnore
+    public static HashMap<UUID, BoardPart> buildMap(Set<BoardPart> boardParts) {
+        HashMap<UUID, BoardPart> map = new HashMap<>();
+        if(boardParts != null){
+            for(BoardPart bp : boardParts) {
+                map.put(bp.getId(), bp);
+            }
+        }
+        return map;
+    }
 
     public BoardPart getParent() {
         return parent;
@@ -94,11 +118,11 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     }
 
     public Boolean getLeaf() {
-        return isLeaf;
+        return leaf;
     }
 
     public void setLeaf(Boolean leaf) {
-        isLeaf = leaf;
+        this.leaf = leaf;
     }
 
     public Integer getOrderIndex() {

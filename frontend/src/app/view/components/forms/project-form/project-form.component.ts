@@ -6,6 +6,7 @@ import {ApiService} from '../../../../api/api.service';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {cDpToTs, cTsToDp, DTDateFormat} from '../../../../utility';
 import {FormImpl} from '../form-impl';
+import {after} from 'selenium-webdriver/testing';
 
 @Component({
   selector: 'app-project-form',
@@ -48,9 +49,9 @@ export class ProjectFormComponent extends FormImpl {
     this.fcName = new FormControl('', Validators.required);
     this.fcCode = new FormControl('', Validators.required);
     this.fcProductBuyer = new FormControl('', Validators.required);
-    this.fcStartDate = new FormControl(start, [Validators.required, this.dateBeforeNow(start)]);
+    this.fcStartDate = new FormControl(start, [Validators.required, this.isDateBeforeNow(start)]);
     this.fcStartDate.valueChanges.subscribe(value => this.fcEndDate.patchValue(this.fcEndDate.value));
-    this.fcEndDate = new FormControl(end, [Validators.required, this.dateAfterValidator(this.fcStartDate)]);
+    this.fcEndDate = new FormControl(end, [Validators.required, this.isDateAfterSource(start, this.fcStartDate)]);
     this.fcDevTeam = new FormControl(null, Validators.required);
   }
 
@@ -108,41 +109,37 @@ export class ProjectFormComponent extends FormImpl {
     }
   }
 
-  dateBeforeNow(nowDate: DTDateFormat): ValidatorFn {
+  isDateBeforeNow(nowDate: DTDateFormat): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
-      let valid = false;
-
       let startDate: DTDateFormat = control.value;
-
-      if (nowDate.year >= startDate.year &&
-        nowDate.month >= startDate.month &&
-        nowDate.day >= startDate.day) {
-        valid = true;
+      if(!this.sameOrAfter(nowDate, startDate)) {
+        return {'startDateAfterNowDate': {value: control.value}};
       }
-
-      this.invalidStartDate = !valid;
-
-      return valid ? null : {'invalidDateAfterNow': {value: control.value}};
+      return null;
     };
   }
 
-  dateAfterValidator(source: FormControl): ValidatorFn {
+  isDateAfterSource(nowDate: DTDateFormat, source: FormControl): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
-      let valid = false;
-
       let startDate: DTDateFormat = source.value;
       let endDate: DTDateFormat = control.value;
 
-      if (startDate.year <= endDate.year &&
-        startDate.month <= endDate.month &&
-        startDate.day < endDate.day) {
-        valid = true;
+      if(!this.after(endDate, nowDate)) {
+        return {'endDateBeforeNowDate': {value: control.value}};
       }
-
-      this.invalidEndDate = !valid && control.touched;
-
-      return valid ? null : {'invalidDateAfterStartDate': {value: control.value}};
+      if(!this.after(endDate, startDate)) {
+        return {'endDateBeforeStartDate': {value: control.value}};
+      }
+      return null;
     };
+  }
+
+  private sameOrAfter(date1: DTDateFormat, date2: DTDateFormat): boolean {
+    return date1.year >= date2.year && date1.month >= date2.month && date1.day >= date2.day;
+  }
+
+  private after(date1: DTDateFormat, date2: DTDateFormat): boolean {
+    return date1.year >= date2.year && date1.month >= date2.month && date1.day > date2.day;
   }
 
 }

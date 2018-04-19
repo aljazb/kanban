@@ -13,26 +13,18 @@ export class RequestResource extends GetResource<Request> {
   }
 
   getUserRequests(): Observable<Request[]> {
-    return this.api.httpClient.get<Request[]>(`${this.url}/userRequests`).pipe(
-      catchError(this.handleError<Request[]>("userRequests")),
-      map(content => this.deserializeArray(content))
-    );
+    return this.api.httpClient.get<Request[]>(`${this.url}/userRequests`)
+      .pipe(map(content => this.deserializeArray(content)));
   }
 
   accept (requestId: string): Observable<Request> {
     return this.api.httpClient.put<Request>(this.url + "/" + requestId, null, { headers: this.getHeaders(true)})
-      .pipe(
-        catchError(this.handleError<Request>(`accept`)),
-        map(content => this.deserialize(content))
-      );
+      .pipe(map(content => this.deserialize(content)));
   }
 
   decline (requestId: string): Observable<Request> {
     return this.api.httpClient.delete<Request>(this.url + "/" + requestId, { headers: this.getHeaders(true)})
-      .pipe(
-        catchError(this.handleError<Request>(`decline`)),
-        map(content => this.deserialize(content))
-      );
+      .pipe(map(content => this.deserialize(content)));
   }
 
   createKanbanMasterInvite(devTeamId: string, userId: string, context: string): Observable<Request> {
@@ -43,12 +35,7 @@ export class RequestResource extends GetResource<Request> {
     request.receiver.id = userId;
     request.context = context;
 
-    console.log(request);
-
     return this.api.httpClient.post<Request>(this.url, this.serialize(request), { headers: this.getHeaders()})
-      .pipe(
-        catchError(this.handleError<Request>(`createKanbanMasterInvite`)),
-        map(content => this.deserialize(content))
-      );
+      .pipe(map(content => this.deserialize(content)));
   }
 }

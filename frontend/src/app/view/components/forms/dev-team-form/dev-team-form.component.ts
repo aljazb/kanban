@@ -7,7 +7,6 @@ import {DevTeam} from '../../../../api/models/DevTeam';
 import {isNullOrUndefined} from 'util';
 import {Membership} from '../../../../api/models/Membership';
 import {MemberType} from '../../../../api/models/enums/MemberType';
-import {LoginService} from '../../../../api/login.service';
 
 @Component({
   selector: 'app-dev-team-form',
@@ -31,11 +30,8 @@ export class DevTeamFormComponent {
   availableDevelopers: Array<UserAccount>;
   selectedDevelopers: Array<UserAccount>;
 
-  emptyFields = false;
-
   constructor(public activeModal: NgbActiveModal,
-              private api: ApiService,
-              private loginService: LoginService)
+              private api: ApiService)
   {
     this.initFormControls();
     this.initFormGroup();
@@ -72,33 +68,17 @@ export class DevTeamFormComponent {
 
   selectProductOwner(productOwnerId: string): void {
     let productOwner = this.productOwners.find(user => user.id == productOwnerId);
-    /*if(productOwner.inRoleDeveloper) {
-      this.deleteUser(this.availableDevelopers, productOwnerId);
-    }
-    if(this.previousSelectedProductOwner && this.previousSelectedProductOwner.inRoleDeveloper) {
-      this.availableDevelopers.push(this.previousSelectedProductOwner);
-    }*/
     this.previousSelectedProductOwner = productOwner;
   }
 
   addDeveloper(developerId: string) {
     let developer = this.allDevelopers.get(developerId);
-
-    /*if(developer.inRoleProductOwner) {
-      this.deleteUser(this.productOwners, developerId);
-    }*/
-
     this.selectedDevelopers.push(developer);
     this.deleteUser(this.availableDevelopers, developerId);
   }
 
   removeDeveloper(developerId: string) {
     let developer = this.allDevelopers.get(developerId);
-
-    /*if(developer.inRoleProductOwner){
-      this.productOwners.push(developer);
-    }*/
-
     this.deleteUser(this.selectedDevelopers, developerId);
     this.availableDevelopers.push(developer)
   }
@@ -128,9 +108,6 @@ export class DevTeamFormComponent {
         if(this.previousSelectedProductOwner != null) {
           this.fcProductOwner.setValue(this.previousSelectedProductOwner.id);
         }
-        /*if(this.previousSelectedProductOwner != null && this.previousSelectedProductOwner.inRoleDeveloper) {
-          this.deleteUser(this.availableDevelopers, this.previousSelectedProductOwner.id);
-        }*/
       });
     });
   }
@@ -167,8 +144,6 @@ export class DevTeamFormComponent {
       });
 
       this.activeModal.close(dt);
-    } else {
-      this.emptyFields = true;
     }
   }
 

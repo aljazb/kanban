@@ -24,7 +24,7 @@
                   <select name="board-highest-priority" class="form-control highest-priority" id="in-highest-priority"
                           formControlName="highestPriority">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of highestPriorityBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -35,7 +35,7 @@
                   <select name="board-acceptance-testing" class="form-control acceptance-ready" id="in-acceptance-testing"
                           formControlName="acceptanceTesting">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of acceptanceTestingBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -50,7 +50,7 @@
                   <select name="board-start-dev" class="form-control dev-start" id="in-start-dev"
                           formControlName="startDev">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of startDevBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -61,7 +61,7 @@
                   <select name="board-end-dev" class="form-control dev-end" id="in-end-dev"
                           formControlName="endDev">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of allBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of endDevBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -92,10 +92,11 @@
 
       <div class="scroll-item align-top" *ngFor="let bp of board.boardParts">
         <app-board-part-form
-          (onDelete)="onDeleteChild(bp.orderIndex)"
-          (onAddLeft)="addLeft(bp.orderIndex)"
-          (onAddRight)="addRight(bp.orderIndex)"
-          [boardPart]="bp">
+          (onDelete)="handleOnDeleteChild($event)"
+          (onAddLeft)="handleOnAddLeft($event)"
+          (onAddRight)="handleOnAddRight($event)"
+          [boardPart]="bp"
+          [isDeletable]="true">
         </app-board-part-form>
       </div>
 

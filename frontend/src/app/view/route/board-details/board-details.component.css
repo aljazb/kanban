@@ -2,3 +2,14 @@ td {
   text-align: center;
   vertical-align: middle;
 }
+
+.scroll-group > .row {
+  overflow-x: scroll;
+  white-space: nowrap;
+  display: block;
+  flex-wrap: nowrap;
+}
+
+.lane-name {
+  background-color: #f8f9fa;
+}

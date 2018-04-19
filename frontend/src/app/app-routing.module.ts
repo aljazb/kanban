@@ -13,6 +13,7 @@ import {ProjectDetailsComponent} from './view/route/project-details/project-deta
 import {BoardDetailsComponent} from './view/route/board-details/board-details.component';
 import {BoardEditComponent} from './view/route/board-edit/board-edit.component';
 import {CardDetailsComponent} from './view/route/card-details/card-details.component';
+import {BoardDetailsEditComponent} from './view/route/board-details-edit/board-details-edit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -27,8 +28,8 @@ const routes: Routes = [
   { path: 'project/:id', component: ProjectDetailsComponent },
 
   { path: 'board', component: BoardComponent },
-  { path: 'board/edit:id', component: BoardEditComponent },
   { path: 'board/edit', component: BoardEditComponent },
+  { path: 'board/:id/edit', component: BoardDetailsEditComponent },
   { path: 'board/:id', component: BoardDetailsComponent },
 
   { path: 'card/:id', component: CardDetailsComponent },
