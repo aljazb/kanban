@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create card</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="formCard" (ngSubmit)="onSubmit()">
+
+    <div class="form-group row">
+     <label for="in-name" class="col-sm-2 col-form-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" name="card-name" class="form-control" id="in-name"  placeholder="Name"
+                formControlName="name">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-name" class="col-sm-2 col-form-label">Description</label>
+      <div class="col-sm-10">
+        <textarea type="text" name="card-description" class="form-control" id="in-description"  placeholder="Description"
+                  formControlName="description"></textarea>
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <label for="in-workload" class="col-sm-2 col-form-label">Workload</label>
+      <div class="col-sm-10">
+        <input type="text" name="card-workload" class="form-control" id="in-workload" placeholder="Workload"
+               formControlName="workload">
+      </div>
+    </div>
+
+
+    <div class="form-group row">
+      <div class="container">
+        <button type="submit" class="btn btn-primary float-right">Submit</button>
+      </div>
+    </div>
+
+    <!--<div *ngIf="isFormSubmitted" class="alert alert-warning">Please fill in all of the fields.</div>-->
+
+
+  </form>
+
+</div>

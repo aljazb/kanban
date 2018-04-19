@@ -6,6 +6,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ApiService} from '../../../api/api.service';
 import {Project} from '../../../api/models/Project';
 import {LoginService} from '../../../api/login.service';
+import {CardFormComponent} from '../../components/forms/card-form/card-form.component';
 
 @Component({
   selector: 'app-project-details',
@@ -17,6 +18,7 @@ export class ProjectDetailsComponent implements OnInit {
   id: string;
   project: Project;
   isKanbanMaster: boolean;
+  isProductOwner: boolean
   cardsAssigned: boolean = false;
 
   constructor(private route: ActivatedRoute,
@@ -40,6 +42,7 @@ export class ProjectDetailsComponent implements OnInit {
   checkStatus() {
     this.loginService.getUser().subscribe(value => {
       this.isKanbanMaster = value.inRoleKanbanMaster;
+      this.isProductOwner = value.inRoleProductOwner;
     })
   }
 
@@ -56,6 +59,18 @@ export class ProjectDetailsComponent implements OnInit {
     modalRef.result
       .then(value =>
         this.apiService.project.put(value, true).subscribe(value =>
+          console.log(value)
+        ))
+      .catch(reason => console.log(reason));
+  }
+
+  openCardCreateModal() {
+    const modalRef = this.modalService.open(CardFormComponent);
+    (<CardFormComponent> modalRef.componentInstance).setProject(this.project);
+
+    modalRef.result
+      .then(value =>
+        this.apiService.card.post(value, true).subscribe(value =>
           console.log(value)
         ))
       .catch(reason => console.log(reason));
