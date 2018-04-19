@@ -43,6 +43,7 @@ import { BoardBaseFormComponent } from './view/components/forms/board-form/board
 import { BoardEditComponent } from './view/route/board-edit/board-edit.component';
 import { CardDetailsComponent } from './view/route/card-details/card-details.component';
 import { BoardDetailsEditComponent } from './view/route/board-details-edit/board-details-edit.component';
+import {CardFormComponent} from './view/components/forms/card-form/card-form.component';
 
 
 @NgModule({
@@ -73,6 +74,7 @@ import { BoardDetailsEditComponent } from './view/route/board-details-edit/board
     BoardPagingComponent,
     ProfileComponent,
     ProjectFormComponent,
+    CardFormComponent,
     UserAccountFormComponent,
     ProjectDeleteConfirmationComponent,
     UserSelectionFormComponent,
@@ -101,6 +103,7 @@ import { BoardDetailsEditComponent } from './view/route/board-details-edit/board
   bootstrap: [ AppComponent ],
   entryComponents: [
     ProjectFormComponent,
+    CardFormComponent,
     UserSelectionFormComponent,
     UserAccountPasswordFormComponent,
     ProjectFormComponent,
