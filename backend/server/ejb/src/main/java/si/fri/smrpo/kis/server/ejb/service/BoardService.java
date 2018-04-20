@@ -172,13 +172,13 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
-    private void recPermDelete(BoardPart bp) throws DatabaseException {
+    private void recDelete(BoardPart bp) throws DatabaseException {
         if(bp.getChildren() != null) {
             for(BoardPart cBp : bp.getChildren()) {
-                recPermDelete(cBp);
+                recDelete(cBp);
             }
         }
-        database.permDelete(BoardPart.class, bp.getId());
+        database.delete(BoardPart.class, bp.getId());
     }
 
     private void updateBoardParts(Set<BoardPart> dbBoardPart, Set<BoardPart> newBoardPart) throws LogicBaseException {
@@ -215,7 +215,7 @@ public class BoardService implements BoardServiceLocal {
                     }
                 }
 
-                recPermDelete(bp);
+                recDelete(bp);
             }
         }
     }

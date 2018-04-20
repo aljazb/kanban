@@ -9,6 +9,7 @@ import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -70,12 +71,16 @@ public class Board extends UUIDEntity<Board> {
         Set<BoardPart> root = new HashSet<>();
         HashMap<UUID, BoardPart> map = new HashMap<>();
 
-        for(BoardPart bp : boardParts) {
+        Set<BoardPart> activeBoardParts = boardParts.stream()
+                .filter(boardPart -> !boardPart.getIsDeleted())
+                .collect(Collectors.toSet());
+
+        for(BoardPart bp : activeBoardParts) {
             map.put(bp.getId(), bp);
             if(bp.getParent() == null) root.add(bp);
         }
 
-        for(BoardPart bp : boardParts) {
+        for(BoardPart bp : activeBoardParts) {
             if(bp.getParent() != null) {
                 BoardPart parent = map.get(bp.getParent().getId());
 
