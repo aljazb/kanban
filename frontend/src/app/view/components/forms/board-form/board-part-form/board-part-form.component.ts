@@ -94,7 +94,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
     bp.id = v4();
     bp.parent = this.boardPart;
     bp.board = this.boardPart.board;
-    bp.maxWip = 0;
+    bp.maxWip = this.boardPart.maxWip;
     bp.orderIndex = 0;
     bp.leaf = true;
     bp.name = this.getChildName();

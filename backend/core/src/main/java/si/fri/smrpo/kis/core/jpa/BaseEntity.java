@@ -135,13 +135,11 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
                     field.set(this, null);
                 }
             } else {
-                field.set(this, field.get(object));
-
-                /*if(Set.class.isAssignableFrom(classType)) {
+                if(Set.class.isAssignableFrom(classType)) {
                     field.set(this, null);
                 } else {
                     field.set(this, field.get(object));
-                }*/
+                }
             }
         }
     }
@@ -171,19 +169,14 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
                     }
                 }
             } else {
-                Object obj = field.get(object);
-                if (obj != null){
-                    field.set(this, obj);
-                }
-
-                /*if(Set.class.isAssignableFrom(classType)){
+                if(Set.class.isAssignableFrom(classType)){
                     field.set(this, null);
                 } else {
                     Object obj = field.get(object);
                     if (obj != null){
                         field.set(this, obj);
                     }
-                }*/
+                }
             }
         }
     }

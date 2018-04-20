@@ -89,16 +89,18 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
         try {
             if(dbmCore != null) dbmCore.authSet(this, newEntity);
 
-            newEntity.update(newEntity, entityManager);
+            E dbEntity = (E) newEntity.cloneObject();
 
-            newEntity.prePersist();
+            dbEntity.update(dbEntity, entityManager);
 
-            validateEntity(newEntity);
-            if(dbmCore != null) dbmCore.validate(this, newEntity);
+            dbEntity.prePersist();
 
-            entityManager.persist(newEntity);
+            validateEntity(dbEntity);
+            if(dbmCore != null) dbmCore.validate(this, dbEntity);
 
-            return newEntity;
+            entityManager.persist(dbEntity);
+
+            return dbEntity;
         } catch (DatabaseException e){
             throw e;
         } catch (Exception e){

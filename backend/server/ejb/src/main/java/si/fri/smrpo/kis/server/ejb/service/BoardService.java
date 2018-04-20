@@ -91,8 +91,7 @@ public class BoardService implements BoardServiceLocal {
                         if(p.getMaxWip() != 0) {
                             throw new TransactionException("Board part max wip is not valid");
                         }
-
-                        p = bp.getParent();
+                        p = p.getParent();
                     }
                 } else {
                     int maxWip = bp.getMaxWip();
@@ -208,11 +207,12 @@ public class BoardService implements BoardServiceLocal {
                 throw new TransactionException("Board part with cards can not be deleted.");
             } else {
                 BoardPart p = bp.getParent();
-                p.getChildren().remove(bp);
-
-                if(p.getChildren().size() == 0){
-                    p.setLeaf(true);
-                    p = database.update(p);
+                if(p != null){
+                    p.getChildren().remove(bp);
+                    if(p.getChildren().size() == 0){
+                        p.setLeaf(true);
+                        p = database.update(p);
+                    }
                 }
 
                 recPermDelete(bp);
