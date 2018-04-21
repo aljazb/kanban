@@ -40,10 +40,6 @@
                 </div>
               </div>
 
-            </div>
-
-            <div class="col-sm-4">
-
               <div class="form-group row">
                 <label for="in-start-dev" class="col-sm-5 col-form-label">Start dev</label>
                 <div class="col-sm-7">
@@ -63,6 +59,38 @@
                     <option [ngValue]="null">Select column</option>
                     <option *ngFor="let b of endDevBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-sm-4" *ngIf="board.createdOn">
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <div class="col-sm-12">
+                    <select name="board-project" class="form-control" id="in-addProject"
+                            formControlName="projectSelection">
+                      <option [ngValue]="null">Add project</option>
+                      <option *ngFor="let p of projects" [ngValue]="p.id">{{p.name}}</option>
+                    </select>
+                    <div *ngIf="projectAssignedDevTeamIds > 1" class="warning-feedback">
+                      There are {{projectAssignedDevTeamIds}} different dev teams assigned
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-group col-sm-12">
+                  <ul class="list-group" *ngIf="board.projects">
+                    <li class="list-group-item" *ngFor="let p of board.projects">
+                      {{ p.name }}
+                      <button class="btn-sm btn-danger pull-right" type="button" (click)="removeProject(p.id)">
+                        <i class="fa fa-times-circle"></i>
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               </div>
 

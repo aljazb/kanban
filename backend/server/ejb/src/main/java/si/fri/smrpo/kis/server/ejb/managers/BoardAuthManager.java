@@ -11,6 +11,7 @@ import si.fri.smrpo.kis.server.jpa.entities.Card;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 
 import javax.persistence.criteria.From;
+import javax.persistence.criteria.JoinType;
 import java.util.*;
 
 public class BoardAuthManager extends AuthManager<Board> {
@@ -28,13 +29,14 @@ public class BoardAuthManager extends AuthManager<Board> {
     public CriteriaFilter<Board> authCriteria() {
         return (p, cb, r) -> {
             if(!isUserInRole(ROLE_ADMINISTRATOR)) {
-                From membership = r.join("projects").join("devTeam").join("joinedUsers");
+                From membership = r.join("projects", JoinType.LEFT).join("devTeam", JoinType.LEFT).join("joinedUsers", JoinType.LEFT);
+                UUID id = UUID.fromString(getUserId().toString());
                 return cb.and(p, cb.or(
+                        cb.equal(r.join("owner").get("id"), id),
                         cb.and(
                                 cb.equal(membership.get("isDeleted"), false),
-                                cb.equal(membership.join("userAccount").get("id"), getUserId())
-                        ),
-                        cb.equal(r.join("owner").get("id"),  getUserId())
+                                cb.equal(membership.join("userAccount", JoinType.LEFT).get("id"), getUserId())
+                        )
                 ));
             } else {
                 return p;

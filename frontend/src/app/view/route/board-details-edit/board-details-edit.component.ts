@@ -50,13 +50,15 @@ export class BoardDetailsEditComponent implements OnInit {
   private buildCardRefs(board: Board): void {
     let allBoardParts = this.buildAllBoardParts(board.boardParts);
 
-    board.projects.forEach(project => {
-      project.cards.forEach(card => {
-        let bp = allBoardParts.get(card.boardPart.id);
-        if(!Array.isArray(bp.cards)) bp.cards = [];
-        bp.cards.push(card);
-      })
-    });
+    if(board.projects) {
+      board.projects.forEach(project => {
+        project.cards.forEach(card => {
+          let bp = allBoardParts.get(card.boardPart.id);
+          if(!Array.isArray(bp.cards)) bp.cards = [];
+          bp.cards.push(card);
+        })
+      });
+    }
   }
 
   private buildAllBoardParts(boardParts: BoardPart[]): Map<string, BoardPart> {
@@ -79,7 +81,7 @@ export class BoardDetailsEditComponent implements OnInit {
   update(): void {
     console.log(this.board);
     if(this.boardBaseFormComp.isValid()) {
-      this.api.board.put(this.board, true).subscribe(board => {
+      this.api.board.put(this.board).subscribe(board => {
         this.toaster.pop('success', "Form updated");
         this.back();
       }, error2 => {

@@ -89,7 +89,7 @@ public abstract class DatabaseCore<I extends Serializable> extends DatabaseBase 
         try {
             if(dbmCore != null) dbmCore.authSet(this, newEntity);
 
-            E dbEntity = (E) newEntity.cloneObject();
+            E dbEntity = (E) newEntity.cloneObject(entityManager);
 
             dbEntity.update(dbEntity, entityManager);
 

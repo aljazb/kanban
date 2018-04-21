@@ -70,7 +70,12 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
     }
 
     @JsonIgnore
-    public BaseEntity cloneObject(){
+    public BaseEntity cloneObject() {
+        return cloneObject(null);
+    }
+
+    @JsonIgnore
+    public BaseEntity cloneObject(EntityManager em) {
         try{
             BaseEntity clone = getClass().newInstance();
 
@@ -78,15 +83,33 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
                 field.setAccessible(true);
 
                 Class<?> type = field.getType();
-                if(!Set.class.isAssignableFrom(type)) {
-                    if (BaseEntity.class.isAssignableFrom(type)) {
-                        if (field.getAnnotation(JoinColumn.class) != null) {
-                            field.set(clone, field.get(this));
+
+                if (BaseEntity.class.isAssignableFrom(type)) {
+                    BaseEntity obj = (BaseEntity) field.get(this);
+                    if (obj != null) {
+                        if(em != null) {
+                            if(obj.getId() != null) {
+                                if(!em.contains(obj)) {
+                                    Object refObj = em.getReference(type, obj.getId());
+                                    field.set(clone, refObj);
+                                } else {
+                                    field.set(clone, obj);
+                                }
+                            }
+                        } else {
+                            field.set(clone, obj);
                         }
-                    } else {
+                    }/* else {
+                        field.set(clone, null);
+                    }*/
+                } else {
+                    if(!Set.class.isAssignableFrom(type)) {
                         field.set(clone, field.get(this));
-                    }
+                    }/* else {
+                        field.set(clone, null);
+                    }*/
                 }
+
             }
             return clone;
         }catch(Exception e){
@@ -127,7 +150,9 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
             if (BaseEntity.class.isAssignableFrom(classType)) {
                 BaseEntity obj = (BaseEntity) field.get(object);
                 if (obj != null && obj.getId() != null) {
-                    if(!em.contains(obj)) {
+                    if(em.contains(obj)) {
+                        field.set(this, obj);
+                    } else {
                         Object setObj = em.getReference(classType, obj.getId());
                         field.set(this, setObj);
                     }
@@ -135,9 +160,7 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
                     field.set(this, null);
                 }
             } else {
-                if(Set.class.isAssignableFrom(classType)) {
-                    field.set(this, null);
-                } else {
+                if(!Set.class.isAssignableFrom(classType)) {
                     field.set(this, field.get(object));
                 }
             }
@@ -163,15 +186,15 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
             if (BaseEntity.class.isAssignableFrom(classType)) {
                 BaseEntity obj = (BaseEntity) field.get(object);
                 if (obj != null && obj.getId() != null) {
-                    if(!em.contains(obj)) {
-                        Object setObj = em.getReference(obj.getClass(), obj.getId());
+                    if(em.contains(obj)) {
+                        field.set(this, obj);
+                    } else {
+                        Object setObj = em.getReference(classType, obj.getId());
                         field.set(this, setObj);
                     }
                 }
             } else {
-                if(Set.class.isAssignableFrom(classType)){
-                    field.set(this, null);
-                } else {
+                if(!Set.class.isAssignableFrom(classType)){
                     Object obj = field.get(object);
                     if (obj != null){
                         field.set(this, obj);

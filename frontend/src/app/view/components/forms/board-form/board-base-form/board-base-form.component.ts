@@ -4,7 +4,10 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {BoardPartFormComponent} from '../board-part-form/board-part-form.component';
 import {BoardPart} from '../../../../../api/models/BoardPart';
 import {FormImpl} from '../../form-impl';
-import {v4} from 'uuid';
+import * as UUID from 'uuid/v4';
+import {Project} from '../../../../../api/models/Project';
+import {ApiService} from '../../../../../api/api.service';
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'app-board-base-form',
@@ -25,14 +28,26 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   fcStartDev: FormControl;
   fcEndDev: FormControl;
   fcAcceptanceTesting: FormControl;
+  fcProjectSelection: FormControl;
 
-  constructor() {
+  projectAssignedDevTeamIds: number = 1;
+
+  projects: Project[];
+
+  constructor(private api: ApiService) {
     super();
   }
 
   ngOnInit() {
     this.initFormControl();
     this.initFormGroup();
+    this.loadProject();
+  }
+
+  private loadProject(): void {
+    this.api.project.getList().subscribe(paging => {
+      this.projects = paging.items.filter(project => project.board == null);
+    })
   }
 
   initFormControl(): void {
@@ -74,6 +89,31 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
       }
       this.board.acceptanceTesting = value
     });
+
+    this.fcProjectSelection = new FormControl(null);
+    this.fcProjectSelection.valueChanges.subscribe(value => {
+      if (!isNullOrUndefined(value)) {
+        this.addProject(value);
+        this.fcProjectSelection.patchValue(null);
+      }
+    });
+  }
+
+  addProject(projectId: string) {
+    let p = this.projects.find(value => value.id == projectId);
+
+    if(!Array.isArray(this.board.projects)) this.board.projects = [];
+    this.board.projects.push(p);
+
+    this.projects = this.projects.filter(value => value.id != projectId);
+    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
+  }
+
+  removeProject(projectId: string) {
+    let p = this.board.projects.find(value => value.id == projectId);
+    this.projects.push(p);
+    this.board.projects = this.board.projects.filter(value => value.id != projectId);
+    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
   }
 
   initFormGroup(): void {
@@ -82,8 +122,19 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
       highestPriority: this.fcHighestPriority,
       startDev: this.fcStartDev,
       endDev: this.fcEndDev,
-      acceptanceTesting: this.fcAcceptanceTesting
+      acceptanceTesting: this.fcAcceptanceTesting,
+      projectSelection: this.fcProjectSelection
     });
+  }
+
+  private getDifferentDevTeamIds(projects: Project[]): number {
+    let devTeamIds = new Map<string, boolean>();
+
+    this.projects.forEach(value => {
+      devTeamIds[value.devTeam.id] = true;
+    });
+
+    return devTeamIds.size;
   }
 
   isValid(): boolean {
@@ -102,7 +153,7 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
 
   private createChild(): BoardPart {
     let bp = new BoardPart();
-    bp.id = v4();
+    bp.id = UUID();
     bp.name = `Column ${this.board.boardParts.length}`;
     bp.board = this.board;
     bp.maxWip = 0;
@@ -142,16 +193,18 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
 
   private buildAllBoardParts(boardParts: BoardPart[], ignore: string[]=[]): BoardPart[] {
     let bp = [];
-    boardParts.forEach(value => {
-      if(value.children && value.children.length > 0) {
-        let cBp = this.buildAllBoardParts(value.children, ignore);
-        bp = bp.concat(cBp)
-      } else {
-        if(!ignore.includes(value.id)) {
-          bp.push(value);
+    if(boardParts != null) {
+      boardParts.forEach(value => {
+        if(value.children && value.children.length > 0) {
+          let cBp = this.buildAllBoardParts(value.children, ignore);
+          bp = bp.concat(cBp)
+        } else {
+          if(!ignore.includes(value.id)) {
+            bp.push(value);
+          }
         }
-      }
-    });
+      });
+    }
     return bp;
   }
 

@@ -3,7 +3,7 @@ import {Board} from '../../../api/models/Board';
 import {BoardBaseFormComponent} from '../../components/forms/board-form/board-base-form/board-base-form.component';
 import {JsogService} from 'jsog-typescript';
 import {ApiService} from '../../../api/api.service';
-import {ActivatedRoute} from '@angular/router';
+import * as UUID from 'uuid/v4';
 
 @Component({
   selector: 'app-board-edit',
@@ -34,7 +34,7 @@ export class BoardEditComponent implements OnInit {
 
   create(): void {
     if(this.boardBaseFormComp.isValid()) {
-      this.api.board.post(this.selectedBoard, true).subscribe(board => {
+      this.api.board.post(this.selectedBoard).subscribe(board => {
         this.boardDeleteRef(this.selectedBoard);
         this.selectedBoard = null;
       });
@@ -47,8 +47,11 @@ export class BoardEditComponent implements OnInit {
   }
 
   newBoard(): void {
-    this.selectedBoard = new Board();
-    this.selectedBoard.name = "New Board";
+    let b = new Board();
+    b.id = UUID();
+    b.name = "New Board";
+
+    this.selectedBoard = b;
     this.boards.push(this.selectedBoard);
     this.persist();
   }

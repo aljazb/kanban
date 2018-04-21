@@ -8,7 +8,9 @@ import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.BoardServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
+import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
+import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -54,6 +56,20 @@ public class BoardService implements BoardServiceLocal {
         }
 
         validate(board.getBoardParts());
+
+        if(board.getProjects() != null){
+            for(Project project : board.getProjects()) {
+                Project dbProject = database.get(Project.class, project.getId());
+                if(dbProject == null) {
+                    throw new TransactionException("Specified project does not exist");
+                } else if (dbProject.getBoard() != null && !dbProject.getBoard().getId().equals(board.getId())) {
+                    throw new TransactionException("Project is already taken by another board");
+                }
+            }
+        } else {
+            board.setProjects(new HashSet<>());
+        }
+
     }
 
     private void validate(Set<BoardPart> boardParts) throws TransactionException {
@@ -118,33 +134,37 @@ public class BoardService implements BoardServiceLocal {
 
     private Board persist(Board board) throws LogicBaseException {
 
-        board = database.create(board);
+        Board dbBoard = database.create(board);
 
         for(BoardPart bp : board.getBoardParts()) {
-            persistPart(bp, board, null);
+            persistPart(bp, dbBoard, null);
         }
 
-        return board;
+        for(Project p : board.getProjects()) {
+            p.setBoard(dbBoard);
+            database.update(p);
+        }
+
+
+        return dbBoard;
     }
 
-    private BoardPart persistPart(BoardPart part, Board board, BoardPart parent) throws LogicBaseException {
+    private void persistPart(BoardPart part, Board dbBoard, BoardPart parent) throws LogicBaseException {
 
-        part.setBoard(board);
+        part.setBoard(dbBoard);
         part.setParent(parent);
 
         if(part.getChildren() == null || part.getChildren().isEmpty()){
             part.setLeaf(true);
-            part = database.create(part);
+            database.create(part);
         } else {
             part.setLeaf(false);
-            part = database.create(part);
+            BoardPart dbPart = database.create(part);
 
             for(BoardPart bp : part.getChildren()) {
-                persistPart(bp, board, part);
+                persistPart(bp, dbBoard, dbPart);
             }
         }
-
-        return part;
     }
 
 
@@ -159,12 +179,12 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
-    private boolean hasCardsAssignet(BoardPart boardPart) {
+    private boolean hasCardsAssigned(BoardPart boardPart) {
         if (boardPart.getLeaf()) {
             return boardPart.getCards().size() > 0;
         } else {
             for(BoardPart bp : boardPart.getChildren()) {
-                if(hasCardsAssignet(bp)) {
+                if(hasCardsAssigned(bp)) {
                     return true;
                 }
             }
@@ -178,6 +198,10 @@ public class BoardService implements BoardServiceLocal {
                 recDelete(cBp);
             }
         }
+
+        bp.setParent(null);
+        database.update(bp);
+
         database.delete(BoardPart.class, bp.getId());
     }
 
@@ -190,12 +214,12 @@ public class BoardService implements BoardServiceLocal {
                 dbBp = database.create(nBp);
                 dbBp.setChildren(new HashSet<>());
             } else {
-                if(dbBp.getLeaf() && hasCardsAssignet(dbBp)) {
+                if(dbBp.getLeaf() && hasCardsAssigned(dbBp)) {
                     if(!nBp.getLeaf()) {
                         throw new TransactionException("Board part with cards can not be expanded to sub parts.");
                     }
                 }
-                dbBp = database.update(nBp);
+                database.update(nBp);
                 map.remove(dbBp.getId());
             }
             if(nBp.getChildren() == null) nBp.setChildren(new HashSet<>());
@@ -203,7 +227,7 @@ public class BoardService implements BoardServiceLocal {
         }
 
         for(BoardPart bp : map.values()) {
-            if(hasCardsAssignet(bp)) {
+            if(hasCardsAssigned(bp)) {
                 throw new TransactionException("Board part with cards can not be deleted.");
             } else {
                 BoardPart p = bp.getParent();
@@ -220,12 +244,34 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
+    private void updateProject(Board dbBoard, Board newBoard) throws DatabaseException {
+        HashMap<UUID, Project> assignedProject = UUIDEntity.buildHashMap(dbBoard.getProjects());
+
+        for(Project p : newBoard.getProjects()) {
+            Project dbP = assignedProject.get(p.getId());
+            if(dbP == null) {
+                p.setBoard(dbBoard);
+                database.update(p);
+            } else {
+                assignedProject.remove(dbP.getId());
+            }
+        }
+
+        for(Project p : assignedProject.values()) {
+            p.setBoard(null);
+            database.update(p);
+        }
+    }
+
     private Board updateBoard(Board dbBoard, Board newBoard) throws LogicBaseException {
+        updateProject(dbBoard, newBoard);
+
         dbBoard.buildBoardPartsReferences();
         updateBoardParts(dbBoard.getBoardParts(), newBoard.getBoardParts());
 
-        dbBoard = database.update(newBoard);  // Update column definitions
+        dbBoard = database.update(newBoard);
 
+        dbBoard = database.get(Board.class, dbBoard.getId());
         dbBoard.buildBoardPartsReferences();
         dbBoard.fetchProjectsWithCards();
 

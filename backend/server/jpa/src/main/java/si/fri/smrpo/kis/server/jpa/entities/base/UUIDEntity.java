@@ -3,12 +3,14 @@ package si.fri.smrpo.kis.server.jpa.entities.base;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 
 
 @MappedSuperclass
-public abstract class UUIDEntity<T extends UUIDEntity> extends BaseEntity<T, UUID> {
+public abstract class UUIDEntity<E extends UUIDEntity> extends BaseEntity<E, UUID> {
 
     @Id
     @Column(name = "id", columnDefinition = "uuid", updatable = false)
@@ -30,5 +32,15 @@ public abstract class UUIDEntity<T extends UUIDEntity> extends BaseEntity<T, UUI
         if(this.id == null){
             id = UUID.randomUUID();
         }
+    }
+
+    public static  <U extends UUIDEntity> HashMap<UUID, U> buildHashMap(Set<U> entitySet) {
+        HashMap<UUID, U> map = new HashMap<>();
+
+        for(U u : entitySet) {
+            map.put(u.getId(), u);
+        }
+
+        return map;
     }
 }

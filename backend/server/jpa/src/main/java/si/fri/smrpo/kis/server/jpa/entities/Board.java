@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 @Table(name="board")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "board.access.view", query = "SELECT b FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+        @NamedQuery(name = "board.access.view", query = "SELECT b FROM Board b LEFT JOIN b.projects p LEFT JOIN p.devTeam dt LEFT JOIN dt.joinedUsers m " +
                 "WHERE b.id = :boardId AND (b.owner.id = :userId OR m.userAccount.id = :userId)"),
-        @NamedQuery(name = "board.access.edit", query = "SELECT b FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+        @NamedQuery(name = "board.access.edit", query = "SELECT b FROM Board b LEFT JOIN b.projects p LEFT JOIN p.devTeam dt LEFT JOIN dt.joinedUsers m " +
                 "WHERE b.id = :boardId AND (b.owner.id = :userId OR (m.userAccount.id = :userId AND " +
                 "(m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER OR " +
                 "m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER)))")
@@ -55,7 +55,7 @@ public class Board extends UUIDEntity<Board> {
     private Set<Project> projects;
 
     @Override
-    protected boolean baseSkip(Field field) {
+    protected boolean genericUpdateSkip(Field field) {
         if(super.baseSkip(field)) {
             return true;
         } else {
@@ -71,13 +71,15 @@ public class Board extends UUIDEntity<Board> {
         Set<BoardPart> root = new HashSet<>();
         HashMap<UUID, BoardPart> map = new HashMap<>();
 
-        Set<BoardPart> activeBoardParts = boardParts.stream()
+        Set<BoardPart> activeBoardParts = getBoardParts().stream()
                 .filter(boardPart -> !boardPart.getIsDeleted())
                 .collect(Collectors.toSet());
 
         for(BoardPart bp : activeBoardParts) {
             map.put(bp.getId(), bp);
-            if(bp.getParent() == null) root.add(bp);
+            if(bp.getParent() == null) {
+                root.add(bp);
+            }
         }
 
         for(BoardPart bp : activeBoardParts) {

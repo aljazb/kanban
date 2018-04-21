@@ -2,8 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren}
 import {BoardPart} from '../../../../../api/models/BoardPart';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {FormImpl} from '../../form-impl';
-import {v4} from 'uuid';
-import {DTDateFormat} from '../../../../../utility';
+import * as UUID from 'uuid/v4';
 
 @Component({
   selector: 'app-board-part-form',
@@ -58,9 +57,14 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
     this.fcMaxWip = new FormControl(this.boardPart.maxWip, [Validators.pattern('([0-9]+)'), this.checkWip()]);
     this.fcMaxWip.valueChanges.subscribe(maxWip => {
       this.boardPart.maxWip = maxWip;
-      this.viewChildren.forEach(item => item.fcMaxWip.patchValue(item.fcMaxWip.value));
+      this.viewChildren.forEach(item => {
+        item.fcMaxWip.patchValue(item.fcMaxWip.value);
+        item.fcMaxWip.markAsTouched();
+      });
     });
   }
+
+
 
   initFormGroup(): void {
     this.formBoardPart = new FormGroup({
@@ -91,7 +95,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
 
   private createChild(): BoardPart {
     let bp = new BoardPart();
-    bp.id = v4();
+    bp.id = UUID();
     bp.parent = this.boardPart;
     bp.board = this.boardPart.board;
     bp.maxWip = this.boardPart.maxWip;
@@ -165,30 +169,27 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
   private checkWip(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {
       let maxWip: number = control.value;
-
-      let valid = true;
       let parent = this.boardPart.parent;
 
-      if(maxWip == 0){
-        while(parent) {
-          if(parent.maxWip != 0) {
-            valid = false;
-            break;
-          }
-          parent = parent.parent;
+      while(parent) {
+        if(!this.wipValid(parent.maxWip, maxWip)) {
+          return {'greaterThanParent': {value: control.value}};
         }
-      } else {
-        while(parent) {
-          if(parent.maxWip != 0 && parent.maxWip < maxWip) {
-            valid = false;
-            break;
-          }
-          parent = parent.parent;
-        }
+        parent = parent.parent;
       }
 
-      return valid ? null : {'greaterThanParent': {value: control.value}};
+      return null;
     };
+  }
+
+  private wipValid(parent: number, child: number): boolean {
+    if(parent == 0) {
+      return true;
+    } else if (child == 0) {
+      return false;
+    } else {
+      return Number(parent) >= Number(child);
+    }
   }
 
   get isAcceptanceTesting(): boolean {
@@ -212,4 +213,5 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
   }
 
 }
+
 

@@ -22,7 +22,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let tr of boardRepresentation.projectTable">
-                <td class="lane-name">{{tr.name}}</td>
+                <td class="lane-name hover-pointer" routerLink="/project/{{tr.id}}" >{{tr.name}}</td>
                 <td *ngFor="let td of tr.cardTables">
 
                   <div class="list-group">
