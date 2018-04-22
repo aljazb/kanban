@@ -1,4 +1,4 @@
-package si.fri.smrpo.kis.core.logic.database.instance.interfaces;
+package si.fri.smrpo.kis.core.logic.database.interfaces;
 
 
 import java.io.Serializable;

@@ -3,6 +3,7 @@ import {Project} from './Project';
 import {BoardPart} from './BoardPart';
 import {CardMove} from './card-move';
 import {SubTask} from './sub-task';
+import {Membership} from './Membership';
 
 export class Card extends BaseEntity<Card> {
   name: string;
@@ -17,4 +18,5 @@ export class Card extends BaseEntity<Card> {
 
   cardMoves: CardMove[];
   subTasks: SubTask[];
+  membership: Membership;
 }

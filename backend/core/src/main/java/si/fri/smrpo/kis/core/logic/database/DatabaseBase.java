@@ -1,26 +1,25 @@
-package si.fri.smrpo.kis.core.logic.database.instance;
+package si.fri.smrpo.kis.core.logic.database;
 
 import org.jinq.jpa.JPAJinqStream;
 import org.jinq.jpa.JinqJPAStreamProvider;
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
-import si.fri.smrpo.kis.core.logic.database.instance.interfaces.DatabaseBaseImpl;
+import si.fri.smrpo.kis.core.logic.database.interfaces.DatabaseBaseImpl;
 
+import javax.annotation.security.PermitAll;
 import javax.persistence.EntityManager;
 
+@PermitAll
 public abstract class DatabaseBase implements DatabaseBaseImpl {
 
     protected EntityManager entityManager;
+    protected JinqJPAStreamProvider source;
 
-    private JinqJPAStreamProvider source;
-
-    public DatabaseBase() {
-    }
 
     public DatabaseBase(EntityManager entityManager) {
-        init(entityManager);
+        this.entityManager = entityManager;
     }
 
-    protected void init(EntityManager entityManager) {
+    protected void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 

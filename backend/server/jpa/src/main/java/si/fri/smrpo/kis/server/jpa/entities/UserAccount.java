@@ -56,7 +56,6 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     @OneToMany(mappedBy = "assignedTo")
     private Set<SubTask> subTasks;
 
-
     public String getFirstName() {
         return firstName;
     }
@@ -168,4 +167,5 @@ public class UserAccount extends UUIDEntity<UserAccount> {
     public void setInRoleProductOwner(Boolean inRoleProductOwner) {
         this.inRoleProductOwner = inRoleProductOwner;
     }
+
 }

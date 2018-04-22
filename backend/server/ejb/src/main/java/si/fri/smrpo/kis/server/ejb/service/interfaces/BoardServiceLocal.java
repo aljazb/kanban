@@ -6,8 +6,7 @@ import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 public interface BoardServiceLocal {
 
-    Board create(Board board) throws LogicBaseException;
-
-    Board update(UserAccount authUser , Board board) throws LogicBaseException;
+    Board create(Board board, UserAccount authUser) throws LogicBaseException;
+    Board update(Board board, UserAccount authUser) throws LogicBaseException;
 
 }

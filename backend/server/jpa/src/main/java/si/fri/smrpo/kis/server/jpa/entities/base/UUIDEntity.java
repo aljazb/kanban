@@ -1,6 +1,7 @@
 package si.fri.smrpo.kis.server.jpa.entities.base;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
+import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -43,4 +44,8 @@ public abstract class UUIDEntity<E extends UUIDEntity> extends BaseEntity<E, UUI
 
         return map;
     }
+
+    @Transient
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
 }

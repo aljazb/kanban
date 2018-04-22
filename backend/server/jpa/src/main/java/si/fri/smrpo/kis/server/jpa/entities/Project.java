@@ -8,15 +8,16 @@ import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Entity
 @Table(name="project")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "project.access",
-                query = "SELECT p FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers m JOIN m.userAccount ua " +
-                        "WHERE p.id = :projectId AND (p.owner.id = :userId OR dt = m.devTeam AND m.userAccount = ua AND ua.id = :userId)")
+        @NamedQuery(name = "project.membership",
+                query = "SELECT m FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers m JOIN m.userAccount ua " +
+                        "WHERE p.id = :projectId AND dt = m.devTeam AND m.userAccount = ua AND ua.id = :userId AND m.isDeleted = false")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Project extends UUIDEntity<Project> {
@@ -55,6 +56,21 @@ public class Project extends UUIDEntity<Project> {
 
     @OneToMany(mappedBy = "project")
     private Set<Card> cards;
+
+
+    @Transient
+    private Membership membership;
+
+    public Membership queryMembership(EntityManager em, UUID authId) {
+        membership = em.createNamedQuery("project.membership", Membership.class)
+                .setMaxResults(1)
+                .setParameter("projectId", getId())
+                .setParameter("userId", authId)
+                .getResultList()
+                .stream().findFirst().orElse(null);
+
+        return membership;
+    }
 
 
     public DevTeam getDevTeam() {
@@ -135,5 +151,13 @@ public class Project extends UUIDEntity<Project> {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Membership getMembership() {
+        return membership;
+    }
+
+    public void setMembership(Membership membership) {
+        this.membership = membership;
     }
 }

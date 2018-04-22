@@ -16,12 +16,9 @@ import java.util.stream.Collectors;
 @Table(name="board")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "board.access.view", query = "SELECT b FROM Board b LEFT JOIN b.projects p LEFT JOIN p.devTeam dt LEFT JOIN dt.joinedUsers m " +
-                "WHERE b.id = :boardId AND (b.owner.id = :userId OR m.userAccount.id = :userId)"),
-        @NamedQuery(name = "board.access.edit", query = "SELECT b FROM Board b LEFT JOIN b.projects p LEFT JOIN p.devTeam dt LEFT JOIN dt.joinedUsers m " +
-                "WHERE b.id = :boardId AND (b.owner.id = :userId OR (m.userAccount.id = :userId AND " +
-                "(m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER OR " +
-                "m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER)))")
+        @NamedQuery(name = "board.membership",
+                query = "SELECT m FROM Board b LEFT JOIN b.projects p LEFT JOIN p.devTeam dt LEFT JOIN dt.joinedUsers m " +
+                        "WHERE b.id = :boardId AND m.userAccount.id = :userId AND m.isDeleted = false")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Board extends UUIDEntity<Board> {
@@ -50,9 +47,24 @@ public class Board extends UUIDEntity<Board> {
     @OneToMany(mappedBy = "board")
     private Set<BoardPart> boardParts;
 
-
     @OneToMany(mappedBy = "board")
     private Set<Project> projects;
+
+
+    @Transient
+    private Membership membership;
+
+    public Membership queryMembership(EntityManager em, UUID authId) {
+        membership = em.createNamedQuery("board.membership", Membership.class)
+                .setMaxResults(1)
+                .setParameter("boardId", getId())
+                .setParameter("userId", authId)
+                .getResultList()
+                .stream().findFirst().orElse(null);
+
+        return membership;
+    }
+
 
     @Override
     protected boolean genericUpdateSkip(Field field) {
@@ -169,5 +181,13 @@ public class Board extends UUIDEntity<Board> {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public Membership getMembership() {
+        return membership;
+    }
+
+    public void setMembership(Membership membership) {
+        this.membership = membership;
     }
 }

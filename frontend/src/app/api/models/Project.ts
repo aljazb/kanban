@@ -3,6 +3,7 @@ import {DevTeam} from './DevTeam';
 import {UserAccount} from './UserAccount';
 import {Card} from './Card';
 import {Board} from './Board';
+import {Membership} from './Membership';
 
 export class Project extends BaseEntity<Project> {
   code: string;
@@ -17,4 +18,5 @@ export class Project extends BaseEntity<Project> {
   devTeam: DevTeam;
   cards: Card[];
   board: Board;
+  membership: Membership;
 }

@@ -74,7 +74,8 @@
                       <option [ngValue]="null">Add project</option>
                       <option *ngFor="let p of projects" [ngValue]="p.id">{{p.name}}</option>
                     </select>
-                    <div *ngIf="projectAssignedDevTeamIds > 1" class="warning-feedback">
+                    <div *ngIf="projectAssignedDevTeamIds > 1" class="warning-feedback text-center">
+                      <i class="fa fa-exclamation-triangle"></i>
                       There are {{projectAssignedDevTeamIds}} different dev teams assigned
                     </div>
                   </div>

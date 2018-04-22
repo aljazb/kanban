@@ -6,13 +6,15 @@ import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name="card")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "card.access", query = "SELECT c FROM Card c JOIN c.project p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
-                "WHERE c.id = :cardId AND m.isDeleted = false AND m.userAccount.id = :userId")
+        @NamedQuery(name = "card.membership",
+                query = "SELECT m FROM Card c JOIN c.project p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
+                        "WHERE c.id = :cardId AND m.userAccount.id = :userId AND m.isDeleted = false")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Card extends UUIDEntity<Card> {
@@ -45,6 +47,22 @@ public class Card extends UUIDEntity<Card> {
 
     @OneToMany(mappedBy = "card")
     private Set<SubTask> subTasks;
+
+
+    @Transient
+    private Membership membership;
+
+    public Membership queryMembership(EntityManager em, UUID authId) {
+        membership = em.createNamedQuery("card.membership", Membership.class)
+                .setMaxResults(1)
+                .setParameter("cardId", getId())
+                .setParameter("userId", authId)
+                .getResultList()
+                .stream().findFirst().orElse(null);
+
+        return membership;
+    }
+
 
 
     public Project getProject() {
@@ -117,5 +135,13 @@ public class Card extends UUIDEntity<Card> {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Membership getMembership() {
+        return membership;
+    }
+
+    public void setMembership(Membership membership) {
+        this.membership = membership;
     }
 }

@@ -17,7 +17,6 @@ public class Membership extends UUIDEntity<Membership> {
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_account_id", nullable = false)
     private UserAccount userAccount;
@@ -25,7 +24,6 @@ public class Membership extends UUIDEntity<Membership> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dev_team_id", nullable = false)
     private DevTeam devTeam;
-
 
 
     public UserAccount getUserAccount() {

@@ -1,6 +1,5 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
-import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
@@ -67,12 +66,22 @@ public class DevTeamService implements DevTeamServiceLocal {
         if(productOwners.isEmpty()) {
             throw new OperationException("No product owner specified.");
         }
+
+        List<Membership> developers = devTeam.getJoinedUsers().stream()
+                .filter(e -> e.getMemberType() == MemberType.DEVELOPER ||
+                        e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER ||
+                        e.getMemberType() == MemberType.DEVELOPER_AND_PRODUCT_OWNER)
+                .collect(Collectors.toList());
+
+        if(developers.isEmpty()) {
+            throw new OperationException("No developer specified.");
+        }
     }
 
     private void loadDevTeamMembers(DevTeam devTeam) throws DatabaseException {
         for(Membership member : devTeam.getJoinedUsers()) {
             UUID id = member.getUserAccount().getId();
-            UserAccount ua = database.getEntityManager().find(UserAccount.class, id);
+            UserAccount ua = database.find(UserAccount.class, id);
             if(ua == null){
                 throw new DatabaseException(String.format("User with id '%s' does not exist.", id), ExceptionType.ENTITY_DOES_NOT_EXISTS);
             } else {
@@ -148,36 +157,12 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
 
-    public Paging<UserAccount> getDevelopers(UUID devTeamId) {
-        List<UserAccount> uaList = database.getEntityManager().createNamedQuery("devTeam.getDevelopers", UserAccount.class)
-                .setParameter("id", devTeamId)
-                .getResultList();
-
-        return new Paging<>(uaList, uaList.size());
-    }
-
-    @Override
-    public UserAccount getKanbanMaster(UUID devTeamId) {
-        return database.getEntityManager().createNamedQuery("devTeam.getKanbanMaster", UserAccount.class)
-                .setParameter("id", devTeamId)
-                .getResultList().stream().findFirst().orElse(null);
-    }
-
-    @Override
-    public UserAccount getProductOwner(UUID devTeamId) {
-            return database.getEntityManager().createNamedQuery("devTeam.getProductOwner", UserAccount.class)
-                    .setParameter("id", devTeamId)
-                    .getResultList().stream().findFirst().orElse(null);
-    }
-
-    @Override
     public UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException {
-        if (!getKanbanMaster(devTeamId).getId().equals(authId)) {
-            throw new OperationException("User is not KanbanMaster of this group",
-                    ExceptionType.INSUFFICIENT_RIGHTS);
-        }
-
         DevTeam devTeam = database.get(DevTeam.class, devTeamId);
+
+        if (!authId.equals(devTeam.getKanbanMaster().getId())) {
+            throw new OperationException("User is not KanbanMaster of this group", ExceptionType.INSUFFICIENT_RIGHTS);
+        }
 
         Membership memberMtm = devTeam.getJoinedUsers().stream().filter(e -> e.getUserAccount().getId()
                 .equals(memberId) && !e.getIsDeleted()).findFirst().orElse(null);
@@ -206,36 +191,12 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
     @Override
-    public DevTeam getWithUsers(UUID id) throws LogicBaseException {
-        DevTeam dt = this.database.get(DevTeam.class, id);
-
-        if (dt == null) {
-            throw new OperationException("Dev team does not exist.", ExceptionType.ENTITY_DOES_NOT_EXISTS);
-        }
-
-        List<Membership> activeMembersList = database.getEntityManager().createNamedQuery("devTeam.get.active.members", Membership.class)
-                .setParameter("devTeamId", dt.getId()).getResultList();
-
-        dt.setJoinedUsers(new HashSet<>(activeMembersList));
-
-        return dt;
-    }
-
-    @Override
     public List<HistoryEvent> getDevTeamEvents(UUID devTeamId) throws LogicBaseException {
-
         DevTeam dt = this.database.get(DevTeam.class, devTeamId);
 
-        if (dt == null) {
-            throw new OperationException("Dev team does not exist.", ExceptionType.ENTITY_DOES_NOT_EXISTS);
-        }
+        List<HistoryEvent> events = new ArrayList<>();
 
-        List<Membership> activeMembersList = database.getEntityManager().createNamedQuery("devTeam.get.all.memberships", Membership.class)
-                .setParameter("devTeamId", dt.getId()).getResultList();
-
-        List<HistoryEvent> events = new LinkedList<>();
-
-        for (Membership m : activeMembersList) {
+        for (Membership m : dt.getJoinedUsers()) {
             HistoryEvent createdEvent = new HistoryEvent();
             createdEvent.setDate(m.getCreatedOn());
             createdEvent.setEvent(String.format("User %s joined development team.", m.getUserAccount().getEmail()));
@@ -248,6 +209,8 @@ public class DevTeamService implements DevTeamServiceLocal {
                 events.add(deletedEvent);
             }
         }
+
+        events.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
         return events;
     }

@@ -1,9 +1,7 @@
 package si.fri.smrpo.kis.core.rest.resource.uuid;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntityVersion;
-import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
-import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.core.rest.source.CrudVersionSource;
 
 import javax.ws.rs.*;
@@ -20,7 +18,7 @@ public abstract class CrudVersionResource<
     }
 
     @POST
-    public Response create(@HeaderParam("X-Content") Boolean xContent, E entity) throws ApiException {
+    public Response create(@HeaderParam("X-Content") Boolean xContent, E entity) throws Exception {
         entity.setId(null);
 
         E dbEntity = source.create(entity);
@@ -31,7 +29,7 @@ public abstract class CrudVersionResource<
     @PUT
     @Path("{id}")
     public Response update(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") UUID id, E entity) throws ApiException {
+                           @PathParam("id") UUID id, E entity) throws Exception {
         entity.setId(id);
 
         E dbEntity = source.update(entity);
@@ -42,7 +40,7 @@ public abstract class CrudVersionResource<
     @PATCH
     @Path("{id}")
     public Response patch(@HeaderParam("X-Content") Boolean xContent,
-                          @PathParam("id") UUID id, E entity) throws ApiException {
+                          @PathParam("id") UUID id, E entity) throws Exception {
         entity.setId(id);
 
         E dbEntity = source.patch(entity);
@@ -53,7 +51,7 @@ public abstract class CrudVersionResource<
     @DELETE
     @Path("{id}")
     public Response delete(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") UUID id) throws ApiException {
+                           @PathParam("id") UUID id) throws Exception {
 
         E dbEntity = source.delete(type, id);
 
@@ -63,7 +61,7 @@ public abstract class CrudVersionResource<
     @PUT
     @Path("{id}/toggleIsDeleted")
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent,
-                                    @PathParam("id") UUID id) throws ApiException {
+                                    @PathParam("id") UUID id) throws Exception {
 
         E dbEntity = source.toggleIsDeleted(type, id);
 

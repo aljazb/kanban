@@ -26,12 +26,6 @@ public class BoardService implements BoardServiceLocal {
     @EJB
     private DatabaseServiceLocal database;
 
-    @Override
-    public Board create(Board board) throws LogicBaseException {
-        validate(board);
-        return persist(board);
-    }
-
     private void validate(Board board) throws LogicBaseException {
         if(board.getOwner() == null || board.getOwner().getId() == null) {
             throw new TransactionException("Owner not specified");
@@ -167,6 +161,15 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
+    @Override
+    public Board create(Board board, UserAccount authUser) throws LogicBaseException {
+        board.setOwner(authUser);
+
+        validate(board);
+        return persist(board);
+    }
+
+
 
     private void checkEditAccess(UUID userId, UUID boardId) throws TransactionException {
         List<Board> editBoard = database.getEntityManager().createNamedQuery("board.access.edit", Board.class)
@@ -279,7 +282,7 @@ public class BoardService implements BoardServiceLocal {
     }
 
     @Override
-    public Board update(UserAccount authUser, Board board) throws LogicBaseException {
+    public Board update(Board board, UserAccount authUser) throws LogicBaseException {
         validate(board);
         checkEditAccess(authUser.getId(), board.getId());
 

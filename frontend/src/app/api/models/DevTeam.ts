@@ -12,6 +12,8 @@ export class DevTeam extends BaseEntity<DevTeam> {
   project: Project[];
   board: Board;
 
+  membership: Membership;
+
   static getDevelopersIds(dt: DevTeam): string[] {
     return this.getDevelopers(dt).map(dev => dev.id);
   }

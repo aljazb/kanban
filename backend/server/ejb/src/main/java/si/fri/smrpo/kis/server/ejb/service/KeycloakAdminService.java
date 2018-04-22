@@ -1,6 +1,5 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
-import org.apache.http.util.EntityUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -21,7 +20,7 @@ import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.*;
+import static si.fri.smrpo.kis.server.ejb.Constants.*;
 
 @PermitAll
 @Stateless

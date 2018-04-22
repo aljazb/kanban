@@ -12,21 +12,6 @@ export class DevTeamResource extends CrudResource<DevTeam> {
     super("DevTeam", api);
   }
 
-  getDevelopers(devTeamId: string): Observable<UserAccount[]> {
-    return this.api.httpClient.get<UserAccount[]>(`${this.url}/${devTeamId}/developers`)
-      .pipe(map(content => this.deserializeArray(content)));
-  }
-
-  getKanbanMaster(devTeamId: string): Observable<UserAccount> {
-    return this.api.httpClient.get<UserAccount>(`${this.url}/${devTeamId}/kanbanMaster`)
-      .pipe(map(content => this.deserialize(content)));
-  }
-
-  getProductOwner(devTeamId: string): Observable<UserAccount> {
-    return this.api.httpClient.get<UserAccount>(`${this.url}/${devTeamId}/productOwner`)
-      .pipe(map(content => this.deserialize(content)));
-  }
-
   kickMember(devTeamId: string, memberId: string): Observable<UserAccount> {
     return this.api.httpClient.delete<UserAccount>(`${this.url}/${devTeamId}/user/${memberId}`)
       .pipe(map(content => this.deserialize(content)));

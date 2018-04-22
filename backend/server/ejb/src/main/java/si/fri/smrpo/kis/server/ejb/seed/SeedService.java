@@ -14,7 +14,6 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Startup
 @Singleton

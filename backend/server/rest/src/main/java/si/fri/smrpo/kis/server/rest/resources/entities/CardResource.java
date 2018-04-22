@@ -3,7 +3,8 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
-import si.fri.smrpo.kis.server.ejb.managers.CardAuthManager;
+import si.fri.smrpo.kis.server.ejb.source.CardSource;
+import si.fri.smrpo.kis.server.ejb.source.interfaces.CardSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Card;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
@@ -15,17 +16,15 @@ import java.util.UUID;
 
 @Path("Card")
 @RequestScoped
-public class CardResource extends CrudResource<Card, CrudSource<Card, UUID>> {
+public class CardResource extends CrudResource<Card, CardSourceLocal> {
 
     @EJB
-    private DatabaseServiceLocal database;
-
-    private CardAuthManager manager;
+    private CardSourceLocal cardSource;
 
     @Override
     protected void initSource() {
-        manager = new CardAuthManager(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
-        source = new CrudSource<>(database, manager);
+        cardSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
+        this.source = cardSource;
     }
 
     public CardResource() {

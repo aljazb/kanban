@@ -30,7 +30,11 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
     @Temporal(TemporalType.TIMESTAMP)
     protected Date editedOn;
 
-
+    @SuppressWarnings("unchecked")
+    @JsonIgnore
+    public Class<E> getType() {
+        return (Class<E>) this.getClass();
+    }
 
     @JsonIgnore
     public void update(E object, EntityManager em) throws IllegalAccessException {
@@ -69,13 +73,9 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
         return fieldList;
     }
 
+    @SuppressWarnings("unchecked")
     @JsonIgnore
-    public BaseEntity cloneObject() {
-        return cloneObject(null);
-    }
-
-    @JsonIgnore
-    public BaseEntity cloneObject(EntityManager em) {
+    public E cloneObject(EntityManager em) {
         try{
             BaseEntity clone = getClass().newInstance();
 
@@ -87,17 +87,13 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
                 if (BaseEntity.class.isAssignableFrom(type)) {
                     BaseEntity obj = (BaseEntity) field.get(this);
                     if (obj != null) {
-                        if(em != null) {
-                            if(obj.getId() != null) {
-                                if(!em.contains(obj)) {
-                                    Object refObj = em.getReference(type, obj.getId());
-                                    field.set(clone, refObj);
-                                } else {
-                                    field.set(clone, obj);
-                                }
+                        if(obj.getId() != null) {
+                            if(!em.contains(obj)) {
+                                Object refObj = em.getReference(type, obj.getId());
+                                field.set(clone, refObj);
+                            } else {
+                                field.set(clone, obj);
                             }
-                        } else {
-                            field.set(clone, obj);
                         }
                     }
                 } else {
@@ -107,7 +103,7 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
                 }
 
             }
-            return clone;
+            return (E) clone;
         }catch(Exception e){
             return null;
         }

@@ -73,24 +73,20 @@ public class UserAccountService implements UserAccountServiceLocal {
     private boolean isEmailAvailable(String email, UUID id) {
         List<UserAccount> users = database.getEntityManager().createNamedQuery("user-account.where.email", UserAccount.class)
                 .setParameter("email", email).setMaxResults(1).getResultList();
-        if(users.isEmpty()) {
-            return true;
-        } else if(id != null) {
-            return users.get(0).getId().equals(id);
-        } else {
-            return false;
-        }
+        return isAvailable(users, id);
     }
 
     private boolean isUsernameAvailable(String username, UUID id) {
         List<UserAccount> users = database.getEntityManager().createNamedQuery("user-account.where.username", UserAccount.class)
                 .setParameter("username", username).setMaxResults(1).getResultList();
+        return isAvailable(users, id);
+    }
+
+    private boolean isAvailable(List<UserAccount> users, UUID id) {
         if(users.isEmpty()) {
             return true;
-        } else if(id != null) {
-            return users.get(0).getId().equals(id);
         } else {
-            return false;
+            return users.get(0).getId().equals(id);
         }
     }
 

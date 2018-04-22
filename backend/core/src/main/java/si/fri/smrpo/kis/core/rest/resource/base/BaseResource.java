@@ -3,7 +3,8 @@ package si.fri.smrpo.kis.core.rest.resource.base;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
-import si.fri.smrpo.kis.core.rest.source.base.BaseSource;
+import si.fri.smrpo.kis.core.rest.source.BaseSource;
+import si.fri.smrpo.kis.core.rest.source.interfaces.BaseSourceImpl;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -11,13 +12,12 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
 import java.io.Serializable;
-import java.util.Collection;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public abstract class BaseResource<
         E extends BaseEntity<E, I>,
-        S extends BaseSource<E, I>,
+        S extends BaseSourceImpl<I>,
         I extends Serializable> {
 
     @Context
@@ -35,7 +35,6 @@ public abstract class BaseResource<
     @Context
     protected HttpServletRequest httpServletRequest;
 
-
     protected Class<E> type;
     protected S source;
     abstract protected void initSource();
@@ -44,7 +43,6 @@ public abstract class BaseResource<
     private void init(){
         initSource();
     }
-
 
     public BaseResource(Class<E> type) {
         this.type = type;
@@ -98,4 +96,18 @@ public abstract class BaseResource<
         return responseBuilder;
     }
 
+    protected Response.ResponseBuilder buildResponseEntity(Object obj) {
+        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.NO_CONTENT);
+
+        if(obj != null) {
+            responseBuilder.entity(obj);
+            responseBuilder.status(Response.Status.OK);
+        }
+
+        return responseBuilder;
+    }
+
+    protected Response buildNotImplemented(){
+        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    }
 }

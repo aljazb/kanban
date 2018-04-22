@@ -2,13 +2,12 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
-import si.fri.smrpo.kis.core.rest.exception.ApiException;
 import si.fri.smrpo.kis.core.rest.resource.uuid.GetResource;
-import si.fri.smrpo.kis.core.rest.source.CrudSource;
-import si.fri.smrpo.kis.core.rest.source.GetSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.UserAccountService;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.UserAccountServiceLocal;
-import si.fri.smrpo.kis.server.ejb.managers.UserAccountAuthManager;
+import si.fri.smrpo.kis.server.ejb.source.UserAccountSource;
+import si.fri.smrpo.kis.server.ejb.source.interfaces.UserAccountSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
@@ -20,27 +19,20 @@ import javax.ws.rs.core.Response;
 
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_ADMINISTRATOR;
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_KANBAN_MASTER;
-import static si.fri.smrpo.kis.server.ejb.managers.base.AuthManager.ROLE_USER;
+import static si.fri.smrpo.kis.server.ejb.Constants.*;
 
 
 @Path("UserAccount")
 @RequestScoped
-public class UserAccountResource extends GetResource<UserAccount, GetSource<UserAccount, UUID>> {
+public class UserAccountResource extends GetResource<UserAccount, UserAccountSourceLocal> {
 
     @EJB
-    private DatabaseServiceLocal databaseService;
-
-    @EJB
-    private UserAccountServiceLocal service;
-
-    private UserAccountAuthManager manager;
+    private UserAccountSourceLocal userAccountSource;
 
     @Override
     protected void initSource() {
-        manager = new UserAccountAuthManager(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
-        source = new CrudSource<>(databaseService, manager);
+        userAccountSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
+        source = userAccountSource;
     }
 
     public UserAccountResource() {
@@ -49,9 +41,9 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
 
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
     @GET
-    public Response getList() throws ApiException {
+    public Response getList() throws Exception {
         String search = uriInfo.getQueryParameters().getFirst("search");
-        manager.setSearch(search);
+        source.setSearch(search);
         return super.getList();
     }
 
@@ -59,87 +51,58 @@ public class UserAccountResource extends GetResource<UserAccount, GetSource<User
     @GET
     @Path("{id}")
     @Override
-    public Response get(@PathParam("id") UUID id) throws ApiException {
+    public Response get(@PathParam("id") UUID id) throws Exception {
         return super.get(id);
     }
 
     @RolesAllowed({ROLE_USER, ROLE_ADMINISTRATOR})
     @GET
     @Path("login")
-    public Response loginUserInfo() throws ApiException {
-        try {
-            UserAccount userAccount = service.login(manager.getUserAccount());
-            return buildResponse(userAccount, true).build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+    public Response loginUserInfo() throws Exception {
+        return buildResponse(source.login(), true).build();
     }
 
     @RolesAllowed({ROLE_ADMINISTRATOR})
     @POST
-    public Response create(@HeaderParam("X-Content") Boolean xContent, UserAccount entity) throws ApiException {
-        try {
-            return buildResponse(service.create(entity), xContent).build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+    public Response create(@HeaderParam("X-Content") Boolean xContent, UserAccount entity) throws Exception {
+        return buildResponse(source.create(entity), xContent).build();
     }
 
     @RolesAllowed({ROLE_ADMINISTRATOR})
     @PUT
     @Path("{id}/password")
-    public Response setPassword(@PathParam("id") UUID id, String password) throws ApiException {
-        try {
-            service.setPassword(id, password);
-            return buildResponse().build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+    public Response setPassword(@PathParam("id") UUID id, String password) throws Exception {
+        source.setPassword(id, password);
+        return buildResponse().build();
     }
 
     @RolesAllowed({ROLE_USER})
     @PUT
     @Path("{id}")
-    public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, UserAccount entity) throws ApiException {
+    public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, UserAccount entity) throws Exception {
         entity.setId(id);
-        try {
-            return buildResponse(service.update(entity), xContent).build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+        return buildResponse(source.update(entity), xContent).build();
     }
 
     @RolesAllowed({ROLE_USER})
     @DELETE
     @Path("{id}")
-    public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
-        try {
-            return buildResponse(service.setEnabled(id, false), xContent).build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+    public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
+        return buildResponse(source.setEnabled(id, false), xContent).build();
     }
 
     @RolesAllowed(ROLE_ADMINISTRATOR)
     @PUT
     @Path("{id}/status")
-    public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws ApiException {
-        try {
-            return buildResponse(service.setEnabled(id, null), xContent).build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+    public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
+        return buildResponse(source.setEnabled(id, null), xContent).build();
     }
 
     @RolesAllowed(ROLE_ADMINISTRATOR)
     @PUT
     @Path("available")
-    public Response checkAvailability(UserAccount entity) throws ApiException {
-        try {
-            service.checkAvailability(entity);
-            return buildResponse(null, false).build();
-        } catch (LogicBaseException e) {
-            throw ApiException.transform(e);
-        }
+    public Response checkAvailability(UserAccount entity) throws Exception {
+        source.checkAvailability(entity);
+        return buildResponse(null, false).build();
     }
 }

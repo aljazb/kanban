@@ -2,6 +2,7 @@ import {BaseEntity} from './base/BaseEntity';
 import {BoardPart} from './BoardPart';
 import {Project} from './Project';
 import {UserAccount} from './UserAccount';
+import {Membership} from './Membership';
 
 export class Board extends BaseEntity<Board> {
   name: string;
@@ -14,4 +15,5 @@ export class Board extends BaseEntity<Board> {
   owner: UserAccount;
   boardParts: BoardPart[];
   projects: Project[];
+  membership: Membership;
 }

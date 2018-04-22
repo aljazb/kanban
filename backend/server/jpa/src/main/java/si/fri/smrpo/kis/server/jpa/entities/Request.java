@@ -16,7 +16,7 @@ import java.util.UUID;
 @NamedQueries({
         @NamedQuery(name="request.getAll",
                 query="SELECT req FROM Request req JOIN FETCH req.sender s JOIN FETCH req.receiver r " +
-                    "WHERE (r.id = :uid OR s.id = :uid)"),
+                      "WHERE (r.id = :uid OR s.id = :uid)"),
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Request extends UUIDEntity<Request> {
@@ -44,6 +44,10 @@ public class Request extends UUIDEntity<Request> {
     @JoinColumn(name = "reciver_id", nullable = false)
     private UserAccount receiver;
 
+
+    public boolean isReceiverOrSender(UserAccount userAccount) {
+        return getSender().getId().equals(userAccount.getId()) || getReceiver().getId().equals(userAccount.getId());
+    }
 
 
     public UserAccount getSender() {
