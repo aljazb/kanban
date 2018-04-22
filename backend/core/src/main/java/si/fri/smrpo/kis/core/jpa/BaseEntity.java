@@ -99,15 +99,11 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
                         } else {
                             field.set(clone, obj);
                         }
-                    }/* else {
-                        field.set(clone, null);
-                    }*/
+                    }
                 } else {
                     if(!Set.class.isAssignableFrom(type)) {
                         field.set(clone, field.get(this));
-                    }/* else {
-                        field.set(clone, null);
-                    }*/
+                    }
                 }
 
             }

@@ -130,8 +130,8 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   private getDifferentDevTeamIds(projects: Project[]): number {
     let devTeamIds = new Map<string, boolean>();
 
-    this.projects.forEach(value => {
-      devTeamIds[value.devTeam.id] = true;
+    projects.forEach(value => {
+      devTeamIds.set(value.devTeam.id, true);
     });
 
     return devTeamIds.size;

@@ -88,13 +88,13 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
     private void updateDevTeamMembers(DevTeam devTeam) throws LogicBaseException {
-        DevTeam fromDb = this.database.get(DevTeam.class, devTeam.getId());
+        DevTeam dbDevTeam = this.database.get(DevTeam.class, devTeam.getId());
 
-        if (fromDb == null) {
+        if (dbDevTeam == null) {
             throw new OperationException("Dev team does not exist.", ExceptionType.ENTITY_DOES_NOT_EXISTS);
         }
 
-        Set<Membership> existingUsers = fromDb.getJoinedUsers().stream()
+        Set<Membership> existingUsers = dbDevTeam.getJoinedUsers().stream()
                 .filter(e -> !e.getIsDeleted()).distinct().collect(Collectors.toSet());
 
         for (Membership updatedUserMtm : devTeam.getJoinedUsers()) {
@@ -109,7 +109,7 @@ public class DevTeamService implements DevTeamServiceLocal {
                     database.update(existing);
                 }
             } else {
-                updatedUserMtm.setDevTeam(fromDb);
+                updatedUserMtm.setDevTeam(dbDevTeam);
                 database.create(updatedUserMtm);
             }
         }
@@ -119,23 +119,22 @@ public class DevTeamService implements DevTeamServiceLocal {
         }
     }
 
-    private DevTeam persistDevTeamMembers(DevTeam devTeam) throws DatabaseException {
-        for(Membership member : devTeam.getJoinedUsers()) {
-            member.setDevTeam(devTeam);
+    private DevTeam persistDevTeamMembers(DevTeam dbDevTeam, Set<Membership> joinedMembers) throws DatabaseException {
+        for(Membership member : joinedMembers) {
+            member.setDevTeam(dbDevTeam);
             database.create(member);
         }
 
-        return devTeam;
+        return dbDevTeam;
     }
 
     public DevTeam create(DevTeam devTeam, UUID authId) throws LogicBaseException {
 
         validateDevTeam(devTeam, authId);
-        devTeam = database.create(devTeam);
-        persistDevTeamMembers(devTeam);
+        DevTeam dbDevTeam = database.create(devTeam);
+        persistDevTeamMembers(dbDevTeam, devTeam.getJoinedUsers());
 
-        devTeam.setJoinedUsers(null); // prevents recursive cycling when marshalling
-        return devTeam;
+        return dbDevTeam;
     }
 
     @Override
@@ -143,10 +142,9 @@ public class DevTeamService implements DevTeamServiceLocal {
 
         validateDevTeam(devTeam, authId);
         updateDevTeamMembers(devTeam);
-        devTeam = database.update(devTeam);
+        DevTeam dbDevTeam = database.update(devTeam);
 
-        devTeam.setJoinedUsers(null); // prevents recursive cycling when marshalling
-        return devTeam;
+        return dbDevTeam;
     }
 
 
