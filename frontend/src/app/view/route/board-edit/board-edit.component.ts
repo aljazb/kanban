@@ -4,6 +4,7 @@ import {BoardBaseFormComponent} from '../../components/forms/board-form/board-ba
 import {JsogService} from 'jsog-typescript';
 import {ApiService} from '../../../api/api.service';
 import * as UUID from 'uuid/v4';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-board-edit',
@@ -21,7 +22,8 @@ export class BoardEditComponent implements OnInit {
   selectedBoard: Board;
   boards: Board[];
 
-  constructor(private api: ApiService) { }
+  constructor(private api: ApiService,
+              private router: Router) { }
 
   ngOnInit() {
     let content = window.localStorage.getItem(this.STORAGE_KEY);
@@ -37,6 +39,7 @@ export class BoardEditComponent implements OnInit {
       this.api.board.post(this.selectedBoard).subscribe(board => {
         this.boardDeleteRef(this.selectedBoard);
         this.selectedBoard = null;
+        this.router.navigate(['/board/' + board.id]);
       });
     }
   }

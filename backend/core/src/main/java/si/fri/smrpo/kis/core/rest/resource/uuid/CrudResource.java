@@ -23,17 +23,13 @@ public abstract class CrudResource<
 
     @POST
     public Response create(@HeaderParam("X-Content") Boolean xContent, E entity) throws Exception {
-        entity.setId(null);
-
         E dbEntity = source.create(entity);
-
         return buildResponse(dbEntity, xContent, true, Response.Status.CREATED).build();
     }
 
     @PUT
     @Path("{id}")
-    public Response update(@HeaderParam("X-Content") Boolean xContent,
-                           @PathParam("id") UUID id, E newObject) throws Exception {
+    public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, E newObject) throws Exception {
         newObject.setId(id);
 
         E dbEntity = source.update(newObject);
