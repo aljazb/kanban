@@ -3,8 +3,8 @@ import {Project} from '../../../api/models/Project';
 import {Router} from '@angular/router';
 import {ProjectFormComponent} from '../../components/forms/project-form/project-form.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ApiService} from '../../../api/api.service';
-import {LoginService} from '../../../api/login.service';
+import {ApiService} from '../../../api/services/api.service';
+import {LoginService} from '../../../api/services/login.service';
 
 
 @Component({

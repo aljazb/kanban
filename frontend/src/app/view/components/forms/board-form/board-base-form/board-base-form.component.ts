@@ -6,7 +6,7 @@ import {BoardPart} from '../../../../../api/models/BoardPart';
 import {FormImpl} from '../../form-impl';
 import * as UUID from 'uuid/v4';
 import {Project} from '../../../../../api/models/Project';
-import {ApiService} from '../../../../../api/api.service';
+import {ApiService} from '../../../../../api/services/api.service';
 import {isNullOrUndefined} from "util";
 
 @Component({

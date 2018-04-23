@@ -1,10 +1,10 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
 import {BaseResource} from './BaseResource';
 import {Observable} from 'rxjs/Observable';
-import {ApiService} from '../../api.service';
 import {HttpParams, HttpResponse} from '@angular/common/http';
-import {catchError, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {Paging} from '../../dto/Paging';
+import {ApiService} from '../../services/api.service';
 
 export abstract class GetResource<T extends BaseEntity<T>> extends BaseResource<T> {
 

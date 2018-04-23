@@ -1,4 +1,4 @@
-import {ApiService} from '../api.service';
+import {ApiService} from '../services/api.service';
 import {Request} from '../models/Request';
 import {GetResource} from './base/GetResource';
 import {Observable} from 'rxjs/Observable';

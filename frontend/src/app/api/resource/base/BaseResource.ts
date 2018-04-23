@@ -1,11 +1,9 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
-import {ApiService} from '../../api.service';
 import {HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {isNullOrUndefined} from 'util';
-import {UserAccount} from '../../models/UserAccount';
-import {Class} from 'jsog-typescript/dist/support/Class';
+import {ApiService} from '../../services/api.service';
 
 export abstract class BaseResource<T extends BaseEntity<T>> {
 

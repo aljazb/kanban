@@ -9,7 +9,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule }     from './app-routing.module';
 
-import { ApiService } from './api/api.service';
 import { KeycloakAuthGuardService } from './api/keycloak/keycloak-auth-guard.service';
 
 import { AppComponent }         from './app.component';
@@ -27,7 +26,6 @@ import { DevTeamPagingComponent } from './view/components/paging/dev-team-paging
 import { ProjectPagingComponent } from './view/components/paging/project-paging/project-paging.component';
 import { BoardPagingComponent } from './view/components/paging/board-paging/board-paging.component';
 import { ProfileComponent } from './view/route/profile/profile.component';
-import {LoginService} from './api/login.service';
 import { UserSelectionFormComponent } from './view/components/forms/user-selection-form/user-selection-form.component';
 import { UserAccountFormComponent } from './view/components/forms/user-account-form/user-account-form.component';
 import { ProjectDeleteConfirmationComponent } from './view/components/forms/project-delete-confirmation/project-delete-confirmation.component';
@@ -44,6 +42,9 @@ import { BoardEditComponent } from './view/route/board-edit/board-edit.component
 import { CardDetailsComponent } from './view/route/card-details/card-details.component';
 import { BoardDetailsEditComponent } from './view/route/board-details-edit/board-details-edit.component';
 import {CardFormComponent} from './view/components/forms/card-form/card-form.component';
+import {ApiService} from './api/services/api.service';
+import {LoginService} from './api/services/login.service';
+import {LocalBoardsService} from './services/local-boards/local-boards.service';
 
 
 @NgModule({
@@ -99,6 +100,7 @@ import {CardFormComponent} from './view/components/forms/card-form/card-form.com
     KeycloakAuthGuardService,
     ApiService,
     LoginService,
+    LocalBoardsService
   ],
   bootstrap: [ AppComponent ],
   entryComponents: [

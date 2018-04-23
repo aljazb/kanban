@@ -1,10 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Board} from '../../../api/models/Board';
 import {BoardBaseFormComponent} from '../../components/forms/board-form/board-base-form/board-base-form.component';
-import {JsogService} from 'jsog-typescript';
-import {ApiService} from '../../../api/api.service';
-import * as UUID from 'uuid/v4';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {LocalBoardsService} from '../../../services/local-boards/local-boards.service';
+import {ApiService} from '../../../api/services/api.service';
 
 @Component({
   selector: 'app-board-edit',
@@ -13,31 +12,25 @@ import {Router} from '@angular/router';
 })
 export class BoardEditComponent implements OnInit {
 
-  private STORAGE_KEY: string = "STORED-BOARDS";
-  private JSOG = new JsogService();
-
   @ViewChild(BoardBaseFormComponent)
   boardBaseFormComp;
 
   selectedBoard: Board;
-  boards: Board[];
 
   constructor(private api: ApiService,
-              private router: Router) { }
+              private router: Router,
+              private route: ActivatedRoute,
+              private localBoards: LocalBoardsService) { }
 
   ngOnInit() {
-    let content = window.localStorage.getItem(this.STORAGE_KEY);
-    if(content == null){
-      this.boards = [];
-    } else {
-      this.boards = <Board[]> this.JSOG.deserialize(JSON.parse(content));
-    }
+    let id = this.route.snapshot.fragment;
+    this.selectedBoard = this.localBoards.getBoards().find(b => b.id == id);
   }
 
   create(): void {
     if(this.boardBaseFormComp.isValid()) {
       this.api.board.post(this.selectedBoard).subscribe(board => {
-        this.boardDeleteRef(this.selectedBoard);
+        this.localBoards.boardDeleteRef(this.selectedBoard);
         this.selectedBoard = null;
         this.router.navigate(['/board/' + board.id]);
       });
@@ -46,36 +39,25 @@ export class BoardEditComponent implements OnInit {
 
   back(): void {
     this.selectedBoard = null;
-    this.persist();
-  }
-
-  newBoard(): void {
-    let b = new Board();
-    b.id = UUID();
-    b.name = "New Board";
-
-    this.selectedBoard = b;
-    this.boards.push(this.selectedBoard);
-    this.persist();
+    this.localBoards.persist();
   }
 
   selectBoard(board: Board): void {
     this.selectedBoard = board;
   }
 
-  boardDeleteRef(board: Board): void {
-    let index = this.boards.findIndex(b => b == board);
-    this.boardDelete(index);
+  newBoard(): void {
+    this.selectedBoard = this.localBoards.newBoard();
   }
 
   boardDelete(index: number): void {
-    this.boards.splice(index, 1);
-    this.persist();
+    this.localBoards.boardDelete(index);
   }
 
-  private persist(): void {
-    let content = JSON.stringify(this.JSOG.serialize(this.boards));
-    window.localStorage.setItem(this.STORAGE_KEY, content);
+  get boards(): Board[] {
+    return this.localBoards.getBoards();
   }
+
+
 
 }

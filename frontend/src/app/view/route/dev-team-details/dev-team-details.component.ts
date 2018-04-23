@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {DevTeamFormComponent} from '../../components/forms/dev-team-form/dev-team-form.component';
 import {ActivatedRoute} from '@angular/router';
-import {LoginService} from '../../../api/login.service';
+import {LoginService} from '../../../api/services/login.service';
 import {UserSelectionFormComponent} from '../../components/forms/user-selection-form/user-selection-form.component';
 import {DevTeam} from '../../../api/models/DevTeam';
 import {isNullOrUndefined} from "util";
 import {UserAccount} from '../../../api/models/UserAccount';
-import {ApiService} from '../../../api/api.service';
+import {ApiService} from '../../../api/services/api.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HistoryEvent} from '../../../api/models/HistoryEvent';
 

@@ -1,14 +1,14 @@
 import {HttpClient} from '@angular/common/http';
-import {UserAccountResource} from './resource/UserAccountResource';
 import {Injectable} from '@angular/core';
-import {DevTeamResource} from './resource/DevTeamResource';
-import {ProjectResource} from './resource/ProjectResource';
-import {CardResource} from './resource/CardResource';
-import {environment} from '../../environments/environment';
-import {BoardResource} from './resource/BoardResource';
-import {RequestResource} from './resource/RequestResource';
+import {environment} from '../../../environments/environment';
 import {JsogService} from 'jsog-typescript';
-import {CardMoveResource} from './resource/CardMoveResource';
+import {BoardResource} from '../resource/BoardResource';
+import {CardResource} from '../resource/CardResource';
+import {DevTeamResource} from '../resource/DevTeamResource';
+import {ProjectResource} from '../resource/ProjectResource';
+import {UserAccountResource} from '../resource/UserAccountResource';
+import {RequestResource} from '../resource/RequestResource';
+import {CardMoveResource} from '../resource/CardMoveResource';
 
 @Injectable()
 export class ApiService {

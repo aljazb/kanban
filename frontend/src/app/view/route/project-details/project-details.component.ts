@@ -3,9 +3,9 @@ import {ProjectDeleteConfirmationComponent} from '../../components/forms/project
 import {ProjectFormComponent} from '../../components/forms/project-form/project-form.component';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ApiService} from '../../../api/api.service';
+import {ApiService} from '../../../api/services/api.service';
 import {Project} from '../../../api/models/Project';
-import {LoginService} from '../../../api/login.service';
+import {LoginService} from '../../../api/services/login.service';
 import {CardFormComponent} from '../../components/forms/card-form/card-form.component';
 
 @Component({

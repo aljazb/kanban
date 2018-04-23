@@ -3,8 +3,8 @@ import {DevTeam} from '../../../api/models/DevTeam';
 import {Router} from '@angular/router';
 import {DevTeamFormComponent} from '../../components/forms/dev-team-form/dev-team-form.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {ApiService} from '../../../api/api.service';
-import {LoginService} from '../../../api/login.service';
+import {ApiService} from '../../../api/services/api.service';
+import {LoginService} from '../../../api/services/login.service';
 import {Membership} from '../../../api/models/Membership';
 import {MemberType} from '../../../api/models/enums/MemberType';
 

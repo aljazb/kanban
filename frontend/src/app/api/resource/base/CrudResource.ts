@@ -1,9 +1,9 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
 import {GetResource} from './GetResource';
 import {Observable} from 'rxjs/Observable';
-import {ApiService} from '../../api.service';
-import {catchError, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {HttpResponse} from '@angular/common/http';
+import {ApiService} from '../../services/api.service';
 
 
 export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<T> {

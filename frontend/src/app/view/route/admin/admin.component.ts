@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {KeycloakAuthGuardService} from '../../../api/keycloak/keycloak-auth-guard.service';
 import {UserAccount} from '../../../api/models/UserAccount';
-import {ApiService} from '../../../api/api.service';
+import {ApiService} from '../../../api/services/api.service';
 import {UserPagingComponent} from '../../components/paging/user-paging/user-paging.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserAccountFormComponent} from '../../components/forms/user-account-form/user-account-form.component';

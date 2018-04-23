@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PagingImpl, QueryImpl} from '../PagingImpl';
 import {Board} from '../../../../api/models/Board';
-import {ApiService} from '../../../../api/api.service';
+import {ApiService} from '../../../../api/services/api.service';
 import {Paging} from '../../../../api/dto/Paging';
 import {Observable} from 'rxjs/Observable';
 import {HttpParams} from '@angular/common/http';

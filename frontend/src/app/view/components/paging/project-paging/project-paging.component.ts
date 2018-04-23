@@ -5,7 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {Paging} from '../../../../api/dto/Paging';
 import {Project} from '../../../../api/models/Project';
 import {QueryBuilder} from '../../../../api/query/query-builder';
-import {ApiService} from '../../../../api/api.service';
+import {ApiService} from '../../../../api/services/api.service';
 
 @Component({
   selector: 'app-project-paging',

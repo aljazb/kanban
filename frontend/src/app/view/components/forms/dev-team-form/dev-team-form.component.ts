@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ApiService} from '../../../../api/api.service';
+
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DevTeam} from '../../../../api/models/DevTeam';
 import {isNullOrUndefined} from 'util';
 import {Membership} from '../../../../api/models/Membership';
 import {MemberType} from '../../../../api/models/enums/MemberType';
+import {ApiService} from '../../../../api/services/api.service';
 
 @Component({
   selector: 'app-dev-team-form',

@@ -1,15 +1,11 @@
 import {Component} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {DevTeam} from '../../../../api/models/DevTeam';
 import {Card} from '../../../../api/models/Card';
-import {ApiService} from '../../../../api/api.service';
-import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {cDpToTs, cTsToDp, DTDateFormat} from '../../../../utility';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FormImpl} from '../form-impl';
 import {Project} from '../../../../api/models/Project';
 import {BoardPart} from '../../../../api/models/BoardPart';
-import {isNullOrUndefined} from "util";
-import {checkAndUpdateTextDynamic} from '@angular/core/src/view/text';
+import {ApiService} from '../../../../api/services/api.service';
 
 @Component({
   selector: 'app-card-form',

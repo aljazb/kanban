@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {DevTeam} from '../../../../api/models/DevTeam';
 import {Project} from '../../../../api/models/Project';
-import {ApiService} from '../../../../api/api.service';
+import {ApiService} from '../../../../api/services/api.service';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {cDpToTs, cTsToDp, DTDateFormat} from '../../../../utility';
 import {FormImpl} from '../form-impl';

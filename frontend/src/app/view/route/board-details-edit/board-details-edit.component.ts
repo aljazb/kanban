@@ -1,10 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Board} from '../../../api/models/Board';
-import {ApiService} from '../../../api/api.service';
+import {ApiService} from '../../../api/services/api.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BoardPart} from '../../../api/models/BoardPart';
 import {BoardBaseFormComponent} from '../../components/forms/board-form/board-base-form/board-base-form.component';
 import {ToasterService} from 'angular5-toaster/dist';
+import {Location} from '@angular/common';
+import {LocalBoardsService} from '../../../services/local-boards/local-boards.service';
 
 @Component({
   selector: 'app-board-details-edit',
@@ -22,7 +24,9 @@ export class BoardDetailsEditComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private api: ApiService,
-              private toaster: ToasterService) { }
+              private toaster: ToasterService,
+              private location: Location,
+              private localBoard: LocalBoardsService) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -76,8 +80,13 @@ export class BoardDetailsEditComponent implements OnInit {
     return bp;
   }
 
-  private back(): void {
-    this.router.navigate([`/board/${this.id}`])
+  copy(): void {
+    let b = this.localBoard.copy(this.board);
+    this.router.navigate(['/board/edit'], {fragment: b.id})
+  }
+
+  back(): void {
+    this.location.back();
   }
 
   update(): void {

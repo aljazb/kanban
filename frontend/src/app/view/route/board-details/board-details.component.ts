@@ -3,9 +3,9 @@ import {ActivatedRoute} from '@angular/router';
 import {Board} from '../../../api/models/Board';
 import {Card} from '../../../api/models/Card';
 import {BoardPart} from '../../../api/models/BoardPart';
-import {ApiService} from '../../../api/api.service';
+import {ApiService} from '../../../api/services/api.service';
 import {BoardRepresentation} from './utility/board-representation';
-import {LoginService} from '../../../api/login.service';
+import {LoginService} from '../../../api/services/login.service';
 import {UserAccount} from '../../../api/models/UserAccount';
 import {CardMove} from '../../../api/models/card-move';
 import {CardMoveType} from '../../../api/models/enums/CardMoveType';
@@ -41,8 +41,6 @@ export class BoardDetailsComponent implements OnInit {
   private init(board: Board): void {
     this.board = board;
     this.boardRepresentation = this.buildBoardRepresentation();
-    console.log(board);
-    console.log(this.boardRepresentation);
   }
 
   private buildBoardRepresentation(): BoardRepresentation {
@@ -69,11 +67,13 @@ export class BoardDetailsComponent implements OnInit {
     this.api.cardMove.post(cm, false).subscribe(() => this.api.board.get(this.id).subscribe(board => this.init(board)));
   }
 
-  moveCardLeft(c: Card) {
+  moveCardLeft(c: Card, event: any) {
+    event.stopPropagation();
     this.moveCard(c, BoardPart.getPreviousBoardPart(c.boardPart))
   }
 
-  moveCardRight(c: Card) {
+  moveCardRight(c: Card, event: any) {
+    event.stopPropagation();
     this.moveCard(c, BoardPart.getNextBoardPart(c.boardPart))
   }
 

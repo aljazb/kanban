@@ -1,6 +1,6 @@
 import {UserAccount} from '../models/UserAccount';
 import {Observable} from 'rxjs/Observable';
-import {ApiService} from '../api.service';
+import {ApiService} from '../services/api.service';
 import {catchError, map} from 'rxjs/operators';
 import {GetResource} from './base/GetResource';
 

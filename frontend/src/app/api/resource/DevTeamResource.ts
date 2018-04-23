@@ -1,5 +1,5 @@
 import {CrudResource} from './base/CrudResource';
-import {ApiService} from '../api.service';
+import {ApiService} from '../services/api.service';
 import {DevTeam} from '../models/DevTeam';
 import {Observable} from 'rxjs/Observable';
 import {UserAccount} from '../models/UserAccount';

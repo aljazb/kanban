@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {ApiService} from '../../../../api/api.service';
+import {ApiService} from '../../../../api/services/api.service';
 import {isNullOrUndefined} from 'util';
 
 @Component({

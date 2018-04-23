@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 import {Board} from '../../../api/models/Board';
-import {LoginService} from '../../../api/login.service';
+import {LoginService} from '../../../api/services/login.service';
 
 @Component({
   selector: 'app-board',

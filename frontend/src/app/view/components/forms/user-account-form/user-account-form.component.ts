@@ -3,7 +3,7 @@ import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/form
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {FormImpl} from '../form-impl';
-import {ApiService} from '../../../../api/api.service';
+import {ApiService} from '../../../../api/services/api.service';
 import {AsyncValidatorFn} from '@angular/forms/src/directives/validators';
 import {Observable} from 'rxjs/Observable';
 import {map, switchMap, catchError} from 'rxjs/operators'

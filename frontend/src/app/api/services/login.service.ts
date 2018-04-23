@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {ApiService} from './api.service';
-import {UserAccount} from './models/UserAccount';
 import {Observable} from 'rxjs';
-import {KeycloakAuthGuardService} from './keycloak/keycloak-auth-guard.service';
 import {of} from 'rxjs/observable/of';
 import {tap} from 'rxjs/operators';
+import {UserAccount} from '../models/UserAccount';
+import {KeycloakAuthGuardService} from '../keycloak/keycloak-auth-guard.service';
 
 @Injectable()
 export class LoginService {
