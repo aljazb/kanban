@@ -30,6 +30,7 @@
 
                   <div class="list-group">
                       <div class="list-group-item list-group-item-action hover-pointer" *ngFor="let c of td.cards" routerLink="/card/{{c.id}}" [style.background]="c.color">{{c.name}}
+                        <div><button (click)="moveCardLeft(c);$event.stopPropagation()">Left</button><button (click)="moveCardRight(c);$event.stopPropagation()">Right</button></div>
                         <div class="list-group" *ngIf="c.subTasks">
                           <div *ngFor="let t of c.subTasks" class="list-group-item list-group-item-action">
                             {{t.name}} - {{t.workingHours}}

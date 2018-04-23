@@ -8,6 +8,7 @@ import {environment} from '../../environments/environment';
 import {BoardResource} from './resource/BoardResource';
 import {RequestResource} from './resource/RequestResource';
 import {JsogService} from 'jsog-typescript';
+import {CardMoveResource} from './resource/CardMoveResource';
 
 @Injectable()
 export class ApiService {
@@ -22,6 +23,7 @@ export class ApiService {
   public project: ProjectResource;
   public userAccount: UserAccountResource;
   public request: RequestResource;
+  public cardMove: CardMoveResource;
 
   constructor(
     public httpClient: HttpClient) {
@@ -39,6 +41,7 @@ export class ApiService {
     this.project = new ProjectResource(this);
     this.userAccount = new UserAccountResource(this);
     this.request = new RequestResource(this);
+    this.cardMove = new CardMoveResource(this);
   }
 
 

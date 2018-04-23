@@ -101,6 +101,18 @@ export class BoardRepresentation {
     }
   }
 
+  willExceedWip(boardPart: BoardPart) {
+    let bpt = this._boardPartIdToIndexMap.get(boardPart.id);
+    while (bpt != null) {
+      if (bpt.currentWip + 1 > bpt.boardPart.maxWip) {
+        return true
+      }
+      bpt = bpt.parent;
+    }
+
+    return false;
+  }
+
 
   private setRowSpanBoardPartTable(): void {
     this._boardPartTable.forEach(boardPartTable => {
