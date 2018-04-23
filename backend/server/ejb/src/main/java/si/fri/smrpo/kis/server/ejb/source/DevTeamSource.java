@@ -3,6 +3,7 @@ package si.fri.smrpo.kis.server.ejb.source;
 import si.fri.smrpo.kis.core.logic.database.interfaces.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
@@ -15,6 +16,7 @@ import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.BoardSourceLocal;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.DevTeamSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
+import si.fri.smrpo.kis.server.jpa.entities.Membership;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import javax.annotation.PostConstruct;
@@ -67,15 +69,16 @@ public class DevTeamSource extends CrudSource<DevTeam, UUID> implements DevTeamS
 
     @Override
     public DevTeam get(Class<DevTeam> c, UUID id) throws Exception {
-        DevTeam entity = super.get(c, id);
+        DevTeam entity = database.getEntityManager().createNamedQuery("devTeam.fetch.members", DevTeam.class)
+                .setParameter("devTeamId", id).getResultList().stream().findFirst().orElse(null);
 
-        entity.queryMembership(database.getEntityManager(), authUser.getId());
+        if(entity == null) throw new OperationException("Entity does not exist", ExceptionType.ENTITY_DOES_NOT_EXISTS);
+
+        entity.setMembership(entity.findMember(authUser.getId()));
 
         if (!authUser.getInRoleAdministrator() && entity.getMembership() == null) {
             throw new DatabaseException("User does not have permission.", ExceptionType.INSUFFICIENT_RIGHTS);
         }
-
-        entity.buildActiveMembership();
 
         return entity;
     }

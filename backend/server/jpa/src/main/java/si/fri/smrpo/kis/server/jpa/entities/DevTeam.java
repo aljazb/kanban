@@ -17,9 +17,10 @@ import java.util.UUID;
 @Table(name="dev_team")
 @Cacheable
 @NamedQueries({
-        @NamedQuery(name = "devTeam.membership",
-                query = "SELECT m FROM DevTeam dt JOIN dt.joinedUsers m JOIN m.userAccount ua " +
-                        "WHERE dt.id = :devTeamId AND dt = m.devTeam AND m.userAccount = ua AND ua.id = :userId AND m.isDeleted = false")
+        @NamedQuery(name = "devTeam.membership", query = "SELECT m FROM DevTeam dt JOIN dt.joinedUsers m JOIN m.userAccount ua " +
+                        "WHERE dt.id = :devTeamId AND ua.id = :userId AND m.isDeleted = false"),
+        @NamedQuery(name = "devTeam.fetch.members", query = "SELECT dt FROM DevTeam dt JOIN FETCH dt.joinedUsers m JOIN FETCH m.userAccount ua " +
+                "WHERE dt.id = :devTeamId AND m.isDeleted = false")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class DevTeam extends UUIDEntity<DevTeam> {
