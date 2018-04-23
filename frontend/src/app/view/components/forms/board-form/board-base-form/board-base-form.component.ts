@@ -42,6 +42,8 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     this.initFormControl();
     this.initFormGroup();
     this.loadProject();
+
+    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
   }
 
   private loadProject(): void {
@@ -130,9 +132,11 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   private getDifferentDevTeamIds(projects: Project[]): number {
     let devTeamIds = new Map<string, boolean>();
 
-    projects.forEach(value => {
-      devTeamIds.set(value.devTeam.id, true);
-    });
+    if(Array.isArray(projects)) {
+      projects.forEach(value => {
+        devTeamIds.set(value.devTeam.id, true);
+      });
+    }
 
     return devTeamIds.size;
   }
@@ -172,7 +176,6 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   handleOnAddRight(orderIndex: number): void {
     this.board.boardParts.splice(orderIndex+1,0, this.createChild());
     this.setOrderIndexes();
-    console.log(this.board.boardParts);
   }
 
   handleOnAddLeft(orderIndex: number): void {

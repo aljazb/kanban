@@ -1,6 +1,9 @@
 <div>
-  <div *ngIf="isKanbanMaster" class="row">
-    <div class="col-sm-12 mb-3">
+  <div class="row mb-3">
+    <div *ngIf="board" class="col-sm-6">
+      <h3>{{board.name}}</h3>
+    </div>
+    <div *ngIf="isKanbanMaster" class="col-sm-6 ">
       <button class="btn btn-primary pull-right" routerLink="/board/{{id}}/edit">Edit</button>
     </div>
   </div>
@@ -14,7 +17,7 @@
           <table class="table table-bordered">
             <thead>
               <tr *ngFor="let tr of boardRepresentation.boardPartTable; let i = index">
-                <td class="lane-name" *ngIf="i == 0" [attr.rowspan]="boardRepresentation.maxDepth">Project name</td>
+                <td class="lane-name" *ngIf="i == 0" [attr.rowspan]="boardRepresentation.maxDepth">Projects</td>
                 <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan">
                   {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
                 </td>

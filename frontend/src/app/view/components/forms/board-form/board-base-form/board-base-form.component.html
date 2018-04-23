@@ -30,17 +30,6 @@
               </div>
 
               <div class="form-group row">
-                <label for="in-acceptance-testing" class="col-sm-5 col-form-label">Acceptance testing</label>
-                <div class="col-sm-7">
-                  <select name="board-acceptance-testing" class="form-control acceptance-ready" id="in-acceptance-testing"
-                          formControlName="acceptanceTesting">
-                    <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of acceptanceTestingBoardParts" [ngValue]="b.id">{{b.name}}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group row">
                 <label for="in-start-dev" class="col-sm-5 col-form-label">Start dev</label>
                 <div class="col-sm-7">
                   <select name="board-start-dev" class="form-control dev-start" id="in-start-dev"
@@ -58,6 +47,17 @@
                           formControlName="endDev">
                     <option [ngValue]="null">Select column</option>
                     <option *ngFor="let b of endDevBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="in-acceptance-testing" class="col-sm-5 col-form-label">Acceptance testing</label>
+                <div class="col-sm-7">
+                  <select name="board-acceptance-testing" class="form-control acceptance-ready" id="in-acceptance-testing"
+                          formControlName="acceptanceTesting">
+                    <option [ngValue]="null">Select column</option>
+                    <option *ngFor="let b of acceptanceTestingBoardParts" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
