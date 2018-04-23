@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Cacheable
 @NamedQueries({
         @NamedQuery(name = "board.membership",
-                query = "SELECT m FROM Board b LEFT JOIN b.projects p LEFT JOIN p.devTeam dt LEFT JOIN dt.joinedUsers m " +
+                query = "SELECT m FROM Board b JOIN b.projects p JOIN p.devTeam dt JOIN dt.joinedUsers m " +
                         "WHERE b.id = :boardId AND m.userAccount.id = :userId AND m.isDeleted = false")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)

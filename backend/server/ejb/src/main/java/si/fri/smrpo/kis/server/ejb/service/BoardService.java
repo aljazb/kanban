@@ -11,6 +11,7 @@ import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
+import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -170,15 +171,12 @@ public class BoardService implements BoardServiceLocal {
     }
 
 
-
-    private void checkEditAccess(UUID userId, UUID boardId) throws TransactionException {
-        List<Board> editBoard = database.getEntityManager().createNamedQuery("board.access.edit", Board.class)
-                .setParameter("userId", userId)
-                .setParameter("boardId", boardId)
-                .getResultList();
-
-        if(editBoard.isEmpty()){
-            throw new TransactionException("User does not have sufficient rights.", ExceptionType.INSUFFICIENT_RIGHTS);
+    private void checkEditAccess(Board board, UserAccount userAccount) throws LogicBaseException {
+        if(!board.getOwner().getId().equals(userAccount.getId())) {
+            board.queryMembership(database.getEntityManager(), userAccount.getId());
+            if(board.getMembership() == null || !board.getMembership().isKanbanMaster()) {
+                throw new TransactionException("User does not have sufficient rights.", ExceptionType.INSUFFICIENT_RIGHTS);
+            }
         }
     }
 
@@ -284,9 +282,10 @@ public class BoardService implements BoardServiceLocal {
     @Override
     public Board update(Board board, UserAccount authUser) throws LogicBaseException {
         validate(board);
-        checkEditAccess(authUser.getId(), board.getId());
 
         Board dbBoard = database.get(Board.class, board.getId());
+
+        checkEditAccess(dbBoard, authUser);
         dbBoard = updateBoard(dbBoard, board);
 
         return dbBoard;

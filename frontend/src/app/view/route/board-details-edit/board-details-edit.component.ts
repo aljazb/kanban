@@ -52,11 +52,13 @@ export class BoardDetailsEditComponent implements OnInit {
 
     if(board.projects) {
       board.projects.forEach(project => {
-        project.cards.forEach(card => {
-          let bp = allBoardParts.get(card.boardPart.id);
-          if(!Array.isArray(bp.cards)) bp.cards = [];
-          bp.cards.push(card);
-        })
+        if(Array.isArray(project.cards)) {
+          project.cards.forEach(card => {
+            let bp = allBoardParts.get(card.boardPart.id);
+            if(!Array.isArray(bp.cards)) bp.cards = [];
+            bp.cards.push(card);
+          })
+        }
       });
     }
   }

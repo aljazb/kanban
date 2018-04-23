@@ -33,6 +33,7 @@ export class BoardRepresentation {
     this.buildRootBoardParts();
     this.initBoardPartTable();
     this.setRowSpanBoardPartTable();
+    this.initProjectTable();
     this.initCards();
   }
 
@@ -59,20 +60,26 @@ export class BoardRepresentation {
   private initCards(){
     if(Array.isArray(this.board.projects)){
       this.board.projects.forEach(project => {
-        project.cards.forEach(card => {
-          this.add(card, project);
-        })
+        if(Array.isArray(project.cards)) {
+          project.cards.forEach(card => {
+            this.add(card, project);
+          });
+        }
+      });
+    }
+  }
+
+  private initProjectTable() {
+    if(Array.isArray(this.board.projects)) {
+      this.board.projects.sort((a, b) => a.name.localeCompare(b.name));
+      this.board.projects.forEach(project => {
+        this.projectTable.push(new ProjectTable(project.id, project.name, this._maxWidth));
       });
     }
   }
 
   private add(card: Card, project: Project): void {
     let pt = this.projectTable.find(value => value.id == project.id);
-    if(pt == null) {
-      pt = new ProjectTable(card.project.id, project.name, this._maxWidth);
-      this.projectTable.push(pt);
-    }
-
     let bpt = this._boardPartIdToIndexMap.get(card.boardPart.id);
     pt.add(card, bpt.index);
     this.incWip(bpt);
