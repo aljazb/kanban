@@ -16,9 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_ADMINISTRATOR;
-import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_DEVELOPER;
-import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_KANBAN_MASTER;
+import static si.fri.smrpo.kis.server.ejb.Constants.*;
 
 
 @Path("Board")
@@ -39,13 +37,13 @@ public class BoardResource extends CrudResource<Board, BoardSourceLocal> {
     }
 
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR, ROLE_PRODUCT_OWNER})
     @GET
     public Response getList() throws Exception {
         return super.getList();
     }
 
-    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
+    @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR, ROLE_PRODUCT_OWNER})
     @GET
     @Path("{id}")
     public Response get(@PathParam("id") UUID id) throws Exception {

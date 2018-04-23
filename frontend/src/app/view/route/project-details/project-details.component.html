@@ -30,6 +30,8 @@
     <p class="col-sm-2 col-label">Dev team</p>
     <p class="col-sm-2 col-label"><strong>{{ project.devTeam.name }}</strong></p>
   </div>
+
+  <button *ngIf="project.board" type="button" class="btn btn-primary" routerLink="/board/{{project.board.id}}">Go to board</button>
   <button *ngIf="isKanbanMaster" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
   <button *ngIf="isKanbanMaster" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
   <button *ngIf="isProductOwner" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create card</button>
