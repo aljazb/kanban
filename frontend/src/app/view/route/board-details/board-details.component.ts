@@ -51,20 +51,18 @@ export class BoardDetailsComponent implements OnInit {
 
   private moveCard(c: Card, to: BoardPart) {
     let cm = new CardMove();
-    cm.from = c.boardPart;
     cm.to = to;
-    cm.movedBy = this.user;
     cm.card = c;
+    cm.cardMoveType = CardMoveType.VALID;
 
     let wipExceeded = this.boardRepresentation.willExceedWip(to);
-
     if (wipExceeded) {
       cm.cardMoveType = CardMoveType.INVALID;
-    } else {
-      cm.cardMoveType = CardMoveType.VALID;
     }
 
-    this.api.cardMove.post(cm, false).subscribe(() => this.api.board.get(this.id).subscribe(board => this.init(board)));
+    this.api.cardMove.post(cm, false).subscribe(() =>
+      this.api.board.get(this.id).subscribe(board =>
+        this.init(board)));
   }
 
   moveCardLeft(c: Card, event: any) {

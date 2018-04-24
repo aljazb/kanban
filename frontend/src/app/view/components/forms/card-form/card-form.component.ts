@@ -15,7 +15,7 @@ import {ApiService} from '../../../../api/services/api.service';
 export class CardFormComponent extends FormImpl {
 
   card = new Card();
-  project = new Project()
+  project = new Project();
 
   formCard: FormGroup;
   fcName: FormControl;
@@ -38,7 +38,6 @@ export class CardFormComponent extends FormImpl {
     this.fcDescription = new FormControl('', Validators.required);
     this.fcWorkload = new FormControl('', Validators.required);
     this.fcBoardPart = new FormControl(null);
-    this.fcBoardPart.valueChanges.subscribe(id => this.selectBoardPart(id));
   }
 
   initFormGroup(): void {
@@ -48,10 +47,6 @@ export class CardFormComponent extends FormImpl {
       workload: this.fcWorkload,
       boardPart: this.fcBoardPart
     });
-  }
-
-  selectBoardPart(id: string): BoardPart {
-    return this.leafBoardParts.find(value => value.id == id);
   }
 
   setProject(project) {
@@ -64,6 +59,7 @@ export class CardFormComponent extends FormImpl {
 
   private getLeafParts(boardParts: BoardPart[]): BoardPart[] {
     let array = [];
+    boardParts.sort((a, b) => a.orderIndex - b.orderIndex);
 
     boardParts.forEach(boardPart => {
       if (boardPart.leaf) {
@@ -86,8 +82,10 @@ export class CardFormComponent extends FormImpl {
       c.name = this.fcName.value;
       c.description = this.fcDescription.value;
       c.workload = this.fcWorkload.value;
-      c.project = this.project;
-
+      c.project = new Project();
+      c.project.id = this.project.id;
+      c.boardPart = new BoardPart();
+      c.boardPart.id = this.fcBoardPart.value;
 
       this.activeModal.close(c);
     }

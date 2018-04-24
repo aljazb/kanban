@@ -4,9 +4,9 @@
     <div *ngIf="paging && paging.count > 0" class="list-group">
       <div>
         <div class="list-group-item list-group-item-primary">Development teams</div>
-        <a (click)="itemSelected(item)" *ngFor="let item of paging.items" class="list-group-item list-group-item-action">
+        <div class="list-group-item list-group-item-action hover-pointer" (click)="itemSelected(item)" *ngFor="let item of paging.items" >
           {{item.name}}
-        </a>
+        </div>
       </div>
 
       <ngb-pagination (pageChange)="refresh()"

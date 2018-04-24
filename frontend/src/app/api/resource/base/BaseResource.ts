@@ -1,5 +1,5 @@
 import {BaseEntity} from '../../models/base/BaseEntity';
-import {HttpHeaders} from '@angular/common/http';
+import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {isNullOrUndefined} from 'util';
@@ -67,6 +67,20 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
 
   protected serialize(entity) {
     return this.api.jsog.serialize(entity);
+  }
+
+  protected buildLocation(resp: HttpResponse<T>): T {
+    let entity = resp.body;
+    if(entity == null) {
+      let locationId = resp.headers.get('location');
+      if(locationId) {
+        locationId = locationId.substr(locationId.indexOf("/") + 1);
+
+        entity = {} as T;
+        entity.id = locationId;
+      }
+    }
+    return entity;
   }
 
 }

@@ -9,6 +9,7 @@ export class CardTable {
 
   add(card: Card): void {
     this.cards.push(card);
+    this.cards.sort((a, b) => a.name.localeCompare(b.name));
   }
 
 }

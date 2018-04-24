@@ -2,17 +2,20 @@ package si.fri.smrpo.kis.server.ejb.source;
 
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.CardServiceLocal;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.CardSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.server.jpa.entities.Card;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
+import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
@@ -31,6 +34,9 @@ public class CardSource extends CrudSource<Card, UUID> implements CardSourceLoca
 
     @EJB
     private DatabaseServiceLocal database;
+
+    @EJB
+    private CardServiceLocal cardService;
 
 
     @PostConstruct
@@ -75,50 +81,24 @@ public class CardSource extends CrudSource<Card, UUID> implements CardSourceLoca
 
     @Override
     public Card create(Card newEntity) throws Exception {
-        Card c = super.create(newEntity);
-        updateCardHolders(c);
-        c.getBoardPart().incWip(database);
-        return c;
+        return cardService.create(newEntity, authUser);
     }
 
     @Override
     public Card update(Card newEntity) throws Exception {
-        Card c = super.update(newEntity);
-        updateCardHolders(c);
-        return c;
+        return cardService.update(newEntity, authUser);
     }
 
     @Override
     public Card patch(Card newEntity) throws Exception {
-        Card c = super.patch(newEntity);
-        updateCardHolders(c);
-        return c;
+        return cardService.patch(newEntity, authUser);
     }
 
     @Override
     public Card delete(Class<Card> c, UUID id) throws Exception {
-        Card card = super.delete(c, id);
-        updateCardHolders(card);
-        card.getBoardPart().decWip(database);
-        return card;
+        return cardService.delete(id, authUser);
     }
 
-    /*@Override
-    public Card toggleIsDeleted(Class<Card> c, UUID id) throws Exception {
-        Card card = super.toggleIsDeleted(c, id);
-        updateCardHolders(card);
-        return card;
-    }*/
-
-    private void updateCardHolders(Card c) throws Exception {
-        if(c.getBoardPart() != null){
-            Board b = c.getBoardPart().getBoard();
-            database.update(b);
-        }
-
-        Project p = c.getProject();
-        database.update(p);
-    }
 
     public UserAccount getAuthUser() {
         return authUser;

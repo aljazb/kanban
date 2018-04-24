@@ -27,9 +27,6 @@ export class ProjectFormComponent extends FormImpl {
   fcDevTeam: FormControl;
 
   isFormSubmitted: boolean = false;
-  invalidStartDate: boolean = false;
-  invalidEndDate: boolean = false;
-
 
   constructor(public activeModal: NgbActiveModal,
               private apiService: ApiService) {

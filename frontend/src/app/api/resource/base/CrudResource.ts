@@ -12,20 +12,6 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
     super(entityName, api);
   }
 
-  private buildLocation(resp: HttpResponse<T>): T {
-    let entity = resp.body;
-    if(entity == null) {
-      let locationId = resp.headers.get('location');
-      if(locationId) {
-        locationId = locationId.substr(locationId.indexOf("/") + 1);
-
-        entity = {} as T;
-        entity.id = locationId;
-      }
-    }
-    return entity;
-  }
-
   post (entity: T, xContent = this.api.xContent): Observable<T> {
     return this.api.httpClient.post<T>(this.url, this.serialize(entity), { headers: this.getHeaders(xContent), observe: 'response'})
       .pipe(

@@ -7,6 +7,7 @@ import {ApiService} from '../../../api/services/api.service';
 import {Project} from '../../../api/models/Project';
 import {CardFormComponent} from '../../components/forms/card-form/card-form.component';
 import {Membership} from '../../../api/models/Membership';
+import {ToasterService} from 'angular5-toaster/dist';
 
 @Component({
   selector: 'app-project-details',
@@ -24,7 +25,8 @@ export class ProjectDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private apiService:ApiService,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal,
+              protected toaster: ToasterService) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -38,6 +40,10 @@ export class ProjectDetailsComponent implements OnInit {
 
       this.isAuthUserKanbanMaster = Membership.isKanbanMaster(this.project.membership);
       this.isAuthUserProductOwner = Membership.isProductOwner(this.project.membership);
+
+      if(Array.isArray(this.project.cards)) {
+        this.cardsAssigned = this.project.cards.length > 0;
+      }
     });
   }
 
@@ -49,10 +55,11 @@ export class ProjectDetailsComponent implements OnInit {
 
     modalRef.result
       .then(value =>
-        this.apiService.project.put(value, true).subscribe(value =>
-          console.log(value)
-        ))
-      .catch(reason => console.log(reason));
+        this.apiService.project.put(value, true).subscribe(value => {
+          this.toaster.pop("success", "Project was updated");
+        }, error2 => {
+          this.toaster.pop("error", "Error updating project")
+        }));
   }
 
   openCardCreateModal() {
@@ -61,25 +68,27 @@ export class ProjectDetailsComponent implements OnInit {
 
     modalRef.result
       .then(value =>
-        this.apiService.card.post(value, true).subscribe(value =>
-          console.log(value)
-        ))
-      .catch(reason => console.log(reason));
+        this.apiService.card.post(value, true).subscribe(value => {
+          this.toaster.pop("success", "Card was updated");
+          this.router.navigate(['/card', value.id])
+        }, error2 => {
+          this.toaster.pop("error", "Error creating card");
+        }));
   }
 
   openDeleteConfirmationModal() {
     const modalRef = this.modalService.open(ProjectDeleteConfirmationComponent);
 
     modalRef.result
-      .then(value => this.deleteProject())
-      .catch(reason => console.log(reason));
+      .then(value => {
+        this.apiService.project.delete(this.id, true).subscribe(value => {
+            this.toaster.pop("success", "Project was deleted");
+            this.router.navigate([`/project`]);
+        }, error2 => {
+          this.toaster.pop("error", "Error deleting project");
+        });
+      });
   }
 
-  deleteProject() {
-    this.apiService.project.delete(this.id, true).subscribe(value =>
-        this.router.navigate([`/project`])
-    );
-
-  }
 
 }

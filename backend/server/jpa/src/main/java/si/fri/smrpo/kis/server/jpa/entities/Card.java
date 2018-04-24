@@ -21,7 +21,7 @@ import java.util.UUID;
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Card extends UUIDEntity<Card> {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -32,9 +32,6 @@ public class Card extends UUIDEntity<Card> {
 
     @Column(name = "color")
     private String color;
-
-    @Column(name = "order_index", nullable = false)
-    private Integer orderIndex;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
@@ -121,14 +118,6 @@ public class Card extends UUIDEntity<Card> {
 
     public void setSubTasks(Set<SubTask> subTasks) {
         this.subTasks = subTasks;
-    }
-
-    public Integer getOrderIndex() {
-        return orderIndex;
-    }
-
-    public void setOrderIndex(Integer orderIndex) {
-        this.orderIndex = orderIndex;
     }
 
     public String getColor() {

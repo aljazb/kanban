@@ -11,7 +11,6 @@ export class Card extends BaseEntity<Card> {
   workload: number;
 
   color: string;
-  orderIndex: number;
 
   project: Project;
   boardPart: BoardPart;
