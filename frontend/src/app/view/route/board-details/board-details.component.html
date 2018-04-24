@@ -3,7 +3,7 @@
     <div *ngIf="board" class="col-sm-6">
       <h3>{{board.name}}</h3>
     </div>
-    <div *ngIf="isKanbanMaster" class="col-sm-6 ">
+    <div *ngIf="isAuthUserKanbanMaster" class="col-sm-6 ">
       <button class="btn btn-primary pull-right" routerLink="/board/{{id}}/edit">Edit</button>
     </div>
   </div>
@@ -18,7 +18,7 @@
             <thead>
               <tr *ngFor="let tr of boardRepresentation.boardPartTable; let i = index">
                 <td class="lane-name" *ngIf="i == 0" [attr.rowspan]="boardRepresentation.maxDepth">Projects</td>
-                <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan">
+                <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan" [ngClass]="{'over-max-wip-warning': td.boardPart.maxWip < td.currentWip}">
                   {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
                 </td>
               </tr>
@@ -29,16 +29,15 @@
                 <td *ngFor="let td of tr.cardTables">
 
                   <div class="list-group">
-                      <div class="list-group-item list-group-item-action hover-pointer" *ngFor="let c of td.cards" routerLink="/card/{{c.id}}" [style.background]="c.color">
+                      <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards" [style.background]="c.color">
 
                         <div class="mt-3">
-                          <button class="btn-sm btn-primary" (click)="moveCardLeft(c, $event)">
+                          <button type="button" class="btn btn-sm btn-primary" (click)="moveCardLeft(c, td.leftBoardPart)" *ngIf="td.leftBoardPart">
                             <i class="fa fa-caret-left"></i>
                           </button>
+                          <a routerLink="/card/{{c.id}}">{{c.name}}</a>
 
-                          {{c.name}}
-
-                          <button class="btn-sm btn-primary" (click)="moveCardRight(c, $event)">
+                          <button type="button" class="btn btn-sm btn-primary" (click)="moveCardRight(c, td.rightBoardPart)" *ngIf="td.rightBoardPart">
                             <i class="fa fa-caret-right"></i>
                           </button>
                         </div>

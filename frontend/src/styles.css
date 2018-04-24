@@ -26,3 +26,7 @@ div.list-group-item.list-group-item-primary {
 .dev-end {
   background-color: #dab868;
 }
+
+.btn {
+  cursor: pointer;
+}

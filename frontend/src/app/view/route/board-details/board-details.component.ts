@@ -10,6 +10,7 @@ import {UserAccount} from '../../../api/models/UserAccount';
 import {CardMove} from '../../../api/models/card-move';
 import {CardMoveType} from '../../../api/models/enums/CardMoveType';
 import {isNullOrUndefined} from 'util';
+import {Membership} from '../../../api/models/Membership';
 
 @Component({
   selector: 'app-board-details',
@@ -22,8 +23,7 @@ export class BoardDetailsComponent implements OnInit {
   board: Board;
   boardRepresentation: BoardRepresentation;
 
-  user: UserAccount;
-  isKanbanMaster: boolean = false;
+  isAuthUserKanbanMaster: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
@@ -32,14 +32,11 @@ export class BoardDetailsComponent implements OnInit {
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.api.board.get(this.id).subscribe(board => this.init(board));
-    this.login.getUser().subscribe(value => {
-      this.user = value;
-      this.isKanbanMaster = value.inRoleKanbanMaster
-    });
   }
 
   private init(board: Board): void {
     this.board = board;
+    this.isAuthUserKanbanMaster = Membership.isKanbanMaster(board.membership);
     this.boardRepresentation = this.buildBoardRepresentation();
   }
 
@@ -65,14 +62,12 @@ export class BoardDetailsComponent implements OnInit {
         this.init(board)));
   }
 
-  moveCardLeft(c: Card, event: any) {
-    event.stopPropagation();
-    this.moveCard(c, BoardPart.getPreviousBoardPart(c.boardPart))
+  moveCardLeft(c: Card, boardPart: BoardPart) {
+    this.moveCard(c, boardPart)
   }
 
-  moveCardRight(c: Card, event: any) {
-    event.stopPropagation();
-    this.moveCard(c, BoardPart.getNextBoardPart(c.boardPart))
+  moveCardRight(c: Card, boardPart: BoardPart) {
+    this.moveCard(c, boardPart)
   }
 
 }

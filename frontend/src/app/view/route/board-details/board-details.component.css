@@ -13,3 +13,7 @@ td {
 .lane-name {
   background-color: #f8f9fa;
 }
+
+.over-max-wip-warning {
+  color: red;
+}

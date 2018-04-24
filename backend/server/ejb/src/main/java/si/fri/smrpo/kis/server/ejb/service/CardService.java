@@ -30,6 +30,10 @@ public class CardService implements CardServiceLocal {
         } else if(card.getName() == null){
             throw new TransactionException("No name specified");
         }
+
+        if(card.getColor() == null) {
+            card.setColor("#f8f9fa");
+        }
     }
 
     private void checkAccess(Card entity, UserAccount authUser) throws LogicBaseException {

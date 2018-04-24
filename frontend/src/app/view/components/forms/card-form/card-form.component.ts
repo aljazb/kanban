@@ -6,6 +6,7 @@ import {FormImpl} from '../form-impl';
 import {Project} from '../../../../api/models/Project';
 import {BoardPart} from '../../../../api/models/BoardPart';
 import {ApiService} from '../../../../api/services/api.service';
+import {Board} from '../../../../api/models/Board';
 
 @Component({
   selector: 'app-card-form',
@@ -52,24 +53,9 @@ export class CardFormComponent extends FormImpl {
   setProject(project) {
     this.project = project;
     this.apiService.board.get(this.project.board.id).subscribe(value => {
-      this.leafBoardParts = this.getLeafParts(value.boardParts);
+      this.leafBoardParts = Board.getLeafParts(value.boardParts);
       this.fcBoardPart.patchValue(this.leafBoardParts[0].id);
     });
-  }
-
-  private getLeafParts(boardParts: BoardPart[]): BoardPart[] {
-    let array = [];
-    boardParts.sort((a, b) => a.orderIndex - b.orderIndex);
-
-    boardParts.forEach(boardPart => {
-      if (boardPart.leaf) {
-        array.push(boardPart);
-      } else {
-        let cArray = this.getLeafParts(boardPart.children);
-        array = array.concat(cArray);
-      }
-    });
-    return array;
   }
 
   onSubmit() {

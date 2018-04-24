@@ -16,4 +16,19 @@ export class Board extends BaseEntity<Board> {
   boardParts: BoardPart[];
   projects: Project[];
   membership: Membership;
+
+  public static getLeafParts(boardParts: BoardPart[]): BoardPart[] {
+    let array = [];
+    boardParts.sort((a, b) => a.orderIndex - b.orderIndex);
+
+    boardParts.forEach(boardPart => {
+      if (boardPart.leaf) {
+        array.push(boardPart);
+      } else {
+        let cArray = this.getLeafParts(boardPart.children);
+        array = array.concat(cArray);
+      }
+    });
+    return array;
+  }
 }

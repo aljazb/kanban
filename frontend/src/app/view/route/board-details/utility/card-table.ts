@@ -1,9 +1,15 @@
 import {Card} from '../../../../api/models/Card';
+import {BoardPart} from '../../../../api/models/BoardPart';
 
 export class CardTable {
+  leftBoardPart: BoardPart = null;
+  rightBoardPart: BoardPart = null;
+
   cards: Card[];
 
-  constructor() {
+  constructor(leftBoardPart: BoardPart, rightBoardPart: BoardPart) {
+    this.leftBoardPart = leftBoardPart;
+    this.rightBoardPart = rightBoardPart;
     this.cards = [];
   }
 

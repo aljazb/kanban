@@ -9,6 +9,7 @@ export class BoardRepresentation {
 
   private board: Board;
   private rootBoardParts: BoardPart[];
+  private leafBoardParts: BoardPart[];
 
   private _maxDepth: number;
   private _maxWidth: number;
@@ -44,6 +45,7 @@ export class BoardRepresentation {
         this.rootBoardParts.push(boardPart);
       }
     });
+    this.leafBoardParts = Board.getLeafParts(this.rootBoardParts);
 
     this.sortBoardParts(this.rootBoardParts);
   }
@@ -73,7 +75,7 @@ export class BoardRepresentation {
     if(Array.isArray(this.board.projects)) {
       this.board.projects.sort((a, b) => a.name.localeCompare(b.name));
       this.board.projects.forEach(project => {
-        this.projectTable.push(new ProjectTable(project.id, project.name, this._maxWidth));
+        this.projectTable.push(new ProjectTable(project.id, project.name, this._maxWidth, this.leafBoardParts));
       });
     }
   }
