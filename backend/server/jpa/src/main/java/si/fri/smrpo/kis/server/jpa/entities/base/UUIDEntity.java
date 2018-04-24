@@ -1,6 +1,7 @@
 package si.fri.smrpo.kis.server.jpa.entities.base;
 
 import si.fri.smrpo.kis.core.jpa.BaseEntity;
+import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @MappedSuperclass
 public abstract class UUIDEntity<E extends UUIDEntity> extends BaseEntity<E, UUID> {
 
+    @Database(update = false)
     @Id
     @Column(name = "id", columnDefinition = "uuid", updatable = false)
     private UUID id;

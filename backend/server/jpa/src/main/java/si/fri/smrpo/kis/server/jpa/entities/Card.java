@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
@@ -39,6 +40,7 @@ public class Card extends UUIDEntity<Card> {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @Database(update = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_part_id", nullable = false)
     private BoardPart boardPart;
@@ -64,17 +66,6 @@ public class Card extends UUIDEntity<Card> {
         return membership;
     }
 
-    @Override
-    protected boolean genericUpdateSkip(Field field) {
-        if(super.baseSkip(field)) {
-            return true;
-        } else {
-            switch (field.getName()) {
-                case "boardPart": return true;
-                default: return false;
-            }
-        }
-    }
 
     public Project getProject() {
         return project;

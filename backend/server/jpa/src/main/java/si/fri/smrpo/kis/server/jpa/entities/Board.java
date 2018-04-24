@@ -4,6 +4,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
@@ -39,7 +40,7 @@ public class Board extends UUIDEntity<Board> {
     @Column(name = "acceptance_testing")
     private UUID acceptanceTesting;
 
-
+    @Database(update = false)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     public UserAccount owner;
@@ -63,19 +64,6 @@ public class Board extends UUIDEntity<Board> {
                 .stream().findFirst().orElse(null);
 
         return membership;
-    }
-
-
-    @Override
-    protected boolean genericUpdateSkip(Field field) {
-        if(super.baseSkip(field)) {
-            return true;
-        } else {
-            switch (field.getName()) {
-                case "owner": return true;
-                default: return false;
-            }
-        }
     }
 
     @JsonIgnore

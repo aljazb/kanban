@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.core.jpa;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import si.fri.smrpo.kis.core.jpa.anotations.Database;
 
 import javax.persistence.*;
 import javax.ws.rs.core.EntityTag;
@@ -16,19 +17,24 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
     public abstract I getId();
     public abstract void setId(I id);
 
+    @Database(update = false)
     @Version
     protected Integer version;
 
+    @Database(update = false)
     @Column(name = "is_deleted", nullable = false)
     protected Boolean isDeleted;
 
+    @Database(update = false)
     @Column(name = "created_on", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date createdOn;
 
+    @Database(update = false)
     @Column(name = "edited_on", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date editedOn;
+
 
     @SuppressWarnings("unchecked")
     @JsonIgnore
@@ -110,95 +116,64 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
     }
 
     @JsonIgnore
-    protected boolean baseSkip(Field field){
-        switch (field.getName()) {
-            case "id":
-            case "isDeleted":
-            case "editedOn":
-            case "createdOn":
-            case "version":
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @JsonIgnore
-    protected boolean genericUpdateSkip(Field field){
-        return baseSkip(field);
-    }
-
-    @JsonIgnore
     public void genericUpdate(E object, EntityManager em) throws IllegalAccessException {
         for (Field field : getAllClassFields()) {
-            if(genericUpdateSkip(field)){
-                continue;
-            }
+            Database db = field.getAnnotation(Database.class);
+            if(db == null || db.update()) {
+                field.setAccessible(true);
 
-            field.setAccessible(true);
+                Class<?> classType = field.getType();
 
-            Class<?> classType = field.getType();
-
-            if (BaseEntity.class.isAssignableFrom(classType)) {
-                BaseEntity obj = (BaseEntity) field.get(object);
-                if (obj != null && obj.getId() != null) {
-                    if(em.contains(obj)) {
-                        field.set(this, obj);
+                if (BaseEntity.class.isAssignableFrom(classType)) {
+                    BaseEntity obj = (BaseEntity) field.get(object);
+                    if (obj != null && obj.getId() != null) {
+                        if(em.contains(obj)) {
+                            field.set(this, obj);
+                        } else {
+                            Object setObj = em.getReference(classType, obj.getId());
+                            field.set(this, setObj);
+                        }
                     } else {
-                        Object setObj = em.getReference(classType, obj.getId());
-                        field.set(this, setObj);
+                        field.set(this, null);
                     }
                 } else {
-                    field.set(this, null);
-                }
-            } else {
-                if(!Set.class.isAssignableFrom(classType)) {
-                    field.set(this, field.get(object));
+                    if(!Set.class.isAssignableFrom(classType)) {
+                        field.set(this, field.get(object));
+                    }
                 }
             }
         }
-    }
-
-    @JsonIgnore
-    protected boolean genericPatchSkip(Field field){
-        return baseSkip(field);
     }
 
     @JsonIgnore
     public void genericPatch(E object, EntityManager em) throws IllegalAccessException {
         for (Field field : getAllClassFields()) {
-            if(genericPatchSkip(field)){
-                continue;
-            }
+            Database db = field.getAnnotation(Database.class);
+            if(db == null || db.update()) {
 
-            field.setAccessible(true);
+                field.setAccessible(true);
+                Class<?> classType = field.getType();
 
-            Class<?> classType = field.getType();
-
-            if (BaseEntity.class.isAssignableFrom(classType)) {
-                BaseEntity obj = (BaseEntity) field.get(object);
-                if (obj != null && obj.getId() != null) {
-                    if(em.contains(obj)) {
-                        field.set(this, obj);
-                    } else {
-                        Object setObj = em.getReference(classType, obj.getId());
-                        field.set(this, setObj);
+                if (BaseEntity.class.isAssignableFrom(classType)) {
+                    BaseEntity obj = (BaseEntity) field.get(object);
+                    if (obj != null && obj.getId() != null) {
+                        if (em.contains(obj)) {
+                            field.set(this, obj);
+                        } else {
+                            Object setObj = em.getReference(classType, obj.getId());
+                            field.set(this, setObj);
+                        }
                     }
-                }
-            } else {
-                if(!Set.class.isAssignableFrom(classType)){
-                    Object obj = field.get(object);
-                    if (obj != null){
-                        field.set(this, obj);
+                } else {
+                    if (!Set.class.isAssignableFrom(classType)) {
+                        Object obj = field.get(object);
+                        if (obj != null) {
+                            field.set(this, obj);
+                        }
                     }
                 }
             }
         }
-    }
-
-    @JsonIgnore
-    public boolean genericIsDifferentSkip(Field field){
-        return baseSkip(field);
     }
 
     private boolean areObjectDifferent(Class type, Field field, Object e1, Object e2){
@@ -225,25 +200,24 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
     @JsonIgnore
     public boolean isUpdateDifferent(BaseEntity entity) throws IllegalAccessException {
         for (Field field : getAllClassFields()) {
-            if(genericIsDifferentSkip(field)){
-                continue;
-            }
+            Database db = field.getAnnotation(Database.class);
+            if(db == null || db.update()) {
 
-            field.setAccessible(true);
+                field.setAccessible(true);
+                Class<?> type = field.getType();
+                if (!Set.class.isAssignableFrom(type)) {
+                    Object e1 = field.get(this);
+                    Object e2 = field.get(entity);
 
-            Class<?> type = field.getType();
-            if(!Set.class.isAssignableFrom(type)) {
-                Object e1 = field.get(this);
-                Object e2 = field.get(entity);
-
-                if(e1 == null && e2 == null) {
-                    continue;
-                } else if(e1 != null && e2 != null) {
-                    if(areObjectDifferent(type, field, e1, e2)){
+                    if (e1 == null && e2 == null) {
+                        continue;
+                    } else if (e1 != null && e2 != null) {
+                        if (areObjectDifferent(type, field, e1, e2)) {
+                            return true;
+                        }
+                    } else {
                         return true;
                     }
-                } else {
-                    return true;
                 }
             }
         }
@@ -254,24 +228,25 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
     @JsonIgnore
     public boolean isPatchDifferent(BaseEntity entity) throws IllegalAccessException {
         for (Field field : getAllClassFields()) {
-            if(genericIsDifferentSkip(field)){
-                continue;
-            }
+            Database db = field.getAnnotation(Database.class);
+            if(db == null || db.update()) {
 
-            field.setAccessible(true);
+                field.setAccessible(true);
 
-            Class<?> type = field.getType();
-            if(!Set.class.isAssignableFrom(type)) {
-                Object e1 = field.get(this);
-                Object e2 = field.get(entity);
+                Class<?> type = field.getType();
+                if (!Set.class.isAssignableFrom(type)) {
+                    Object e1 = field.get(this);
+                    Object e2 = field.get(entity);
 
-                if(e2 == null) {
-                    continue;
-                } if (e1 == null) {
-                    return true;
-                } else {
-                    if(areObjectDifferent(type, field, e1, e2)){
+                    if (e2 == null) {
+                        continue;
+                    }
+                    if (e1 == null) {
                         return true;
+                    } else {
+                        if (areObjectDifferent(type, field, e1, e2)) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -341,8 +316,6 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
     public EntityTag getEntityTag(){
         return new EntityTag(String.valueOf(this.editedOn.getTime()));
     }
-
-
 
 
     public Integer getVersion() {

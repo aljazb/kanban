@@ -49,17 +49,6 @@ public class DevTeam extends UUIDEntity<DevTeam> {
     }
 
     @JsonIgnore
-    public void buildActiveMembership() {
-        Set<Membership> activeMembership = new HashSet<>();
-        for(Membership m : getJoinedUsers()) {
-            if (!m.getIsDeleted()) {
-                activeMembership.add(m);
-            }
-        }
-        setJoinedUsers(activeMembership);
-    }
-
-    @JsonIgnore
     public UserAccount getKanbanMaster() {
         return getJoinedUsers().stream()
                 .filter(membership -> !membership.getIsDeleted() &&

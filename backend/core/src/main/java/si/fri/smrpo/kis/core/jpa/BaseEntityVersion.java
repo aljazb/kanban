@@ -1,6 +1,7 @@
 package si.fri.smrpo.kis.core.jpa;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import si.fri.smrpo.kis.core.jpa.anotations.Database;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -14,9 +15,11 @@ public abstract class BaseEntityVersion<E extends BaseEntityVersion, I extends S
     public abstract void setOriginId(I originId);
 
 
+    @Database(update = false)
     @Column(name = "version_order", nullable = false)
     protected Integer versionOrder;
 
+    @Database(update = false)
     @Column(name = "is_latest", nullable = false)
     protected Boolean isLatest;
 
@@ -41,24 +44,6 @@ public abstract class BaseEntityVersion<E extends BaseEntityVersion, I extends S
         setOriginId(null);
         versionOrder = null;
         isLatest = null;
-    }
-
-    @JsonIgnore
-    @Override
-    protected boolean baseSkip(Field field){
-        boolean skip = super.baseSkip(field);
-        if(skip) {
-            return skip;
-        } else {
-            switch (field.getName()){
-                case "originId":
-                case "versionOrder":
-                case "isLatest":
-                    return true;
-                default:
-                    return false;
-            }
-        }
     }
 
     public Integer getVersionOrder() {

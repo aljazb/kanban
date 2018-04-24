@@ -4,6 +4,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.core.logic.database.interfaces.DatabaseCrudImpl;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
@@ -24,18 +25,21 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "max_wip", nullable = false)
     private Integer maxWip;
 
+    @Database(update = false)
     @Column(name = "current_wip", nullable = false)
     private Integer currentWip;
 
     @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
 
+    @Database(update = false)
     private Boolean leaf;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @Database(update = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_board_part_id")
     private BoardPart parent;
@@ -70,21 +74,6 @@ public class BoardPart extends UUIDEntity<BoardPart> {
             getParent().decWip(database);
         }
         database.update(this);
-    }
-
-    @Override
-    protected boolean genericUpdateSkip(Field field) {
-        if(super.baseSkip(field)) {
-            return true;
-        } else {
-            switch (field.getName()) {
-                case "currentWip":
-                case "leaf":
-                case "parent":
-                    return true;
-                default: return false;
-            }
-        }
     }
 
 
