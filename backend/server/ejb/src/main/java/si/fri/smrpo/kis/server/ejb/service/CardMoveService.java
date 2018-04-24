@@ -27,46 +27,36 @@ public class CardMoveService implements CardMoveServiceLocal {
     private DatabaseServiceLocal database;
 
     private void validate(CardMove cardMove, UserAccount authUser) throws LogicBaseException {
-        if (!authUser.getId().equals(cardMove.getMovedBy().getId())) {
-            throw new OperationException("User moving the card is not the logged in user.", ExceptionType.INSUFFICIENT_RIGHTS);
-        }
         cardMove.setMovedBy(authUser);
 
-        BoardPart movedFrom = database.get(BoardPart.class, cardMove.getFrom().getId());
-
-        if (movedFrom == null) {
-            throw new TransactionException("BoardPart from not found.");
+        Card card = database.get(Card.class, cardMove.getCard().getId());
+        if (card == null) {
+            throw new TransactionException("Card not found.");
+        }
+        card.queryMembership(database.getEntityManager(), authUser.getId());
+        if(card.getMembership() == null || !card.getMembership().isProductOwner()) {
+            throw new TransactionException("User does not have permission", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
-        BoardPart movedTo = database.get(BoardPart.class, cardMove.getTo().getId());
+        BoardPart movedFrom = card.getBoardPart();
 
+        BoardPart movedTo = database.get(BoardPart.class, cardMove.getTo().getId());
         if (movedTo == null) {
             throw new TransactionException("BoardPart to not found.");
         }
 
         cardMove.setFrom(movedFrom);
         cardMove.setTo(movedTo);
-
-        Card card = database.get(Card.class, cardMove.getCard().getId());
-
-        if (card == null) {
-            throw new TransactionException("Card not found.");
-        }
-
-        if (!movedFrom.getCards().contains(card)) {
-            throw new TransactionException("Card not in from BoardPart.");
-        }
-
         cardMove.setCard(card);
 
-        CardMoveType requiredType = (movedTo.getCards().size() + 1 > movedTo.getMaxWip()) ? CardMoveType.INVALID :
-                CardMoveType.VALID;
+        CardMoveType requiredType = isMoveToAvailable(movedTo) ? CardMoveType.VALID : CardMoveType.INVALID;
 
         if (cardMove.getCardMoveType() != requiredType) {
             throw new TransactionException("CardMoveType is set incorrectly.");
         }
 
-        // TODO check if user has move permissions
+        movedTo.incWip(database);
+        movedFrom.decWip(database);
     }
 
     private void moveCard(CardMove cardMove) throws DatabaseException {
@@ -82,4 +72,17 @@ public class CardMoveService implements CardMoveServiceLocal {
 
         return cardMove;
     }
+
+    private boolean isMoveToAvailable(BoardPart bp) {
+        if(bp.getMaxWip() > bp.getCurrentWip()) {
+            if(bp.getParent() == null) {
+                return true;
+            } else {
+                return isMoveToAvailable(bp.getParent());
+            }
+        }
+        return false;
+    }
+
+
 }

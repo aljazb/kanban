@@ -9,6 +9,7 @@ import {UserAccount} from '../../../api/models/UserAccount';
 import {ApiService} from '../../../api/services/api.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HistoryEvent} from '../../../api/models/HistoryEvent';
+import {Membership} from '../../../api/models/Membership';
 
 @Component({
   selector: 'app-dev-team-details',
@@ -26,7 +27,7 @@ export class DevTeamDetailsComponent implements OnInit {
   productOwner: UserAccount;
   events: HistoryEvent[];
 
-  isUserKanbanMaster: boolean;
+  isAuthUserKanbanMaster: boolean;
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
@@ -48,13 +49,13 @@ export class DevTeamDetailsComponent implements OnInit {
       this.kanbanMaster = DevTeam.getKanbanMaster(dt);
       this.productOwner = DevTeam.getProductOwner(dt);
 
-      this.api.devTeam.getEvents(this.id).subscribe(events => {
-        this.events = events.sort((a: HistoryEvent, b: HistoryEvent) =>
-          this.getEventDate(a).getTime() - this.getEventDate(b).getTime());
-        console.log(events);
-      });
+      console.log(this.devTeam);
+      this.isAuthUserKanbanMaster = Membership.isKanbanMaster(this.devTeam.membership);
+    });
 
-      this.isUserKanbanMaster = this.user.id === this.kanbanMaster.id;
+    this.api.devTeam.getEvents(this.id).subscribe(events => {
+      this.events = events.sort((a: HistoryEvent, b: HistoryEvent) =>
+        this.getEventDate(a).getTime() - this.getEventDate(b).getTime())
     });
   }
 

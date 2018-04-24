@@ -11,7 +11,6 @@ import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
-import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -146,6 +145,7 @@ public class BoardService implements BoardServiceLocal {
 
     private void persistPart(BoardPart part, Board dbBoard, BoardPart parent) throws LogicBaseException {
 
+        part.setCurrentWip(0);
         part.setBoard(dbBoard);
         part.setParent(parent);
 
@@ -207,7 +207,7 @@ public class BoardService implements BoardServiceLocal {
     }
 
     private void updateBoardParts(Set<BoardPart> dbBoardPart, Set<BoardPart> newBoardPart) throws LogicBaseException {
-        HashMap<UUID, BoardPart> map = BoardPart.buildMap(dbBoardPart);
+        HashMap<UUID, BoardPart> map = UUIDEntity.buildMap(dbBoardPart);
 
         for(BoardPart nBp : newBoardPart) {
             BoardPart dbBp = map.get(nBp.getId());
@@ -246,7 +246,7 @@ public class BoardService implements BoardServiceLocal {
     }
 
     private void updateProject(Board dbBoard, Board newBoard) throws DatabaseException {
-        HashMap<UUID, Project> assignedProject = UUIDEntity.buildHashMap(dbBoard.getProjects());
+        HashMap<UUID, Project> assignedProject = UUIDEntity.buildMap(dbBoard.getProjects());
 
         for(Project p : newBoard.getProjects()) {
             Project dbP = assignedProject.get(p.getId());

@@ -18,5 +18,6 @@ export class Project extends BaseEntity<Project> {
   devTeam: DevTeam;
   cards: Card[];
   board: Board;
+
   membership: Membership;
 }

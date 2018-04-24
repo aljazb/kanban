@@ -4,6 +4,7 @@ import {BoardBaseFormComponent} from '../../components/forms/board-form/board-ba
 import {ActivatedRoute, Router} from '@angular/router';
 import {LocalBoardsService} from '../../../services/local-boards/local-boards.service';
 import {ApiService} from '../../../api/services/api.service';
+import {ToasterService} from 'angular5-toaster/dist';
 
 @Component({
   selector: 'app-board-edit',
@@ -20,7 +21,8 @@ export class BoardEditComponent implements OnInit {
   constructor(private api: ApiService,
               private router: Router,
               private route: ActivatedRoute,
-              private localBoards: LocalBoardsService) { }
+              private localBoards: LocalBoardsService,
+              private toaster: ToasterService) { }
 
   ngOnInit() {
     let id = this.route.snapshot.fragment;
@@ -30,9 +32,12 @@ export class BoardEditComponent implements OnInit {
   create(): void {
     if(this.boardBaseFormComp.isValid()) {
       this.api.board.post(this.selectedBoard).subscribe(board => {
+        this.toaster.pop("success", `Board ${this.selectedBoard.name} was created`);
         this.localBoards.boardDeleteRef(this.selectedBoard);
         this.selectedBoard = null;
         this.router.navigate(['/board/' + board.id]);
+      }, error2 => {
+        this.toaster.pop("error", `Could not create board ${this.selectedBoard.name}`);
       });
     }
   }
@@ -48,10 +53,12 @@ export class BoardEditComponent implements OnInit {
 
   newBoard(): void {
     this.selectedBoard = this.localBoards.newBoard();
+    this.toaster.pop("success", `New board was created`);
   }
 
   boardDelete(index: number): void {
     this.localBoards.boardDelete(index);
+    this.toaster.pop("success", `Board was deleted created`);
   }
 
   get boards(): Board[] {

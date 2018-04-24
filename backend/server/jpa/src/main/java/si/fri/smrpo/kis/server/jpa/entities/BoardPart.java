@@ -4,9 +4,12 @@ package si.fri.smrpo.kis.server.jpa.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
+import si.fri.smrpo.kis.core.logic.database.interfaces.DatabaseCrudImpl;
+import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Entity
@@ -18,8 +21,11 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "max_wip")
+    @Column(name = "max_wip", nullable = false)
     private Integer maxWip;
+
+    @Column(name = "current_wip", nullable = false)
+    private Integer currentWip;
 
     @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
@@ -46,28 +52,41 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @OneToMany(mappedBy = "to")
     private Set<CardMove> cardMovesTo;
 
+
+
     @JsonIgnore
-    public ArrayList<BoardPart> buildChildrenArray() {
-        ArrayList<BoardPart> boardParts = new ArrayList<>(getChildren());
-        boardParts.sort(Comparator.comparingInt(BoardPart::getOrderIndex));
-        return boardParts;
+    public void incWip(DatabaseCrudImpl<UUID> database) throws DatabaseException {
+        currentWip++;
+        if(getParent() != null){
+            getParent().incWip(database);
+        }
+        database.update(this);
     }
 
     @JsonIgnore
-    public HashMap<UUID, BoardPart> buildChildrenMap() {
-        return buildMap(getChildren());
+    public void decWip(DatabaseCrudImpl<UUID> database) throws DatabaseException {
+        currentWip--;
+        if(getParent() != null){
+            getParent().decWip(database);
+        }
+        database.update(this);
     }
 
-    @JsonIgnore
-    public static HashMap<UUID, BoardPart> buildMap(Set<BoardPart> boardParts) {
-        HashMap<UUID, BoardPart> map = new HashMap<>();
-        if(boardParts != null){
-            for(BoardPart bp : boardParts) {
-                map.put(bp.getId(), bp);
+    @Override
+    protected boolean genericUpdateSkip(Field field) {
+        if(super.baseSkip(field)) {
+            return true;
+        } else {
+            switch (field.getName()) {
+                case "currentWip":
+                case "leaf":
+                case "parent":
+                    return true;
+                default: return false;
             }
         }
-        return map;
     }
+
 
     public BoardPart getParent() {
         return parent;
@@ -147,5 +166,13 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     public void setCardMovesTo(Set<CardMove> cardMovesTo) {
         this.cardMovesTo = cardMovesTo;
+    }
+
+    public Integer getCurrentWip() {
+        return currentWip;
+    }
+
+    public void setCurrentWip(Integer currentWip) {
+        this.currentWip = currentWip;
     }
 }

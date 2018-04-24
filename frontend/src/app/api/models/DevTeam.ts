@@ -34,4 +34,6 @@ export class DevTeam extends BaseEntity<DevTeam> {
       .includes(mtm.memberType)).map(mtm => mtm.userAccount)[0];
   }
 
+
+
 }

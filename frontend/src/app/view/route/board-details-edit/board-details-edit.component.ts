@@ -82,6 +82,7 @@ export class BoardDetailsEditComponent implements OnInit {
 
   copy(): void {
     let b = this.localBoard.copy(this.board);
+    this.toaster.pop("success", "Board was copied");
     this.router.navigate(['/board/edit'], {fragment: b.id})
   }
 

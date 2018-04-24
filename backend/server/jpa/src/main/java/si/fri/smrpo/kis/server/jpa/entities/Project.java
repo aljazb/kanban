@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
@@ -57,7 +58,6 @@ public class Project extends UUIDEntity<Project> {
     @OneToMany(mappedBy = "project")
     private Set<Card> cards;
 
-
     @Transient
     private Membership membership;
 
@@ -71,7 +71,6 @@ public class Project extends UUIDEntity<Project> {
 
         return membership;
     }
-
 
     public DevTeam getDevTeam() {
         return devTeam;

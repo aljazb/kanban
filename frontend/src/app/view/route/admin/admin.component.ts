@@ -55,7 +55,7 @@ export class AdminComponent implements OnInit {
 
   openUserEditModal(): void {
     const modalRef = this.modalService.open(UserAccountFormComponent);
-    (<UserAccountFormComponent> modalRef.componentInstance).setInitialProject(this.selectedUser);
+    (<UserAccountFormComponent> modalRef.componentInstance).setInitialUserName(this.selectedUser);
 
     modalRef.result
       .then(user => this.updateUser(user))

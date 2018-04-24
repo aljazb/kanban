@@ -73,7 +73,7 @@ export class UserAccountFormComponent extends FormImpl {
     });
   }
 
-  setInitialProject(user: UserAccount) {
+  setInitialUserName(user: UserAccount) {
     this.isFormChanged = false;
     this.formUserAccount.valueChanges.subscribe(value => {
       this.isFormChanged = this.isSetValueChanged();
@@ -131,6 +131,7 @@ export class UserAccountFormComponent extends FormImpl {
       return timer(this.DEBOUNC_TIME).pipe(
         switchMap(()=> {
           let ua = new UserAccount();
+          ua.id = this.userAccount.id;
           ua.username = control.value;
           return this.api.userAccount.isAvailable(ua).pipe(
             catchError(err => of(err.error)),
@@ -153,6 +154,7 @@ export class UserAccountFormComponent extends FormImpl {
         return timer(this.DEBOUNC_TIME).pipe(
           switchMap(()=> {
             let ua = new UserAccount();
+            ua.id = this.userAccount.id;
             ua.email = email;
             return this.api.userAccount.isAvailable(ua).pipe(
               catchError(err => of(err.error)),

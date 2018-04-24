@@ -5,6 +5,7 @@ import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
+import java.lang.reflect.Field;
 import java.util.Set;
 import java.util.UUID;
 
@@ -63,7 +64,17 @@ public class Card extends UUIDEntity<Card> {
         return membership;
     }
 
-
+    @Override
+    protected boolean genericUpdateSkip(Field field) {
+        if(super.baseSkip(field)) {
+            return true;
+        } else {
+            switch (field.getName()) {
+                case "boardPart": return true;
+                default: return false;
+            }
+        }
+    }
 
     public Project getProject() {
         return project;

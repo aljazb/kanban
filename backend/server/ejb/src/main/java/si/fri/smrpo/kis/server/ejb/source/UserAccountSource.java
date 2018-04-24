@@ -19,12 +19,16 @@ import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.JoinType;
 import java.util.UUID;
+
+import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_ADMINISTRATOR;
+import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_KANBAN_MASTER;
 
 @PermitAll
 @Stateless
@@ -84,7 +88,7 @@ public class UserAccountSource extends GetSource<UserAccount, UUID> implements U
 
     @Override
     public UserAccount update(UserAccount entity) throws LogicBaseException {
-        if(!authUser.getId().equals(entity.getId())){
+        if(!authUser.getInRoleAdministrator() && !authUser.getId().equals(entity.getId())) {
             throw new OperationException("User does not have rights", ExceptionType.INSUFFICIENT_RIGHTS);
         }
         return service.update(entity);

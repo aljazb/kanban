@@ -35,7 +35,7 @@ public abstract class UUIDEntity<E extends UUIDEntity> extends BaseEntity<E, UUI
         }
     }
 
-    public static  <U extends UUIDEntity> HashMap<UUID, U> buildHashMap(Set<U> entitySet) {
+    public static  <U extends UUIDEntity> HashMap<UUID, U> buildMap(Set<U> entitySet) {
         HashMap<UUID, U> map = new HashMap<>();
 
         for(U u : entitySet) {
@@ -45,7 +45,4 @@ public abstract class UUIDEntity<E extends UUIDEntity> extends BaseEntity<E, UUI
         return map;
     }
 
-    @Transient
-    @Enumerated(EnumType.STRING)
-    private MemberType memberType;
 }

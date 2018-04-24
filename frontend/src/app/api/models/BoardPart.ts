@@ -6,6 +6,7 @@ import {isNullOrUndefined} from 'util';
 export class BoardPart extends BaseEntity<BoardPart> {
   name: string;
   maxWip: number;
+  currentWip: number;
 
   orderIndex: number;
   leaf: boolean;

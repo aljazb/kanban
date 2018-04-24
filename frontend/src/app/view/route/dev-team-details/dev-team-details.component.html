@@ -1,7 +1,7 @@
 <div *ngIf="devTeam">
   <div class="list-group">
     <div class="list-group-item list-group-item-primary"><strong>Team name:</strong>
-      <button *ngIf="isUserKanbanMaster" type="button" (click)="openDevTeamEditModal()" class="btn btn-primary" style="float: right">
+      <button *ngIf="isAuthUserKanbanMaster" type="button" (click)="openDevTeamEditModal()" class="btn btn-primary" style="float: right">
         Edit development team</button>
     </div>
 
@@ -11,7 +11,7 @@
   <div *ngIf="kanbanMaster">
     <a class="list-group">
       <div class="list-group-item list-group-item-primary"><strong>Kanban Master:</strong>
-        <button *ngIf="isUserKanbanMaster" type="button" (click)="sendKMInvite()" class="btn btn-primary" style="float: right">
+        <button *ngIf="isAuthUserKanbanMaster" type="button" (click)="sendKMInvite()" class="btn btn-primary" style="float: right">
           Invite new Kanban Master</button></div>
       <a class="list-group-item list-group-item-action">
         {{ kanbanMaster.email }}

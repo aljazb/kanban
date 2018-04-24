@@ -5,8 +5,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ApiService} from '../../../api/services/api.service';
 import {Project} from '../../../api/models/Project';
-import {LoginService} from '../../../api/services/login.service';
 import {CardFormComponent} from '../../components/forms/card-form/card-form.component';
+import {Membership} from '../../../api/models/Membership';
 
 @Component({
   selector: 'app-project-details',
@@ -17,39 +17,30 @@ export class ProjectDetailsComponent implements OnInit {
 
   id: string;
   project: Project;
-  isKanbanMaster: boolean;
-  isProductOwner: boolean
+  isAuthUserKanbanMaster: boolean;
+  isAuthUserProductOwner: boolean;
   cardsAssigned: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private apiService:ApiService,
-              private loginService: LoginService,
               private modalService: NgbModal) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.getProject();
-    this.checkStatus();
   }
 
   getProject() {
-    this.apiService.project.get(this.id).subscribe(project =>
-      this.assignProjectAndDevTeam(project)
-    );
+    this.apiService.project.get(this.id).subscribe(project => {
+      this.project = project;
+      this.apiService.devTeam.get(project.devTeam.id).subscribe(devTeam => project.devTeam = devTeam);
+
+      this.isAuthUserKanbanMaster = Membership.isKanbanMaster(this.project.membership);
+      this.isAuthUserProductOwner = Membership.isProductOwner(this.project.membership);
+    });
   }
 
-  checkStatus() {
-    this.loginService.getUser().subscribe(value => {
-      this.isKanbanMaster = value.inRoleKanbanMaster;
-      this.isProductOwner = value.inRoleProductOwner;
-    })
-  }
-
-  assignProjectAndDevTeam(project) {
-    this.project = project;
-    this.apiService.devTeam.get(project.devTeam.id).subscribe(devTeam => project.devTeam = devTeam);
-  }
 
   openProjectCreateModal() {
     const modalRef = this.modalService.open(ProjectFormComponent);

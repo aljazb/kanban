@@ -161,6 +161,7 @@ public class SeedService {
 
         for(int i=0; i<4; i++){
             BoardPart bp = new BoardPart();
+            bp.setCurrentWip(0);
             bp.setOrderIndex(i);
             bp.setBoard(testBoard);
             bp.setMaxWip(FAKER.number.between(7, 15));
@@ -178,6 +179,7 @@ public class SeedService {
 
                 for(int j=0; j<2; j++){
                     BoardPart sbp = new BoardPart();
+                    sbp.setCurrentWip(0);
                     sbp.setOrderIndex(j);
                     sbp.setBoard(testBoard);
 
@@ -260,6 +262,8 @@ public class SeedService {
             c.setColor(color);
 
             c = database.create(c);
+
+            bp.incWip(database);
 
             int tasks = FAKER.number.between(1,5);
             for(int t=0; t<tasks; t++){
