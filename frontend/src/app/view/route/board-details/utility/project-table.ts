@@ -1,23 +1,28 @@
 import {CardTable} from './card-table';
 import {Card} from '../../../../api/models/Card';
 import {BoardPart} from '../../../../api/models/BoardPart';
+import {Project} from '../../../../api/models/Project';
+import {UserAccount} from '../../../../api/models/UserAccount';
+import {Membership} from '../../../../api/models/Membership';
 
 export class ProjectTable {
-  id: string;
-  name: string;
+  project: Project;
   cardTables: CardTable[];
 
-  constructor(id: string, name: string, rows: number, leafBoardParts: BoardPart[]) {
-    this.id = id;
-    this.name = name;
+  constructor(project: Project, rows: number, leafBoardParts: BoardPart[]) {
+    this.project = project;
     this.cardTables = [];
+
+    let isAllowedToMoveCards = project.membership != null;
 
     for(let i=0; i<rows; i++) {
       let leftBp: BoardPart = null;
-      if(i != 0) leftBp = leafBoardParts[i - 1];
-
       let rightBp: BoardPart = null;
-      if(i + 1 < leafBoardParts.length) rightBp = leafBoardParts[i + 1];
+
+      if(isAllowedToMoveCards) {
+        if(i != 0) leftBp = leafBoardParts[i - 1];
+        if(i + 1 < leafBoardParts.length) rightBp = leafBoardParts[i + 1];
+      }
 
       this.cardTables.push(new CardTable(leftBp, rightBp));
     }

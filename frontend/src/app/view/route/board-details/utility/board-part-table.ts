@@ -14,7 +14,7 @@ export class BoardPartTable {
   constructor(boardPart: BoardPart) {
     this.boardPart = boardPart;
     this.currentWip = 0;
-    this.index = - 1;
+    this.index = -1;
   }
 
 }

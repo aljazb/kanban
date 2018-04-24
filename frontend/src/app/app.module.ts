@@ -45,6 +45,7 @@ import {CardFormComponent} from './view/components/forms/card-form/card-form.com
 import {ApiService} from './api/services/api.service';
 import {LoginService} from './api/services/login.service';
 import {LocalBoardsService} from './services/local-boards/local-boards.service';
+import { CardMoveConfirmationComponent } from './view/components/forms/card-move-confirmation/card-move-confirmation.component';
 
 
 @NgModule({
@@ -88,7 +89,8 @@ import {LocalBoardsService} from './services/local-boards/local-boards.service';
     BoardBaseFormComponent,
     BoardEditComponent,
     CardDetailsComponent,
-    BoardDetailsEditComponent
+    BoardDetailsEditComponent,
+    CardMoveConfirmationComponent
   ],
   providers: [
     {
@@ -112,6 +114,7 @@ import {LocalBoardsService} from './services/local-boards/local-boards.service';
     ProjectDeleteConfirmationComponent,
     UserAccountFormComponent,
     DevTeamFormComponent,
+    CardMoveConfirmationComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

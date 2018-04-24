@@ -4,6 +4,7 @@ import {Card} from '../../../../api/models/Card';
 import {ProjectTable} from './project-table';
 import {Board} from '../../../../api/models/Board';
 import {Project} from '../../../../api/models/Project';
+import {UserAccount} from '../../../../api/models/UserAccount';
 
 export class BoardRepresentation {
 
@@ -75,13 +76,13 @@ export class BoardRepresentation {
     if(Array.isArray(this.board.projects)) {
       this.board.projects.sort((a, b) => a.name.localeCompare(b.name));
       this.board.projects.forEach(project => {
-        this.projectTable.push(new ProjectTable(project.id, project.name, this._maxWidth, this.leafBoardParts));
+        this.projectTable.push(new ProjectTable(project, this._maxWidth, this.leafBoardParts));
       });
     }
   }
 
   private add(card: Card, project: Project): void {
-    let pt = this.projectTable.find(value => value.id == project.id);
+    let pt = this.projectTable.find(value => value.project.id == project.id);
     let bpt = this._boardPartIdToIndexMap.get(card.boardPart.id);
     pt.add(card, bpt.index);
     this.incWip(bpt);

@@ -34,7 +34,7 @@ public class CardMoveService implements CardMoveServiceLocal {
             throw new TransactionException("Card not found.");
         }
         card.queryMembership(database.getEntityManager(), authUser.getId());
-        if(card.getMembership() == null || !card.getMembership().isProductOwner()) {
+        if(card.getMembership() == null) {
             throw new TransactionException("User does not have permission", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 

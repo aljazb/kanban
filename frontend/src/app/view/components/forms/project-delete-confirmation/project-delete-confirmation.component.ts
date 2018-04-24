@@ -10,9 +10,6 @@ export class ProjectDeleteConfirmationComponent {
 
   constructor(public activeModal: NgbActiveModal) { }
 
-  ngOnInit() {
-  }
-
   deleteProject() {
     this.activeModal.close();
   }

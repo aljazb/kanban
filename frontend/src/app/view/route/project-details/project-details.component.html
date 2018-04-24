@@ -31,14 +31,10 @@
     <p class="col-sm-2 col-label"><strong>{{ project.devTeam.name }}</strong></p>
   </div>
 
-  <div *ngIf="project.board">
-    <button type="button" class="btn btn-primary" routerLink="/board/{{project.board.id}}">Go to board</button>
-    <button *ngIf="isAuthUserProductOwner" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create card</button>
-  </div>
-  <div *ngIf="isAuthUserKanbanMaster">
-    <button type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
-    <button type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
-  </div>
+  <button *ngIf="project.board" type="button" class="btn btn-primary" routerLink="/board/{{project.board.id}}">Go to board</button>
+  <button *ngIf="project.board && isAuthUserProductOwner" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create card</button>
+  <button *ngIf="isAuthUserKanbanMaster" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
+  <button *ngIf="isAuthUserKanbanMaster" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
 
   <div class="border mt-3" *ngIf="project.cards">
     <div class="list-group">
