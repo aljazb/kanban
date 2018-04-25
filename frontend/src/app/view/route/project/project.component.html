@@ -5,8 +5,13 @@
     <div class="col-sm-12">
 
       <app-project-paging (onSelect)="goToProject($event)" ></app-project-paging>
-      <button *ngIf="isKanbanMaster" class="btn btn-primary" (click)="openProjectCreateModal()">Create project</button>
-
+    </div>
+      <div *ngIf="isKanbanMaster" class="col-sm-4">
+      <button class="btn btn-primary" (click)="openProjectCreateModal()">Create project</button>
+      <a href="https://jgasp.github.io/slate/#vzdrzevanje-in-ustvarjanje-novih-razvojnih-skupin">
+        <button type="button" class="btn btn-outline-secondary" placement="left" ngbPopover="Click for help" triggers="mouseenter:mouseleave" style="border-radius: 50%">
+        ?
+      </button></a>
     </div>
 
   </div>
