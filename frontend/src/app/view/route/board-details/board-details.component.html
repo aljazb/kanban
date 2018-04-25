@@ -17,10 +17,20 @@
           <table class="table table-bordered">
             <thead>
               <tr *ngFor="let tr of boardRepresentation.boardPartTable; let i = index">
+
                 <td class="lane-name" *ngIf="i == 0" [attr.rowspan]="boardRepresentation.maxDepth">Projects</td>
-                <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan" [ngClass]="{'over-max-wip-warning': td.boardPart.maxWip < td.currentWip}">
+
+                <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan"
+                    [ngClass]="{
+                    'over-max-wip-warning': td.boardPart.maxWip < td.currentWip,
+                    'highest-priority': td.boardPart.id == board.highestPriority,
+                    'dev-start': td.boardPart.id == board.startDev,
+                    'dev-end': td.boardPart.id == board.endDev,
+                    'acceptance-ready': td.boardPart.id == board.acceptanceTesting}">
+
                   {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
                 </td>
+
               </tr>
             </thead>
             <tbody>

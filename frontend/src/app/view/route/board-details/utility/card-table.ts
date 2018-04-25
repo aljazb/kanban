@@ -5,6 +5,7 @@ export class CardTable {
   leftBoardPart: BoardPart = null;
   rightBoardPart: BoardPart = null;
 
+
   cards: Card[];
 
   constructor(leftBoardPart: BoardPart, rightBoardPart: BoardPart) {

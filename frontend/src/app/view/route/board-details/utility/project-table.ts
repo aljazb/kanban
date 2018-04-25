@@ -2,8 +2,6 @@ import {CardTable} from './card-table';
 import {Card} from '../../../../api/models/Card';
 import {BoardPart} from '../../../../api/models/BoardPart';
 import {Project} from '../../../../api/models/Project';
-import {UserAccount} from '../../../../api/models/UserAccount';
-import {Membership} from '../../../../api/models/Membership';
 
 export class ProjectTable {
   project: Project;

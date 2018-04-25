@@ -80,6 +80,10 @@ public class BoardService implements BoardServiceLocal {
 
             orderIndexes.add(bp.getOrderIndex());
 
+            if(bp.getCurrentWip() == null) {
+                bp.setCurrentWip(0);
+            }
+
             if(bp.getChildren() != null && bp.getChildren().size() > 0) {
                 for(BoardPart cBp : bp.getChildren()) {
                     cBp.setParent(bp);
@@ -181,16 +185,7 @@ public class BoardService implements BoardServiceLocal {
     }
 
     private boolean hasCardsAssigned(BoardPart boardPart) {
-        if (boardPart.getLeaf()) {
-            return boardPart.getCards().size() > 0;
-        } else {
-            for(BoardPart bp : boardPart.getChildren()) {
-                if(hasCardsAssigned(bp)) {
-                    return true;
-                }
-            }
-            return false;
-        }
+        return boardPart.getCurrentWip() > 0;
     }
 
     private void recDelete(BoardPart bp) throws DatabaseException {
