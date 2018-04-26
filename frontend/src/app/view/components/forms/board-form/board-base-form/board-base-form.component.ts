@@ -8,6 +8,7 @@ import * as UUID from 'uuid/v4';
 import {Project} from '../../../../../api/models/Project';
 import {ApiService} from '../../../../../api/services/api.service';
 import {isNullOrUndefined} from "util";
+import {BoardEvent, BoardEventType} from '../utility/board-event';
 
 @Component({
   selector: 'app-board-base-form',
@@ -22,110 +23,129 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   @Input()
   board: Board;
 
+  leafBoardParts: BoardPart[];
+
   formBoard: FormGroup;
   fcName: FormControl;
+
+  fcHighestPrioritySelection: BoardPart[];
   fcHighestPriority: FormControl;
+
+  fcStartDevSelection: BoardPart[];
   fcStartDev: FormControl;
+
+  fcEndDevSelection: BoardPart[];
   fcEndDev: FormControl;
+
+  fcAcceptanceTestingSelection: BoardPart[];
   fcAcceptanceTesting: FormControl;
-  fcProjectSelection: FormControl;
+
+  fcProjectsSelection: Project[];
+  fcProject: FormControl;
 
   projectAssignedDevTeamIds: number = 1;
-
-  projects: Project[];
 
   constructor(private api: ApiService) {
     super();
   }
 
   ngOnInit() {
+    this.updateLeafs();
+    this.updateSelection();
+
     this.initFormControl();
     this.initFormGroup();
     this.loadProject();
-
-    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
   }
 
   private loadProject(): void {
     this.api.project.getList().subscribe(paging => {
-      this.projects = paging.items.filter(project => project.board == null);
+      this.fcProjectsSelection = paging.items.filter(project => project.board == null);
+      this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
     })
   }
 
-  initFormControl(): void {
+  private initFormControl(): void {
     this.fcName = new FormControl(this.board.name, Validators.required);
     this.fcName.valueChanges.subscribe(name => this.board.name = name);
 
-    this.fcHighestPriority = new FormControl(this.board.highestPriority, Validators.required);
+    this.fcHighestPriority = new FormControl(this.getLeafId(this.board.highestPriority), Validators.required);
     this.fcHighestPriority.valueChanges.subscribe(value => {
-      if(value != null && this.highestPriorityBoardParts.find(item => item.id == value) == null) {
-        value = null;
-        this.fcHighestPriority.patchValue(value);
+      if(value == null) {
+        this.board.highestPriority = null;
+      } else {
+        let bp = this.leafBoardParts.find(item => item.id == value);
+        if(bp == null) {
+          this.fcHighestPriority.patchValue(null);
+        } else {
+          this.board.highestPriority = bp.leafNumber;
+        }
       }
-      this.board.highestPriority = value
+      this.updateSelection();
     });
 
-    this.fcStartDev = new FormControl(this.board.startDev, Validators.required);
+    this.fcStartDev = new FormControl(this.getLeafId(this.board.startDev), Validators.required);
     this.fcStartDev.valueChanges.subscribe(value => {
-      if(value != null && this.startDevBoardParts.find(item => item.id == value) == null) {
-        value = null;
-        this.fcStartDev.patchValue(value);
+      if(value == null) {
+        this.board.startDev = null;
+      } else {
+        let bp = this.leafBoardParts.find(item => item.id == value);
+        if(bp == null) {
+          this.fcStartDev.patchValue(null);
+        } else {
+          this.board.startDev = bp.leafNumber;
+        }
       }
-      this.board.startDev = value
+      this.updateSelection();
     });
 
-    this.fcEndDev = new FormControl(this.board.endDev, Validators.required);
+    this.fcEndDev = new FormControl(this.getLeafId(this.board.endDev), Validators.required);
     this.fcEndDev.valueChanges.subscribe(value => {
-      if(value != null && this.endDevBoardParts.find(item => item.id == value) == null) {
-        value = null;
-        this.fcEndDev.patchValue(value);
+      if(value == null) {
+        this.board.endDev = null;
+      } else {
+        let bp = this.leafBoardParts.find(item => item.id == value);
+        if(bp == null) {
+          this.fcEndDev.patchValue(null);
+        } else {
+          this.board.endDev = bp.leafNumber;
+        }
       }
-      this.board.endDev = value;
+      this.updateSelection();
     });
 
-    this.fcAcceptanceTesting = new FormControl(this.board.acceptanceTesting, Validators.required);
+    this.fcAcceptanceTesting = new FormControl(this.getLeafId(this.board.acceptanceTesting), Validators.required);
     this.fcAcceptanceTesting.valueChanges.subscribe(value => {
-      if(value != null && this.acceptanceTestingBoardParts.find(item => item.id == value) == null) {
-        value = null;
-        this.fcAcceptanceTesting.patchValue(value);
+      if(value == null) {
+        this.board.acceptanceTesting = null;
+      } else {
+        let bp = this.leafBoardParts.find(item => item.id == value);
+        if(bp == null) {
+          this.fcAcceptanceTesting.patchValue(null);
+        } else {
+          this.board.acceptanceTesting = bp.leafNumber;
+        }
       }
-      this.board.acceptanceTesting = value
+      this.updateSelection();
     });
 
-    this.fcProjectSelection = new FormControl(null);
-    this.fcProjectSelection.valueChanges.subscribe(value => {
-      if (!isNullOrUndefined(value)) {
+    this.fcProject = new FormControl(null);
+    this.fcProject.valueChanges.subscribe(value => {
+      if (value != null) {
         this.addProject(value);
-        this.fcProjectSelection.patchValue(null);
+        this.fcProject.patchValue(null);
       }
     });
   }
 
-  addProject(projectId: string) {
-    let p = this.projects.find(value => value.id == projectId);
-
-    if(!Array.isArray(this.board.projects)) this.board.projects = [];
-    this.board.projects.push(p);
-
-    this.projects = this.projects.filter(value => value.id != projectId);
-    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
-  }
-
-  removeProject(projectId: string) {
-    let p = this.board.projects.find(value => value.id == projectId);
-    this.projects.push(p);
-    this.board.projects = this.board.projects.filter(value => value.id != projectId);
-    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
-  }
-
-  initFormGroup(): void {
+  private initFormGroup(): void {
     this.formBoard = new FormGroup({
       name: this.fcName,
       highestPriority: this.fcHighestPriority,
       startDev: this.fcStartDev,
       endDev: this.fcEndDev,
       acceptanceTesting: this.fcAcceptanceTesting,
-      projectSelection: this.fcProjectSelection
+      projectSelection: this.fcProject
     });
   }
 
@@ -139,6 +159,25 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     }
 
     return devTeamIds.size;
+  }
+
+  private createChild(): BoardPart {
+    let bp = new BoardPart();
+    bp.id = UUID();
+    bp.name = `Column ${this.board.boardParts.length}`;
+    bp.board = this.board;
+    bp.maxWip = 0;
+    bp.orderIndex = 0;
+    return bp;
+  }
+
+  private getLeafId(number: number): string {
+    let bp = this.leafBoardParts.find(value => value.leafNumber == number);
+    if(bp == null){
+      return null;
+    } else {
+      return bp.id;
+    }
   }
 
   isValid(): boolean {
@@ -155,37 +194,47 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     }
   }
 
-  private createChild(): BoardPart {
-    let bp = new BoardPart();
-    bp.id = UUID();
-    bp.name = `Column ${this.board.boardParts.length}`;
-    bp.board = this.board;
-    bp.maxWip = 0;
-    bp.orderIndex = 0;
-    bp.leaf = true;
-    return bp;
+  addProject(projectId: string) {
+    let p = this.fcProjectsSelection.find(value => value.id == projectId);
+
+    if(!Array.isArray(this.board.projects)) this.board.projects = [];
+    this.board.projects.push(p);
+
+    this.fcProjectsSelection = this.fcProjectsSelection.filter(value => value.id != projectId);
+    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
   }
 
-  addBoardPart(): void {
+  removeProject(projectId: string) {
+    let p = this.board.projects.find(value => value.id == projectId);
+    this.fcProjectsSelection.push(p);
+    this.board.projects = this.board.projects.filter(value => value.id != projectId);
+    this.projectAssignedDevTeamIds = this.getDifferentDevTeamIds(this.board.projects);
+  }
+
+  addInitialBoardPart(): void {
     if(!Array.isArray(this.board.boardParts)) {
       this.board.boardParts = [];
     }
     this.board.boardParts.splice(0,0, this.createChild());
+
+    this.updateStructure();
   }
 
-  handleOnAddRight(orderIndex: number): void {
-    this.board.boardParts.splice(orderIndex+1,0, this.createChild());
-    this.setOrderIndexes();
+  handleOnEvent(event: BoardEvent): void {
+    switch (event.type) {
+      case BoardEventType.EVENT_ADD_LEFT: this.addLeft(event.value); break;
+      case BoardEventType.EVENT_ADD_RIGHT: this.addRight(event.value); break;
+      case BoardEventType.EVENT_DELETE: this.deleteChild(event.value); break;
+      case BoardEventType.EVENT_STRUCTURE_CHANGED: this.updateStructure(); break;
+    }
+
   }
 
-  handleOnAddLeft(orderIndex: number): void {
-    this.board.boardParts.splice(orderIndex,0, this.createChild());
+  private updateStructure(): void {
     this.setOrderIndexes();
-  }
-
-  handleOnDeleteChild(orderIndex: number): void {
-    this.board.boardParts.splice(orderIndex, 1);
-    this.setOrderIndexes();
+    this.updateLeafs();
+    this.refreshForm();
+    this.updateSelection();
   }
 
   private setOrderIndexes(): void {
@@ -194,16 +243,67 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     }
   }
 
-  private buildAllBoardParts(boardParts: BoardPart[], ignore: string[]=[]): BoardPart[] {
+  private updateLeafs(): void {
+    this.leafBoardParts = Board.getLeafParts(this.board.boardParts);
+    for(let i=0; i<this.leafBoardParts.length; i++) {
+      this.leafBoardParts[i].leafNumber = i;
+    }
+  }
+
+  private updateSelection (){
+    this.fcHighestPrioritySelection = this.buildAllBoardParts(this.leafBoardParts, this.getStartEndIndex(0));
+    this.fcStartDevSelection = this.buildAllBoardParts(this.leafBoardParts, this.getStartEndIndex(1));
+    this.fcEndDevSelection = this.buildAllBoardParts(this.leafBoardParts, this.getStartEndIndex(2));
+    this.fcAcceptanceTestingSelection = this.buildAllBoardParts(this.leafBoardParts, this.getStartEndIndex(3));
+  }
+
+  private getStartEndIndex(index: number): { start:number, end: number } {
+    let constr = [this.board.highestPriority, this.board.startDev, this.board.endDev, this.board.acceptanceTesting];
+
+    let start = null;
+    let end = null;
+
+    for(let i=index-1; i>=0; i--){
+      if(constr[i] != null) {
+        start = constr[i];
+        break;
+      }
+    }
+
+    for(let i=index+1; i<constr.length; i++){
+      if(constr[i] != null) {
+        end = constr[i];
+        break;
+      }
+    }
+
+    return { start: start, end: end };
+  }
+
+  private refreshForm(): void {
+    this.fcHighestPriority.patchValue(this.fcHighestPriority.value);
+    this.fcStartDev.patchValue(this.fcStartDev.value);
+    this.fcEndDev.patchValue(this.fcEndDev.value);
+    this.fcAcceptanceTesting.patchValue(this.fcAcceptanceTesting.value);
+  }
+
+  private buildAllBoardParts(boardParts: BoardPart[], index: { start: number, end: number }): BoardPart[] {
     let bp = [];
     if(boardParts != null) {
-      boardParts.forEach(value => {
-        if(value.children && value.children.length > 0) {
-          let cBp = this.buildAllBoardParts(value.children, ignore);
-          bp = bp.concat(cBp)
+      boardParts.forEach(boardPart => {
+        if(index.start == null && index.end == null){
+          bp.push(boardPart);
+        } else if(index.start == null){
+          if(boardPart.leafNumber < index.end) {
+            bp.push(boardPart);
+          }
+        } else if(index.end == null){
+          if(boardPart.leafNumber > index.start) {
+            bp.push(boardPart);
+          }
         } else {
-          if(!ignore.includes(value.id)) {
-            bp.push(value);
+          if(boardPart.leafNumber > index.start && boardPart.leafNumber < index.end) {
+            bp.push(boardPart);
           }
         }
       });
@@ -211,24 +311,19 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     return bp;
   }
 
-  get highestPriorityBoardParts(): BoardPart[] {
-    let ignore = [this.board.endDev, this.board.startDev, this.board.acceptanceTesting];
-    return this.buildAllBoardParts(this.board.boardParts, ignore);
+  private addRight(orderIndex: number): void {
+    this.board.boardParts.splice(orderIndex+1,0, this.createChild());
+    this.updateStructure();
   }
 
-  get acceptanceTestingBoardParts(): BoardPart[] {
-    let ignore = [this.board.endDev, this.board.startDev, this.board.highestPriority];
-    return this.buildAllBoardParts(this.board.boardParts, ignore);
+  private addLeft(orderIndex: number): void {
+    this.board.boardParts.splice(orderIndex,0, this.createChild());
+    this.updateStructure();
   }
 
-  get startDevBoardParts(): BoardPart[] {
-    let ignore = [this.board.endDev, this.board.highestPriority, this.board.acceptanceTesting];
-    return this.buildAllBoardParts(this.board.boardParts, ignore);
-  }
-
-  get endDevBoardParts(): BoardPart[] {
-    let ignore = [this.board.highestPriority, this.board.startDev, this.board.acceptanceTesting];
-    return this.buildAllBoardParts(this.board.boardParts, ignore);
+  private deleteChild(orderIndex: number): void {
+    this.board.boardParts.splice(orderIndex, 1);
+    this.updateStructure();
   }
 
 }

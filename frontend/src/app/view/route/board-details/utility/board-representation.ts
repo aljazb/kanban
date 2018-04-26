@@ -40,24 +40,10 @@ export class BoardRepresentation {
   }
 
   private buildRootBoardParts(): void {
-    this.rootBoardParts = [];
-    this.board.boardParts.forEach(boardPart => {
-      if(boardPart.parent == null) {
-        this.rootBoardParts.push(boardPart);
-      }
-    });
+    this.rootBoardParts = this.board.boardParts;
+
+    Board.sortBoardParts(this.rootBoardParts);
     this.leafBoardParts = Board.getLeafParts(this.rootBoardParts);
-
-    this.sortBoardParts(this.rootBoardParts);
-  }
-
-  private sortBoardParts(boardParts: BoardPart[]): void {
-    boardParts.forEach(boardPart => {
-      if(boardPart.children != null){
-        this.sortBoardParts(boardPart.children);
-      }
-    });
-    boardParts.sort((a, b) => a.orderIndex - b.orderIndex);
   }
 
   private initCards(){

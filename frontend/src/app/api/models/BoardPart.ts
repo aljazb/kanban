@@ -9,7 +9,7 @@ export class BoardPart extends BaseEntity<BoardPart> {
   currentWip: number;
 
   orderIndex: number;
-  leaf: boolean;
+  leafNumber: number;
 
   board: Board;
 
@@ -17,5 +17,9 @@ export class BoardPart extends BaseEntity<BoardPart> {
   children: BoardPart[];
 
   cards: Card[];
+
+  static hasChildren(boardPart: BoardPart): boolean {
+    return boardPart.children != null && boardPart.children.length > 0;
+  }
 
 }

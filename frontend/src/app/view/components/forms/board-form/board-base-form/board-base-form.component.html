@@ -24,7 +24,7 @@
                   <select name="board-highest-priority" class="form-control highest-priority" id="in-highest-priority"
                           formControlName="highestPriority">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of highestPriorityBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of fcHighestPrioritySelection" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -35,7 +35,7 @@
                   <select name="board-start-dev" class="form-control dev-start" id="in-start-dev"
                           formControlName="startDev">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of startDevBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of fcStartDevSelection" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -46,7 +46,7 @@
                   <select name="board-end-dev" class="form-control dev-end" id="in-end-dev"
                           formControlName="endDev">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of endDevBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of fcEndDevSelection" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -57,7 +57,7 @@
                   <select name="board-acceptance-testing" class="form-control acceptance-ready" id="in-acceptance-testing"
                           formControlName="acceptanceTesting">
                     <option [ngValue]="null">Select column</option>
-                    <option *ngFor="let b of acceptanceTestingBoardParts" [ngValue]="b.id">{{b.name}}</option>
+                    <option *ngFor="let b of fcAcceptanceTestingSelection" [ngValue]="b.id">{{b.name}}</option>
                   </select>
                 </div>
               </div>
@@ -72,7 +72,7 @@
                     <select name="board-project" class="form-control" id="in-addProject"
                             formControlName="projectSelection">
                       <option [ngValue]="null">Add project</option>
-                      <option *ngFor="let p of projects" [ngValue]="p.id">{{p.name}}</option>
+                      <option *ngFor="let p of fcProjectsSelection" [ngValue]="p.id">{{p.name}}</option>
                     </select>
                     <div *ngIf="projectAssignedDevTeamIds > 1" class="warning-feedback text-center">
                       <i class="fa fa-exclamation-triangle"></i>
@@ -106,7 +106,7 @@
     <div class="row">
       <div class="col-sm-4">
         <div>
-          <button class="btn btn-primary" (click)="addBoardPart()" [disabled]="board.boardParts != null && board.boardParts.length > 0">
+          <button class="btn btn-primary" (click)="addInitialBoardPart()" [disabled]="board.boardParts != null && board.boardParts.length > 0">
             <i class="fa fa-plus-square"></i>
           </button>
         </div>
@@ -121,11 +121,8 @@
 
       <div class="scroll-item align-top" *ngFor="let bp of board.boardParts">
         <app-board-part-form
-          (onDelete)="handleOnDeleteChild($event)"
-          (onAddLeft)="handleOnAddLeft($event)"
-          (onAddRight)="handleOnAddRight($event)"
-          [boardPart]="bp"
-          [isDeletable]="true">
+          (onEvent)="handleOnEvent($event)"
+          [boardPart]="bp">
         </app-board-part-form>
       </div>
 

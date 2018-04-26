@@ -29,16 +29,16 @@ public class Board extends UUIDEntity<Board> {
 
 
     @Column(name = "highest_priority")
-    private UUID highestPriority;
+    private Integer highestPriority;
 
     @Column(name = "start_dev")
-    private UUID startDev;
+    private Integer startDev;
 
     @Column(name = "end_dev")
-    private UUID endDev;
+    private Integer endDev;
 
     @Column(name = "acceptance_testing")
-    private UUID acceptanceTesting;
+    private Integer acceptanceTesting;
 
     @Database(update = false)
     @OneToOne(fetch = FetchType.LAZY)
@@ -123,35 +123,35 @@ public class Board extends UUIDEntity<Board> {
         this.name = name;
     }
 
-    public UUID getHighestPriority() {
+    public Integer getHighestPriority() {
         return highestPriority;
     }
 
-    public void setHighestPriority(UUID highestPriority) {
+    public void setHighestPriority(Integer highestPriority) {
         this.highestPriority = highestPriority;
     }
 
-    public UUID getStartDev() {
+    public Integer getStartDev() {
         return startDev;
     }
 
-    public void setStartDev(UUID startDev) {
+    public void setStartDev(Integer startDev) {
         this.startDev = startDev;
     }
 
-    public UUID getEndDev() {
+    public Integer getEndDev() {
         return endDev;
     }
 
-    public void setEndDev(UUID endDev) {
+    public void setEndDev(Integer endDev) {
         this.endDev = endDev;
     }
 
-    public UUID getAcceptanceTesting() {
+    public Integer getAcceptanceTesting() {
         return acceptanceTesting;
     }
 
-    public void setAcceptanceTesting(UUID acceptanceTesting) {
+    public void setAcceptanceTesting(Integer acceptanceTesting) {
         this.acceptanceTesting = acceptanceTesting;
     }
 

@@ -1,0 +1,24 @@
+<div class="modal-header">
+  <h3>Move card conformation</h3>
+</div>
+<div class="modal-body">
+  <p>Are you sure you want to move this card ?</p>
+
+  <form [formGroup]="form">
+    <div class="form-group row">
+      <label for="boardPart" class="col-sm-5 col-form-label">Move to</label>
+      <div class="col-sm-7">
+        <select name="boardPart" class="form-control" id="boardPart"
+                formControlName="moveTo">
+          <option [ngValue]="null">Select column</option>
+          <option *ngFor="let b of boardPartsSelection" [ngValue]="b">{{b.name}}</option>
+        </select>
+      </div>
+    </div>
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn" (click)="yes()" [disabled]="form.invalid">Yes</button>
+  <button class="btn btn-danger" (click)="no()">No</button>
+</div>

@@ -33,8 +33,8 @@
 
   <button *ngIf="project.board" type="button" class="btn btn-primary" routerLink="/board/{{project.board.id}}">Go to board</button>
   <button *ngIf="project.board && isAuthUserProductOwner" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create card</button>
-  <button *ngIf="isAuthUserKanbanMaster" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
-  <button *ngIf="isAuthUserKanbanMaster" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
+  <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
+  <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
 
   <div class="border mt-3" *ngIf="project.cards">
     <div class="list-group">

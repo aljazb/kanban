@@ -22,7 +22,7 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "max_wip", nullable = false)
+    @Column(name = "max_wip")
     private Integer maxWip;
 
     @Database(update = false)
@@ -33,7 +33,7 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     private Integer orderIndex;
 
     @Database(update = false)
-    private Boolean leaf;
+    private Integer leafNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
@@ -76,6 +76,15 @@ public class BoardPart extends UUIDEntity<BoardPart> {
         database.update(this);
     }
 
+    @JsonIgnore
+    public boolean hasChildren() {
+        return getChildren() != null && getChildren().size() > 0;
+    }
+
+    @JsonIgnore
+    public boolean isWipValid(BoardPart parent) {
+        return maxWip == null || parent.maxWip == null || maxWip <= parent.maxWip;
+    }
 
     public BoardPart getParent() {
         return parent;
@@ -125,12 +134,12 @@ public class BoardPart extends UUIDEntity<BoardPart> {
         this.cards = cards;
     }
 
-    public Boolean getLeaf() {
-        return leaf;
+    public Integer getLeafNumber() {
+        return leafNumber;
     }
 
-    public void setLeaf(Boolean leaf) {
-        this.leaf = leaf;
+    public void setLeafNumber(Integer leafNumber) {
+        this.leafNumber = leafNumber;
     }
 
     public Integer getOrderIndex() {

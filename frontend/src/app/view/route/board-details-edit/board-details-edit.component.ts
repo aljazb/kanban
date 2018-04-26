@@ -91,7 +91,6 @@ export class BoardDetailsEditComponent implements OnInit {
   }
 
   update(): void {
-    console.log(this.board);
     if(this.boardBaseFormComp.isValid()) {
       this.api.board.put(this.board).subscribe(board => {
         this.toaster.pop('success', "Form updated");

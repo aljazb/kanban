@@ -8,6 +8,7 @@ import {Project} from '../../../api/models/Project';
 import {CardFormComponent} from '../../components/forms/card-form/card-form.component';
 import {Membership} from '../../../api/models/Membership';
 import {ToasterService} from 'angular5-toaster/dist';
+import {LoginService} from '../../../api/services/login.service';
 
 @Component({
   selector: 'app-project-details',
@@ -18,6 +19,7 @@ export class ProjectDetailsComponent implements OnInit {
 
   id: string;
   project: Project;
+  isAuthUserOwner: boolean = false;
   isAuthUserKanbanMaster: boolean;
   isAuthUserProductOwner: boolean;
   cardsAssigned: boolean = false;
@@ -25,26 +27,27 @@ export class ProjectDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private apiService:ApiService,
+              private login: LoginService,
               private modalService: NgbModal,
               protected toaster: ToasterService) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.getProject();
-  }
 
-  getProject() {
-    this.apiService.project.get(this.id).subscribe(project => {
-      this.project = project;
-      this.apiService.devTeam.get(project.devTeam.id).subscribe(devTeam => project.devTeam = devTeam);
+    this.login.getUser().subscribe(authUser => {
+      this.apiService.project.get(this.id).subscribe(project => {
+        this.project = project;
+        this.apiService.devTeam.get(project.devTeam.id).subscribe(devTeam => project.devTeam = devTeam);
 
-      this.isAuthUserKanbanMaster = Membership.isKanbanMaster(this.project.membership);
-      this.isAuthUserProductOwner = Membership.isProductOwner(this.project.membership);
+        this.isAuthUserKanbanMaster = Membership.isKanbanMaster(this.project.membership);
+        this.isAuthUserProductOwner = Membership.isProductOwner(this.project.membership);
+        this.isAuthUserOwner = authUser.id == this.project.owner.id;
 
-      if(Array.isArray(this.project.cards)) {
-        this.cardsAssigned = this.project.cards.length > 0;
-      }
-    });
+        if(Array.isArray(this.project.cards)) {
+          this.cardsAssigned = this.project.cards.length > 0;
+        }
+      });
+    })
   }
 
 

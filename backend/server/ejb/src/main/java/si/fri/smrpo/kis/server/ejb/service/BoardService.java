@@ -49,6 +49,7 @@ public class BoardService implements BoardServiceLocal {
             throw new TransactionException("No board part specified");
         }
 
+        validateMarks(board);
         validate(board.getBoardParts());
 
         if(board.getProjects() != null){
@@ -66,7 +67,30 @@ public class BoardService implements BoardServiceLocal {
 
     }
 
+    private void validateMarks(Board board) throws TransactionException {
+        if(!(
+                board.getHighestPriority() < board.getStartDev() &&
+                board.getStartDev() < board.getEndDev() &&
+                board.getEndDev() < board.getAcceptanceTesting()
+        ))
+        {
+            throw new TransactionException("Invalid mark indexes");
+        }
+    }
+
     private void validate(Set<BoardPart> boardParts) throws TransactionException {
+        ArrayList<BoardPart> leafBoardParts = new ArrayList<>();
+        validate(boardParts, leafBoardParts);
+
+        leafBoardParts.sort((o1, o2) -> o1.getLeafNumber() - o2.getLeafNumber());
+        for(int i=0; i<leafBoardParts.size(); i++) {
+            if(leafBoardParts.get(i).getLeafNumber() != i) {
+                throw new TransactionException("Leaf board part index is not valid");
+            }
+        }
+    }
+
+    private void validate(Set<BoardPart> boardParts, ArrayList<BoardPart> leafBoardParts) throws TransactionException {
 
         ArrayList<Integer> orderIndexes = new ArrayList<>();
 
@@ -84,39 +108,32 @@ public class BoardService implements BoardServiceLocal {
                 bp.setCurrentWip(0);
             }
 
-            if(bp.getChildren() != null && bp.getChildren().size() > 0) {
+            if(bp.hasChildren()) {
+                if(bp.getLeafNumber() != null) {
+                    throw new TransactionException("Board part is leaf and has children");
+                }
+
                 for(BoardPart cBp : bp.getChildren()) {
                     cBp.setParent(bp);
                 }
-                validate(bp.getChildren());
 
-                if(bp.getLeaf()) {
-                    throw new TransactionException("Board part is leaf and has children");
-                }
+                validate(bp.getChildren(), leafBoardParts);
             } else {
-                if(!bp.getLeaf()) {
-                    throw new TransactionException("Board part is not leaf and but has no children");
+                if(bp.getLeafNumber() == null) {
+                    throw new TransactionException("Board part is not leaf and has no children");
                 }
+
+                leafBoardParts.add(bp);
 
                 BoardPart p = bp.getParent();
-
-                if(bp.getMaxWip() == 0) {
-                    while (p != null){
-                        if(p.getMaxWip() != 0) {
-                            throw new TransactionException("Board part max wip is not valid");
-                        }
-                        p = p.getParent();
+                while (p != null) {
+                    if(!bp.isWipValid(p)) {
+                        throw new TransactionException("Board part max wip is not valid");
                     }
-                } else {
-                    int maxWip = bp.getMaxWip();
-                    while (p != null) {
-                        if(p.getMaxWip() < maxWip) {
-                            throw new TransactionException("Board part max wip is not valid");
-                        }
-                        maxWip = p.getMaxWip();
-                        p = p.getParent();
-                    }
+                    bp = p;
+                    p = p.getParent();
                 }
+
 
             }
         }
@@ -154,10 +171,8 @@ public class BoardService implements BoardServiceLocal {
         part.setParent(parent);
 
         if(part.getChildren() == null || part.getChildren().isEmpty()){
-            part.setLeaf(true);
             database.create(part);
         } else {
-            part.setLeaf(false);
             BoardPart dbPart = database.create(part);
 
             for(BoardPart bp : part.getChildren()) {
@@ -210,8 +225,8 @@ public class BoardService implements BoardServiceLocal {
                 dbBp = database.create(nBp);
                 dbBp.setChildren(new HashSet<>());
             } else {
-                if(dbBp.getLeaf() && hasCardsAssigned(dbBp)) {
-                    if(!nBp.getLeaf()) {
+                if(dbBp.getLeafNumber() != null && hasCardsAssigned(dbBp)) {
+                    if(nBp.getLeafNumber() == null) {
                         throw new TransactionException("Board part with cards can not be expanded to sub parts.");
                     }
                 }
@@ -230,7 +245,6 @@ public class BoardService implements BoardServiceLocal {
                 if(p != null){
                     p.getChildren().remove(bp);
                     if(p.getChildren().size() == 0){
-                        p.setLeaf(true);
                         p = database.update(p);
                     }
                 }

@@ -52,7 +52,7 @@
           </div>
 
           <div class="pull-right">
-            <button class="btn btn-primary" (click)="triggerOnAddLeft()">
+            <button class="btn btn-primary" (click)="emitOnAddLeft()">
               <i class="fa fa-caret-left"></i>
             </button>
 
@@ -63,13 +63,13 @@
               </button>
             </span>
 
-            <button class="btn btn-primary" (click)="triggerOnAddRight()">
+            <button class="btn btn-primary" (click)="emitOnAddRight()">
               <i class="fa fa-caret-right"></i>
             </button>
 
             <span #pDel="ngbPopover" ngbPopover="Board part contains cards" popoverTitle="Contains cards" triggers="manual"
                   (mouseenter)="hasCards && pDel.open()" (mouseleave)="pDel.close()" placement="left">
-              <button class="btn btn-danger" (click)="triggerOnDelete()" [disabled]="hasCards">
+              <button class="btn btn-danger" (click)="emitOnDelete()" [disabled]="hasCards">
                 <i class="fa fa-times-circle"></i>
               </button>
             </span>
@@ -84,11 +84,10 @@
           <div class="row">
 
             <div class="sub-item align-top" *ngFor="let bp of boardPart.children">
-              <app-board-part-form (onDelete)="handleOnDelete($event)"
-                                   (onAddLeft)="handleOnAddLeft($event)"
-                                   (onAddRight)="handleOnAddRight($event)"
-                                   (onHasCards)="handleOnHasCards($event)"
-                                   [boardPart]="bp"></app-board-part-form>
+              <app-board-part-form
+                (onEvent)="handleEvent($event)"
+                [boardPart]="bp">
+              </app-board-part-form>
             </div>
 
           </div>

@@ -3,7 +3,7 @@
     <div *ngIf="board" class="col-sm-6">
       <h3>{{board.name}}</h3>
     </div>
-    <div *ngIf="isAuthUserKanbanMaster" class="col-sm-6 ">
+    <div *ngIf="isAuthUserKanbanMaster || isOwner" class="col-sm-6 ">
       <button class="btn btn-primary pull-right" routerLink="/board/{{id}}/edit">Edit</button>
     </div>
   </div>
@@ -23,10 +23,10 @@
                 <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan"
                     [ngClass]="{
                     'over-max-wip-warning': td.boardPart.maxWip < td.currentWip,
-                    'highest-priority': td.boardPart.id == board.highestPriority,
-                    'dev-start': td.boardPart.id == board.startDev,
-                    'dev-end': td.boardPart.id == board.endDev,
-                    'acceptance-ready': td.boardPart.id == board.acceptanceTesting}">
+                    'highest-priority': td.boardPart.leafNumber == board.highestPriority,
+                    'dev-start': td.boardPart.leafNumber == board.startDev,
+                    'dev-end': td.boardPart.leafNumber == board.endDev,
+                    'acceptance-ready': td.boardPart.leafNumber == board.acceptanceTesting}">
 
                   {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
                 </td>
@@ -35,7 +35,11 @@
             </thead>
             <tbody>
               <tr *ngFor="let tr of boardRepresentation.projectTable">
-                <td class="lane-name hover-pointer" routerLink="/project/{{tr.id}}" >{{tr.name}}</td>
+                <td class="lane-name hover-pointer">
+                  <a routerLink="/project/{{tr.project.id}}" >
+                    {{tr.project.name}}
+                  </a>
+                </td>
                 <td *ngFor="let td of tr.cardTables">
 
                   <div class="list-group">
@@ -45,6 +49,7 @@
                           <button type="button" class="btn btn-sm btn-primary" (click)="moveCardLeft(c, td.leftBoardPart)" *ngIf="td.leftBoardPart">
                             <i class="fa fa-caret-left"></i>
                           </button>
+
                           <a routerLink="/card/{{c.id}}">{{c.name}}</a>
 
                           <button type="button" class="btn btn-sm btn-primary" (click)="moveCardRight(c, td.rightBoardPart)" *ngIf="td.rightBoardPart">
@@ -57,6 +62,10 @@
                             {{t.name}} - {{t.workingHours}}
                           </div>
                         </div>
+
+                        <button type="button" class="btn btn-sm btn-danger pull-right mt-2" (click)="moveCardBack(c, td.moveBack)" *ngIf="td.moveBack">
+                          <i class="fa fa-times-circle"></i>
+                        </button>
 
                       </div>
                   </div>

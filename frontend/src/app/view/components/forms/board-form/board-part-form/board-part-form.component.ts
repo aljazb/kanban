@@ -3,6 +3,7 @@ import {BoardPart} from '../../../../../api/models/BoardPart';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {FormImpl} from '../../form-impl';
 import * as UUID from 'uuid/v4';
+import {BoardEvent, BoardEventType} from '../utility/board-event';
 
 @Component({
   selector: 'app-board-part-form',
@@ -18,14 +19,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
   boardPart: BoardPart;
 
   @Output()
-  onDelete: EventEmitter<any> = new EventEmitter();
-  @Output()
-  onAddLeft: EventEmitter<any> = new EventEmitter();
-  @Output()
-  onAddRight: EventEmitter<any> = new EventEmitter();
-
-  @Output()
-  onHasCards: EventEmitter<any> = new EventEmitter();
+  onEvent: EventEmitter<BoardEvent> = new EventEmitter();
 
 
   formBoardPart: FormGroup;
@@ -46,7 +40,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
 
   private updateIsDeletable(){
     if(this.boardPart.cards && this.boardPart.cards.length > 0) {
-      this.handleOnHasCards(true);
+      this.checkHasCards(true);
     }
   }
 
@@ -63,8 +57,6 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
       });
     });
   }
-
-
 
   initFormGroup(): void {
     this.formBoardPart = new FormGroup({
@@ -87,10 +79,10 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
     }
   }
 
-  private handleOnHasCards(enabled) {
+  private checkHasCards(enabled) {
     if (this.hasCards != enabled) {
       this.hasCards = enabled;
-      this.onHasCards.emit(enabled);
+      this.onEvent.emit(new BoardEvent(BoardEventType.EVENT_HAS_CARDS, true));
     }
   }
 
@@ -101,49 +93,65 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
     bp.board = this.boardPart.board;
     bp.maxWip = this.boardPart.maxWip;
     bp.orderIndex = 0;
-    bp.leaf = true;
     bp.name = this.getChildName();
     return bp;
   }
+
+  emitOnStructureChange(): void {
+    this.onEvent.emit(new BoardEvent(BoardEventType.EVENT_STRUCTURE_CHANGED, null));
+  }
+
+  emitOnAddRight(): void {
+    this.onEvent.emit(new BoardEvent(BoardEventType.EVENT_ADD_RIGHT, this.boardPart.orderIndex));
+  }
+
+  emitOnAddLeft(): void {
+    this.onEvent.emit(new BoardEvent(BoardEventType.EVENT_ADD_LEFT, this.boardPart.orderIndex));
+  }
+
+  emitOnDelete(): void {
+    this.onEvent.emit(new BoardEvent(BoardEventType.EVENT_DELETE, this.boardPart.orderIndex));
+  }
+
+  private updateStructure(): void {
+    this.setOrderIndexes();
+    this.emitOnStructureChange();
+  }
+
   addDown(): void {
     if(!Array.isArray(this.boardPart.children)){
       this.boardPart.children = [];
     }
-    this.boardPart.leaf = false;
-
+    this.boardPart.leafNumber = null;
     this.boardPart.children.splice(0, 0, this.createChild());
-    this.setOrderIndexes();
+    this.updateStructure();
   }
 
-  triggerOnAddRight(): void {
-    this.onAddRight.emit(this.boardPart.orderIndex);
-  }
-
-  handleOnAddRight(orderIndex: number): void {
+  private addRight(orderIndex: number): void {
     this.boardPart.children.splice(orderIndex+1, 0, this.createChild());
-    this.setOrderIndexes();
+    this.updateStructure();
   }
 
-  triggerOnAddLeft(): void {
-    this.onAddLeft.emit(this.boardPart.orderIndex);
-  }
-
-  handleOnAddLeft(orderIndex: number): void {
+  private addLeft(orderIndex: number): void {
     this.boardPart.children.splice(orderIndex,0, this.createChild());
-    this.setOrderIndexes();
+    this.updateStructure();
   }
 
-  triggerOnDelete(): void {
-    this.onDelete.emit(this.boardPart.orderIndex);
-  }
-
-  handleOnDelete(orderIndex: number): void {
+  private deleteChild(orderIndex: number): void {
     this.boardPart.children.splice(orderIndex, 1);
-    this.setOrderIndexes();
-
     if(this.boardPart.children.length == 0) {
       this.boardPart.children = null;
-      this.boardPart.leaf = true;
+    }
+    this.updateStructure();
+  }
+
+  handleEvent(event: BoardEvent): void {
+    switch (event.type) {
+      case BoardEventType.EVENT_ADD_LEFT: this.addLeft(event.value); break;
+      case BoardEventType.EVENT_ADD_RIGHT: this.addRight(event.value); break;
+      case BoardEventType.EVENT_DELETE: this.deleteChild(event.value); break;
+      case BoardEventType.EVENT_HAS_CARDS: this.checkHasCards(event.value); break;
+      case BoardEventType.EVENT_STRUCTURE_CHANGED: this.emitOnStructureChange(); break;
     }
   }
 
@@ -194,23 +202,23 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
   }
 
   get isAcceptanceTesting(): boolean {
-    return this.boardPart.id == this.boardPart.board.acceptanceTesting
+    return this.boardPart.leafNumber != null && this.boardPart.leafNumber == this.boardPart.board.acceptanceTesting
   }
 
   get isHighestPriority(): boolean {
-    return this.boardPart.id == this.boardPart.board.highestPriority
+    return this.boardPart.leafNumber != null && this.boardPart.leafNumber == this.boardPart.board.highestPriority
   }
 
   get isStartDev(): boolean {
-    return this.boardPart.id == this.boardPart.board.startDev
+    return this.boardPart.leafNumber != null && this.boardPart.leafNumber == this.boardPart.board.startDev
   }
 
   get isEndDev(): boolean {
-    return this.boardPart.id == this.boardPart.board.endDev;
+    return this.boardPart.leafNumber != null && this.boardPart.leafNumber == this.boardPart.board.endDev;
   }
 
   get hasChildren(): boolean {
-    return this.boardPart.children != null && this.boardPart.children.length > 0;
+    return this.boardPart.leafNumber != null && this.boardPart.children != null && this.boardPart.children.length > 0;
   }
 
 }

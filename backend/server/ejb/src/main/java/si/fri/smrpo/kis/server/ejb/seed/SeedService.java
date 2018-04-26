@@ -159,22 +159,18 @@ public class SeedService {
     private void generateBoardParts() throws DatabaseException {
         testBoardPartLeafs = new ArrayList<>();
 
-        for(int i=0; i<4; i++){
+        for(int i=0; i<4; i++) {
             BoardPart bp = new BoardPart();
             bp.setCurrentWip(0);
             bp.setOrderIndex(i);
             bp.setBoard(testBoard);
             bp.setMaxWip(FAKER.number.between(7, 15));
             bp.setName(FAKER.app.name());
-            bp.setLeaf(true);
 
             bp = database.create(bp);
 
-            UUID markPart = bp.getId();
-
             if(Math.random() > 0.5) {
 
-                bp.setLeaf(false);
                 database.update(bp);
 
                 for(int j=0; j<2; j++){
@@ -187,11 +183,8 @@ public class SeedService {
                     sbp.setMaxWip(Math.min(maxWip, bp.getMaxWip()));
                     sbp.setName(FAKER.app.name());
                     sbp.setParent(bp);
-                    sbp.setLeaf(true);
 
                     sbp = database.create(sbp);
-
-                    markPart = sbp.getId();
 
                     testBoardPartLeafs.add(sbp);
                 }
@@ -199,15 +192,17 @@ public class SeedService {
                 testBoardPartLeafs.add(bp);
             }
 
-            switch (i) {
-                case 0: testBoard.setHighestPriority(markPart); break;
-                case 1: testBoard.setStartDev(markPart); break;
-                case 2: testBoard.setEndDev(markPart); break;
-                case 3: testBoard.setAcceptanceTesting(markPart); break;
+            for(int index=0; index<testBoardPartLeafs.size(); index++) {
+                testBoardPartLeafs.get(index).setLeafNumber(index);
             }
-
-            testBoard = database.update(testBoard);
         }
+
+        testBoard.setHighestPriority(0);
+        testBoard.setStartDev(1);
+        testBoard.setEndDev(2);
+        testBoard.setAcceptanceTesting(3);
+
+        testBoard = database.update(testBoard);
     }
 
     private Project createProject() throws DatabaseException {

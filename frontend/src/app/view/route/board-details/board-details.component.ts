@@ -15,6 +15,7 @@ import {ProjectDeleteConfirmationComponent} from '../../components/forms/project
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular5-toaster/dist';
 import {CardMoveConfirmationComponent} from '../../components/forms/card-move-confirmation/card-move-confirmation.component';
+import {CardMoveBackConfirmationComponent} from '../../components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
 
 @Component({
   selector: 'app-board-details',
@@ -27,6 +28,7 @@ export class BoardDetailsComponent implements OnInit {
   board: Board;
   boardRepresentation: BoardRepresentation;
 
+  isOwner: boolean;
   isAuthUserKanbanMaster: boolean;
 
   constructor(private route: ActivatedRoute,
@@ -37,7 +39,12 @@ export class BoardDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.api.board.get(this.id).subscribe(board => this.init(board));
+    this.login.getUser().subscribe(user => {
+      this.api.board.get(this.id).subscribe(board => {
+        this.isOwner = board.owner.id == user.id;
+        this.init(board);
+      });
+    });
   }
 
   private init(board: Board): void {
@@ -80,6 +87,15 @@ export class BoardDetailsComponent implements OnInit {
       }), error2 => {
         this.toaster.pop("error", "Error moving card");
       });
+  }
+
+  moveCardBack(c: Card, boardParts: BoardPart[]) {
+    const modalRef = this.modalService.open(CardMoveBackConfirmationComponent);
+    (<CardMoveBackConfirmationComponent> modalRef.componentInstance).setBoardParts(boardParts);
+
+    modalRef.result
+      .then(value => this.moveCard(c, value))
+      .catch(reason => console.log(reason));
   }
 
   moveCardLeft(c: Card, boardPart: BoardPart) {

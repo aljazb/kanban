@@ -66,6 +66,10 @@ export class LocalBoardsService {
 
     b.id = UUID();
     b.name = board.name;
+    b.highestPriority = board.highestPriority;
+    b.startDev = board.startDev;
+    b.endDev = board.endDev;
+    b.acceptanceTesting = board.acceptanceTesting;
     b.boardParts = this.copyBoardParts(b, board, null, board.boardParts);
 
     return b;
@@ -82,20 +86,10 @@ export class LocalBoardsService {
         nBp.name = bp.name;
         nBp.maxWip = bp.maxWip;
         nBp.board = newBoard;
-        nBp.leaf = bp.leaf;
+        nBp.leafNumber = bp.leafNumber;
         nBp.parent = newBp;
 
         nBp.children = this.copyBoardParts(newBoard, board, nBp, bp.children);
-
-        if(board.highestPriority == bp.id) {
-          newBoard.highestPriority = nBp.id;
-        } else if(board.startDev == bp.id) {
-          newBoard.startDev = nBp.id;
-        }else if(board.endDev == bp.id) {
-          newBoard.endDev = nBp.id;
-        } else if(board.acceptanceTesting == bp.id) {
-          newBoard.acceptanceTesting = nBp.id;
-        }
 
         children.push(nBp);
       });
