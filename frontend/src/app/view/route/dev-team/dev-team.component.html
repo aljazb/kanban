@@ -5,9 +5,13 @@
     <div class="col-sm-12">
 
       <app-dev-team-paging (onSelect)="goToDevTeam($event)"></app-dev-team-paging>
+    </div>
 
-      <button *ngIf="isKanbanMaster" class="btn btn-primary" (click)="openDevTeamCreateModal()">Create development team</button>
-
+    <div *ngIf="isKanbanMaster" class="col-sm-4">
+      <button class="btn btn-primary" (click)="openDevTeamCreateModal()">Create development team</button>
+      <a href="https://jgasp.github.io/slate/#vzdrzevanje-uporabnikov">
+        <button type="button" class="btn btn-outline-secondary" placement="left" ngbPopover="Click for help" triggers="mouseenter:mouseleave" style="border-radius: 50%">
+          ?</button></a>
     </div>
 
   </div>
