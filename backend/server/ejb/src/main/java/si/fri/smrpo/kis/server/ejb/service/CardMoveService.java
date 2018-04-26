@@ -1,16 +1,12 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
-import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.CardMoveServiceLocal;
-import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
-import si.fri.smrpo.kis.server.jpa.entities.Card;
-import si.fri.smrpo.kis.server.jpa.entities.CardMove;
-import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
+import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
 
 import javax.annotation.security.PermitAll;
@@ -25,6 +21,44 @@ public class CardMoveService implements CardMoveServiceLocal {
 
     @EJB
     private DatabaseServiceLocal database;
+
+    private void validateAuthUserRights(Card card, BoardPart movedFrom, BoardPart movedTo) throws TransactionException {
+        Board board = movedFrom.getBoard();
+
+        Membership m = card.getMembership();
+        if(m == null) {
+            throw new TransactionException("User is not allowed to move card.");
+        }
+
+        int diff = Math.abs(movedFrom.getLeafNumber() - movedTo.getLeafNumber());
+        if(diff > 1) {
+            if(!(m.isProductOwner() && movedTo.getLeafNumber() >= board.getAcceptanceTesting())) {
+                throw new TransactionException("Movement for more than 1 field is not allowed.");
+            }
+        }
+
+        if(movedFrom.getLeafNumber() <= board.getHighestPriority()) {
+            if(
+                    (movedTo.getLeafNumber() > board.getHighestPriority() && !m.isKanbanMaster()) ||
+                    (!m.isProductOwner() && !m.isKanbanMaster())
+            ) {
+                throw new TransactionException("User is not allowed to move card in columns highest priority and before.");
+            }
+        } else if(board.getStartDev() <= movedFrom.getLeafNumber() && movedFrom.getLeafNumber() <= board.getEndDev()) {
+            if(
+                    (movedTo.getLeafNumber() < board.getStartDev() && !m.isKanbanMaster()) ||
+                    (!m.isDeveloper() && !m.isKanbanMaster())
+            ) {
+                throw new TransactionException("User is not allowed to move card in development columns.");
+            }
+        } else if(movedFrom.getLeafNumber() >= board.getAcceptanceTesting()) {
+            if(
+                    (!m.isProductOwner())
+            ) {
+                throw new TransactionException("User is not allowed to move card in columns after acceptance testing.");
+            }
+        }
+    }
 
     private void validate(CardMove cardMove, UserAccount authUser) throws LogicBaseException {
         cardMove.setMovedBy(authUser);
@@ -44,6 +78,8 @@ public class CardMoveService implements CardMoveServiceLocal {
         if (movedTo == null) {
             throw new TransactionException("BoardPart to not found.");
         }
+
+        validateAuthUserRights(card, movedFrom, movedTo);
 
         cardMove.setFrom(movedFrom);
         cardMove.setTo(movedTo);
@@ -83,6 +119,7 @@ public class CardMoveService implements CardMoveServiceLocal {
         }
         return false;
     }
+
 
 
 }

@@ -32,13 +32,12 @@ export class ProjectTable {
         if(i <= project.board.highestPriority) {
 
           isAllowedToMoveCards = isProductOwner || isKanbanMaster;
-          if(i == project.board.highestPriority && isKanbanMaster) isAllowedToMoveCardsRight = false;
+          if(i == project.board.highestPriority && !isKanbanMaster) isAllowedToMoveCardsRight = false;
 
         } else if(project.board.startDev <= i && i <= project.board.endDev) {
 
           isAllowedToMoveCards = isDeveloper || isKanbanMaster;
-          if(i == project.board.startDev) isAllowedToMoveCardsLeft = false;
-          if(i == project.board.endDev) isAllowedToMoveCardsRight = isKanbanMaster;
+          if(i == project.board.startDev) isAllowedToMoveCardsLeft = isKanbanMaster;
 
         } else if(project.board.acceptanceTesting <= i) {
 
@@ -47,6 +46,8 @@ export class ProjectTable {
             isAllowedToMoveCardsLeft = false;
             isAllowedMoveBack = true;
           }
+        } else {
+          isAllowedToMoveCards = isKanbanMaster;
         }
 
       }
