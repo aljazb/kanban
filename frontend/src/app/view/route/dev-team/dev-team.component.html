@@ -8,10 +8,16 @@
     </div>
 
     <div *ngIf="isKanbanMaster" class="col-sm-4">
-      <button class="btn btn-primary" (click)="openDevTeamCreateModal()">Create development team</button>
-      <a href="https://jgasp.github.io/slate/#vzdrzevanje-uporabnikov">
-        <button type="button" class="btn btn-outline-secondary" placement="left" ngbPopover="Click for help" triggers="mouseenter:mouseleave" style="border-radius: 50%">
-          ?</button></a>
+      <button class="btn btn-primary" (click)="openDevTeamCreateModal()">
+        Create development team
+
+        <a target="_blank" href="https://jgasp.github.io/slate/#vzdrzevanje-uporabnikov"
+           placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+           (click)="$event.stopPropagation()">
+          <i class="fa fa-question-circle"></i>
+        </a>
+
+      </button>
     </div>
 
   </div>

@@ -30,3 +30,7 @@ div.list-group-item.list-group-item-primary {
 .btn {
   cursor: pointer;
 }
+
+.fa-question-circle {
+  color: white;
+}
