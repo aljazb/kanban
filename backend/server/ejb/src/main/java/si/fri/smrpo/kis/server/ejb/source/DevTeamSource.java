@@ -1,11 +1,9 @@
 package si.fri.smrpo.kis.server.ejb.source;
 
-import si.fri.smrpo.kis.core.logic.database.interfaces.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
-import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 import si.fri.smrpo.kis.core.rest.source.CrudSource;
@@ -13,10 +11,8 @@ import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.models.HistoryEvent;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
-import si.fri.smrpo.kis.server.ejb.source.interfaces.BoardSourceLocal;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.DevTeamSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
-import si.fri.smrpo.kis.server.jpa.entities.Membership;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import javax.annotation.PostConstruct;

@@ -11,7 +11,7 @@
         <select name="boardPart" class="form-control" id="boardPart"
                 formControlName="moveTo">
           <option [ngValue]="null">Select column</option>
-          <option *ngFor="let b of boardPartsSelection" [ngValue]="b">{{b.name}}</option>
+          <option *ngFor="let b of boardPartsSelection" [ngValue]="b">{{b.name}} [{{b.currentWip}}/{{b.maxWip}}]</option>
         </select>
       </div>
     </div>

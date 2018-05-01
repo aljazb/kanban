@@ -33,6 +33,9 @@ public class Card extends UUIDEntity<Card> {
     @Column(name = "color")
     private String color;
 
+    @Column(name = "silver_bullet", nullable = false)
+    private Boolean silverBullet;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
@@ -134,5 +137,13 @@ public class Card extends UUIDEntity<Card> {
 
     public void setMembership(Membership membership) {
         this.membership = membership;
+    }
+
+    public Boolean getSilverBullet() {
+        return silverBullet;
+    }
+
+    public void setSilverBullet(Boolean silverBullet) {
+        this.silverBullet = silverBullet;
     }
 }

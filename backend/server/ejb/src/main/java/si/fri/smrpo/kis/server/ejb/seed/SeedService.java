@@ -238,6 +238,7 @@ public class SeedService {
             c.setProject(project);
             c.setBoardPart(bp);
 
+            c.setSilverBullet(false);
             c.setName(FAKER.app.name());
             c.setDescription(FAKER.lorem.characters(50));
             c.setWorkload(FAKER.number.between(1, 10));

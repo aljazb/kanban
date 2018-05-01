@@ -64,6 +64,8 @@ public class CardService implements CardServiceLocal {
 
     @Override
     public Card create(Card card, UserAccount authUser) throws Exception {
+        if(card.getSilverBullet() == null) card.setSilverBullet(false);
+
         validate(card);
         checkAccess(card, authUser);
 

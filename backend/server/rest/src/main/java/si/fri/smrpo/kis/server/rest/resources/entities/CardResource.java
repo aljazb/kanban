@@ -53,7 +53,7 @@ public class CardResource extends CrudResource<Card, CardSourceLocal> {
         return super.get(id);
     }
 
-    @RolesAllowed({ROLE_PRODUCT_OWNER})
+    @RolesAllowed({ROLE_PRODUCT_OWNER, ROLE_KANBAN_MASTER})
     @POST
     @Override
     public Response create(@HeaderParam("X-Content") Boolean xContent, Card entity) throws Exception {
