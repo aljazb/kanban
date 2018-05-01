@@ -34,20 +34,20 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="in-boardCard" class="col-sm-12 col-form-label">Board part</label>
-      <div class="col-sm-12">
-        <select name="card-boardCard" class="form-control" id="in-boardCard"
-                formControlName="boardPart"
-                [ngClass]="{ 'is-invalid': fcBoardPart.touched && fcBoardPart.invalid }">
-          <option [ngValue]="null">Select board part</option>
-          <option *ngFor="let bp of leafBoardParts" [ngValue]="bp.id">{{bp.name}}</option>
-        </select>
-        <div class="invalid-feedback" *ngIf="fcBoardPart.hasError('required')">
-          Board part is required
-        </div>
-      </div>
-    </div>
+    <!--<div class="form-group">-->
+      <!--<label for="in-boardCard" class="col-sm-12 col-form-label">Board part</label>-->
+      <!--<div class="col-sm-12">-->
+        <!--<select name="card-boardCard" class="form-control" id="in-boardCard"-->
+                <!--formControlName="boardPart"-->
+                <!--[ngClass]="{ 'is-invalid': fcBoardPart.touched && fcBoardPart.invalid }">-->
+          <!--<option [ngValue]="null">Select board part</option>-->
+          <!--<option *ngFor="let bp of leafBoardParts" [ngValue]="bp.id">{{bp.name}}</option>-->
+        <!--</select>-->
+        <!--<div class="invalid-feedback" *ngIf="fcBoardPart.hasError('required')">-->
+          <!--Board part is required-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
 
 
     <div class="form-group row">

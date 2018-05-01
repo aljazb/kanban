@@ -132,11 +132,11 @@ export class ProjectFormComponent extends FormImpl {
   }
 
   private sameOrAfter(date1: DTDateFormat, date2: DTDateFormat): boolean {
-    return date1.year >= date2.year && date1.month >= date2.month && date1.day >= date2.day;
+    return new Date(date1.year, date1.month, date1.day) >= new Date(date2.year, date2.month, date2.day);
   }
 
   private after(date1: DTDateFormat, date2: DTDateFormat): boolean {
-    return date1.year >= date2.year && date1.month >= date2.month && date1.day > date2.day;
+    return new Date(date1.year, date1.month, date1.day) > new Date(date2.year, date2.month, date2.day);
   }
 
 }
