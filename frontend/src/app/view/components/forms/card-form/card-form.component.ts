@@ -27,6 +27,9 @@ export class CardFormComponent extends FormImpl {
   isFormSubmitted: boolean = false;
   leafBoardParts: BoardPart[];
 
+  isSilverbullet: boolean = false;
+  boardPartId: string;
+
   constructor(public activeModal: NgbActiveModal,
               private apiService: ApiService) {
     super();
@@ -54,15 +57,37 @@ export class CardFormComponent extends FormImpl {
     this.project = project;
     this.apiService.board.get(this.project.board.id).subscribe(value => {
       this.leafBoardParts = Board.getLeafParts(value.boardParts);
-      this.fcBoardPart.patchValue(this.leafBoardParts[0].id);
+      Board.sortBoardParts(this.leafBoardParts);
+      if (this.isSilverbullet) {
+        this.boardPartId = this.getHighestPriority(this.leafBoardParts).id;
+      } else {
+        this.boardPartId = this.leafBoardParts[0].id;
+      }
+      // this.fcBoardPart.patchValue(this.leafBoardParts[0].id);
     });
+  }
+
+  getHighestPriority(boardParts): BoardPart {
+    boardParts.forEach(boardPart => {
+      if(this.isHighestPriority(boardPart)) {
+        return boardPart;
+      }
+    });
+    return null;
+  }
+
+  isHighestPriority(boardPart: BoardPart): boolean {
+    return boardPart.leafNumber != null && boardPart.leafNumber == boardPart.board.highestPriority
+  }
+
+  setIsSilverBullet() {
+    this.isSilverbullet = true;
   }
 
   onSubmit() {
     this.isFormSubmitted = true;
     this.validateForm(this.formCard);
     if (this.formCard.valid) {
-
       let c = this.card;
 
       c.name = this.fcName.value;
@@ -71,7 +96,7 @@ export class CardFormComponent extends FormImpl {
       c.project = new Project();
       c.project.id = this.project.id;
       c.boardPart = new BoardPart();
-      c.boardPart.id = this.fcBoardPart.value;
+      c.boardPart.id = this.boardPartId;
 
       this.activeModal.close(c);
     }
