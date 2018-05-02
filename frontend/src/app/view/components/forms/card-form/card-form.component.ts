@@ -18,11 +18,13 @@ export class CardFormComponent extends FormImpl {
   card = new Card();
   project = new Project();
 
+  colors = ['#F1DEDE', '#D496A7', '#5D576B', '#6CD4FF', '#FE938C'];
+
   formCard: FormGroup;
   fcName: FormControl;
   fcDescription: FormControl;
   fcWorkload: FormControl;
-  fcBoardPart: FormControl;
+  fcColor: FormControl;
 
   isFormSubmitted: boolean = false;
   leafBoardParts: BoardPart[];
@@ -41,7 +43,7 @@ export class CardFormComponent extends FormImpl {
     this.fcName = new FormControl('', Validators.required);
     this.fcDescription = new FormControl('', Validators.required);
     this.fcWorkload = new FormControl('');
-    this.fcBoardPart = new FormControl(null);
+    this.fcColor = new FormControl(null, Validators.required);
   }
 
   initFormGroup(): void {
@@ -49,14 +51,13 @@ export class CardFormComponent extends FormImpl {
       name: this.fcName,
       description: this.fcDescription,
       workload: this.fcWorkload,
-      boardPart: this.fcBoardPart
+      color: this.fcColor
     });
   }
 
   setProject(project) {
     this.project = project;
     this.apiService.board.get(this.project.board.id).subscribe(value => {
-      console.log(value);
       this.leafBoardParts = Board.getLeafParts(value.boardParts);
       Board.sortBoardParts(this.leafBoardParts);
       if (this.isSilverbullet) {
@@ -85,6 +86,7 @@ export class CardFormComponent extends FormImpl {
       c.project.id = this.project.id;
       c.boardPart = new BoardPart();
       c.boardPart.id = this.boardPartId;
+      c.color = this.fcColor.value;
 
       this.activeModal.close(c);
     }
