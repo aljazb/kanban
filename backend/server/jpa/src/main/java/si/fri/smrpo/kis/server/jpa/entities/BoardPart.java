@@ -32,7 +32,6 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "order_index", nullable = false)
     private Integer orderIndex;
 
-    @Database(update = false)
     private Integer leafNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
