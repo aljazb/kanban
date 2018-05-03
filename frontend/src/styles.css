@@ -34,3 +34,7 @@ div.list-group-item.list-group-item-primary {
 .fa-question-circle {
   color: white;
 }
+
+.fa.fa-question-circle {
+  cursor: help;
+}
