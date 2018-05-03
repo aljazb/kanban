@@ -273,17 +273,31 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
+    private void updateLeaves(Board newBoard) throws DatabaseException {
+        Set<BoardPart> leaves = newBoard.buildLeavesBoardParts();
+
+        for(BoardPart bp : leaves) {
+            BoardPart dbBoardPart = database.find(BoardPart.class, bp.getId());
+            dbBoardPart.setLeafNumber(bp.getLeafNumber());
+            database.update(dbBoardPart);
+        }
+    }
+
     private Board updateBoard(Board dbBoard, Board newBoard) throws LogicBaseException {
         updateProject(dbBoard, newBoard);
 
         dbBoard.buildBoardPartsReferences();
         updateBoardParts(dbBoard.getBoardParts(), newBoard.getBoardParts());
+        updateLeaves(newBoard);
 
         dbBoard = database.update(newBoard);
+
+
 
         dbBoard = database.get(Board.class, dbBoard.getId());
         dbBoard.buildBoardPartsReferences();
         dbBoard.fetchProjectsWithCards();
+
 
         return dbBoard;
     }
@@ -295,6 +309,7 @@ public class BoardService implements BoardServiceLocal {
         Board dbBoard = database.get(Board.class, board.getId());
 
         checkEditAccess(dbBoard, authUser);
+
         dbBoard = updateBoard(dbBoard, board);
 
         return dbBoard;

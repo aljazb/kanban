@@ -8,7 +8,6 @@ import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,6 +63,24 @@ public class Board extends UUIDEntity<Board> {
                 .stream().findFirst().orElse(null);
 
         return membership;
+    }
+
+    @JsonIgnore
+    public Set<BoardPart> buildLeavesBoardParts() {
+        Set<BoardPart> leafs = new HashSet<>();
+        buildLeavesBoardParts(this.boardParts, leafs);
+        return leafs;
+    }
+
+    @JsonIgnore
+    private void buildLeavesBoardParts(Set<BoardPart> boardParts, Set<BoardPart> leafs) {
+        for(BoardPart bp : boardParts) {
+            if(bp.getLeafNumber() == null) {
+                buildLeavesBoardParts(bp.getChildren(), leafs);
+            } else {
+                leafs.add(bp);
+            }
+        }
     }
 
     @JsonIgnore
