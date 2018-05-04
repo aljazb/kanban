@@ -103,6 +103,7 @@ public class CardMoveService implements CardMoveServiceLocal {
         Card c = cardMove.getCard();
         c.setBoardPart(cardMove.getTo());
         database.update(c);
+        database.update(c.getProject().getBoard());
     }
 
     public CardMove create(CardMove cardMove, UserAccount authUser) throws LogicBaseException {

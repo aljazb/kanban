@@ -145,6 +145,8 @@ public class SeedService {
         m.setDevTeam(testDevTeam);
         m.setMemberType(MemberType.DEVELOPER);
         database.create(m);
+
+        database.update(testDevTeam);
     }
 
     private void generateBoard() throws DatabaseException {
