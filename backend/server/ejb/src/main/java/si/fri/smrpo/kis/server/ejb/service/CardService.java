@@ -47,7 +47,7 @@ public class CardService implements CardServiceLocal {
             m = entity.getMembership();
         }
 
-        if(m == null || !m.isProductOwner()) {
+        if(m == null || !m.isProductOwner() || !(m.isKanbanMaster() && entity.getSilverBullet() != null)) {
             throw new TransactionException("User is not product owner", ExceptionType.INSUFFICIENT_RIGHTS);
         }
     }
