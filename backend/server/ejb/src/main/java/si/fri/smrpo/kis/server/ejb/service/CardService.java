@@ -29,10 +29,8 @@ public class CardService implements CardServiceLocal {
             throw new TransactionException("No project specified");
         } else if(card.getName() == null){
             throw new TransactionException("No name specified");
-        }
-
-        if(card.getColor() == null) {
-            card.setColor("#f8f9fa");
+        } else if(card.getColor() == null) {
+            throw new TransactionException("No color specified");
         }
     }
 

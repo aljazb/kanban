@@ -32,7 +32,11 @@ public class CardMoveService implements CardMoveServiceLocal {
 
         int diff = Math.abs(movedFrom.getLeafNumber() - movedTo.getLeafNumber());
         if(diff > 1) {
-            if(!(m.isProductOwner() && movedTo.getLeafNumber() >= board.getAcceptanceTesting())) {
+            if(!(
+                    m.isProductOwner() &&
+                    movedFrom.getLeafNumber() >= board.getAcceptanceTesting() &&
+                    movedTo.getLeafNumber() <= board.getHighestPriority()
+            )) {
                 throw new TransactionException("Movement for more than 1 field is not allowed.");
             }
         }
