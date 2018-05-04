@@ -5,22 +5,31 @@
 
     <div class="row">
       <p class="col-sm-2 col-label">Name</p>
-      <p class="col-sm-2 col-label"><strong>{{card.name}}</strong></p>
+      <p class="col-sm-10 col-label"><strong>{{card.name}}</strong></p>
     </div>
 
     <div class="row">
       <p class="col-sm-2 col-label">Workload</p>
-      <p class="col-sm-2 col-label"><strong>{{ card.workload }}</strong></p>
+      <p class="col-sm-10 col-label"><strong>{{ card.workload }}</strong></p>
     </div>
 
     <div class="row">
-      <p class="col-sm-12 col-label">Description</p>
-      <p class="col-sm-12 col-label"><strong>{{ card.description }}</strong></p>
+      <p class="col-sm-2 col-label">Description</p>
+      <p class="col-sm-10 col-label"><strong>{{ card.description }}</strong></p>
     </div>
 
-    <div class="list-group" *ngIf="card.subTasks">
-      <div *ngFor="let t of card.subTasks" class="list-group-item list-group-item-action">
-        {{t.name}} - {{t.workingHours}}
+    <div class="row">
+      <p class="col-sm-2 col-label">Subtasks</p>
+      <div class="col-sm-10 col-label">
+        <div class="list-group" *ngIf="card.subTasks">
+          <div *ngFor="let t of card.subTasks" class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">{{t.name}}</h5>
+              <small>{{t.workingHours}} working hours</small>
+            </div>
+            <p class="mb-1">{{t.description}}</p>
+          </div>
+        </div>
       </div>
     </div>
 

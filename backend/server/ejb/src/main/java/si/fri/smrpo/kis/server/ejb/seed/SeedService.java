@@ -14,6 +14,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Startup
 @Singleton
@@ -242,7 +243,7 @@ public class SeedService {
 
             c.setSilverBullet(false);
             c.setName(FAKER.app.name());
-            c.setDescription(FAKER.lorem.characters(50));
+            c.setDescription(FAKER.lorem.words(30).stream().collect(Collectors.joining(" ")));
             c.setWorkload(FAKER.number.between(1, 10));
 
             String color = "#9cec9c";
@@ -266,7 +267,7 @@ public class SeedService {
             for(int t=0; t<tasks; t++){
                 SubTask st = new SubTask();
                 st.setName(FAKER.app.name());
-                st.setDescription(FAKER.lorem.characters(20));
+                st.setDescription(FAKER.lorem.words(10).stream().collect(Collectors.joining(" ")));
                 st.setWorkingHours(FAKER.number.between(5, 40));
                 st.setCard(c);
 
