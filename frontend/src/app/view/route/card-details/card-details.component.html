@@ -24,12 +24,28 @@
         <div class="list-group" *ngIf="card.subTasks">
           <div *ngFor="let t of card.subTasks" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">{{t.name}}</h5>
+              <h5 class="mb-1"><strong>{{t.name}}</strong></h5>
               <small>{{t.workingHours}} working hours</small>
             </div>
             <p class="mb-1">{{t.description}}</p>
           </div>
         </div>
+        <div *ngIf="!card.subTasks"><strong>No subtasks!</strong></div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <p class="col-sm-2 col-label">Card Moves</p>
+      <div class="col-sm-10 col-label">
+        <div class="list-group" *ngIf="card.cardMoves">
+          <div *ngFor="let cm of moves" class="list-group-item list-group-item-action flex-column align-items-start">
+            <p class="mb-1">User <strong>{{cm.movedBy.email}}</strong> moved card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.</p>
+            <p class="mb-1">From: <strong>{{cm.from.name}}</strong></p>
+            <p class="mb-1">To: <strong>{{cm.to.name}}</strong></p>
+            <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == 'INVALID'"><strong>WIP Exceeded!</strong></p>
+          </div>
+        </div>
+        <div *ngIf="!card.cardMoves"><strong>No card moves!</strong></div>
       </div>
     </div>
 

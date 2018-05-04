@@ -75,6 +75,7 @@ public class CardSource extends CrudSource<Card, UUID> implements CardSourceLoca
         }
 
         entity.getSubTasks().size();
+        entity.getCardMoves().size();
 
         return entity;
     }
