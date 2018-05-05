@@ -7,6 +7,7 @@ import {Project} from '../../../../api/models/Project';
 import {BoardPart} from '../../../../api/models/BoardPart';
 import {ApiService} from '../../../../api/services/api.service';
 import {Board} from '../../../../api/models/Board';
+import {Color, COLOR_PALETTE} from './utility/color';
 
 @Component({
   selector: 'app-card-form',
@@ -18,13 +19,13 @@ export class CardFormComponent extends FormImpl {
   card = new Card();
   project = new Project();
 
-  colors = ['#F1DEDE', '#D496A7', '#5D576B', '#6CD4FF', '#FE938C'];
-
   formCard: FormGroup;
   fcName: FormControl;
   fcDescription: FormControl;
   fcWorkload: FormControl;
   fcColor: FormControl;
+
+  colorSelection: Color[];
 
   isFormSubmitted: boolean = false;
   leafBoardParts: BoardPart[];
@@ -37,6 +38,7 @@ export class CardFormComponent extends FormImpl {
     super();
     this.initFormControls();
     this.initFormGroup();
+    this.colorSelection = COLOR_PALETTE;
   }
 
   initFormControls(): void {
@@ -44,6 +46,7 @@ export class CardFormComponent extends FormImpl {
     this.fcDescription = new FormControl('', Validators.required);
     this.fcWorkload = new FormControl('');
     this.fcColor = new FormControl(null, Validators.required);
+
   }
 
   initFormGroup(): void {
@@ -61,11 +64,13 @@ export class CardFormComponent extends FormImpl {
       this.leafBoardParts = Board.getLeafParts(value.boardParts);
       Board.sortBoardParts(this.leafBoardParts);
       if (this.isSilverbullet) {
+        this.colorSelection = [Color.SILVER];
+        this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
+        this.fcColor.disable();
         this.boardPartId = this.leafBoardParts[value.highestPriority].id;
       } else {
         this.boardPartId = this.leafBoardParts[0].id;
       }
-      // this.fcBoardPart.patchValue(this.leafBoardParts[0].id);
     });
   }
 
@@ -76,6 +81,8 @@ export class CardFormComponent extends FormImpl {
   onSubmit() {
     this.isFormSubmitted = true;
     this.validateForm(this.formCard);
+    console.log(this.formCard.valid);
+    console.log(this.formCard);
     if (this.formCard.valid) {
       let c = this.card;
 
@@ -87,6 +94,7 @@ export class CardFormComponent extends FormImpl {
       c.boardPart = new BoardPart();
       c.boardPart.id = this.boardPartId;
       c.color = this.fcColor.value;
+      c.silverBullet = this.isSilverbullet;
 
       this.activeModal.close(c);
     }

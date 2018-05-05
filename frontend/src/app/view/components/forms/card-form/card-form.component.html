@@ -41,8 +41,8 @@
                 formControlName="color"
                 [ngClass]="{ 'is-invalid': fcColor.touched && fcColor.invalid }">
           <option [ngValue]="null">Select card color</option>
-          <option *ngFor="let c of colors" [ngValue]="c" [style.background-color]="c">
-            <div [style.background]="c">{{c}}</div>
+          <option *ngFor="let c of colorSelection" [ngValue]="c.hexBackgroundColor" [style.background-color]="c">
+            <div [style.background]="c.hexBackgroundColor" [style.text-color]="c.hexTextColor">{{c.name}}</div>
           </option>
         </select>
         <div class="invalid-feedback" *ngIf="fcColor.hasError('required')">

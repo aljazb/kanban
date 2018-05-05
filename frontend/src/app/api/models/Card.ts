@@ -15,6 +15,8 @@ export class Card extends BaseEntity<Card> {
   project: Project;
   boardPart: BoardPart;
 
+  silverBullet: boolean;
+
   cardMoves: CardMove[];
   subTasks: SubTask[];
   membership: Membership;
