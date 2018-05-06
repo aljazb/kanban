@@ -29,27 +29,29 @@ export class ProjectTable {
         let isProductOwner = Membership.isProductOwner(project.membership);
         let isKanbanMaster = Membership.isKanbanMaster(project.membership);
 
-        if(i <= project.board.highestPriority) {
+        if(isProductOwner && project.board.acceptanceTesting <= i) {
 
-          isAllowedToMoveCards = isProductOwner || isKanbanMaster;
-          if(i == project.board.highestPriority && !isKanbanMaster) isAllowedToMoveCardsRight = false;
-
-        } else if(project.board.startDev <= i && i <= project.board.endDev) {
-
-          isAllowedToMoveCards = isDeveloper || isKanbanMaster;
-          if(i == project.board.startDev) isAllowedToMoveCardsLeft = isKanbanMaster;
-
-        } else if(project.board.acceptanceTesting <= i) {
-
-          isAllowedToMoveCards = isProductOwner;
-          if(i == project.board.acceptanceTesting && isProductOwner) {
+          isAllowedToMoveCards = true;
+          if (project.board.acceptanceTesting == i) {
             isAllowedToMoveCardsLeft = false;
             isAllowedMoveBack = true;
           }
-        } else {
-          isAllowedToMoveCards = isKanbanMaster;
-        }
+        } else if(isKanbanMaster) {
 
+          isAllowedToMoveCards = true;
+
+        } else if(isDeveloper && project.board.startDev - 1 <= i && i <= project.board.endDev) {
+
+          isAllowedToMoveCards = true;
+          if(i == project.board.startDev - 1) isAllowedToMoveCardsLeft = false;
+          if(i == project.board.startDev) isAllowedToMoveCardsLeft = false;
+
+        } else if(isProductOwner && i <= project.board.highestPriority) {
+
+          isAllowedToMoveCards = isProductOwner;
+          if(i == project.board.highestPriority) isAllowedToMoveCardsRight = false;
+
+        }
       }
 
       if(isAllowedToMoveCards) {

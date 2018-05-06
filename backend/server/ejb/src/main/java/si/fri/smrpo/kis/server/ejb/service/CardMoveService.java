@@ -30,36 +30,31 @@ public class CardMoveService implements CardMoveServiceLocal {
             throw new TransactionException("User is not allowed to move card.");
         }
 
-        int diff = Math.abs(movedFrom.getLeafNumber() - movedTo.getLeafNumber());
+        int from = movedFrom.getLeafNumber();
+        int to = movedTo.getLeafNumber();
+
+        int diff = Math.abs(from - to);
         if(diff > 1) {
-            if(!(
-                    m.isProductOwner() &&
-                    movedFrom.getLeafNumber() >= board.getAcceptanceTesting() &&
-                    movedTo.getLeafNumber() <= board.getHighestPriority()
-            )) {
+            if(from >= board.getAcceptanceTesting() && to <= board.getHighestPriority()) {
+                if(!m.isProductOwner()) {
+                    throw new TransactionException("User is not in role product owner.");
+                }
+            } else {
                 throw new TransactionException("Movement for more than 1 field is not allowed.");
             }
-        }
-
-        if(movedFrom.getLeafNumber() <= board.getHighestPriority()) {
-            if(
-                    (movedTo.getLeafNumber() > board.getHighestPriority() && !m.isKanbanMaster()) ||
-                    (!m.isProductOwner() && !m.isKanbanMaster())
-            ) {
-                throw new TransactionException("User is not allowed to move card in columns highest priority and before.");
+        } else if(from >= board.getAcceptanceTesting() && to >= board.getAcceptanceTesting()) {
+            if(!m.isProductOwner()) {
+                throw new TransactionException("User is not in role product owner.");
             }
-        } else if(board.getStartDev() <= movedFrom.getLeafNumber() && movedFrom.getLeafNumber() <= board.getEndDev()) {
-            if(
-                    (movedTo.getLeafNumber() < board.getStartDev() && !m.isKanbanMaster()) ||
-                    (!m.isDeveloper() && !m.isKanbanMaster())
-            ) {
+        } else if(m.isKanbanMaster()) {
+
+        } else if(board.getStartDev() - 1 <= from && to <= board.getEndDev() + 1) {
+            if(!m.isDeveloper()) {
                 throw new TransactionException("User is not allowed to move card in development columns.");
             }
-        } else if(movedFrom.getLeafNumber() >= board.getAcceptanceTesting()) {
-            if(
-                    (!m.isProductOwner())
-            ) {
-                throw new TransactionException("User is not allowed to move card in columns after acceptance testing.");
+        } else if(from <= board.getHighestPriority() && to <= board.getHighestPriority()) {
+            if(!m.isProductOwner()) {
+                throw new TransactionException("User is not allowed to move card in columns highest priority and before.");
             }
         }
     }
