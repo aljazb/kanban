@@ -6,10 +6,7 @@ import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.BoardServiceLocal;
-import si.fri.smrpo.kis.server.jpa.entities.Board;
-import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
-import si.fri.smrpo.kis.server.jpa.entities.Project;
-import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
+import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.annotation.security.PermitAll;
@@ -52,7 +49,7 @@ public class BoardService implements BoardServiceLocal {
         validateMarks(board);
         validate(board.getBoardParts());
 
-        if(board.getProjects() != null){
+        if(board.getProjects() != null) {
             for(Project project : board.getProjects()) {
                 Project dbProject = database.get(Project.class, project.getId());
                 if(dbProject == null) {
@@ -65,6 +62,22 @@ public class BoardService implements BoardServiceLocal {
             board.setProjects(new HashSet<>());
         }
 
+    }
+
+    private void validateProject(Board dbBoard, Board board) throws TransactionException {
+        HashMap<UUID, Project> removedProject = UUIDEntity.buildMap(dbBoard.getProjects());
+
+        for(Project p : board.getProjects()) {
+            removedProject.remove(p.getId());
+        }
+
+        for(Project p : removedProject.values()) {
+            if(p.getCards() != null) {
+                if(p.getCards().size() > 0) {
+                    throw new TransactionException("Project has already assigned cards and can't be removed");
+                }
+            }
+        }
     }
 
     private void validateMarks(Board board) throws TransactionException {
@@ -297,6 +310,7 @@ public class BoardService implements BoardServiceLocal {
 
         Board dbBoard = database.get(Board.class, board.getId());
 
+        validateProject(dbBoard, board);
         checkEditAccess(dbBoard, authUser);
 
         dbBoard = updateBoard(dbBoard, board);
