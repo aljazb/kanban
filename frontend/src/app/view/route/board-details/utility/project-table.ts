@@ -30,10 +30,10 @@ export class ProjectTable {
         let isProductOwner = Membership.isProductOwner(project.membership);
         let isKanbanMaster = Membership.isKanbanMaster(project.membership);
 
-        if(isProductOwner && project.board.acceptanceTesting <= i) {
+        if(project.board.acceptanceTesting <= i) {
 
-          isAllowedToMoveCards = true;
-          if (project.board.acceptanceTesting == i) {
+          isAllowedToMoveCards = isProductOwner;
+          if (project.board.acceptanceTesting == i && isProductOwner) {
             isAllowedToMoveCardsLeft = false;
             isAllowedMoveBack = true;
           }
@@ -41,13 +41,13 @@ export class ProjectTable {
 
           isAllowedToMoveCards = true;
 
-        } else if(isDeveloper && project.board.startDev - 1 <= i && i <= project.board.endDev) {
+        } else if(project.board.startDev - 1 <= i && i <= project.board.endDev) {
 
-          isAllowedToMoveCards = true;
+          isAllowedToMoveCards = isDeveloper;
           if(i == project.board.startDev - 1) isAllowedToMoveCardsLeft = false;
           if(i == project.board.startDev) isAllowedToMoveCardsLeft = false;
 
-        } else if(isProductOwner && i <= project.board.highestPriority) {
+        } else if(i <= project.board.highestPriority) {
 
           isAllowedToMoveCards = isProductOwner;
           if(i == project.board.highestPriority) isAllowedToMoveCardsRight = false;
