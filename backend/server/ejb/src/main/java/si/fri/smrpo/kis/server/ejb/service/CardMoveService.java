@@ -48,7 +48,9 @@ public class CardMoveService implements CardMoveServiceLocal {
             }
         } else if(m.isKanbanMaster()) {
 
-        } else if(board.getStartDev() - 1 <= from && to <= board.getEndDev() + 1) {
+        } else if(
+                board.getStartDev() - 1 <= from && from <= board.getEndDev() + 1 &&
+                board.getStartDev() - 1 <= to   &&   to <= board.getEndDev() + 1) {
             if(!m.isDeveloper()) {
                 throw new TransactionException("User is not allowed to move card in development columns.");
             }
