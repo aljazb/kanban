@@ -59,13 +59,13 @@ export class BoardDetailsComponent implements OnInit {
     return bp;
   }
 
-  private moveCard(c: Card, to: BoardPart) {
+  private moveCard(c: Card, from: BoardPart, to: BoardPart) {
     let cm = new CardMove();
     cm.to = to;
     cm.card = c;
     cm.cardMoveType = CardMoveType.VALID;
 
-    let wipExceeded = this.boardRepresentation.willExceedWip(to);
+    let wipExceeded = this.boardRepresentation.willExceedWip(to, from);
     if (wipExceeded) {
       cm.cardMoveType = CardMoveType.INVALID;
 
@@ -89,21 +89,21 @@ export class BoardDetailsComponent implements OnInit {
       });
   }
 
-  moveCardBack(c: Card, boardParts: BoardPart[]) {
+  moveCardBack(c: Card, from: BoardPart, boardParts: BoardPart[]) {
     const modalRef = this.modalService.open(CardMoveBackConfirmationComponent);
     (<CardMoveBackConfirmationComponent> modalRef.componentInstance).setBoardParts(boardParts);
 
     modalRef.result
-      .then(value => this.moveCard(c, value))
+      .then(value => this.moveCard(c, from, value))
       .catch(reason => console.log(reason));
   }
 
-  moveCardLeft(c: Card, boardPart: BoardPart) {
-    this.moveCard(c, boardPart)
+  moveCardLeft(c: Card, from: BoardPart, to: BoardPart) {
+    this.moveCard(c, from, to)
   }
 
-  moveCardRight(c: Card, boardPart: BoardPart) {
-    this.moveCard(c, boardPart)
+  moveCardRight(c: Card, from: BoardPart, to: BoardPart) {
+    this.moveCard(c, from, to)
   }
 
 }

@@ -86,7 +86,7 @@ public class CardMoveService implements CardMoveServiceLocal {
         cardMove.setTo(movedTo);
         cardMove.setCard(card);
 
-        CardMoveType requiredType = isMoveToAvailable(movedTo) ? CardMoveType.VALID : CardMoveType.INVALID;
+        CardMoveType requiredType = isMoveToAvailable(movedTo, movedFrom, false) ? CardMoveType.VALID : CardMoveType.INVALID;
 
         if (cardMove.getCardMoveType() != requiredType) {
             throw new TransactionException("CardMoveType is set incorrectly.");
@@ -111,17 +111,41 @@ public class CardMoveService implements CardMoveServiceLocal {
         return cardMove;
     }
 
-    private boolean isMoveToAvailable(BoardPart bp) {
-        if(bp.getMaxWip() > bp.getCurrentWip()) {
-            if(bp.getParent() == null) {
+    private boolean isMoveToAvailable(BoardPart to, BoardPart from, boolean movedFrom) {
+        int currentWip = to.getCurrentWip();
+
+        if(!movedFrom) {
+            movedFrom = hasChild(to, from);
+        }
+
+        if(movedFrom) {
+            currentWip--;
+        }
+
+        if(to.getMaxWip() > currentWip) {
+            if(to.getParent() == null) {
                 return true;
             } else {
-                return isMoveToAvailable(bp.getParent());
+                return isMoveToAvailable(to.getParent(), from, movedFrom);
             }
         }
         return false;
     }
 
-
-
+    private boolean hasChild(BoardPart parent, BoardPart leafChild) {
+        if(parent.hasChildren()) {
+            for(BoardPart c : parent.getChildren()) {
+                if(hasChild(c, leafChild)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            if(parent.getId().equals(leafChild.getId())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 }

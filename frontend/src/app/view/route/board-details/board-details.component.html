@@ -43,16 +43,23 @@
                 <td *ngFor="let td of tr.cardTables">
 
                   <div class="list-group">
-                      <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards" [style.background]="c.color">
+                      <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards"
+                           [style.background]="c.color">
 
                         <div class="mt-3">
-                          <button type="button" class="btn btn-sm btn-primary" (click)="moveCardLeft(c, td.leftBoardPart)" *ngIf="td.leftBoardPart">
+                          <button type="button" class="btn btn-sm btn-primary"
+                                  (click)="moveCardLeft(c, td.currentBoardPart, td.leftBoardPart)"
+                                  *ngIf="td.leftBoardPart">
+
                             <i class="fa fa-caret-left"></i>
                           </button>
 
                           <a routerLink="/card/{{c.id}}">{{c.name}}</a>
 
-                          <button type="button" class="btn btn-sm btn-primary" (click)="moveCardRight(c, td.rightBoardPart)" *ngIf="td.rightBoardPart">
+                          <button type="button" class="btn btn-sm btn-primary"
+                                  (click)="moveCardRight(c, td.currentBoardPart, td.rightBoardPart)"
+                                  *ngIf="td.rightBoardPart">
+
                             <i class="fa fa-caret-right"></i>
                           </button>
                         </div>
@@ -63,7 +70,9 @@
                           </div>
                         </div>
 
-                        <button type="button" class="btn btn-sm btn-danger pull-right mt-2" (click)="moveCardBack(c, td.moveBack)" *ngIf="td.moveBack">
+                        <button type="button" class="btn btn-sm btn-danger pull-right mt-2"
+                                (click)="moveCardBack(c, td.moveBack)" *ngIf="td.moveBack">
+
                           <i class="fa fa-times-circle"></i>
                         </button>
 

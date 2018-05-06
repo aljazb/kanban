@@ -15,6 +15,7 @@ export class ProjectTable {
      let moveBackBoardParts = leafBoardParts.filter(value => value.leafNumber <= project.board.highestPriority);
 
     for(let i=0; i<rows; i++) {
+      let currentBp: BoardPart = leafBoardParts[i];
       let leftBp: BoardPart = null;
       let rightBp: BoardPart = null;
       let moveBack: BoardPart[] = null;
@@ -67,7 +68,7 @@ export class ProjectTable {
         moveBack = moveBackBoardParts;
       }
 
-      this.cardTables.push(new CardTable(leftBp, rightBp, moveBack));
+      this.cardTables.push(new CardTable(currentBp, leftBp, rightBp, moveBack));
     }
   }
 

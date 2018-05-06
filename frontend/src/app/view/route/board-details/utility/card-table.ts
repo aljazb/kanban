@@ -2,7 +2,7 @@ import {Card} from '../../../../api/models/Card';
 import {BoardPart} from '../../../../api/models/BoardPart';
 
 export class CardTable {
-
+  currentBoardPart: BoardPart = null;
   leftBoardPart: BoardPart = null;
   rightBoardPart: BoardPart = null;
 
@@ -10,7 +10,8 @@ export class CardTable {
 
   cards: Card[];
 
-  constructor(leftBoardPart: BoardPart, rightBoardPart: BoardPart, moveBack: BoardPart[]) {
+  constructor(currentBoardPart: BoardPart, leftBoardPart: BoardPart, rightBoardPart: BoardPart, moveBack: BoardPart[]) {
+    this.currentBoardPart = currentBoardPart;
     this.leftBoardPart = leftBoardPart;
     this.rightBoardPart = rightBoardPart;
     this.moveBack = moveBack;
