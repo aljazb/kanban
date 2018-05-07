@@ -25,6 +25,8 @@ export class CardFormComponent extends FormImpl {
   fcWorkload: FormControl;
   fcColor: FormControl;
 
+  silverBulletLimitExceeded: boolean = false;
+
   colorSelection: Color[];
 
   isFormSubmitted: boolean = false;
@@ -46,7 +48,16 @@ export class CardFormComponent extends FormImpl {
     this.fcDescription = new FormControl('', Validators.required);
     this.fcWorkload = new FormControl('');
     this.fcColor = new FormControl(null, Validators.required);
+  }
 
+  checkColumnForBullets() {
+    if (Array.isArray(this.project.cards)) {
+      this.project.cards.forEach(c => {
+        if (c.boardPart.id == this.boardPartId && c.silverBullet) {
+          this.silverBulletLimitExceeded = true;
+        }
+      });
+    }
   }
 
   initFormGroup(): void {
@@ -68,6 +79,7 @@ export class CardFormComponent extends FormImpl {
         this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
         this.fcColor.disable();
         this.boardPartId = this.leafBoardParts[value.highestPriority].id;
+        this.checkColumnForBullets();
       } else {
         this.boardPartId = this.leafBoardParts[0].id;
       }
