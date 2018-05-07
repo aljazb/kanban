@@ -39,19 +39,8 @@ table.table-bordered > tbody > tr > td{
 
 }
 table.table{
-
-  border-collapse: separate;
-
-}
-
-list.list-group{
   border-collapse: separate;
 
 }
 
 
-list.list-group-item-action{
-  border-spacing: 5px;
-  border-radius: 5px;
-
-}

@@ -42,11 +42,10 @@
                 </td>
                 <td *ngFor="let td of tr.cardTables">
 
-                  <div class="list-group">
-                      <div class="list-group-item list-group-item-action" *ngFor="let c of td.cards"
-                           [style.background]="c.color">
+                      <div class="list-group mt-1" *ngFor="let c of td.cards"
+                           [style.background]="c.color"> {{c.workload}}
 
-                        <div class="mt-3">
+                        <div class="list-group-item">
                           <button type="button" class="btn btn-sm btn-primary"
                                   (click)="moveCardLeft(c, td.currentBoardPart, td.leftBoardPart)"
                                   *ngIf="td.leftBoardPart">
@@ -77,7 +76,7 @@
                         </button>
 
                       </div>
-                  </div>
+
 
                 </td>
               </tr>
