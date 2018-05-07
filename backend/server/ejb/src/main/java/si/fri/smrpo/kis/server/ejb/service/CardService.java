@@ -32,6 +32,10 @@ public class CardService implements CardServiceLocal {
         } else if(card.getColor() == null) {
             throw new TransactionException("No color specified");
         }
+
+        if(card.getSilverBullet() == null) {
+            card.setSilverBullet(false);
+        }
     }
 
     private void checkAccess(Card entity, UserAccount authUser) throws LogicBaseException {
@@ -45,8 +49,18 @@ public class CardService implements CardServiceLocal {
             m = entity.getMembership();
         }
 
-        if(m == null || !m.isProductOwner() || !(m.isKanbanMaster() && entity.getSilverBullet() != null)) {
-            throw new TransactionException("User is not product owner", ExceptionType.INSUFFICIENT_RIGHTS);
+        if(m == null) {
+            throw new TransactionException("User is not part of project", ExceptionType.INSUFFICIENT_RIGHTS);
+        } else {
+            if(entity.getSilverBullet()) {
+                if(!m.isKanbanMaster()) {
+                    throw new TransactionException("User is not kanban master", ExceptionType.INSUFFICIENT_RIGHTS);
+                }
+            } else {
+                if(!m.isProductOwner()) {
+                    throw new TransactionException("User is not product owner", ExceptionType.INSUFFICIENT_RIGHTS);
+                }
+            }
         }
     }
 

@@ -90,14 +90,19 @@ export class BoardRepresentation {
     }
   }
 
-  willExceedWip(boardPart: BoardPart) {
+  willExceedWip(boardPart: BoardPart, from: BoardPart) {
+    let fromBpt = this._boardPartIdToIndexMap.get(from.id);
+    this.decWip(fromBpt);
+
     let bpt = this._boardPartIdToIndexMap.get(boardPart.id);
     while (bpt != null) {
-      if (bpt.currentWip + 1 > bpt.boardPart.maxWip) {
+      if (bpt.boardPart.maxWip != 0 && bpt.currentWip + 1 > bpt.boardPart.maxWip) {
         return true
       }
       bpt = bpt.parent;
     }
+
+    this.incWip(fromBpt);
 
     return false;
   }

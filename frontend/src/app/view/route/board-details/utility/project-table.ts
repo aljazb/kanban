@@ -15,6 +15,7 @@ export class ProjectTable {
      let moveBackBoardParts = leafBoardParts.filter(value => value.leafNumber <= project.board.highestPriority);
 
     for(let i=0; i<rows; i++) {
+      let currentBp: BoardPart = leafBoardParts[i];
       let leftBp: BoardPart = null;
       let rightBp: BoardPart = null;
       let moveBack: BoardPart[] = null;
@@ -29,27 +30,29 @@ export class ProjectTable {
         let isProductOwner = Membership.isProductOwner(project.membership);
         let isKanbanMaster = Membership.isKanbanMaster(project.membership);
 
-        if(i <= project.board.highestPriority) {
-
-          isAllowedToMoveCards = isProductOwner || isKanbanMaster;
-          if(i == project.board.highestPriority && !isKanbanMaster) isAllowedToMoveCardsRight = false;
-
-        } else if(project.board.startDev <= i && i <= project.board.endDev) {
-
-          isAllowedToMoveCards = isDeveloper || isKanbanMaster;
-          if(i == project.board.startDev) isAllowedToMoveCardsLeft = isKanbanMaster;
-
-        } else if(project.board.acceptanceTesting <= i) {
+        if(project.board.acceptanceTesting <= i) {
 
           isAllowedToMoveCards = isProductOwner;
-          if(i == project.board.acceptanceTesting && isProductOwner) {
+          if (project.board.acceptanceTesting == i && isProductOwner) {
             isAllowedToMoveCardsLeft = false;
             isAllowedMoveBack = true;
           }
-        } else {
-          isAllowedToMoveCards = isKanbanMaster;
-        }
+        } else if(isKanbanMaster) {
 
+          isAllowedToMoveCards = true;
+
+        } else if(project.board.startDev - 1 <= i && i <= project.board.endDev) {
+
+          isAllowedToMoveCards = isDeveloper;
+          if(i == project.board.startDev - 1) isAllowedToMoveCardsLeft = false;
+          if(i == project.board.startDev) isAllowedToMoveCardsLeft = false;
+
+        } else if(i <= project.board.highestPriority) {
+
+          isAllowedToMoveCards = isProductOwner;
+          if(i == project.board.highestPriority) isAllowedToMoveCardsRight = false;
+
+        }
       }
 
       if(isAllowedToMoveCards) {
@@ -65,7 +68,7 @@ export class ProjectTable {
         moveBack = moveBackBoardParts;
       }
 
-      this.cardTables.push(new CardTable(leftBp, rightBp, moveBack));
+      this.cardTables.push(new CardTable(currentBp, leftBp, rightBp, moveBack));
     }
   }
 

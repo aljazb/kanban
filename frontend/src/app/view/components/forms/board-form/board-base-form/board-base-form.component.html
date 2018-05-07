@@ -87,7 +87,7 @@
                   <ul class="list-group" *ngIf="board.projects">
                     <li class="list-group-item" *ngFor="let p of board.projects">
                       {{ p.name }}
-                      <button class="btn-sm btn-danger pull-right" type="button" (click)="removeProject(p.id)">
+                      <button class="btn-sm btn-danger pull-right" type="button" (click)="removeProject(p.id)" *ngIf="p.cards == null || p.cards.length == 0">
                         <i class="fa fa-times-circle"></i>
                       </button>
                     </li>
