@@ -8,6 +8,7 @@ import {BoardPart} from '../../../../api/models/BoardPart';
 import {ApiService} from '../../../../api/services/api.service';
 import {Board} from '../../../../api/models/Board';
 import {Color, COLOR_PALETTE} from './utility/color';
+import {cTsToDp} from '../../../../utility';
 
 @Component({
   selector: 'app-card-form',
@@ -69,6 +70,24 @@ export class CardFormComponent extends FormImpl {
     });
   }
 
+  setInitialCard(card: Card) {
+    this.card = card;
+    this.fcName.setValue(card.name);
+    this.fcDescription.setValue(card.description);
+    this.fcWorkload.setValue(card.workload);
+    this.fcColor.setValue(card.color);
+    this.isSilverbullet = card.silverBullet;
+    this.boardPartId = card.boardPart.id;
+    this.project = card.project;
+
+    if (this.isSilverbullet) {
+    this.colorSelection = [Color.SILVER];
+      this.fcColor.disable();
+    } else {
+      this.fcColor.patchValue(card.color);
+    }
+  }
+
   setProject(project) {
     this.project = project;
     this.apiService.board.get(this.project.board.id).subscribe(value => {
@@ -93,8 +112,6 @@ export class CardFormComponent extends FormImpl {
   onSubmit() {
     this.isFormSubmitted = true;
     this.validateForm(this.formCard);
-    console.log(this.formCard.valid);
-    console.log(this.formCard);
     if (this.formCard.valid) {
       let c = this.card;
 
