@@ -8,6 +8,7 @@ import {BoardPart} from '../../../../api/models/BoardPart';
 import {ApiService} from '../../../../api/services/api.service';
 import {Board} from '../../../../api/models/Board';
 import {Color, COLOR_PALETTE} from './utility/color';
+import {cTsToDp} from '../../../../utility';
 
 @Component({
   selector: 'app-card-form',
@@ -24,6 +25,8 @@ export class CardFormComponent extends FormImpl {
   fcDescription: FormControl;
   fcWorkload: FormControl;
   fcColor: FormControl;
+
+  silverBulletLimitExceeded: boolean = false;
 
   colorSelection: Color[];
 
@@ -46,7 +49,16 @@ export class CardFormComponent extends FormImpl {
     this.fcDescription = new FormControl('', Validators.required);
     this.fcWorkload = new FormControl('');
     this.fcColor = new FormControl(null, Validators.required);
+  }
 
+  checkColumnForBullets() {
+    if (Array.isArray(this.project.cards)) {
+      this.project.cards.forEach(c => {
+        if (c.boardPart.id == this.boardPartId && c.silverBullet) {
+          this.silverBulletLimitExceeded = true;
+        }
+      });
+    }
   }
 
   initFormGroup(): void {
@@ -56,6 +68,24 @@ export class CardFormComponent extends FormImpl {
       workload: this.fcWorkload,
       color: this.fcColor
     });
+  }
+
+  setInitialCard(card: Card) {
+    this.card = card;
+    this.fcName.setValue(card.name);
+    this.fcDescription.setValue(card.description);
+    this.fcWorkload.setValue(card.workload);
+    this.fcColor.setValue(card.color);
+    this.isSilverbullet = card.silverBullet;
+    this.boardPartId = card.boardPart.id;
+    this.project = card.project;
+
+    if (this.isSilverbullet) {
+    this.colorSelection = [Color.SILVER];
+      this.fcColor.disable();
+    } else {
+      this.fcColor.patchValue(card.color);
+    }
   }
 
   setProject(project) {
@@ -68,6 +98,7 @@ export class CardFormComponent extends FormImpl {
         this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
         this.fcColor.disable();
         this.boardPartId = this.leafBoardParts[value.highestPriority].id;
+        this.checkColumnForBullets();
       } else {
         this.boardPartId = this.leafBoardParts[0].id;
       }
@@ -81,8 +112,6 @@ export class CardFormComponent extends FormImpl {
   onSubmit() {
     this.isFormSubmitted = true;
     this.validateForm(this.formCard);
-    console.log(this.formCard.valid);
-    console.log(this.formCard);
     if (this.formCard.valid) {
       let c = this.card;
 

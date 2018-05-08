@@ -17,3 +17,30 @@ td {
 .over-max-wip-warning {
   color: red;
 }
+
+table.table-bordered{
+
+  border-spacing: 5px;
+  background-color: #e6ecf9;
+
+
+}
+table.table-bordered > thead > tr > td{
+
+  border-spacing: 5px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+table.table-bordered > tbody > tr > td{
+
+  border-spacing: 5px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+
+}
+table.table{
+  border-collapse: separate;
+
+}
+
+
