@@ -10,6 +10,7 @@ import {LocalBoardsService} from '../../../services/local-boards/local-boards.se
 import {CardMoveConfirmationComponent} from '../../components/forms/card-move-confirmation/card-move-confirmation.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ColumnWipViolationConfirmationComponent} from '../../components/forms/column-wip-violation-confirmation/column-wip-violation-confirmation.component';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-board-details-edit',
@@ -108,6 +109,10 @@ export class BoardDetailsEditComponent implements OnInit {
         exceedingCols.push(bp.name);
       }
     });
+
+    if (exceedingCols.length == 0) {
+      return new Promise<any>((resolve) => resolve());
+    }
 
     const modalRef = this.modalService.open(ColumnWipViolationConfirmationComponent);
     (<ColumnWipViolationConfirmationComponent> modalRef.componentInstance).setExceedingColumns(exceedingCols);
