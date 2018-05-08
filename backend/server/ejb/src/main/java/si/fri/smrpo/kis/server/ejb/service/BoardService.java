@@ -245,7 +245,8 @@ public class BoardService implements BoardServiceLocal {
                     }
                 }
 
-                if (!nBp.getMaxWip().equals(dbBp.getMaxWip()) && dbBp.getCurrentWip() > nBp.getMaxWip()) {
+                if (!nBp.getMaxWip().equals(dbBp.getMaxWip()) && nBp.getMaxWip() != 0 &&
+                        dbBp.getCurrentWip() > nBp.getMaxWip()) {
                     createWipViolations(dbBp, dbBp, authUser);
                 }
 

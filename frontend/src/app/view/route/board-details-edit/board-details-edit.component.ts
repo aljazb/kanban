@@ -105,7 +105,7 @@ export class BoardDetailsEditComponent implements OnInit {
   private checkCurrentWipExceeded(): Promise<any> {
     let exceedingCols: string[] = [];
     this.board.boardParts.forEach(bp => {
-      if (this.initialMaxWips.has(bp.id) && this.initialMaxWips.get(bp.id) != bp.maxWip && bp.currentWip > bp.maxWip) {
+      if (this.initialMaxWips.has(bp.id) && this.initialMaxWips.get(bp.id) != bp.maxWip && bp.maxWip != 0 && bp.currentWip > bp.maxWip) {
         exceedingCols.push(bp.name);
       }
     });
