@@ -22,7 +22,7 @@
 
                 <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan"
                     [ngClass]="{
-                    'over-max-wip-warning': td.boardPart.maxWip < td.currentWip,
+                    'over-max-wip-warning': td.boardPart.maxWip != 0 && td.boardPart.maxWip < td.currentWip,
                     'highest-priority': td.boardPart.leafNumber == board.highestPriority,
                     'dev-start': td.boardPart.leafNumber == board.startDev,
                     'dev-end': td.boardPart.leafNumber == board.endDev,

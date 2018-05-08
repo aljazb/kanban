@@ -51,7 +51,7 @@ public class CardService implements CardServiceLocal {
 
         if(m == null) {
             throw new TransactionException("User is not part of project", ExceptionType.INSUFFICIENT_RIGHTS);
-        } else {
+        }/* else {
             if(entity.getSilverBullet()) {
                 if(!m.isKanbanMaster()) {
                     throw new TransactionException("User is not kanban master", ExceptionType.INSUFFICIENT_RIGHTS);
@@ -61,7 +61,7 @@ public class CardService implements CardServiceLocal {
                     throw new TransactionException("User is not product owner", ExceptionType.INSUFFICIENT_RIGHTS);
                 }
             }
-        }
+        }*/
     }
 
     private void updateCardHolders(Card c) throws Exception {
