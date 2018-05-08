@@ -275,20 +275,22 @@ public class BoardService implements BoardServiceLocal {
     }
 
     private void createWipViolations(BoardPart dbBoardPart, BoardPart originalBp, UserAccount authUser) throws DatabaseException {
-        for (Card c : dbBoardPart.getCards()) {
-            CardMove violationMove = new CardMove();
-            violationMove.setCard(c);
-            violationMove.setFrom(originalBp);
-            violationMove.setTo(originalBp);
-            violationMove.setCardMoveType(CardMoveType.INVALID);
-            violationMove.setMovedBy(authUser);
+        if(dbBoardPart.getLeafNumber() != null) {
+            for (Card c : dbBoardPart.getCards()) {
+                CardMove violationMove = new CardMove();
+                violationMove.setCard(c);
+                violationMove.setFrom(originalBp);
+                violationMove.setTo(originalBp);
+                violationMove.setCardMoveType(CardMoveType.INVALID);
+                violationMove.setMovedBy(authUser);
 
-            database.create(violationMove);
-            database.update(c);
-        }
-
-        for (BoardPart bp : dbBoardPart.getChildren()) {
-            createWipViolations(bp, originalBp, authUser);
+                database.create(violationMove);
+                database.update(c);
+            }
+        } else {
+            for (BoardPart bp : dbBoardPart.getChildren()) {
+                createWipViolations(bp, originalBp, authUser);
+            }
         }
     }
 
