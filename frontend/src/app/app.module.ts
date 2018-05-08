@@ -47,6 +47,7 @@ import {LoginService} from './api/services/login.service';
 import {LocalBoardsService} from './services/local-boards/local-boards.service';
 import { CardMoveConfirmationComponent } from './view/components/forms/card-move-confirmation/card-move-confirmation.component';
 import { CardMoveBackConfirmationComponent } from './view/components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
+import { ColumnWipViolationConfirmationComponent } from './view/components/forms/column-wip-violation-confirmation/column-wip-violation-confirmation.component';
 
 
 @NgModule({
@@ -92,7 +93,8 @@ import { CardMoveBackConfirmationComponent } from './view/components/forms/card-
     CardDetailsComponent,
     BoardDetailsEditComponent,
     CardMoveConfirmationComponent,
-    CardMoveBackConfirmationComponent
+    CardMoveBackConfirmationComponent,
+    ColumnWipViolationConfirmationComponent
   ],
   providers: [
     {
@@ -117,7 +119,8 @@ import { CardMoveBackConfirmationComponent } from './view/components/forms/card-
     UserAccountFormComponent,
     DevTeamFormComponent,
     CardMoveConfirmationComponent,
-    CardMoveBackConfirmationComponent
+    CardMoveBackConfirmationComponent,
+    ColumnWipViolationConfirmationComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })
