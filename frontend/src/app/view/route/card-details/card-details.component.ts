@@ -31,7 +31,9 @@ export class CardDetailsComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.api.card.get(this.id).subscribe(card => {
       this.card = card;
-      this.moves = card.cardMoves.sort((a, b) => a.createdOn - b.createdOn);
+      if (card.cardMoves) {
+        this.moves = card.cardMoves.sort((a, b) => a.createdOn - b.createdOn);
+      }
       this.checkEdit();
       console.log(card);
     });
@@ -48,8 +50,7 @@ export class CardDetailsComponent implements OnInit {
         this.api.board.get(project.board.id).subscribe(board => {
           let startDev = board.startDev;
           let accTesting = board.acceptanceTesting;
-
-          if (orderIndex < startDev && (isKanbanMaster || isProductOwner) ||
+          if ((!orderIndex || orderIndex < startDev) && (isKanbanMaster || isProductOwner) ||
             orderIndex >= startDev && orderIndex < accTesting && (isKanbanMaster || isDeveloper)) {
             this.editEnabled = true;
           }
