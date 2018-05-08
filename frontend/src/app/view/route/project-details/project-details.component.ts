@@ -9,6 +9,7 @@ import {CardFormComponent} from '../../components/forms/card-form/card-form.comp
 import {Membership} from '../../../api/models/Membership';
 import {ToasterService} from 'angular5-toaster/dist';
 import {LoginService} from '../../../api/services/login.service';
+import {Board} from '../../../api/models/Board';
 
 @Component({
   selector: 'app-project-details',
@@ -23,6 +24,7 @@ export class ProjectDetailsComponent implements OnInit {
   isAuthUserKanbanMaster: boolean;
   isAuthUserProductOwner: boolean;
   cardsAssigned: boolean = false;
+  silverBulletLimitExceeded: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -45,11 +47,25 @@ export class ProjectDetailsComponent implements OnInit {
 
         if(Array.isArray(this.project.cards)) {
           this.cardsAssigned = this.project.cards.length > 0;
+          this.checkColumnForBullets();
         }
       });
     })
   }
 
+  checkColumnForBullets() {
+    this.apiService.board.get(this.project.board.id).subscribe(board => {
+      let leafBoardParts = Board.getLeafParts(board.boardParts);
+      Board.sortBoardParts(leafBoardParts);
+      let boardPartId = leafBoardParts[board.highestPriority].id;
+      this.project.cards.forEach(c => {
+        console.log(c.boardPart.orderIndex);
+        if (c.boardPart.id == boardPartId && c.silverBullet) {
+          this.silverBulletLimitExceeded = true;
+        }
+      });
+    });
+  }
 
   openProjectCreateModal() {
     const modalRef = this.modalService.open(ProjectFormComponent);

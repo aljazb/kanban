@@ -33,7 +33,7 @@ export class CardDetailsComponent implements OnInit {
       this.card = card;
       this.moves = card.cardMoves.sort((a, b) => a.createdOn - b.createdOn);
       this.checkEdit();
-      console.log(card)
+      console.log(card);
     });
   }
 

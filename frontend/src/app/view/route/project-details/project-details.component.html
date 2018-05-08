@@ -33,7 +33,10 @@
 
   <button *ngIf="project.board" type="button" class="btn btn-primary" routerLink="/board/{{project.board.id}}">Go to board</button>
   <button *ngIf="project.board && isAuthUserProductOwner" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create card</button>
-  <button *ngIf="project.board && isAuthUserKanbanMaster" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create silver bullet</button>
+  <span *ngIf="project.board && isAuthUserKanbanMaster" #pDown="ngbPopover" ngbPopover="Highest priority column already contains a silver bullet." popoverTitle="Limit exceeded" triggers="manual"
+        (mouseenter)="silverBulletLimitExceeded && pDown.open()" (mouseleave)="pDown.close()">
+    <button class="btn btn-primary" (click)="openCardCreateModal()" [disabled]="silverBulletLimitExceeded">Create silver bullet</button>
+  </span>
   <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
   <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
 

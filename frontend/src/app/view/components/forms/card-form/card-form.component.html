@@ -57,11 +57,9 @@
 
     <div class="form-group row">
       <div class="container">
-        <button [disabled]="silverBulletLimitExceeded" type="submit" class="btn btn-primary float-right">Submit</button>
+        <button type="submit" class="btn btn-primary float-right">Submit</button>
       </div>
     </div>
-
-    <div *ngIf="silverBulletLimitExceeded" class="alert alert-warning">Highest priority column already contains a silver bullet.</div>
 
 
   </form>
