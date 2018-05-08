@@ -122,7 +122,7 @@ public class CardMoveService implements CardMoveServiceLocal {
             currentWip--;
         }
 
-        if(to.getMaxWip() > currentWip) {
+        if(to.getMaxWip() == 0 || to.getMaxWip() > currentWip) {
             if(to.getParent() == null) {
                 return true;
             } else {
