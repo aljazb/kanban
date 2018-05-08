@@ -8,6 +8,7 @@ import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.BoardServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
+import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -229,7 +230,7 @@ public class BoardService implements BoardServiceLocal {
         database.delete(BoardPart.class, bp.getId());
     }
 
-    private void updateBoardParts(Set<BoardPart> dbBoardPart, Set<BoardPart> newBoardPart) throws LogicBaseException {
+    private void updateBoardParts(Set<BoardPart> dbBoardPart, Set<BoardPart> newBoardPart, UserAccount authUser) throws LogicBaseException {
         HashMap<UUID, BoardPart> map = UUIDEntity.buildMap(dbBoardPart);
 
         for(BoardPart nBp : newBoardPart) {
@@ -243,11 +244,16 @@ public class BoardService implements BoardServiceLocal {
                         throw new TransactionException("Board part with cards can not be expanded to sub parts.");
                     }
                 }
+
+                if (!nBp.getMaxWip().equals(dbBp.getMaxWip()) && dbBp.getCurrentWip() > nBp.getMaxWip()) {
+                    createWipViolations(dbBp, dbBp, authUser);
+                }
+
                 database.update(nBp);
                 map.remove(dbBp.getId());
             }
             if(nBp.getChildren() == null) nBp.setChildren(new HashSet<>());
-            updateBoardParts(dbBp.getChildren(), nBp.getChildren());
+            updateBoardParts(dbBp.getChildren(), nBp.getChildren(), authUser);
         }
 
         for(BoardPart bp : map.values()) {
@@ -264,6 +270,24 @@ public class BoardService implements BoardServiceLocal {
 
                 recDelete(bp);
             }
+        }
+    }
+
+    private void createWipViolations(BoardPart dbBoardPart, BoardPart originalBp, UserAccount authUser) throws DatabaseException {
+        for (Card c : dbBoardPart.getCards()) {
+            CardMove violationMove = new CardMove();
+            violationMove.setCard(c);
+            violationMove.setFrom(originalBp);
+            violationMove.setTo(originalBp);
+            violationMove.setCardMoveType(CardMoveType.INVALID);
+            violationMove.setMovedBy(authUser);
+
+            database.create(violationMove);
+            database.update(c);
+        }
+
+        for (BoardPart bp : dbBoardPart.getChildren()) {
+            createWipViolations(bp, originalBp, authUser);
         }
     }
 
@@ -286,11 +310,11 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
-    private Board updateBoard(Board dbBoard, Board newBoard) throws LogicBaseException {
+    private Board updateBoard(Board dbBoard, Board newBoard, UserAccount authUser) throws LogicBaseException {
         updateProject(dbBoard, newBoard);
 
         dbBoard.buildBoardPartsReferences();
-        updateBoardParts(dbBoard.getBoardParts(), newBoard.getBoardParts());
+        updateBoardParts(dbBoard.getBoardParts(), newBoard.getBoardParts(), authUser);
 
         dbBoard = database.update(newBoard);
 
@@ -313,7 +337,7 @@ public class BoardService implements BoardServiceLocal {
         validateProject(dbBoard, board);
         checkEditAccess(dbBoard, authUser);
 
-        dbBoard = updateBoard(dbBoard, board);
+        dbBoard = updateBoard(dbBoard, board, authUser);
 
         return dbBoard;
     }
