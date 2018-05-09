@@ -116,8 +116,13 @@ public class Board extends UUIDEntity<Board> {
     }
 
     @JsonIgnore
-    public void fetchProjectsWithCards() {
-        for(Project p : getProjects()) { // Fetch project
+    public void fetchActiveProjectsWithCards() {
+        Set<Project> activeProjects = getProjects().stream()
+                .filter(e -> !e.getIsDeleted()).collect(Collectors.toSet());
+
+        projects = activeProjects;
+
+        for(Project p : activeProjects) { // Fetch project
             for(Card c : p.getCards()) { // Fetch cards
                 c.getSubTasks().size(); // Fetch sub tasks
             }

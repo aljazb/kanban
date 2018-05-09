@@ -1,17 +1,24 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
+import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.CardServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
+import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import java.util.UUID;
+
+import static si.fri.smrpo.kis.server.jpa.entities.BoardPart.isMoveToAvailable;
+import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.INVALID_ON_CREATE;
+import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.INVALID_SILVER_BULLET_ON_CREATE;
+import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.VALID;
 
 
 @PermitAll
@@ -107,6 +114,35 @@ public class CardService implements CardServiceLocal {
         database.update(p);
     }
 
+    private void checkWip(Card dbCard) throws DatabaseException {
+        CardMoveType type = CardMoveType.VALID;
+
+        if(dbCard.getSilverBullet()) {
+            for(Card c : dbCard.getBoardPart().getCards()) {
+                if(c.getSilverBullet()) {
+                    type = INVALID_SILVER_BULLET_ON_CREATE;
+                    break;
+                }
+            }
+        }
+
+        if(type == VALID) {
+            if(isMoveToAvailable(dbCard.getBoardPart(), null, false)) {
+                type = INVALID_ON_CREATE;
+            }
+        }
+
+        if(type != VALID) {
+            CardMove cm = new CardMove();
+            cm.setCard(dbCard);
+            cm.setFrom(dbCard.getBoardPart());
+            cm.setTo(dbCard.getBoardPart());
+            cm.setCardMoveType(type);
+
+            database.create(cm);
+        }
+    }
+
     @Override
     public Card create(Card card, UserAccount authUser) throws Exception {
         if(card.getSilverBullet() == null) card.setSilverBullet(false);
@@ -115,6 +151,9 @@ public class CardService implements CardServiceLocal {
         checkAccess(card, authUser);
 
         Card dbCard = database.create(card);
+
+        checkWip(card);
+
         updateCardHolders(dbCard);
         dbCard.getBoardPart().incWip(database);
 
@@ -157,3 +196,4 @@ public class CardService implements CardServiceLocal {
     }
 
 }
+

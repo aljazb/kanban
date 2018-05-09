@@ -98,25 +98,25 @@ public class SeedService {
         testAccount.setInRoleDeveloper(true);
         testAccount = database.create(testAccount);
 
-        adminAccount = genUserAccount("admin");
+        adminAccount = genUserAccount("ta");
         adminAccount.setId(UUID.fromString(ADMIN_USER_ID));
         adminAccount.setEmail("admin@admin.com");
         adminAccount.setInRoleAdministrator(true);
         adminAccount = database.create(adminAccount);
 
-        developerAccount = genUserAccount("developer");
+        developerAccount = genUserAccount("td");
         developerAccount.setId(UUID.fromString(DEVELOPER_USER_ID));
         developerAccount.setEmail("developer@developer.com");
         developerAccount.setInRoleDeveloper(true);
         developerAccount = database.create(developerAccount);
 
-        kanbanMasterAccount = genUserAccount("kanban_master");
+        kanbanMasterAccount = genUserAccount("tkm");
         kanbanMasterAccount.setId(UUID.fromString(KANBAN_MASTER_USER_ID));
         kanbanMasterAccount.setEmail("kanban@master.com");
         kanbanMasterAccount.setInRoleKanbanMaster(true);
         kanbanMasterAccount = database.create(kanbanMasterAccount);
 
-        productOwnerAccount = genUserAccount("product_owner");
+        productOwnerAccount = genUserAccount("tpo");
         productOwnerAccount.setId(UUID.fromString(PRODUCT_OWNER_USER_ID));
         productOwnerAccount.setEmail("product@owner.com");
         productOwnerAccount.setInRoleProductOwner(true);

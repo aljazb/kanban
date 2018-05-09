@@ -74,6 +74,8 @@ public class CardSource extends CrudSource<Card, UUID> implements CardSourceLoca
             throw new DatabaseException("User does not have permission.", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
+        // Fetch BoardPart and Board to check for edit access
+        entity.getBoardPart().getBoard().getHighestPriority();
         entity.getSubTasks().size();
         entity.getCardMoves().size();
 

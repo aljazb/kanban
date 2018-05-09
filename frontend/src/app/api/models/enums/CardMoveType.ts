@@ -1,4 +1,5 @@
 export enum CardMoveType {
   VALID,
-  INVALID
+  INVALID,
+  INVALID_ON_CREATE
 }

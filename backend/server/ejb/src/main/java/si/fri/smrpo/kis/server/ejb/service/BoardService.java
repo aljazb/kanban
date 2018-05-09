@@ -325,7 +325,7 @@ public class BoardService implements BoardServiceLocal {
 
         dbBoard = database.get(Board.class, dbBoard.getId());
         dbBoard.buildBoardPartsReferences();
-        dbBoard.fetchProjectsWithCards();
+        dbBoard.fetchActiveProjectsWithCards();
 
 
         return dbBoard;

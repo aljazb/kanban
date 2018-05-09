@@ -33,7 +33,7 @@ export class CardFormComponent extends FormImpl {
   isFormSubmitted: boolean = false;
   leafBoardParts: BoardPart[];
 
-  isSilverbullet: boolean = false;
+  isSilverBullet: boolean = false;
   boardPartId: string;
 
   constructor(public activeModal: NgbActiveModal,
@@ -66,11 +66,11 @@ export class CardFormComponent extends FormImpl {
     this.fcDescription.setValue(card.description);
     this.fcWorkload.setValue(card.workload);
     this.fcColor.setValue(card.color);
-    this.isSilverbullet = card.silverBullet;
+    this.isSilverBullet = card.silverBullet;
     this.boardPartId = card.boardPart.id;
     this.project = card.project;
 
-    if (this.isSilverbullet) {
+    if (this.isSilverBullet) {
       this.colorSelection = [Color.SILVER];
       this.fcColor.disable();
     } else {
@@ -82,7 +82,7 @@ export class CardFormComponent extends FormImpl {
     this.project = project;
     this.apiService.board.get(this.project.board.id).subscribe(value => {
       this.leafBoardParts = Board.getLeafParts(value.boardParts);
-      if (this.isSilverbullet) {
+      if (this.isSilverBullet) {
         this.colorSelection = [Color.SILVER];
         this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
         this.fcColor.disable();
@@ -94,7 +94,7 @@ export class CardFormComponent extends FormImpl {
   }
 
   setIsSilverBullet() {
-    this.isSilverbullet = true;
+    this.isSilverBullet = true;
   }
 
   onSubmit() {
@@ -111,7 +111,7 @@ export class CardFormComponent extends FormImpl {
       c.boardPart = new BoardPart();
       c.boardPart.id = this.boardPartId;
       c.color = this.fcColor.value;
-      c.silverBullet = this.isSilverbullet;
+      c.silverBullet = this.isSilverBullet;
 
       this.activeModal.close(c);
     }

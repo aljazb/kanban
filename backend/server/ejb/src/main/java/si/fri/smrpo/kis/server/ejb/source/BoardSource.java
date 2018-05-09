@@ -10,7 +10,6 @@ import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.BoardServiceLocal;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.BoardSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
-import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import javax.annotation.PostConstruct;
@@ -20,8 +19,6 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.JoinType;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @PermitAll
@@ -74,7 +71,7 @@ public class BoardSource extends CrudSource<Board, UUID> implements BoardSourceL
         }
 
         entity.buildBoardPartsReferences();
-        entity.fetchProjectsWithCards();
+        entity.fetchActiveProjectsWithCards();
         entity.getProjects().forEach(project -> {
             project.setBoard(entity);
             project.queryMembership(database.getEntityManager(), authUser.getId());

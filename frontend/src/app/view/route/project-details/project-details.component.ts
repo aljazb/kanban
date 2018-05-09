@@ -54,16 +54,12 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   checkColumnForBullets() {
-    this.apiService.board.get(this.project.board.id).subscribe(board => {
-      let leafBoardParts = Board.getLeafParts(board.boardParts);
-      let boardPartId = leafBoardParts[board.highestPriority].id;
-      console.log(leafBoardParts);
-      this.project.cards.forEach(c => {
-        console.log(c.boardPart.orderIndex);
-        if (c.boardPart.id == boardPartId && c.silverBullet) {
+    this.project.cards.forEach(card => {
+      if(card.silverBullet) {
+        if(card.boardPart.leafNumber == this.project.board.highestPriority) {
           this.silverBulletLimitExceeded = true;
         }
-      });
+      }
     });
   }
 

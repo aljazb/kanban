@@ -7,6 +7,7 @@ import {CardFormComponent} from '../../components/forms/card-form/card-form.comp
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular5-toaster/dist';
 import {Membership} from '../../../api/models/Membership';
+import {Board} from '../../../api/models/Board';
 
 @Component({
   selector: 'app-card-details',
@@ -31,32 +32,36 @@ export class CardDetailsComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.api.card.get(this.id).subscribe(card => {
       this.card = card;
+
       if (card.cardMoves) {
         this.moves = card.cardMoves.sort((a, b) => a.createdOn - b.createdOn);
       }
+
       this.checkEdit();
-      console.log(card);
     });
   }
 
   checkEdit() {
-    this.api.project.get(this.card.project.id).subscribe(project => {
-      if (project.membership != null) {
-        let isDeveloper = Membership.isDeveloper(project.membership);
-        let isProductOwner = Membership.isProductOwner(project.membership);
-        let isKanbanMaster = Membership.isKanbanMaster(project.membership);
-        let orderIndex = this.card.boardPart.orderIndex;
+    let b: Board = this.card.boardPart.board;
+    let m: Membership = this.card.membership;
 
-        this.api.board.get(project.board.id).subscribe(board => {
-          let startDev = board.startDev;
-          let accTesting = board.acceptanceTesting;
-          if ((!orderIndex || orderIndex < startDev) && (isKanbanMaster || isProductOwner) ||
-            orderIndex >= startDev && orderIndex < accTesting && (isKanbanMaster || isDeveloper)) {
-            this.editEnabled = true;
-          }
-        });
+    if (m != null) {
+      let leafIndex = this.card.boardPart.leafNumber;
+
+      if(Membership.isKanbanMaster(m)) {
+        if(leafIndex < b.acceptanceTesting) {
+          this.editEnabled = true;
+        }
+      } else if(Membership.isDeveloper(m)) {
+        if(b.startDev <= leafIndex && leafIndex <= b.endDev) {
+          this.editEnabled = true;
+        }
+      } else if(Membership.isProductOwner(m)) {
+        if(leafIndex <= b.highestPriority) {
+          this.editEnabled = true;
+        }
       }
-    });
+    }
   }
 
   openCardEditModal() {

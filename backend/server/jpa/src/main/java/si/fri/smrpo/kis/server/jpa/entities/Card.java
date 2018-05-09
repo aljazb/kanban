@@ -36,6 +36,7 @@ public class Card extends UUIDEntity<Card> {
     @Column(name = "silver_bullet", nullable = false)
     private Boolean silverBullet;
 
+    @Database(update = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;

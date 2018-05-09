@@ -85,6 +85,49 @@ public class BoardPart extends UUIDEntity<BoardPart> {
         return maxWip == null || parent.maxWip == null || maxWip <= parent.maxWip;
     }
 
+    @JsonIgnore
+    public static boolean isMoveToAvailable(BoardPart to, BoardPart from, boolean movedFrom) {
+        int currentWip = to.getCurrentWip();
+
+        if(!movedFrom && from != null) {
+            movedFrom = hasChild(to, from);
+        }
+
+        if(movedFrom) {
+            currentWip--;
+        }
+
+        if(to.getMaxWip() == 0 || to.getMaxWip() > currentWip) {
+            if(to.getParent() == null) {
+                return true;
+            } else {
+                return isMoveToAvailable(to.getParent(), from, movedFrom);
+            }
+        }
+        return false;
+    }
+
+    @JsonIgnore
+    public static boolean hasChild(BoardPart parent, BoardPart leafChild) {
+        if(parent.hasChildren()) {
+            for(BoardPart c : parent.getChildren()) {
+                if(hasChild(c, leafChild)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            if(parent.getId().equals(leafChild.getId())) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+
+
+
     public BoardPart getParent() {
         return parent;
     }
