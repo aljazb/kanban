@@ -72,8 +72,15 @@
                         <button type="button" class="btn btn-sm btn-danger pull-right mt-0"
                                 (click)="moveCardBack(c, td.currentBoardPart, td.moveBack)" *ngIf="td.moveBack">
 
-                          <i class="fa fa-arrow-circle-left fa-2x"> Reject</i>
+                          <i class="fa fa-arrow-circle-left fa-1x"> Reject
+                            <a placement="bottom" ngbPopover="with this button you can reject this card and send it back infront of Development phase" triggers="mouseenter:mouseleave"
+                               (click)="$event.stopPropagation()">
+                              <i class="fa fa-question-circle"></i>
+                            </a>
+
+                          </i>
                         </button>
+
 
                       </div>
 
