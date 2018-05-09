@@ -34,7 +34,13 @@
       </div>
     </div>
 
-    <button *ngIf="editEnabled" type="button" class="btn btn-primary" (click)="openCardEditModal()">Edit</button>
+    <button *ngIf="editEnabled" type="button" class="btn btn-primary" (click)="openCardEditModal()">Edit
+      <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-kartice"
+         placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+         (click)="$event.stopPropagation()">
+        <i class="fa fa-question-circle"></i>
+      </a>
+    </button>
 
     <div class="row mt-4">
       <p class="col-sm-2 col-label">Card Moves</p>

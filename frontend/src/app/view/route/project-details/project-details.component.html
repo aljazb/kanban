@@ -31,18 +31,52 @@
     <p class="col-sm-2 col-label"><strong>{{ project.devTeam.name }}</strong></p>
   </div>
 
-  <button *ngIf="project.board" type="button" class="btn btn-primary" routerLink="/board/{{project.board.id}}">Go to board</button>
-  <button *ngIf="project.board && isAuthUserProductOwner" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create card</button>
+  <button *ngIf="project.board" type="button" class="btn btn-primary" routerLink="/board/{{project.board.id}}">Go to board
+    <a placement="right" ngbPopover="Clicking this button will redirect you to project's Board" triggers="mouseenter:mouseleave"
+       (click)="$event.stopPropagation()">
+      <i class="fa fa-question-circle"></i>
+    </a>
+  </button>
+  <button *ngIf="project.board && isAuthUserProductOwner" type="button" class="btn btn-primary" (click)="openCardCreateModal()">Create card
+    <a target="_blank" href="https://jgasp.github.io/slate/#ustvarjanje-kartic"
+       placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+       (click)="$event.stopPropagation()">
+      <i class="fa fa-question-circle"></i>
+    </a>
+  </button>
   <span *ngIf="project.board && isAuthUserKanbanMaster" #pDown="ngbPopover" ngbPopover="Highest priority column already contains a silver bullet." popoverTitle="Limit exceeded" triggers="manual"
         (mouseenter)="silverBulletLimitExceeded && pDown.open()" (mouseleave)="pDown.close()">
-    <button class="btn btn-primary" (click)="openCardCreateModal()" [disabled]="silverBulletLimitExceeded">Create silver bullet</button>
+    <button class="btn btn-primary" (click)="openCardCreateModal()" [disabled]="silverBulletLimitExceeded">Create silver bullet
+    <a target="_blank" href="https://jgasp.github.io/slate/#ustvarjanje-kartice-quot-silver-bullet-quot-quot"
+       placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+       (click)="$event.stopPropagation()">
+      <i class="fa fa-question-circle"></i>
+    </a>
+    </button>
   </span>
-  <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit</button>
-  <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete</button>
+  <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit
+    <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-kartice"
+       placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+       (click)="$event.stopPropagation()">
+      <i class="fa fa-question-circle"></i>
+    </a>
+  </button>
+  <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-danger" (click)="openDeleteConfirmationModal()">Delete
+    <a placement="right" ngbPopover="Clicking Delete button will delete the Project" triggers="mouseenter:mouseleave"
+       (click)="$event.stopPropagation()">
+      <i class="fa fa-question-circle"></i>
+    </a>
+
+  </button>
 
   <div class="border mt-3" *ngIf="project.cards">
     <div class="list-group">
-      <div class="list-group-item list-group-item-primary">Cards</div>
+      <div class="list-group-item list-group-item-primary">Cards
+        <a placement="right" ngbPopover="This table contains the names of cards in this Project. Clicking on a card will redirect you to it's details" triggers="mouseenter:mouseleave"
+           (click)="$event.stopPropagation()">
+          <i class="fa fa-question-circle" style="color: dodgerblue"></i>
+        </a>
+      </div>
       <div class="list-group-item list-group-item-action hover-pointer" *ngFor="let c of project.cards" routerLink="/card/{{c.id}}">
         {{c.name}}
       </div>

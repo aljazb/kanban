@@ -5,12 +5,19 @@
 
       <div class="list-group" *ngIf="selectedUser">
         <div id="userDetails">
-          <div class="list-group-item list-group-item-primary">User details:</div>
+          <div class="list-group-item list-group-item-primary">User details:
+
+          </div>
 
           <app-user-details [user]="selectedUser" ></app-user-details>
           <br>
           <button class="btn btn-primary" (click)="openUserEditModal()">
             Edit
+            <a target="_blank" href="https://jgasp.github.io/slate/#vzdrzevanje-uporabnikov"
+               placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+               (click)="$event.stopPropagation()">
+              <i class="fa fa-question-circle"></i>
+            </a>
           </button>
 
           <button class="btn btn-primary" (click)="openUserPasswordModal()">
@@ -19,6 +26,10 @@
 
           <button class="btn waves-light" (click)="toggleDeleted()" [ngClass]="{'btn-danger': !selectedUser.isDeleted, 'btn-success': selectedUser.isDeleted}">
             {{!selectedUser.isDeleted ? "Deactivate" : "Activate"}}
+            <a placement="right" ngbPopover="Clicking this button will toggle the user Active/Inactive" triggers="mouseenter:mouseleave"
+               (click)="$event.stopPropagation()">
+              <i class="fa fa-question-circle"></i>
+            </a>
           </button>
 
 
