@@ -56,8 +56,8 @@ export class ProjectDetailsComponent implements OnInit {
   checkColumnForBullets() {
     this.apiService.board.get(this.project.board.id).subscribe(board => {
       let leafBoardParts = Board.getLeafParts(board.boardParts);
-      Board.sortBoardParts(leafBoardParts);
       let boardPartId = leafBoardParts[board.highestPriority].id;
+      console.log(leafBoardParts);
       this.project.cards.forEach(c => {
         console.log(c.boardPart.orderIndex);
         if (c.boardPart.id == boardPartId && c.silverBullet) {

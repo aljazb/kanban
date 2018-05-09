@@ -82,7 +82,6 @@ export class CardFormComponent extends FormImpl {
     this.project = project;
     this.apiService.board.get(this.project.board.id).subscribe(value => {
       this.leafBoardParts = Board.getLeafParts(value.boardParts);
-      Board.sortBoardParts(this.leafBoardParts);
       if (this.isSilverbullet) {
         this.colorSelection = [Color.SILVER];
         this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
