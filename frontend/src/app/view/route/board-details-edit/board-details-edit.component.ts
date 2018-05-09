@@ -7,6 +7,10 @@ import {BoardBaseFormComponent} from '../../components/forms/board-form/board-ba
 import {ToasterService} from 'angular5-toaster/dist';
 import {Location} from '@angular/common';
 import {LocalBoardsService} from '../../../services/local-boards/local-boards.service';
+import {CardMoveConfirmationComponent} from '../../components/forms/card-move-confirmation/card-move-confirmation.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ColumnWipViolationConfirmationComponent} from '../../components/forms/column-wip-violation-confirmation/column-wip-violation-confirmation.component';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-board-details-edit',
@@ -21,12 +25,15 @@ export class BoardDetailsEditComponent implements OnInit {
   id: string;
   board: Board;
 
+  initialMaxWips: Map<string, number>;
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private api: ApiService,
               private toaster: ToasterService,
               private location: Location,
-              private localBoard: LocalBoardsService) { }
+              private localBoard: LocalBoardsService,
+              private modalService: NgbModal) { }
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -40,6 +47,11 @@ export class BoardDetailsEditComponent implements OnInit {
     this.buildCardRefs(board);
 
     this.board = board;
+
+    this.initialMaxWips = new Map<string, number>();
+    this.board.boardParts.forEach(bp => {
+      this.initialMaxWips.set(bp.id, bp.maxWip);
+    });
   }
 
   private sortBoardParts(boardParts: BoardPart[]): void {
@@ -90,14 +102,35 @@ export class BoardDetailsEditComponent implements OnInit {
     this.location.back();
   }
 
+  private checkCurrentWipExceeded(): Promise<any> {
+    let exceedingCols: string[] = [];
+    this.board.boardParts.forEach(bp => {
+      if (this.initialMaxWips.has(bp.id) && this.initialMaxWips.get(bp.id) != bp.maxWip && bp.maxWip != 0 && bp.currentWip > bp.maxWip) {
+        exceedingCols.push(bp.name);
+      }
+    });
+
+    if (exceedingCols.length == 0) {
+      return new Promise<any>((resolve) => resolve());
+    }
+
+    const modalRef = this.modalService.open(ColumnWipViolationConfirmationComponent);
+    (<ColumnWipViolationConfirmationComponent> modalRef.componentInstance).setExceedingColumns(exceedingCols);
+
+    return modalRef.result;
+  }
+
   update(): void {
     if(this.boardBaseFormComp.isValid()) {
-      this.api.board.put(this.board).subscribe(board => {
-        this.toaster.pop('success', "Form updated");
-        this.back();
-      }, error2 => {
-        this.toaster.pop('error', "Error updating form");
-        this.back();
+
+      this.checkCurrentWipExceeded().then(() => {
+        this.api.board.put(this.board).subscribe(board => {
+          this.toaster.pop('success', "Form updated");
+          this.back();
+        }, error2 => {
+          this.toaster.pop('error', "Error updating form");
+          this.back();
+        });
       });
     } else {
       this.toaster.pop('error', "Invalid form");
