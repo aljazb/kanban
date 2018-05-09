@@ -40,9 +40,9 @@
                     {{tr.project.name}}
                   </a>
                 </td>
-                <td *ngFor="let td of tr.cardTables">
+                <td *ngFor="let td of tr.cardTables" class="align-top">
 
-                      <div class="list-group mt-1 rounded-top flo" *ngFor="let c of td.cards"
+                      <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
                            [style.background]="c.color">
 
                         <div class="list-group-item mt-3">
