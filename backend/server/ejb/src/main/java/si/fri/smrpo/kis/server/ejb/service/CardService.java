@@ -22,7 +22,7 @@ public class CardService implements CardServiceLocal {
     @EJB
     private DatabaseServiceLocal database;
 
-    private void validate(Card card) throws TransactionException {
+    private void validate(Card card) throws LogicBaseException {
         if(card.getBoardPart() == null || card.getBoardPart().getId() == null) {
             throw new TransactionException("No board part specified");
         } else if(card.getProject() == null || card.getProject().getId() == null) {
@@ -33,35 +33,68 @@ public class CardService implements CardServiceLocal {
             throw new TransactionException("No color specified");
         }
 
+        BoardPart dbBp = database.find(BoardPart.class, card.getBoardPart().getId());
+        if(dbBp == null) {
+            throw new TransactionException("Board part does not exist");
+        }
+
         if(card.getSilverBullet() == null) {
             card.setSilverBullet(false);
         }
     }
 
     private void checkAccess(Card entity, UserAccount authUser) throws LogicBaseException {
-        Membership m;
-        if(entity.getId() == null) {
-            Project p = database.get(Project.class, entity.getProject().getId());
-            p.queryMembership(database.getEntityManager(), authUser.getId());
-            m = p.getMembership();
-        } else {
-            entity.queryMembership(database.getEntityManager(), authUser.getId());
-            m = entity.getMembership();
-        }
+
+        Project p = database.get(Project.class, entity.getProject().getId());
+        p.queryMembership(database.getEntityManager(), authUser.getId());
+        Membership m = p.getMembership();
+
+        BoardPart dbBp = database.find(BoardPart.class, entity.getBoardPart().getId());
+        Board dbBoard = dbBp.getBoard();
+
+        int cardColumn = dbBp.getLeafNumber();
 
         if(m == null) {
             throw new TransactionException("User is not part of project", ExceptionType.INSUFFICIENT_RIGHTS);
-        }/* else {
-            if(entity.getSilverBullet()) {
-                if(!m.isKanbanMaster()) {
-                    throw new TransactionException("User is not kanban master", ExceptionType.INSUFFICIENT_RIGHTS);
+        } else {
+            if(entity.getId() == null) {
+                if(dbBoard.getHighestPriority() < cardColumn) {
+                    throw new TransactionException("Card can only be created in columns before and in highest priority",
+                            ExceptionType.INSUFFICIENT_RIGHTS);
+                }
+                if(entity.getSilverBullet()) {
+                    if(!m.isKanbanMaster()) {
+                        throw new TransactionException("User must be in role kanban master to create silver bullet",
+                                ExceptionType.INSUFFICIENT_RIGHTS);
+                    }
+                } else {
+                    if(!m.isProductOwner()) {
+                        throw new TransactionException("User must be in role product owner to create card",
+                                ExceptionType.INSUFFICIENT_RIGHTS);
+                    }
                 }
             } else {
-                if(!m.isProductOwner()) {
-                    throw new TransactionException("User is not product owner", ExceptionType.INSUFFICIENT_RIGHTS);
+                if(dbBoard.getAcceptanceTesting() <= cardColumn) {
+                    throw new TransactionException("Card can not be edited in columns after acceptance testing",
+                            ExceptionType.INSUFFICIENT_RIGHTS);
+                } else if(dbBoard.getHighestPriority() >= cardColumn) {
+                    if(!(m.isProductOwner() || m.isKanbanMaster())) {
+                        throw new TransactionException("Card in columns before highest priority can be edited only by kanban master and product owner",
+                                ExceptionType.INSUFFICIENT_RIGHTS);
+                    }
+                } else if(dbBoard.getStartDev() <= cardColumn && cardColumn <= dbBoard.getEndDev()) {
+                    if(!(m.isDeveloper() || m.isKanbanMaster())) {
+                        throw new TransactionException("Card in columns between start and end dev can be edited only by kanban master and developer",
+                                ExceptionType.INSUFFICIENT_RIGHTS);
+                    }
+                } else {
+                    if(!m.isKanbanMaster()) {
+                        throw new TransactionException("Card in transitional columns can only be edited by kanban master",
+                                ExceptionType.INSUFFICIENT_RIGHTS);
+                    }
                 }
             }
-        }*/
+        }
     }
 
     private void updateCardHolders(Card c) throws Exception {

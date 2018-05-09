@@ -47,7 +47,7 @@ export class CardFormComponent extends FormImpl {
   initFormControls(): void {
     this.fcName = new FormControl('', Validators.required);
     this.fcDescription = new FormControl('', Validators.required);
-    this.fcWorkload = new FormControl('');
+    this.fcWorkload = new FormControl('', Validators.pattern('^[\\s\\d]+$'));
     this.fcColor = new FormControl(null, Validators.required);
   }
 
