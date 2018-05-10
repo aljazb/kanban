@@ -194,31 +194,33 @@ public class DevTeamService implements DevTeamServiceLocal {
     @Override
     public List<HistoryEvent> getDevTeamEvents(UUID devTeamId, UserAccount authUser) throws LogicBaseException {
         DevTeam dt = this.database.get(DevTeam.class, devTeamId);
-        dt.queryMembership(database.getEntityManager(), authUser.getId());
 
-        if(dt.getMembership() != null) {
-            List<HistoryEvent> events = new ArrayList<>();
-
-            for (Membership m : dt.getJoinedUsers()) {
-                HistoryEvent createdEvent = new HistoryEvent();
-                createdEvent.setDate(m.getCreatedOn());
-                createdEvent.setEvent(String.format("User %s joined development team.", m.getUserAccount().getEmail()));
-                events.add(createdEvent);
-
-                if (m.getIsDeleted()) {
-                    HistoryEvent deletedEvent = new HistoryEvent();
-                    deletedEvent.setDate(m.getEditedOn());
-                    deletedEvent.setEvent(String.format("User %s left development team.", m.getUserAccount().getEmail()));
-                    events.add(deletedEvent);
-                }
+        if(!authUser.getInRoleAdministrator()) {
+            dt.queryMembership(database.getEntityManager(), authUser.getId());
+            if(dt.getMembership() == null) {
+                throw new OperationException("User is not member of this dev team");
             }
-
-            events.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-            return events;
-        } else {
-            throw new OperationException("User is not member of this dev team");
         }
+
+        List<HistoryEvent> events = new ArrayList<>();
+
+        for (Membership m : dt.getJoinedUsers()) {
+            HistoryEvent createdEvent = new HistoryEvent();
+            createdEvent.setDate(m.getCreatedOn());
+            createdEvent.setEvent(String.format("User %s joined development team.", m.getUserAccount().getEmail()));
+            events.add(createdEvent);
+
+            if (m.getIsDeleted()) {
+                HistoryEvent deletedEvent = new HistoryEvent();
+                deletedEvent.setDate(m.getEditedOn());
+                deletedEvent.setEvent(String.format("User %s left development team.", m.getUserAccount().getEmail()));
+                events.add(deletedEvent);
+            }
+        }
+
+        events.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
+        return events;
     }
 
 }
