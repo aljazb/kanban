@@ -5,4 +5,5 @@ public enum CardMoveType {
     INVALID,
     INVALID_ON_CREATE,
     INVALID_SILVER_BULLET_ON_CREATE,
+    INVALID_WIP_CHANGE
 }

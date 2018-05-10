@@ -281,7 +281,7 @@ public class BoardService implements BoardServiceLocal {
                 violationMove.setCard(c);
                 violationMove.setFrom(originalBp);
                 violationMove.setTo(originalBp);
-                violationMove.setCardMoveType(CardMoveType.INVALID);
+                violationMove.setCardMoveType(CardMoveType.INVALID_WIP_CHANGE);
                 violationMove.setMovedBy(authUser);
 
                 database.create(violationMove);

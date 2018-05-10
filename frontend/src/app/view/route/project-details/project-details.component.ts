@@ -24,7 +24,6 @@ export class ProjectDetailsComponent implements OnInit {
   isAuthUserKanbanMaster: boolean;
   isAuthUserProductOwner: boolean;
   cardsAssigned: boolean = false;
-  silverBulletLimitExceeded: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -47,20 +46,9 @@ export class ProjectDetailsComponent implements OnInit {
 
         if(Array.isArray(this.project.cards)) {
           this.cardsAssigned = this.project.cards.length > 0;
-          this.checkColumnForBullets();
         }
       });
     })
-  }
-
-  checkColumnForBullets() {
-    this.project.cards.forEach(card => {
-      if(card.silverBullet) {
-        if(card.boardPart.leafNumber == this.project.board.highestPriority) {
-          this.silverBulletLimitExceeded = true;
-        }
-      }
-    });
   }
 
   openProjectCreateModal() {

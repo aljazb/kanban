@@ -2,6 +2,7 @@ package si.fri.smrpo.kis.server.jpa.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
@@ -60,6 +61,7 @@ public class Project extends UUIDEntity<Project> {
     @Transient
     private Membership membership;
 
+    @JsonIgnore
     public Membership queryMembership(EntityManager em, UUID authId) {
         membership = em.createNamedQuery("project.membership", Membership.class)
                 .setMaxResults(1)
@@ -70,6 +72,37 @@ public class Project extends UUIDEntity<Project> {
 
         return membership;
     }
+
+    @Transient
+    private Boolean firstColumnFull = false;
+
+    @Transient
+    private Boolean silverBulletInHighestPriority = false;
+
+    @JsonIgnore
+    public void queryBoard() {
+        Board b = getBoard();
+
+        if(b != null) {
+            for (BoardPart leaf : b.buildLeavesBoardParts()) {
+                if (leaf.getLeafNumber() == 0) {
+                    firstColumnFull = !BoardPart.isMoveToAvailable(leaf, null, false);
+                }
+                if (leaf.getLeafNumber().equals(b.getHighestPriority())) {
+                    for (Card c : leaf.getCards()) {
+                        if (c.getSilverBullet()) {
+                            silverBulletInHighestPriority = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            b.setBoardParts(null);
+            b.setProjects(null);
+        }
+    }
+
 
     public DevTeam getDevTeam() {
         return devTeam;
@@ -157,5 +190,21 @@ public class Project extends UUIDEntity<Project> {
 
     public void setMembership(Membership membership) {
         this.membership = membership;
+    }
+
+    public Boolean getFirstColumnFull() {
+        return firstColumnFull;
+    }
+
+    public void setFirstColumnFull(Boolean firstColumnFull) {
+        this.firstColumnFull = firstColumnFull;
+    }
+
+    public Boolean getSilverBulletInHighestPriority() {
+        return silverBulletInHighestPriority;
+    }
+
+    public void setSilverBulletInHighestPriority(Boolean silverBulletInHighestPriority) {
+        this.silverBulletInHighestPriority = silverBulletInHighestPriority;
     }
 }

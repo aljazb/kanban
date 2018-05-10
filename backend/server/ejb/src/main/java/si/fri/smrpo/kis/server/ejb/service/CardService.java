@@ -45,6 +45,14 @@ public class CardService implements CardServiceLocal {
             throw new TransactionException("Board part does not exist");
         }
 
+        if(card.getSilverBullet()) {
+            for(Card dbCard : dbBp.getCards()) {
+                if(dbCard.getSilverBullet()) {
+                    throw new TransactionException("Highest priority already contains silver bullet");
+                }
+            }
+        }
+
         if(card.getSilverBullet() == null) {
             card.setSilverBullet(false);
         }
@@ -114,30 +122,15 @@ public class CardService implements CardServiceLocal {
         database.update(p);
     }
 
-    private void checkWip(Card dbCard) throws DatabaseException {
-        CardMoveType type = CardMoveType.VALID;
-
-        if(dbCard.getSilverBullet()) {
-            for(Card c : dbCard.getBoardPart().getCards()) {
-                if(c.getSilverBullet()) {
-                    type = INVALID_SILVER_BULLET_ON_CREATE;
-                    break;
-                }
-            }
-        }
-
-        if(type == VALID) {
-            if(isMoveToAvailable(dbCard.getBoardPart(), null, false)) {
-                type = INVALID_ON_CREATE;
-            }
-        }
-
-        if(type != VALID) {
+    private void checkWip(Card card, UserAccount authUser) throws DatabaseException {
+        BoardPart boardPart = database.find(BoardPart.class, card.getBoardPart().getId());
+        if(!isMoveToAvailable(boardPart, null, false)) {
             CardMove cm = new CardMove();
-            cm.setCard(dbCard);
-            cm.setFrom(dbCard.getBoardPart());
-            cm.setTo(dbCard.getBoardPart());
-            cm.setCardMoveType(type);
+            cm.setCard(card);
+            cm.setFrom(boardPart);
+            cm.setTo(boardPart);
+            cm.setCardMoveType(INVALID_ON_CREATE);
+            cm.setMovedBy(authUser);
 
             database.create(cm);
         }
@@ -152,7 +145,7 @@ public class CardService implements CardServiceLocal {
 
         Card dbCard = database.create(card);
 
-        checkWip(card);
+        checkWip(dbCard, authUser);
 
         updateCardHolders(dbCard);
         dbCard.getBoardPart().incWip(database);

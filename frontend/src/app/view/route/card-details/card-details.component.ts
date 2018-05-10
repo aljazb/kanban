@@ -21,6 +21,8 @@ export class CardDetailsComponent implements OnInit {
   moves: CardMove[];
   editEnabled: boolean = false;
 
+
+
   constructor(private route: ActivatedRoute,
               private router: Router,
               private api: ApiService,
