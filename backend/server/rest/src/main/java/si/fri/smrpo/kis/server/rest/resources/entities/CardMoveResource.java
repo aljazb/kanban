@@ -6,6 +6,7 @@ import si.fri.smrpo.kis.core.rest.resource.uuid.GetResource;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.CardMoveSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.CardMove;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
+import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -20,15 +21,19 @@ import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_KANBAN_MASTER;
 
 @Path("CardMove")
 @RequestScoped
-public class CardMoveResource extends GetResource<CardMove, CardMoveSourceLocal> {
+public class CardMoveResource extends GetResource<CardMove, CardMoveSourceLocal, UserAccount> {
 
     @EJB
     private CardMoveSourceLocal cardSource;
 
     @Override
     protected void initSource() {
-        cardSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
         this.source = cardSource;
+    }
+
+    @Override
+    protected UserAccount getAuthUser() {
+        return KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
     public CardMoveResource() {
@@ -53,7 +58,7 @@ public class CardMoveResource extends GetResource<CardMove, CardMoveSourceLocal>
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
     @POST
     public Response create(@HeaderParam("X-Content") Boolean xContent, CardMove entity) throws Exception {
-        return buildResponse(source.create(entity), xContent, true, Response.Status.CREATED).build();
+        return buildResponse(source.create(entity, getAuthUser()), xContent, true, Response.Status.CREATED).build();
     }
 
 }

@@ -18,7 +18,9 @@ import java.io.Serializable;
 public abstract class BaseResource<
         E extends BaseEntity<E, I>,
         S extends BaseSourceImpl<I>,
-        I extends Serializable> {
+        I extends Serializable,
+        A extends Serializable
+    > {
 
     @Context
     protected SecurityContext sc;
@@ -38,6 +40,8 @@ public abstract class BaseResource<
     protected Class<E> type;
     protected S source;
     abstract protected void initSource();
+
+    abstract protected A getAuthUser();
 
     @PostConstruct
     private void init(){

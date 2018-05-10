@@ -1,6 +1,5 @@
 package si.fri.smrpo.kis.server.ejb.source;
 
-import si.fri.smrpo.kis.core.logic.database.interfaces.DatabaseImpl;
 import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.OperationException;
@@ -8,32 +7,25 @@ import si.fri.smrpo.kis.core.logic.exceptions.base.ExceptionType;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
-import si.fri.smrpo.kis.core.rest.source.CrudSource;
 import si.fri.smrpo.kis.core.rest.source.GetSource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.UserAccountServiceLocal;
-import si.fri.smrpo.kis.server.ejb.source.interfaces.RequestSourceLocal;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.UserAccountSourceLocal;
-import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.persistence.criteria.From;
-import javax.persistence.criteria.JoinType;
+import javax.xml.registry.infomodel.User;
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_ADMINISTRATOR;
-import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_KANBAN_MASTER;
 
 @PermitAll
 @Stateless
 @Local(UserAccountSourceLocal.class)
-public class UserAccountSource extends GetSource<UserAccount, UUID> implements UserAccountSourceLocal {
+public class UserAccountSource extends GetSource<UserAccount, UUID, UserAccount> implements UserAccountSourceLocal {
 
     @EJB
     private DatabaseServiceLocal databaseService;
@@ -42,17 +34,13 @@ public class UserAccountSource extends GetSource<UserAccount, UUID> implements U
     private UserAccountServiceLocal service;
 
 
-    private UserAccount authUser;
-    private String search;
-
-
     @PostConstruct
     private void init() {
         setDatabase(databaseService);
     }
 
     @Override
-    public Paging<UserAccount> getList(Class<UserAccount> c, QueryParameters param) throws Exception {
+    public Paging<UserAccount> getList(Class<UserAccount> c, String search, QueryParameters param, UserAccount authUser) throws Exception {
         CriteriaFilter<UserAccount> filter = null;
         if(search != null) {
             filter = (p, cb, r) -> cb.and(p, cb.or(
@@ -62,12 +50,12 @@ public class UserAccountSource extends GetSource<UserAccount, UUID> implements U
                     cb.like(r.get("lastName"), search)));
         }
 
-        return super.getList(c, param, filter, filter != null);
+        return super.getList(c, param, filter, filter != null, authUser);
     }
 
     @Override
-    public UserAccount get(Class<UserAccount> c, UUID id) throws Exception {
-        UserAccount entity = super.get(c, id);
+    public UserAccount get(Class<UserAccount> c, UUID id, UserAccount authUser) throws Exception {
+        UserAccount entity = super.get(c, id, authUser);
 
         if (!authUser.getInRoleAdministrator() && !entity.getId().equals(authUser.getId())) {
             throw new DatabaseException("User does not have permission.", ExceptionType.INSUFFICIENT_RIGHTS);
@@ -77,17 +65,17 @@ public class UserAccountSource extends GetSource<UserAccount, UUID> implements U
     }
 
     @Override
-    public UserAccount login() throws LogicBaseException {
+    public UserAccount login(UserAccount authUser) throws LogicBaseException {
         return service.login(authUser);
     }
 
     @Override
-    public UserAccount create(UserAccount entity) throws LogicBaseException {
+    public UserAccount create(UserAccount entity, UserAccount authUser) throws LogicBaseException {
         return service.create(entity);
     }
 
     @Override
-    public UserAccount update(UserAccount entity) throws LogicBaseException {
+    public UserAccount update(UserAccount entity, UserAccount authUser) throws LogicBaseException {
         if(!authUser.getInRoleAdministrator() && !authUser.getId().equals(entity.getId())) {
             throw new OperationException("User does not have rights", ExceptionType.INSUFFICIENT_RIGHTS);
         }
@@ -95,7 +83,7 @@ public class UserAccountSource extends GetSource<UserAccount, UUID> implements U
     }
 
     @Override
-    public UserAccount setEnabled(UUID id, Boolean enabled) throws LogicBaseException {
+    public UserAccount setEnabled(UUID id, Boolean enabled, UserAccount authUser) throws LogicBaseException {
         if(!authUser.getInRoleAdministrator() && !authUser.getId().equals(id)) {
             throw new OperationException("User does not have rights", ExceptionType.INSUFFICIENT_RIGHTS);
         }
@@ -103,31 +91,13 @@ public class UserAccountSource extends GetSource<UserAccount, UUID> implements U
     }
 
     @Override
-    public void setPassword(UUID id, String password) throws LogicBaseException {
+    public void setPassword(UUID id, String password, UserAccount authUser) throws LogicBaseException {
         service.setPassword(id, password);
     }
 
     @Override
-    public void checkAvailability(UserAccount userAccount) throws LogicBaseException {
+    public void checkAvailability(UserAccount userAccount, UserAccount authUser) throws LogicBaseException {
         service.checkAvailability(userAccount);
     }
 
-    @Override
-    public UserAccount getAuthUser() {
-        return authUser;
-    }
-
-    @Override
-    public void setAuthUser(UserAccount authUser) {
-        this.authUser = authUser;
-    }
-
-
-    public String getSearch() {
-        return search;
-    }
-
-    public void setSearch(String search) {
-        this.search = search;
-    }
 }

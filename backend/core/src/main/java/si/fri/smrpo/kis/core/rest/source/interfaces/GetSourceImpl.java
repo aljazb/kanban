@@ -7,10 +7,10 @@ import si.fri.smrpo.kis.core.lynx.interfaces.CriteriaFilter;
 
 import java.io.Serializable;
 
-public interface GetSourceImpl<E extends BaseEntity<E, I>, I extends Serializable> extends BaseSourceImpl<I> {
+public interface GetSourceImpl<E extends BaseEntity<E, I>, I extends Serializable, A extends Serializable> extends BaseSourceImpl<I> {
 
-    Paging<E> getList(Class<E> c, QueryParameters param) throws Exception;
-    Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, boolean distinct) throws Exception;
-    E get(Class<E> c, I id) throws Exception;
+    Paging<E> getList(Class<E> c, QueryParameters param, A authUser) throws Exception;
+    Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, boolean distinct, A authUser) throws Exception;
+    E get(Class<E> c, I id, A authUser) throws Exception;
 
 }

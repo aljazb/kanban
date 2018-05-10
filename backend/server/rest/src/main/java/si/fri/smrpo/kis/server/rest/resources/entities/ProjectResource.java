@@ -7,6 +7,7 @@ import si.fri.smrpo.kis.server.ejb.source.ProjectSource;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.ProjectSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
+import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -20,15 +21,19 @@ import static si.fri.smrpo.kis.server.ejb.Constants.*;
 
 @Path("Project")
 @RequestScoped
-public class ProjectResource extends CrudResource<Project, ProjectSourceLocal> {
+public class ProjectResource extends CrudResource<Project, ProjectSourceLocal, UserAccount> {
 
     @EJB
     private ProjectSourceLocal projectSource;
 
     @Override
     protected void initSource() {
-        projectSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
         this.source = projectSource;
+    }
+
+    @Override
+    protected UserAccount getAuthUser() {
+        return KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
     public ProjectResource() {

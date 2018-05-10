@@ -10,10 +10,11 @@ import java.util.UUID;
 
 public interface DevTeamServiceLocal {
 
-    DevTeam create(DevTeam devTeam, UUID userId) throws LogicBaseException;
-    DevTeam update(DevTeam devTeam, UUID userId) throws LogicBaseException;
+    DevTeam create(DevTeam devTeam, UserAccount authUser) throws LogicBaseException;
+    DevTeam update(DevTeam devTeam, UserAccount authUser) throws LogicBaseException;
 
-    UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException;
+    UserAccount kickMember(UUID devTeamId, UUID memberId, UserAccount authUser) throws LogicBaseException;
 
-    List<HistoryEvent> getDevTeamEvents(UUID devTeamId) throws LogicBaseException;
+    List<HistoryEvent> getDevTeamEvents(UUID devTeamId, UserAccount authUser) throws LogicBaseException;
+
 }

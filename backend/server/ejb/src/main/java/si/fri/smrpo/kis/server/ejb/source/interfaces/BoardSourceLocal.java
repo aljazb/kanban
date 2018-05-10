@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public interface BoardSourceLocal extends CrudSourceImpl<Board, UUID>, AuthImpl {
+public interface BoardSourceLocal extends CrudSourceImpl<Board, UUID, UserAccount> {
 
 }

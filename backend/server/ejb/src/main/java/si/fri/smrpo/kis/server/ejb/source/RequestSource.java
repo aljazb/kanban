@@ -23,16 +23,13 @@ import java.util.UUID;
 @PermitAll
 @Stateless
 @Local(RequestSourceLocal.class)
-public class RequestSource extends GetSource<Request, UUID> implements RequestSourceLocal {
+public class RequestSource extends GetSource<Request, UUID, UserAccount> implements RequestSourceLocal {
 
     @EJB
     private DatabaseServiceLocal databaseService;
 
     @EJB
     private RequestServiceLocal service;
-
-
-    private UserAccount authUser;
 
     @PostConstruct
     private void init() {
@@ -41,7 +38,7 @@ public class RequestSource extends GetSource<Request, UUID> implements RequestSo
 
 
     @Override
-    public Paging<Request> getList(Class<Request> c, QueryParameters param) throws Exception {
+    public Paging<Request> getList(Class<Request> c, QueryParameters param, UserAccount authUser) throws Exception {
         CriteriaFilter<Request> filter = null;
         if(!authUser.getInRoleAdministrator()) {
             filter = (p, cb, r) -> cb.and(p, cb.or(
@@ -49,12 +46,12 @@ public class RequestSource extends GetSource<Request, UUID> implements RequestSo
                         cb.equal(r.join("receiver").get("id"), authUser.getId())));
         }
 
-        return super.getList(c, param, filter, filter != null);
+        return super.getList(c, param, filter, filter != null, authUser);
     }
 
     @Override
-    public Request get(Class<Request> c, UUID id) throws Exception {
-        Request entity = super.get(c, id);
+    public Request get(Class<Request> c, UUID id, UserAccount authUser) throws Exception {
+        Request entity = super.get(c, id, authUser);
 
         if (!authUser.getInRoleAdministrator()) {
             if(!entity.isReceiverOrSender(authUser)) {
@@ -66,27 +63,18 @@ public class RequestSource extends GetSource<Request, UUID> implements RequestSo
     }
 
     @Override
-    public List<Request> getUserRequests() {
+    public List<Request> getUserRequests(UserAccount authUser) {
         return service.getUserRequests(authUser.getId());
     }
 
     @Override
-    public Request create(Request request) throws Exception {
+    public Request create(Request request, UserAccount authUser) throws Exception {
         return service.create(request, authUser.getId());
     }
 
     @Override
-    public Request update(UUID requestId, boolean status) throws Exception {
+    public Request update(UUID requestId, boolean status, UserAccount authUser) throws Exception {
         return service.update(requestId, authUser.getId(), status);
     }
 
-    @Override
-    public UserAccount getAuthUser() {
-        return authUser;
-    }
-
-    @Override
-    public void setAuthUser(UserAccount authUser) {
-        this.authUser = authUser;
-    }
 }

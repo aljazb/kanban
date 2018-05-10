@@ -23,12 +23,10 @@ import java.util.UUID;
 @PermitAll
 @Stateless
 @Local(ProjectSourceLocal.class)
-public class ProjectSource extends CrudSource<Project, UUID> implements ProjectSourceLocal {
+public class ProjectSource extends CrudSource<Project, UUID, UserAccount> implements ProjectSourceLocal {
 
     @EJB
     private DatabaseServiceLocal databaseService;
-
-    private UserAccount authUser;
 
 
     @PostConstruct
@@ -38,7 +36,7 @@ public class ProjectSource extends CrudSource<Project, UUID> implements ProjectS
 
 
     @Override
-    public Paging<Project> getList(Class<Project> c, QueryParameters param) throws Exception {
+    public Paging<Project> getList(Class<Project> c, QueryParameters param, UserAccount authUser) throws Exception {
         CriteriaFilter<Project> filter = null;
         if(!authUser.getInRoleAdministrator()) {
             filter = (p, cb, r) -> {
@@ -52,12 +50,12 @@ public class ProjectSource extends CrudSource<Project, UUID> implements ProjectS
             };
         }
 
-        return super.getList(c, param, filter, filter != null);
+        return super.getList(c, param, filter, filter != null, authUser);
     }
 
     @Override
-    public Project get(Class<Project> c, UUID id) throws Exception {
-        Project entity = super.get(c, id);
+    public Project get(Class<Project> c, UUID id, UserAccount authUser) throws Exception {
+        Project entity = super.get(c, id, authUser);
 
         entity.queryMembership(database.getEntityManager(), authUser.getId());
 
@@ -74,16 +72,9 @@ public class ProjectSource extends CrudSource<Project, UUID> implements ProjectS
     }
 
     @Override
-    public Project create(Project newEntity) throws Exception {
+    public Project create(Project newEntity, UserAccount authUser) throws Exception {
         newEntity.setOwner(authUser);
-        return super.create(newEntity);
+        return super.create(newEntity, authUser);
     }
 
-    public UserAccount getAuthUser() {
-        return authUser;
-    }
-
-    public void setAuthUser(UserAccount authUser) {
-        this.authUser = authUser;
-    }
 }

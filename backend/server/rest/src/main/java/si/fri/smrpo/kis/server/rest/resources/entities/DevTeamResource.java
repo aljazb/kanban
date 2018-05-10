@@ -2,13 +2,10 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
-import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
-import si.fri.smrpo.kis.server.ejb.service.interfaces.DevTeamServiceLocal;
-import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
-import si.fri.smrpo.kis.server.ejb.source.DevTeamSource;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.DevTeamSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
+import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -22,15 +19,19 @@ import static si.fri.smrpo.kis.server.ejb.Constants.*;
 
 @Path("DevTeam")
 @RequestScoped
-public class DevTeamResource extends CrudResource<DevTeam, DevTeamSourceLocal> {
+public class DevTeamResource extends CrudResource<DevTeam, DevTeamSourceLocal, UserAccount> {
 
     @EJB
     private DevTeamSourceLocal devTeamSource;
 
     @Override
     protected void initSource() {
-        devTeamSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
         source = devTeamSource;
+    }
+
+    @Override
+    protected UserAccount getAuthUser() {
+        return KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
     public DevTeamResource() {
@@ -96,21 +97,21 @@ public class DevTeamResource extends CrudResource<DevTeam, DevTeamSourceLocal> {
     @GET
     @Path("{id}/events")
     public Response getEvents(@PathParam("id") UUID id) throws Exception {
-        return buildResponseEntity(source.getEvents(id)).build();
+        return buildResponseEntity(source.getEvents(id, getAuthUser())).build();
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER})
     @DELETE
     @Path("{devTeamId}/user/{uid}")
     public Response kickMember(@HeaderParam("X-Content") Boolean xContent, @PathParam("devTeamId") UUID devTeamId, @PathParam("uid") UUID userId) throws Exception {
-        return buildResponse(source.kickMember(devTeamId, userId), xContent).build();
+        return buildResponse(source.kickMember(devTeamId, userId, getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER})
     @DELETE
     @Path("{devTeamId}/po/{uid}")
     public Response demotePO(@HeaderParam("X-Content") Boolean xContent, @PathParam("devTeamId") UUID devTeamId, @PathParam("uid") UUID userId) throws Exception {
-        source.demoteProductOwner(devTeamId, userId);
+        source.demoteProductOwner(devTeamId, userId, getAuthUser());
         return Response.noContent().build();
     }
 

@@ -7,6 +7,7 @@ import si.fri.smrpo.kis.server.ejb.service.interfaces.RequestServiceLocal;
 import si.fri.smrpo.kis.server.ejb.source.RequestSource;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.RequestSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Request;
+import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -20,16 +21,19 @@ import static si.fri.smrpo.kis.server.ejb.Constants.*;
 
 @Path("Request")
 @RequestScoped
-public class RequestResource extends GetResource<Request, RequestSourceLocal> {
+public class RequestResource extends GetResource<Request, RequestSourceLocal, UserAccount> {
 
     @EJB
     private RequestSourceLocal requestSource;
 
-
     @Override
     protected void initSource() {
-        requestSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
         source = requestSource;
+    }
+
+    @Override
+    protected UserAccount getAuthUser() {
+        return KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
     public RequestResource() {
@@ -56,26 +60,26 @@ public class RequestResource extends GetResource<Request, RequestSourceLocal> {
     @GET
     @Path("/userRequests")
     public Response getUserRequests() {
-        return Response.ok(source.getUserRequests()).build();
+        return Response.ok(source.getUserRequests(getAuthUser())).build();
     }
 
     @RolesAllowed(ROLE_KANBAN_MASTER)
     @POST
     public Response create(@HeaderParam("X-Content") Boolean xContent, Request request) throws Exception {
-        return buildResponse(source.create(request), xContent).build();
+        return buildResponse(source.create(request, getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @PUT
     @Path("{id}")
     public Response accept(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return buildResponse(source.update(id, true), xContent).build();
+        return buildResponse(source.update(id, true, getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER})
     @DELETE
     @Path("{id}")
     public Response decline(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return buildResponse(source.update(id, false), xContent).build();
+        return buildResponse(source.update(id, false, getAuthUser()), xContent).build();
     }
 }

@@ -7,6 +7,7 @@ import si.fri.smrpo.kis.server.ejb.source.BoardSource;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.BoardSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
+import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -21,15 +22,19 @@ import static si.fri.smrpo.kis.server.ejb.Constants.*;
 
 @Path("Board")
 @RequestScoped
-public class BoardResource extends CrudResource<Board, BoardSourceLocal> {
+public class BoardResource extends CrudResource<Board, BoardSourceLocal, UserAccount> {
 
     @EJB
     private BoardSourceLocal boardSource;
 
     @Override
     protected void initSource() {
-        boardSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
         source = boardSource;
+    }
+
+    @Override
+    protected UserAccount getAuthUser() {
+        return KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
     public BoardResource() {

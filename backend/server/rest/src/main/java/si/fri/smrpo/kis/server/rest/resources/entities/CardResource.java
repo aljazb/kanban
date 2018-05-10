@@ -9,6 +9,7 @@ import si.fri.smrpo.kis.server.ejb.source.interfaces.CardSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Card;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
 import si.fri.smrpo.kis.server.jpa.entities.DevTeam;
+import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 import si.fri.smrpo.kis.server.rest.resources.utils.KeycloakAuth;
 
 import javax.annotation.security.RolesAllowed;
@@ -23,15 +24,19 @@ import static si.fri.smrpo.kis.server.ejb.Constants.ROLE_KANBAN_MASTER;
 
 @Path("Card")
 @RequestScoped
-public class CardResource extends CrudResource<Card, CardSourceLocal> {
+public class CardResource extends CrudResource<Card, CardSourceLocal, UserAccount> {
 
     @EJB
     private CardSourceLocal cardSource;
 
     @Override
     protected void initSource() {
-        cardSource.setAuthUser(KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal()));
         this.source = cardSource;
+    }
+
+    @Override
+    protected UserAccount getAuthUser() {
+        return KeycloakAuth.buildAuthUser((KeycloakPrincipal) sc.getUserPrincipal());
     }
 
     public CardResource() {
@@ -57,7 +62,7 @@ public class CardResource extends CrudResource<Card, CardSourceLocal> {
     @POST
     @Override
     public Response create(@HeaderParam("X-Content") Boolean xContent, Card entity) throws Exception {
-        return buildResponse(source.create(entity), xContent).build();
+        return buildResponse(source.create(entity, getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
@@ -65,7 +70,7 @@ public class CardResource extends CrudResource<Card, CardSourceLocal> {
     @Path("{id}")
     @Override
     public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, Card entity) throws Exception {
-        return buildResponse(source.update(entity), xContent).build();
+        return buildResponse(source.update(entity, getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
@@ -73,7 +78,7 @@ public class CardResource extends CrudResource<Card, CardSourceLocal> {
     @Path("{id}")
     @Override
     public Response patch(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, Card entity) throws Exception {
-        return buildResponse(source.patch(entity), xContent).build();
+        return buildResponse(source.patch(entity, getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
@@ -81,7 +86,7 @@ public class CardResource extends CrudResource<Card, CardSourceLocal> {
     @Path("{id}")
     @Override
     public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return buildResponse(source.delete(type, id), xContent).build();
+        return buildResponse(source.delete(type, id, getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})

@@ -13,7 +13,9 @@ import java.io.Serializable;
 @PermitAll
 public abstract class GetSource<
         E extends BaseEntity<E, I>,
-        I extends Serializable> extends BaseSource<I> implements GetSourceImpl<E, I> {
+        I extends Serializable,
+        A extends Serializable
+        > extends BaseSource<I> implements GetSourceImpl<E, I, A>{
 
     public GetSource() { }
 
@@ -21,15 +23,15 @@ public abstract class GetSource<
         super(database);
     }
 
-    public Paging<E> getList(Class<E> c, QueryParameters param) throws Exception {
+    public Paging<E> getList(Class<E> c, QueryParameters param, A authUser) throws Exception {
         return database.getList(c, param);
     }
 
-    public Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, boolean distinct) throws Exception {
+    public Paging<E> getList(Class<E> c, QueryParameters param, CriteriaFilter<E> customFilter, boolean distinct, A authUser) throws Exception {
         return database.getList(c, param, customFilter, distinct);
     }
 
-    public E get(Class<E> c, I id) throws Exception {
+    public E get(Class<E> c, I id, A authUser) throws Exception {
         return database.get(c, id);
     }
 

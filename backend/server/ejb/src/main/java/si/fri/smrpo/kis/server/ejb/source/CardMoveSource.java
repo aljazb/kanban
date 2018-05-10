@@ -15,24 +15,15 @@ import java.util.UUID;
 @PermitAll
 @Stateless
 @Local(CardMoveSourceLocal.class)
-public class CardMoveSource extends GetSource<CardMove, UUID> implements CardMoveSourceLocal {
+public class CardMoveSource extends GetSource<CardMove, UUID, UserAccount> implements CardMoveSourceLocal {
 
     @EJB
     private CardMoveServiceLocal service;
 
-    private UserAccount authUser;
 
-    public CardMove create(CardMove cardMove) throws Exception {
+    public CardMove create(CardMove cardMove, UserAccount authUser) throws Exception {
         return service.create(cardMove, authUser);
     }
 
-    @Override
-    public void setAuthUser(UserAccount authUser) {
-        this.authUser = authUser;
-    }
-
-    @Override
-    public UserAccount getAuthUser() {
-        return authUser;
-    }
 }
+

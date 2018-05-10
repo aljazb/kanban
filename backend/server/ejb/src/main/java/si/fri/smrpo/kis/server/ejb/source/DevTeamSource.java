@@ -27,7 +27,7 @@ import java.util.UUID;
 @PermitAll
 @Stateless
 @Local(DevTeamSourceLocal.class)
-public class DevTeamSource extends CrudSource<DevTeam, UUID> implements DevTeamSourceLocal {
+public class DevTeamSource extends CrudSource<DevTeam, UUID, UserAccount> implements DevTeamSourceLocal {
 
     @EJB
     private DatabaseServiceLocal databaseService;
@@ -39,9 +39,6 @@ public class DevTeamSource extends CrudSource<DevTeam, UUID> implements DevTeamS
     private RequestServiceLocal requestService;
 
 
-    private UserAccount authUser;
-
-
     @PostConstruct
     private void init() {
         setDatabase(databaseService);
@@ -49,7 +46,7 @@ public class DevTeamSource extends CrudSource<DevTeam, UUID> implements DevTeamS
 
 
     @Override
-    public Paging<DevTeam> getList(Class<DevTeam> c, QueryParameters param) throws Exception {
+    public Paging<DevTeam> getList(Class<DevTeam> c, QueryParameters param, UserAccount authUser) throws Exception {
         CriteriaFilter<DevTeam> filter = null;
         if(!authUser.getInRoleAdministrator()) {
             filter = (p, cb, r) -> {
@@ -60,11 +57,11 @@ public class DevTeamSource extends CrudSource<DevTeam, UUID> implements DevTeamS
             };
         }
 
-        return super.getList(c, param, filter, filter != null);
+        return super.getList(c, param, filter, filter != null, authUser);
     }
 
     @Override
-    public DevTeam get(Class<DevTeam> c, UUID id) throws Exception {
+    public DevTeam get(Class<DevTeam> c, UUID id, UserAccount authUser) throws Exception {
         DevTeam entity = database.getEntityManager().createNamedQuery("devTeam.fetch.members", DevTeam.class)
                 .setParameter("devTeamId", id).getResultList().stream().findFirst().orElse(null);
 
@@ -81,37 +78,28 @@ public class DevTeamSource extends CrudSource<DevTeam, UUID> implements DevTeamS
 
 
     @Override
-    public DevTeam create(DevTeam newEntity) throws Exception {
-        return service.create(newEntity, authUser.getId());
+    public DevTeam create(DevTeam newEntity, UserAccount authUser) throws Exception {
+        return service.create(newEntity, authUser);
     }
 
 
     @Override
-    public DevTeam update(DevTeam newEntity) throws Exception {
-        return service.update(newEntity, authUser.getId());
+    public DevTeam update(DevTeam newEntity, UserAccount authUser) throws Exception {
+        return service.update(newEntity, authUser);
 
     }
 
 
-    public List<HistoryEvent> getEvents(UUID devTeamId) throws Exception {
-        return service.getDevTeamEvents(devTeamId);
+    public List<HistoryEvent> getEvents(UUID devTeamId, UserAccount authUser) throws Exception {
+        return service.getDevTeamEvents(devTeamId, authUser);
     }
 
-    public UserAccount kickMember(UUID devTeamId, UUID userId) throws Exception {
-        return service.kickMember(devTeamId, userId, authUser.getId());
+    public UserAccount kickMember(UUID devTeamId, UUID userId, UserAccount authUser) throws Exception {
+        return service.kickMember(devTeamId, userId, authUser);
     }
 
-    public void demoteProductOwner(UUID devTeamId, UUID userId) throws Exception {
+    public void demoteProductOwner(UUID devTeamId, UUID userId, UserAccount authUser) throws Exception {
         requestService.demotePO(devTeamId, authUser.getId());
     }
 
-
-
-    public UserAccount getAuthUser() {
-        return authUser;
-    }
-
-    public void setAuthUser(UserAccount authUser) {
-        this.authUser = authUser;
-    }
 }

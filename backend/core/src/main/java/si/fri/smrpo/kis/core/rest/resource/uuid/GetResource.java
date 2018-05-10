@@ -15,12 +15,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Response;
+import java.io.Serializable;
 import java.util.UUID;
 
 public abstract class GetResource<
             E extends BaseEntity<E, UUID>,
-            S extends GetSourceImpl<E, UUID>
-        > extends BaseResource<E, S, UUID> {
+            S extends GetSourceImpl<E, UUID, A>,
+            A extends Serializable
+        > extends BaseResource<E, S, UUID, A> {
 
     protected int defaultMaxLimit = 50;
 
@@ -38,7 +40,7 @@ public abstract class GetResource<
     @GET
     @Path("{id}")
     public Response get(@PathParam("id") UUID id) throws Exception {
-        E dbEntity = source.get(type, id);
+        E dbEntity = source.get(type, id, getAuthUser());
 
         EntityTag tag = dbEntity.getEntityTag();
 
@@ -58,7 +60,7 @@ public abstract class GetResource<
         QueryParameters param = QueryParameters.query(uriInfo.getRequestUri().getQuery())
                 .maxLimit(defaultMaxLimit).defaultLimit(defaultMaxLimit).defaultOffset(0).build();
 
-        Paging<E> paging = source.getList(type, param);
+        Paging<E> paging = source.getList(type, param, getAuthUser());
 
         Response.ResponseBuilder rb = buildResponse(paging);
 

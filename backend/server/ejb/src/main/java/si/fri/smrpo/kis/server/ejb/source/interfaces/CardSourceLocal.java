@@ -6,6 +6,6 @@ import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
 import java.util.UUID;
 
-public interface CardSourceLocal extends CrudSourceImpl<Card, UUID>, AuthImpl {
+public interface CardSourceLocal extends CrudSourceImpl<Card, UUID, UserAccount> {
 
 }

@@ -8,13 +8,15 @@ import si.fri.smrpo.kis.core.rest.source.interfaces.CrudSourceImpl;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.io.Serializable;
 import java.util.UUID;
 
 
 public abstract class CrudResource<
             E extends BaseEntity<E, UUID>,
-            S extends CrudSourceImpl<E, UUID>
-        > extends GetResource<E, S> {
+            S extends CrudSourceImpl<E, UUID, A>,
+            A extends Serializable
+        > extends GetResource<E, S, A> {
 
 
     public CrudResource(Class<E> type) {
@@ -23,7 +25,7 @@ public abstract class CrudResource<
 
     @POST
     public Response create(@HeaderParam("X-Content") Boolean xContent, E entity) throws Exception {
-        E dbEntity = source.create(entity);
+        E dbEntity = source.create(entity, getAuthUser());
         return buildResponse(dbEntity, xContent, true, Response.Status.CREATED).build();
     }
 
@@ -32,7 +34,7 @@ public abstract class CrudResource<
     public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, E newObject) throws Exception {
         newObject.setId(id);
 
-        E dbEntity = source.update(newObject);
+        E dbEntity = source.update(newObject, getAuthUser());
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -43,7 +45,7 @@ public abstract class CrudResource<
                           @PathParam("id") UUID id, E entity) throws Exception {
         entity.setId(id);
 
-        E dbEntity = source.patch(entity);
+        E dbEntity = source.patch(entity, getAuthUser());
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -53,7 +55,7 @@ public abstract class CrudResource<
     public Response delete(@HeaderParam("X-Content") Boolean xContent,
                            @PathParam("id") UUID id) throws Exception {
 
-        E dbEntity = source.delete(type, id);
+        E dbEntity = source.delete(type, id, getAuthUser());
 
         return buildResponse(dbEntity, xContent).build();
     }
@@ -63,7 +65,7 @@ public abstract class CrudResource<
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent,
                                     @PathParam("id") UUID id) throws Exception {
 
-        E dbEntity = source.toggleIsDeleted(type, id);
+        E dbEntity = source.toggleIsDeleted(type, id, getAuthUser());
 
         return buildResponse(dbEntity, xContent).build();
     }

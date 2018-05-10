@@ -28,9 +28,7 @@ import java.util.UUID;
 @PermitAll
 @Stateless
 @Local(CardSourceLocal.class)
-public class CardSource extends CrudSource<Card, UUID> implements CardSourceLocal {
-
-    private UserAccount authUser;
+public class CardSource extends CrudSource<Card, UUID, UserAccount> implements CardSourceLocal {
 
     @EJB
     private DatabaseServiceLocal database;
@@ -46,7 +44,7 @@ public class CardSource extends CrudSource<Card, UUID> implements CardSourceLoca
 
 
     @Override
-    public Paging<Card> getList(Class<Card> c, QueryParameters param) throws Exception {
+    public Paging<Card> getList(Class<Card> c, QueryParameters param, UserAccount authUser) throws Exception {
         CriteriaFilter<Card> filter = null;
         if(!authUser.getInRoleAdministrator()) {
             filter = (p, cb, r) -> {
@@ -61,12 +59,12 @@ public class CardSource extends CrudSource<Card, UUID> implements CardSourceLoca
             };
         }
 
-        return super.getList(c, param, filter, filter != null);
+        return super.getList(c, param, filter, filter != null, authUser);
     }
 
     @Override
-    public Card get(Class<Card> c, UUID id) throws Exception {
-        Card entity = super.get(c, id);
+    public Card get(Class<Card> c, UUID id, UserAccount authUser) throws Exception {
+        Card entity = super.get(c, id, authUser);
 
         entity.queryMembership(database.getEntityManager(), authUser.getId());
 
@@ -83,31 +81,23 @@ public class CardSource extends CrudSource<Card, UUID> implements CardSourceLoca
     }
 
     @Override
-    public Card create(Card newEntity) throws Exception {
+    public Card create(Card newEntity, UserAccount authUser) throws Exception {
         return cardService.create(newEntity, authUser);
     }
 
     @Override
-    public Card update(Card newEntity) throws Exception {
+    public Card update(Card newEntity, UserAccount authUser) throws Exception {
         return cardService.update(newEntity, authUser);
     }
 
     @Override
-    public Card patch(Card newEntity) throws Exception {
+    public Card patch(Card newEntity, UserAccount authUser) throws Exception {
         return cardService.patch(newEntity, authUser);
     }
 
     @Override
-    public Card delete(Class<Card> c, UUID id) throws Exception {
+    public Card delete(Class<Card> c, UUID id, UserAccount authUser) throws Exception {
         return cardService.delete(id, authUser);
     }
 
-
-    public UserAccount getAuthUser() {
-        return authUser;
-    }
-
-    public void setAuthUser(UserAccount authUser) {
-        this.authUser = authUser;
-    }
 }

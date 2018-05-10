@@ -16,6 +16,7 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.xml.registry.infomodel.User;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class DevTeamService implements DevTeamServiceLocal {
         }
     }
 
-    private void checkStructure(DevTeam devTeam, UUID authId) throws OperationException {
+    private void checkStructure(DevTeam devTeam, UserAccount authUser) throws OperationException {
         List<Membership> kanbanMasters = devTeam.getJoinedUsers().stream()
                 .filter(e -> e.getMemberType() == MemberType.KANBAN_MASTER ||
                         e.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER)
@@ -54,7 +55,7 @@ public class DevTeamService implements DevTeamServiceLocal {
 
         UserAccount kanbanMaster = kanbanMasters.get(0).getUserAccount();
 
-        if(!kanbanMaster.getId().equals(authId)){
+        if(!kanbanMaster.getId().equals(authUser.getId())){
             throw new OperationException("User creating dev team must be kanban master.");
         }
 
@@ -90,9 +91,9 @@ public class DevTeamService implements DevTeamServiceLocal {
         }
     }
 
-    private void validateDevTeam(DevTeam devTeam, UUID authId) throws LogicBaseException {
+    private void validateDevTeam(DevTeam devTeam, UserAccount authUser) throws LogicBaseException {
         checkForDuplicateEntry(devTeam);
-        checkStructure(devTeam, authId);
+        checkStructure(devTeam, authUser);
         loadDevTeamMembers(devTeam);
     }
 
@@ -137,9 +138,9 @@ public class DevTeamService implements DevTeamServiceLocal {
         return dbDevTeam;
     }
 
-    public DevTeam create(DevTeam devTeam, UUID authId) throws LogicBaseException {
+    public DevTeam create(DevTeam devTeam, UserAccount userAccount) throws LogicBaseException {
 
-        validateDevTeam(devTeam, authId);
+        validateDevTeam(devTeam, userAccount);
         DevTeam dbDevTeam = database.create(devTeam);
         persistDevTeamMembers(dbDevTeam, devTeam.getJoinedUsers());
 
@@ -147,9 +148,9 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
     @Override
-    public DevTeam update(DevTeam devTeam, UUID authId) throws LogicBaseException {
+    public DevTeam update(DevTeam devTeam, UserAccount authUser) throws LogicBaseException {
 
-        validateDevTeam(devTeam, authId);
+        validateDevTeam(devTeam, authUser);
         updateDevTeamMembers(devTeam);
         DevTeam dbDevTeam = database.update(devTeam);
 
@@ -157,10 +158,10 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
 
-    public UserAccount kickMember(UUID devTeamId, UUID memberId, UUID authId) throws LogicBaseException {
+    public UserAccount kickMember(UUID devTeamId, UUID memberId, UserAccount authUser) throws LogicBaseException {
         DevTeam devTeam = database.get(DevTeam.class, devTeamId);
 
-        if (!authId.equals(devTeam.getKanbanMaster().getId())) {
+        if (!authUser.getId().equals(devTeam.getKanbanMaster().getId())) {
             throw new OperationException("User is not KanbanMaster of this group", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
@@ -191,28 +192,33 @@ public class DevTeamService implements DevTeamServiceLocal {
     }
 
     @Override
-    public List<HistoryEvent> getDevTeamEvents(UUID devTeamId) throws LogicBaseException {
+    public List<HistoryEvent> getDevTeamEvents(UUID devTeamId, UserAccount authUser) throws LogicBaseException {
         DevTeam dt = this.database.get(DevTeam.class, devTeamId);
+        dt.queryMembership(database.getEntityManager(), authUser.getId());
 
-        List<HistoryEvent> events = new ArrayList<>();
+        if(dt.getMembership() != null) {
+            List<HistoryEvent> events = new ArrayList<>();
 
-        for (Membership m : dt.getJoinedUsers()) {
-            HistoryEvent createdEvent = new HistoryEvent();
-            createdEvent.setDate(m.getCreatedOn());
-            createdEvent.setEvent(String.format("User %s joined development team.", m.getUserAccount().getEmail()));
-            events.add(createdEvent);
+            for (Membership m : dt.getJoinedUsers()) {
+                HistoryEvent createdEvent = new HistoryEvent();
+                createdEvent.setDate(m.getCreatedOn());
+                createdEvent.setEvent(String.format("User %s joined development team.", m.getUserAccount().getEmail()));
+                events.add(createdEvent);
 
-            if (m.getIsDeleted()) {
-                HistoryEvent deletedEvent = new HistoryEvent();
-                deletedEvent.setDate(m.getEditedOn());
-                deletedEvent.setEvent(String.format("User %s left development team.", m.getUserAccount().getEmail()));
-                events.add(deletedEvent);
+                if (m.getIsDeleted()) {
+                    HistoryEvent deletedEvent = new HistoryEvent();
+                    deletedEvent.setDate(m.getEditedOn());
+                    deletedEvent.setEvent(String.format("User %s left development team.", m.getUserAccount().getEmail()));
+                    events.add(deletedEvent);
+                }
             }
+
+            events.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
+            return events;
+        } else {
+            throw new OperationException("User is not member of this dev team");
         }
-
-        events.sort((o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-        return events;
     }
 
 }

@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.UUID;
 
 
-public interface DevTeamSourceLocal extends CrudSourceImpl<DevTeam, UUID>, AuthImpl {
+public interface DevTeamSourceLocal extends CrudSourceImpl<DevTeam, UUID, UserAccount> {
 
-    List<HistoryEvent> getEvents(UUID devTeamId) throws Exception;
-    void demoteProductOwner(UUID devTeamId, UUID userId) throws Exception;
-    UserAccount kickMember(UUID devTeamId, UUID userId) throws Exception;
+    List<HistoryEvent> getEvents(UUID devTeamId, UserAccount authUser) throws Exception;
+    void demoteProductOwner(UUID devTeamId, UUID userId, UserAccount authUser) throws Exception;
+    UserAccount kickMember(UUID devTeamId, UUID userId, UserAccount authUser) throws Exception;
 
 }

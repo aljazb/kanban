@@ -24,7 +24,7 @@ import java.util.UUID;
 @PermitAll
 @Stateless
 @Local(BoardSourceLocal.class)
-public class BoardSource extends CrudSource<Board, UUID> implements BoardSourceLocal {
+public class BoardSource extends CrudSource<Board, UUID, UserAccount> implements BoardSourceLocal {
 
     @EJB
     private DatabaseServiceLocal database;
@@ -33,16 +33,13 @@ public class BoardSource extends CrudSource<Board, UUID> implements BoardSourceL
     private BoardServiceLocal service;
 
 
-    private UserAccount authUser;
-
-
     @PostConstruct
     private void init() {
         setDatabase(database);
     }
 
     @Override
-    public Paging<Board> getList(Class<Board> c, QueryParameters param) throws Exception {
+    public Paging<Board> getList(Class<Board> c, QueryParameters param, UserAccount authUser) throws Exception {
         CriteriaFilter<Board> filter = null;
         if(!authUser.getInRoleAdministrator()) {
             filter = (p, cb, r) -> {
@@ -55,12 +52,12 @@ public class BoardSource extends CrudSource<Board, UUID> implements BoardSourceL
             };
         }
 
-        return super.getList(c, param, filter, filter != null);
+        return super.getList(c, param, filter, filter != null, authUser);
     }
 
     @Override
-    public Board get(Class<Board> c, UUID id) throws Exception {
-        Board entity = super.get(c, id);
+    public Board get(Class<Board> c, UUID id, UserAccount authUser) throws Exception {
+        Board entity = super.get(c, id, authUser);
 
         entity.queryMembership(database.getEntityManager(), authUser.getId());
 
@@ -81,21 +78,13 @@ public class BoardSource extends CrudSource<Board, UUID> implements BoardSourceL
     }
 
     @Override
-    public Board create(Board newEntity) throws Exception {
+    public Board create(Board newEntity, UserAccount authUser) throws Exception {
         return service.create(newEntity, authUser);
     }
 
     @Override
-    public Board update(Board newEntity) throws Exception {
+    public Board update(Board newEntity, UserAccount authUser) throws Exception {
         return service.update(newEntity, authUser);
     }
 
-
-    public UserAccount getAuthUser() {
-        return authUser;
-    }
-
-    public void setAuthUser(UserAccount authUser) {
-        this.authUser = authUser;
-    }
 }
