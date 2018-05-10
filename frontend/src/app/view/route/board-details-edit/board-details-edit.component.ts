@@ -7,10 +7,9 @@ import {BoardBaseFormComponent} from '../../components/forms/board-form/board-ba
 import {ToasterService} from 'angular5-toaster/dist';
 import {Location} from '@angular/common';
 import {LocalBoardsService} from '../../../services/local-boards/local-boards.service';
-import {CardMoveConfirmationComponent} from '../../components/forms/card-move-confirmation/card-move-confirmation.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ColumnWipViolationConfirmationComponent} from '../../components/forms/column-wip-violation-confirmation/column-wip-violation-confirmation.component';
-import {Observable} from 'rxjs/Observable';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-board-details-edit',
@@ -40,6 +39,16 @@ export class BoardDetailsEditComponent implements OnInit {
     this.api.board.get(this.id).subscribe(board => this.init(board));
   }
 
+  private addInitialMaxWips(bp: BoardPart) {
+    this.initialMaxWips.set(bp.id, bp.maxWip);
+
+    if (!isNullOrUndefined(bp.children)) {
+      bp.children.forEach((child) => {
+        this.addInitialMaxWips(child);
+      });
+    }
+  }
+
   private init(board: Board): void {
     board.boardParts = board.boardParts.filter(value => value.parent == null); // Set root board parts
 
@@ -50,7 +59,7 @@ export class BoardDetailsEditComponent implements OnInit {
 
     this.initialMaxWips = new Map<string, number>();
     this.board.boardParts.forEach(bp => {
-      this.initialMaxWips.set(bp.id, bp.maxWip);
+      this.addInitialMaxWips(bp);
     });
   }
 
@@ -102,12 +111,22 @@ export class BoardDetailsEditComponent implements OnInit {
     this.location.back();
   }
 
+  private checkCurrentWipExceededInCol(bp: BoardPart, exceedingCols: string[]) {
+    if (this.initialMaxWips.has(bp.id) && this.initialMaxWips.get(bp.id) != bp.maxWip && bp.maxWip != 0 && bp.currentWip > bp.maxWip) {
+      exceedingCols.push(bp.name);
+    }
+
+    if (!isNullOrUndefined(bp.children)) {
+      bp.children.forEach((child) => {
+        this.checkCurrentWipExceededInCol(child, exceedingCols);
+      });
+    }
+  }
+
   private checkCurrentWipExceeded(): Promise<any> {
     let exceedingCols: string[] = [];
     this.board.boardParts.forEach(bp => {
-      if (this.initialMaxWips.has(bp.id) && this.initialMaxWips.get(bp.id) != bp.maxWip && bp.maxWip != 0 && bp.currentWip > bp.maxWip) {
-        exceedingCols.push(bp.name);
-      }
+      this.checkCurrentWipExceededInCol(bp, exceedingCols);
     });
 
     if (exceedingCols.length == 0) {
