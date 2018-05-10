@@ -67,7 +67,9 @@ public class ProjectSource extends CrudSource<Project, UUID> implements ProjectS
             }
         }
 
-        entity.getBoard().getHighestPriority(); // Fetch board
+        if(entity.getBoard() != null) {
+            entity.getBoard().getHighestPriority(); // Fetch board
+        }
         entity.getCards().size(); // Fetch cards
 
         return entity;
