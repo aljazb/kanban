@@ -45,7 +45,7 @@ public class CardService implements CardServiceLocal {
             throw new TransactionException("Board part does not exist");
         }
 
-        if(card.getSilverBullet()) {
+        if(card.getId() == null && card.getSilverBullet()) {
             for(Card dbCard : dbBp.getCards()) {
                 if(dbCard.getSilverBullet()) {
                     throw new TransactionException("Highest priority already contains silver bullet");
