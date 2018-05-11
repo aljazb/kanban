@@ -44,8 +44,9 @@
       <i class="fa fa-question-circle"></i>
     </a>
   </button>
+
   <span *ngIf="project.board && isAuthUserKanbanMaster" #pDown="ngbPopover" ngbPopover="Highest priority column already contains a silver bullet." popoverTitle="Limit exceeded" triggers="manual"
-        (mouseenter)="silverBulletLimitExceeded && pDown.open()" (mouseleave)="pDown.close()">
+        (mouseenter)="project.silverBulletInHighestPriority && pDown.open()" (mouseleave)="pDown.close()">
     <button class="btn btn-primary" (click)="openCardCreateModal()" [disabled]="project.silverBulletInHighestPriority">Create silver bullet
     <a target="_blank" href="https://jgasp.github.io/slate/#ustvarjanje-kartice-quot-silver-bullet-quot-quot"
        placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
@@ -54,6 +55,7 @@
     </a>
     </button>
   </span>
+
   <button *ngIf="isAuthUserKanbanMaster || isAuthUserOwner" type="button" class="btn btn-primary" (click)="openProjectCreateModal()">Edit
     <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-kartice"
        placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
