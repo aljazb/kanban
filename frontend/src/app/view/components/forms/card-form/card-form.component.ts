@@ -9,6 +9,9 @@ import {ApiService} from '../../../../api/services/api.service';
 import {Board} from '../../../../api/models/Board';
 import {Color, COLOR_PALETTE} from './utility/color';
 import {cTsToDp} from '../../../../utility';
+import {UserAccount} from '../../../../api/models/UserAccount';
+import {CardType} from '../../../../api/models/enums/card-type';
+import {DevTeam} from '../../../../api/models/DevTeam';
 
 @Component({
   selector: 'app-card-form',
@@ -21,10 +24,13 @@ export class CardFormComponent extends FormImpl {
   project = new Project();
 
   formCard: FormGroup;
+  fcCode: FormControl;
   fcName: FormControl;
+  fcCardType: FormControl;
   fcDescription: FormControl;
   fcWorkload: FormControl;
   fcColor: FormControl;
+  fcAssignedTo: FormControl;
 
   silverBulletLimitExceeded: boolean = false;
 
@@ -36,39 +42,56 @@ export class CardFormComponent extends FormImpl {
   isSilverBullet: boolean = false;
   boardPartId: string;
 
+  developerSelection: UserAccount[];
+  cardTypeSelection: CardType[];
+
   constructor(public activeModal: NgbActiveModal,
               private apiService: ApiService) {
     super();
     this.initFormControls();
     this.initFormGroup();
     this.colorSelection = COLOR_PALETTE;
+
+    this.cardTypeSelection = [CardType.MUST_HAVE, CardType.SHOULD_HAVE, CardType.COULD_HAVE];
   }
 
   initFormControls(): void {
+    this.fcCode = new FormControl('', Validators.required);
     this.fcName = new FormControl('', Validators.required);
+    this.fcCardType = new FormControl(CardType.MUST_HAVE, Validators.required);
     this.fcDescription = new FormControl('', Validators.required);
-    this.fcWorkload = new FormControl('', Validators.pattern('([0-9]+)'));
-    this.fcColor = new FormControl(null, Validators.required);
+    this.fcWorkload = new FormControl('');
+    this.fcColor = new FormControl('#499dcf', Validators.required);
+    this.fcAssignedTo = new FormControl(null);
   }
 
   initFormGroup(): void {
     this.formCard = new FormGroup({
+      code: this.fcCode,
       name: this.fcName,
+      cardType: this.fcCardType,
       description: this.fcDescription,
       workload: this.fcWorkload,
-      color: this.fcColor
+      color: this.fcColor,
+      assignedTo: this.fcAssignedTo
     });
   }
 
   setInitialCard(card: Card) {
     this.card = card;
+    this.fcCode.setValue(card.code);
     this.fcName.setValue(card.name);
+    this.fcCardType.setValue(card.cardType);
     this.fcDescription.setValue(card.description);
     this.fcWorkload.setValue(card.workload);
     this.fcColor.setValue(card.color);
+    this.fcAssignedTo.setValue(card.assignedTo == null ? null : card.assignedTo.id);
+
     this.isSilverBullet = card.silverBullet;
     this.boardPartId = card.boardPart.id;
-    this.project = card.project;
+
+    this.loadProject(card.project);
+    //this.project = card.project;
 
     if (this.isSilverBullet) {
       this.colorSelection = [Color.SILVER];
@@ -78,8 +101,21 @@ export class CardFormComponent extends FormImpl {
     }
   }
 
+  loadProject(project: Project) {
+    if(this.project == null || this.project.name == null) {
+      this.apiService.project.get(project.id).subscribe(value => {
+        this.setProject(value);
+      });
+    }
+  }
+
   setProject(project) {
     this.project = project;
+
+    this.apiService.devTeam.get(project.devTeam.id).subscribe(devTeam => {
+      this.developerSelection = DevTeam.getDevelopers(devTeam);
+    });
+
     this.apiService.board.get(this.project.board.id).subscribe(value => {
       this.leafBoardParts = Board.getLeafParts(value.boardParts);
       if (this.isSilverBullet) {
@@ -90,6 +126,7 @@ export class CardFormComponent extends FormImpl {
       } else {
         this.boardPartId = this.leafBoardParts[0].id;
       }
+
     });
   }
 
@@ -103,15 +140,27 @@ export class CardFormComponent extends FormImpl {
     if (this.formCard.valid) {
       let c = this.card;
 
+      c.code = this.fcCode.value;
       c.name = this.fcName.value;
+      c.cardType = this.fcCardType.value;
       c.description = this.fcDescription.value;
       c.workload = this.fcWorkload.value;
-      c.project = new Project();
-      c.project.id = this.project.id;
-      c.boardPart = new BoardPart();
-      c.boardPart.id = this.boardPartId;
+
       c.color = this.fcColor.value;
       c.silverBullet = this.isSilverBullet;
+
+      let devId = this.fcAssignedTo.value;
+      if(devId) {
+        c.assignedTo = this.developerSelection.find(value => value.id == devId);
+      } else {
+        c.assignedTo = null;
+      }
+
+      c.boardPart = new BoardPart();
+      c.boardPart.id = this.boardPartId;
+
+      c.project = new Project();
+      c.project.id = this.project.id;
 
       this.activeModal.close(c);
     }

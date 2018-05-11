@@ -79,7 +79,7 @@ export class ProjectDetailsComponent implements OnInit {
           this.router.navigate(['/card', value.id])
         }, error2 => {
           this.toaster.pop("error", "Error creating card");
-        }));
+        }), reason => {});
   }
 
   openDeleteConfirmationModal() {

@@ -5,6 +5,7 @@ import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.Membership;
+import si.fri.smrpo.kis.server.jpa.enums.CardType;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
 import si.fri.smrpo.kis.server.jpa.enums.RequestType;
@@ -233,6 +234,7 @@ public class SeedService {
     }
 
     private void createCards(Project project) throws DatabaseException {
+
         for(int i=0; i<5; i++) {
             BoardPart bp = testBoardPartLeafs.get(FAKER.number.between(0, testBoardPartLeafs.size()));
 
@@ -243,8 +245,14 @@ public class SeedService {
 
             c.setSilverBullet(false);
             c.setName(FAKER.app.name());
+            c.setCode(FAKER.app.name());
+            c.setCardType(CardType.values()[FAKER.number.between(0, 2)]);
             c.setDescription(FAKER.lorem.words(30).stream().collect(Collectors.joining(" ")));
             c.setWorkload(FAKER.number.between(1, 10));
+
+            if(testBoard.getStartDev() <= bp.getLeafNumber() && bp.getLeafNumber() <= testBoard.getEndDev()) {
+                c.setAssignedTo(developerAccount);
+            }
 
             String color = "#9cec9c";
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
+import si.fri.smrpo.kis.server.jpa.enums.CardType;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
@@ -23,6 +24,12 @@ public class Card extends UUIDEntity<Card> {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "code", nullable = false)
+    private String code;
+
+    @Column(name = "card_type", nullable = false)
+    private CardType cardType;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -45,6 +52,10 @@ public class Card extends UUIDEntity<Card> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_part_id", nullable = false)
     private BoardPart boardPart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_to_id")
+    private UserAccount assignedTo;
 
     @OneToMany(mappedBy = "card")
     private Set<CardMove> cardMoves;
@@ -146,5 +157,29 @@ public class Card extends UUIDEntity<Card> {
 
     public void setSilverBullet(Boolean silverBullet) {
         this.silverBullet = silverBullet;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public CardType getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
+    }
+
+    public UserAccount getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(UserAccount assignedTo) {
+        this.assignedTo = assignedTo;
     }
 }

@@ -1,0 +1,56 @@
+<div class="row">
+
+  <div class="col-sm-2 col-la">
+    <p>Card Moves</p>
+  </div>
+
+  <div class="col-sm-10">
+
+    <div class="list-group" *ngIf="paging && paging.count > 0">
+
+      <div *ngFor="let cm of paging.items" class="list-group-item list-group-item-action flex-column align-items-start">
+
+        <div *ngIf="cm.from.id != cm.to.id">
+          <p class="mb-1">User <strong>{{cm.movedBy.email}}</strong> moved card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.</p>
+          <p class="mb-1">From: <strong>{{cm.from.name}}</strong> To: <strong>{{cm.to.name}}</strong></p>
+          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == VALID"><strong>WIP Exceeded!</strong></p>
+        </div>
+
+        <div *ngIf="cm.from.id == cm.to.id">
+          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == INVALID_WIP_CHANGE">
+            User <strong>{{cm.movedBy.email}}</strong> violated WIP by reducing maximal WIP of board part
+            <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
+          </p>
+
+          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == INVALID_ON_CREATE">
+            User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
+            when creating card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
+          </p>
+
+          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == INVALID_SILVER_BULLET_ON_CREATE">
+            User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
+            when creating silver bullet at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
+          </p>
+
+        </div>
+      </div>
+
+      <ngb-pagination (pageChange)="refresh()"
+                      [collectionSize]="collectionSize"
+                      [pageSize]="pageSize"
+                      [(page)]="page"
+                      [maxSize]="5"
+                      [rotate]="true"
+                      [ellipses]="false"
+                      [boundaryLinks]="true">
+      </ngb-pagination>
+
+    </div>
+
+    <div *ngIf="paging == null || paging.count == 0">
+      <strong>No card moves!</strong>
+    </div>
+
+  </div>
+
+</div>

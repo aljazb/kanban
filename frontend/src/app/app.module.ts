@@ -48,6 +48,7 @@ import {LocalBoardsService} from './services/local-boards/local-boards.service';
 import { CardMoveConfirmationComponent } from './view/components/forms/card-move-confirmation/card-move-confirmation.component';
 import { CardMoveBackConfirmationComponent } from './view/components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
 import { ColumnWipViolationConfirmationComponent } from './view/components/forms/column-wip-violation-confirmation/column-wip-violation-confirmation.component';
+import { CardMovesPagingComponent } from './view/components/paging/card-moves-paging/card-moves-paging.component';
 
 
 @NgModule({
@@ -94,7 +95,8 @@ import { ColumnWipViolationConfirmationComponent } from './view/components/forms
     BoardDetailsEditComponent,
     CardMoveConfirmationComponent,
     CardMoveBackConfirmationComponent,
-    ColumnWipViolationConfirmationComponent
+    ColumnWipViolationConfirmationComponent,
+    CardMovesPagingComponent
   ],
   providers: [
     {

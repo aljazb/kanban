@@ -9,8 +9,10 @@ import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -51,26 +53,23 @@ public class DevTeam extends UUIDEntity<DevTeam> {
     @JsonIgnore
     public UserAccount getKanbanMaster() {
         return getJoinedUsers().stream()
-                .filter(membership -> !membership.getIsDeleted() &&
-                    (
-                        membership.getMemberType() == MemberType.DEVELOPER ||
-                        membership.getMemberType() == MemberType.DEVELOPER_AND_KANBAN_MASTER ||
-                        membership.getMemberType() == MemberType.DEVELOPER_AND_PRODUCT_OWNER
-                    )
-                )
+                .filter(m -> !m.getIsDeleted() && m.isKanbanMaster())
                 .map(Membership::getUserAccount)
                 .findFirst().orElse(null);
     }
 
     @JsonIgnore
+    public List<UserAccount> getDevelopers() {
+        return getJoinedUsers().stream()
+                .filter(m -> !m.getIsDeleted() && m.isDeveloper())
+                .map(Membership::getUserAccount)
+                .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
     public UserAccount getProductOwner() {
         return getJoinedUsers().stream()
-                .filter(membership -> !membership.getIsDeleted() &&
-                    (
-                       membership.getMemberType() == MemberType.PRODUCT_OWNER ||
-                       membership.getMemberType() == MemberType.DEVELOPER_AND_PRODUCT_OWNER
-                    )
-                )
+                .filter(m -> !m.getIsDeleted() && m.isProductOwner())
                 .map(Membership::getUserAccount)
                 .findFirst().orElse(null);
     }

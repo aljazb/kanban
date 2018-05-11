@@ -18,10 +18,8 @@ export class CardDetailsComponent implements OnInit {
 
   id: string;
   card: Card;
-  moves: CardMove[];
+  moves: CardMove[] = null;
   editEnabled: boolean = false;
-
-
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -36,7 +34,7 @@ export class CardDetailsComponent implements OnInit {
       this.card = card;
 
       if (card.cardMoves) {
-        this.moves = card.cardMoves.sort((a, b) => a.createdOn - b.createdOn);
+        this.moves = card.cardMoves.sort((a, b) => b.createdOn - a.createdOn);
       }
 
       this.checkEdit();
@@ -74,7 +72,7 @@ export class CardDetailsComponent implements OnInit {
       .then(value =>
         this.apiService.card.put(value, true).subscribe(value => {
           this.toaster.pop("success", "Card was updated");
-          this.router.navigate(['/card', value.id])
+          this.router.navigate(['/card', value.id]);
         }, error2 => {
           this.toaster.pop("error", "Error updating card");
         }));

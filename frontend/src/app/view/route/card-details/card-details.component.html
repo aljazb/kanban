@@ -1,11 +1,38 @@
 <div *ngIf="card" class="card">
+  <div class="card-header" [style.background]="card.color"></div>
+
   <div class="card-body">
 
-    <h4 class="card-title">Card details</h4>
+    <div class="row">
+      <div class="col-sm-10">
+        <h4 class="card-title">Card details</h4>
+      </div>
+
+      <div class="col-sm-2">
+        <button *ngIf="editEnabled" type="button" class="btn btn-primary pull-right" (click)="openCardEditModal()">Edit
+          <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-kartice"
+             placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+             (click)="$event.stopPropagation()">
+            <i class="fa fa-question-circle"></i>
+          </a>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <p class="col-sm-2 col-label">Code</p>
+      <p class="col-sm-10 col-label"><strong>{{card.code}}</strong></p>
+    </div>
 
     <div class="row">
       <p class="col-sm-2 col-label">Name</p>
       <p class="col-sm-10 col-label"><strong>{{card.name}}</strong></p>
+    </div>
+
+    <div class="row">
+      <p class="col-sm-2 col-label">Type</p>
+      <p class="col-sm-10 col-label"><strong>{{card.cardType.toString().replace("_", " ")}}</strong></p>
     </div>
 
     <div class="row">
@@ -16,6 +43,11 @@
     <div class="row">
       <p class="col-sm-2 col-label">Description</p>
       <p class="col-sm-10 col-label"><strong>{{ card.description }}</strong></p>
+    </div>
+
+    <div class="row">
+      <p class="col-sm-2 col-label">Assigned to</p>
+      <p class="col-sm-10 col-label"><strong>{{card.assignedTo == null ? '-' : card.assignedTo.email}}</strong></p>
     </div>
 
     <div class="row">
@@ -34,45 +66,8 @@
       </div>
     </div>
 
-    <button *ngIf="editEnabled" type="button" class="btn btn-primary" (click)="openCardEditModal()">Edit
-      <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-kartice"
-         placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
-         (click)="$event.stopPropagation()">
-        <i class="fa fa-question-circle"></i>
-      </a>
-    </button>
-
-    <div class="row mt-4">
-      <p class="col-sm-2 col-label">Card Moves</p>
-      <div class="col-sm-10 col-label">
-        <div class="list-group" *ngIf="card.cardMoves">
-          <div *ngFor="let cm of moves" class="list-group-item list-group-item-action flex-column align-items-start">
-            <div *ngIf="cm.from.id != cm.to.id">
-              <p class="mb-1">User <strong>{{cm.movedBy.email}}</strong> moved card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.</p>
-              <p class="mb-1">From: <strong>{{cm.from.name}}</strong> To: <strong>{{cm.to.name}}</strong></p>
-              <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == 'INVALID'"><strong>WIP Exceeded!</strong></p>
-            </div>
-            <div *ngIf="cm.from.id == cm.to.id">
-              <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == 'INVALID_WIP_CHANGE'">
-                User <strong>{{cm.movedBy.email}}</strong> violated WIP by reducing maximal WIP of board part
-                <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
-              </p>
-
-              <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == 'INVALID_ON_CREATE'">
-                User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
-                when creating card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
-              </p>
-
-              <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == 'INVALID_SILVER_BULLET_ON_CREATE'">
-                User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
-                when creating silver bullet at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
-              </p>
-
-            </div>
-          </div>
-        </div>
-        <div *ngIf="!card.cardMoves"><strong>No card moves!</strong></div>
-      </div>
+    <div class="mt-3">
+      <app-card-moves-paging [moves]="moves"></app-card-moves-paging>
     </div>
 
   </div>

@@ -72,8 +72,10 @@ public class CardSource extends CrudSource<Card, UUID, UserAccount> implements C
             throw new DatabaseException("User does not have permission.", ExceptionType.INSUFFICIENT_RIGHTS);
         }
 
-        // Fetch BoardPart and Board to check for edit access
-        entity.getBoardPart().getBoard().getHighestPriority();
+        entity.getBoardPart().getBoard().getHighestPriority(); // Fetch BoardPart and Board to check for edit access
+        if(entity.getAssignedTo() != null) {
+            entity.getAssignedTo().getEmail(); // Fetch assigned to user
+        }
         entity.getSubTasks().size();
         entity.getCardMoves().size();
 
