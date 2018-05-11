@@ -14,6 +14,8 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
+import java.awt.*;
+
 import static si.fri.smrpo.kis.server.jpa.entities.BoardPart.isMoveToAvailable;
 
 @PermitAll
@@ -41,6 +43,17 @@ public class CardMoveService implements CardMoveServiceLocal {
                 if(!m.isProductOwner()) {
                     throw new TransactionException("User is not in role product owner.");
                 }
+
+                String hex = card.getColor();
+
+                Color c = Color.decode(hex);
+                c = c.darker();
+
+                hex = String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
+
+                card.setColor(hex);
+
+
             } else {
                 throw new TransactionException("Movement for more than 1 field is not allowed.");
             }
@@ -52,7 +65,8 @@ public class CardMoveService implements CardMoveServiceLocal {
 
         } else if(
                 board.getStartDev() - 1 <= from && from <= board.getEndDev() + 1 &&
-                board.getStartDev() - 1 <= to   &&   to <= board.getEndDev() + 1) {
+                board.getStartDev() - 1 <= to   &&   to <= board.getEndDev() + 1)
+        {
             if(!m.isDeveloper()) {
                 throw new TransactionException("User is not allowed to move card in development columns.");
             }
