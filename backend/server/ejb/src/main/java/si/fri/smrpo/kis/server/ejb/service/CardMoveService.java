@@ -26,6 +26,15 @@ public class CardMoveService implements CardMoveServiceLocal {
     @EJB
     private DatabaseServiceLocal database;
 
+    private void handleRejectedCard(Card card ) {
+        String hex = card.getColor();
+        Color c = Color.decode(hex);
+        c = c.darker();
+        hex = String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
+        card.setColor(hex);
+        card.setRejected(true);
+    }
+
     private void validateAuthUserRights(Card card, BoardPart movedFrom, BoardPart movedTo) throws TransactionException {
         Board board = movedFrom.getBoard();
 
@@ -44,15 +53,7 @@ public class CardMoveService implements CardMoveServiceLocal {
                     throw new TransactionException("User is not in role product owner.");
                 }
 
-                String hex = card.getColor();
-
-                Color c = Color.decode(hex);
-                c = c.darker();
-
-                hex = String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
-
-                card.setColor(hex);
-
+                handleRejectedCard(card);
 
             } else {
                 throw new TransactionException("Movement for more than 1 field is not allowed.");
@@ -121,6 +122,7 @@ public class CardMoveService implements CardMoveServiceLocal {
 
     public CardMove create(CardMove cardMove, UserAccount authUser) throws LogicBaseException {
         validate(cardMove, authUser);
+
         cardMove = database.create(cardMove);
         moveCard(cardMove);
 

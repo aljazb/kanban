@@ -67,10 +67,8 @@ export class ProjectDetailsComponent implements OnInit {
 
   openCardCreateModal() {
     const modalRef = this.modalService.open(CardFormComponent);
-    (<CardFormComponent> modalRef.componentInstance).setProject(this.project);
-    if (this.isAuthUserKanbanMaster) {
-      (<CardFormComponent> modalRef.componentInstance).setIsSilverBullet();
-    }
+    (<CardFormComponent> modalRef.componentInstance).initCardCreation(this.project);
+
 
     modalRef.result
       .then(value =>

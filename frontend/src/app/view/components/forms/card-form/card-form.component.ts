@@ -12,6 +12,9 @@ import {cTsToDp} from '../../../../utility';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {CardType} from '../../../../api/models/enums/card-type';
 import {DevTeam} from '../../../../api/models/DevTeam';
+import {LoginService} from '../../../../api/services/login.service';
+import {MemberType} from '../../../../api/models/enums/MemberType';
+import {Membership} from '../../../../api/models/Membership';
 
 @Component({
   selector: 'app-card-form',
@@ -32,12 +35,7 @@ export class CardFormComponent extends FormImpl {
   fcColor: FormControl;
   fcAssignedTo: FormControl;
 
-  silverBulletLimitExceeded: boolean = false;
-
-  colorSelection: Color[];
-
   isFormSubmitted: boolean = false;
-  leafBoardParts: BoardPart[];
 
   isSilverBullet: boolean = false;
   boardPartId: string;
@@ -46,11 +44,11 @@ export class CardFormComponent extends FormImpl {
   cardTypeSelection: CardType[];
 
   constructor(public activeModal: NgbActiveModal,
-              private apiService: ApiService) {
+              private apiService: ApiService,
+              private loginService: LoginService) {
     super();
     this.initFormControls();
     this.initFormGroup();
-    this.colorSelection = COLOR_PALETTE;
 
     this.cardTypeSelection = [CardType.MUST_HAVE, CardType.SHOULD_HAVE, CardType.COULD_HAVE];
   }
@@ -77,7 +75,7 @@ export class CardFormComponent extends FormImpl {
     });
   }
 
-  setInitialCard(card: Card) {
+  setCard(card: Card) {
     this.card = card;
     this.fcCode.setValue(card.code);
     this.fcName.setValue(card.name);
@@ -91,47 +89,51 @@ export class CardFormComponent extends FormImpl {
     this.boardPartId = card.boardPart.id;
 
     this.loadProject(card.project);
-    //this.project = card.project;
-
-    if (this.isSilverBullet) {
-      this.colorSelection = [Color.SILVER];
-      this.fcColor.disable();
-    } else {
-      this.fcColor.patchValue(card.color);
-    }
   }
 
   loadProject(project: Project) {
     if(this.project == null || this.project.name == null) {
-      this.apiService.project.get(project.id).subscribe(value => {
-        this.setProject(value);
+      this.apiService.project.get(project.id).subscribe(p => {
+        this.setProject(p);
       });
     }
   }
 
-  setProject(project) {
+  initCardCreation(project: Project) {
+    this.setProject(project);
+
+    if(Membership.isKanbanMaster(this.project.membership)) {
+      this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
+      this.boardPartId = this.project.highestPriorityId;
+    } else {
+      this.boardPartId = this.project.firstColumnId;
+    }
+  }
+
+  setProject(project: Project) {
     this.project = project;
 
     this.apiService.devTeam.get(project.devTeam.id).subscribe(devTeam => {
       this.developerSelection = DevTeam.getDevelopers(devTeam);
     });
 
-    this.apiService.board.get(this.project.board.id).subscribe(value => {
-      this.leafBoardParts = Board.getLeafParts(value.boardParts);
-      if (this.isSilverBullet) {
-        this.colorSelection = [Color.SILVER];
-        this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
-        this.fcColor.disable();
-        this.boardPartId = this.leafBoardParts[value.highestPriority].id;
-      } else {
-        this.boardPartId = this.leafBoardParts[0].id;
-      }
-
-    });
+    this.setEditingRights();
   }
 
-  setIsSilverBullet() {
-    this.isSilverBullet = true;
+
+  setEditingRights() {
+    let m = this.project.membership;
+    if(Membership.isDeveloper(m)) {
+      this.fcName.disable();
+      this.fcCode.disable();
+      this.fcCardType.disable();
+    } else if(Membership.isProductOwner(m)) {
+      this.fcAssignedTo.disable();
+      this.fcWorkload.disable();
+    } else if(Membership.isKanbanMaster(m)) {
+      this.fcName.disable();
+      this.fcCode.disable();
+    }
   }
 
   onSubmit() {

@@ -20,6 +20,10 @@ export class Project extends BaseEntity<Project> {
   board: Board;
 
   membership: Membership;
+
   firstColumnFull: boolean;
   silverBulletInHighestPriority: boolean;
+
+  highestPriorityId: string;
+  firstColumnId: string;
 }

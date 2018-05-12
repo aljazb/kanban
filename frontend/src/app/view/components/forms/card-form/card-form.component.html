@@ -44,15 +44,6 @@
       </div>
     </div>
 
-
-    <div class="form-group row">
-      <label for="in-workload" class="col-sm-3 col-form-label">Workload</label>
-      <div class="col-sm-9">
-        <input type="number" name="card-workload" class="form-control" id="in-workload" placeholder="Workload"
-               formControlName="workload">
-      </div>
-    </div>
-
     <div class="form-group row">
       <label for="in-color" class="col-sm-3 col-form-label">Color</label>
       <div class="col-sm-9">
@@ -60,6 +51,14 @@
         <div class="invalid-feedback" *ngIf="fcColor.hasError('required')">
           Color is required
         </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-workload" class="col-sm-3 col-form-label">Workload</label>
+      <div class="col-sm-9">
+        <input type="number" name="card-workload" class="form-control" id="in-workload" placeholder="Workload"
+               formControlName="workload">
       </div>
     </div>
 

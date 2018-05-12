@@ -40,6 +40,11 @@ public class Card extends UUIDEntity<Card> {
     @Column(name = "color")
     private String color;
 
+    @Database(update = false)
+    @Column(name = "rejected", nullable = false)
+    private Boolean rejected;
+
+    @Database(update = false)
     @Column(name = "silver_bullet", nullable = false)
     private Boolean silverBullet;
 
@@ -181,5 +186,13 @@ public class Card extends UUIDEntity<Card> {
 
     public void setAssignedTo(UserAccount assignedTo) {
         this.assignedTo = assignedTo;
+    }
+
+    public Boolean getRejected() {
+        return rejected;
+    }
+
+    public void setRejected(Boolean rejected) {
+        this.rejected = rejected;
     }
 }

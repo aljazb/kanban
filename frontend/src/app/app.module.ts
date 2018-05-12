@@ -49,6 +49,7 @@ import { CardMoveConfirmationComponent } from './view/components/forms/card-move
 import { CardMoveBackConfirmationComponent } from './view/components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
 import { ColumnWipViolationConfirmationComponent } from './view/components/forms/column-wip-violation-confirmation/column-wip-violation-confirmation.component';
 import { CardMovesPagingComponent } from './view/components/paging/card-moves-paging/card-moves-paging.component';
+import { AnalysisComponent } from './view/route/analysis/analysis.component';
 
 
 @NgModule({
@@ -96,7 +97,8 @@ import { CardMovesPagingComponent } from './view/components/paging/card-moves-pa
     CardMoveConfirmationComponent,
     CardMoveBackConfirmationComponent,
     ColumnWipViolationConfirmationComponent,
-    CardMovesPagingComponent
+    CardMovesPagingComponent,
+    AnalysisComponent
   ],
   providers: [
     {

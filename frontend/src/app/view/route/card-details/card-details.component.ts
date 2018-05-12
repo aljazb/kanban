@@ -66,7 +66,7 @@ export class CardDetailsComponent implements OnInit {
 
   openCardEditModal() {
     const modalRef = this.modalService.open(CardFormComponent);
-    (<CardFormComponent> modalRef.componentInstance).setInitialCard(this.card);
+    (<CardFormComponent> modalRef.componentInstance).setCard(this.card);
 
     modalRef.result
       .then(value =>
@@ -75,7 +75,7 @@ export class CardDetailsComponent implements OnInit {
           this.router.navigate(['/card', value.id]);
         }, error2 => {
           this.toaster.pop("error", "Error updating card");
-        }));
+        }), reason => {});
   }
 
 }

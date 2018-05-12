@@ -89,7 +89,12 @@ public class CardService implements CardServiceLocal {
                     }
                 }
             } else {
-                if(dbBoard.getAcceptanceTesting() <= cardColumn) {
+                if(dbBoard.getStartDev() <= cardColumn && cardColumn <= dbBoard.getEndDev()) {
+                    if(!(m.isDeveloper() || m.isKanbanMaster())) {
+                        throw new TransactionException("Card in columns between start and end dev can be edited only by kanban master and developer",
+                                ExceptionType.INSUFFICIENT_RIGHTS);
+                    }
+                } else if(dbBoard.getAcceptanceTesting() <= cardColumn) {
                     throw new TransactionException("Card can not be edited in columns after acceptance testing",
                             ExceptionType.INSUFFICIENT_RIGHTS);
                 } else if(dbBoard.getHighestPriority() >= cardColumn) {
@@ -97,12 +102,7 @@ public class CardService implements CardServiceLocal {
                         throw new TransactionException("Card in columns before highest priority can be edited only by kanban master and product owner",
                                 ExceptionType.INSUFFICIENT_RIGHTS);
                     }
-                } else if(dbBoard.getStartDev() <= cardColumn && cardColumn <= dbBoard.getEndDev()) {
-                    if(!(m.isDeveloper() || m.isKanbanMaster())) {
-                        throw new TransactionException("Card in columns between start and end dev can be edited only by kanban master and developer",
-                                ExceptionType.INSUFFICIENT_RIGHTS);
-                    }
-                } else {
+                } else  {
                     if(!m.isKanbanMaster()) {
                         throw new TransactionException("Card in transitional columns can only be edited by kanban master",
                                 ExceptionType.INSUFFICIENT_RIGHTS);
@@ -139,6 +139,7 @@ public class CardService implements CardServiceLocal {
     @Override
     public Card create(Card card, UserAccount authUser) throws Exception {
         if(card.getSilverBullet() == null) card.setSilverBullet(false);
+        if(card.getRejected() == null) card.setRejected(false);
 
         validate(card);
         checkAccess(card, authUser);

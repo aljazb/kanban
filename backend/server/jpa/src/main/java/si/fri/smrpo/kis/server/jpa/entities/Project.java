@@ -77,6 +77,12 @@ public class Project extends UUIDEntity<Project> {
     private Boolean firstColumnFull = false;
 
     @Transient
+    private UUID highestPriorityId;
+
+    @Transient
+    private UUID firstColumnId;
+
+    @Transient
     private Boolean silverBulletInHighestPriority = false;
 
     @JsonIgnore
@@ -87,11 +93,13 @@ public class Project extends UUIDEntity<Project> {
             for (BoardPart leaf : b.buildLeavesBoardParts()) {
                 if (leaf.getLeafNumber() == 0) {
                     firstColumnFull = !BoardPart.isMoveToAvailable(leaf, null, false);
+                    firstColumnId = leaf.getId();
                 }
                 if (leaf.getLeafNumber().equals(b.getHighestPriority())) {
                     for (Card c : leaf.getCards()) {
                         if (c.getSilverBullet()) {
                             silverBulletInHighestPriority = true;
+                            highestPriorityId = leaf.getId();
                             break;
                         }
                     }
@@ -206,5 +214,21 @@ public class Project extends UUIDEntity<Project> {
 
     public void setSilverBulletInHighestPriority(Boolean silverBulletInHighestPriority) {
         this.silverBulletInHighestPriority = silverBulletInHighestPriority;
+    }
+
+    public UUID getHighestPriorityId() {
+        return highestPriorityId;
+    }
+
+    public void setHighestPriorityId(UUID highestPriorityId) {
+        this.highestPriorityId = highestPriorityId;
+    }
+
+    public UUID getFirstColumnId() {
+        return firstColumnId;
+    }
+
+    public void setFirstColumnId(UUID firstColumnId) {
+        this.firstColumnId = firstColumnId;
     }
 }

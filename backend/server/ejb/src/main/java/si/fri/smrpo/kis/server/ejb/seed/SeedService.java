@@ -243,6 +243,7 @@ public class SeedService {
             c.setProject(project);
             c.setBoardPart(bp);
 
+            c.setRejected(false);
             c.setSilverBullet(false);
             c.setName(FAKER.app.name());
             c.setCode(FAKER.app.name());
@@ -266,6 +267,9 @@ public class SeedService {
             }
 
             c.setColor(color);
+
+            if(i == 1) c.setSilverBullet(true);
+            if(i == 3) c.setRejected(true);
 
             c = database.create(c);
 

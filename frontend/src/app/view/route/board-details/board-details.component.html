@@ -37,7 +37,7 @@
               <tr *ngFor="let tr of boardRepresentation.projectTable">
                 <td class="lane-name hover-pointer">
                   <a routerLink="/project/{{tr.project.id}}" >
-                    {{tr.project.name}}
+                    [{{tr.project.name}}]
                   </a>
                 </td>
                 <td *ngFor="let td of tr.cardTables" class="align-top">
@@ -54,6 +54,8 @@
                           </button>
 
                           <a routerLink="/card/{{c.id}}">{{c.name}}</a>
+                          <br>
+                          {{c.cardType.toString().replace("_", " ")}}
 
                           <button type="button" class="btn btn-sm btn-primary"
                                   (click)="moveCardRight(c, td.currentBoardPart, td.rightBoardPart)"
