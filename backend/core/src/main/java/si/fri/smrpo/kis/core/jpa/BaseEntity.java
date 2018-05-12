@@ -317,7 +317,6 @@ public abstract class BaseEntity<E extends BaseEntity, I extends Serializable> i
         return new EntityTag(String.valueOf(this.editedOn.getTime()));
     }
 
-
     public Integer getVersion() {
         return version;
     }

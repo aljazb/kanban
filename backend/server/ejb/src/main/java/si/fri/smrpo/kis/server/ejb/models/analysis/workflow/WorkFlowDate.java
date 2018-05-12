@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class WorkFlowDate {
 
@@ -20,13 +17,19 @@ public class WorkFlowDate {
     @JsonProperty("series")
     private ArrayList<WorkFlowColumn> columns;
 
+    @JsonIgnore
+    private HashMap<UUID, WorkFlowColumn> map;
 
     public WorkFlowDate(Date date, List<BoardPart> leafs) {
         this.date = trimDate(date);
 
+        map = new HashMap<>();
         columns = new ArrayList<>();
         for (BoardPart bp : leafs) {
-            columns.add(new WorkFlowColumn(bp));
+            WorkFlowColumn wfc = new WorkFlowColumn(bp);
+
+            map.put(bp.getId(), wfc);
+            columns.add(wfc);
         }
     }
 
@@ -57,7 +60,10 @@ public class WorkFlowDate {
     }
 
     public void inc(BoardPart bp) {
-        columns.get(bp.getLeafNumber()).incCount();
+        WorkFlowColumn wfc = map.get(bp.getId());
+        if(wfc != null) {
+            wfc.incCount();
+        }
     }
 
     public Date getDate() {

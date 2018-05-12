@@ -209,14 +209,14 @@
     <div class="col-12 mt-5">
 
       <ngb-tabset>
-        <ngb-tab title="Work flow">
+        <ngb-tab title="Card workflow diagram">
           <ng-template ngbTabContent>
 
             <div class="row">
 
               <div class="col-12" *ngIf="leafBoardPartsSelection">
 
-                <div class="col-12">
+                <div class="col-12 mt-3 mb-3">
                   Select columns
                 </div>
 
@@ -251,11 +251,20 @@
 
             </div>
 
-            <div class="row">
+            <div class="row" *ngIf="workflowNgxDataSet">
 
-              <div class="col-12" *ngIf="workflowNgxDataSet">
+              <div class="col-12 mt-5 mb-5" style="height: 600px;">
 
-                <ngx-charts-bar-vertical-2d [showXAxisLabel]="true" [showYAxisLabel]="true" [results]="workflowNgxDataSet" ></ngx-charts-bar-vertical-2d>
+                <ngx-charts-bar-vertical-2d
+                  [legend]="true"
+                  [xAxisLabel]="'Date'"
+                  [showXAxisLabel]="true"
+                  [xAxis]="true"
+                  [yAxisLabel]="'Number of cards'"
+                  [showYAxisLabel]="true"
+                  [yAxis]="true"
+                  [results]="workflowNgxDataSet"
+                ></ngx-charts-bar-vertical-2d>
 
               </div>
 

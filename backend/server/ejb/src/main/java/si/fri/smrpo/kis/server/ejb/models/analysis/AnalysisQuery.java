@@ -20,8 +20,8 @@ public class AnalysisQuery {
     private Integer workloadFrom;
     private Integer workloadTo;
 
-    private Boolean isSilverBullet;
-    private Boolean isRejected;
+    private Boolean silverBullet;
+    private Boolean rejected;
     private Boolean newFunctionality;
 
 
@@ -98,19 +98,19 @@ public class AnalysisQuery {
     }
 
     public Boolean getSilverBullet() {
-        return isSilverBullet;
+        return silverBullet;
     }
 
     public void setSilverBullet(Boolean silverBullet) {
-        isSilverBullet = silverBullet;
+        this.silverBullet = silverBullet;
     }
 
     public Boolean getRejected() {
-        return newFunctionality;
+        return rejected;
     }
 
     public void setRejected(Boolean rejected) {
-        newFunctionality = rejected;
+        this.rejected = rejected;
     }
 
     public Boolean getNewFunctionality() {

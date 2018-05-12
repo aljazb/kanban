@@ -45,7 +45,7 @@ public class AnalysisService implements AnalysisServiceLocal {
         return null;
     }
 
-    private CardMove getDone(Card card, Board board) {
+    private CardMove getFinished(Card card, Board board) {
 
         for(CardMove cm : card.getCardMoves()) {
             if(board.getAcceptanceTesting() + 1 == cm.getTo().getLeafNumber()) {
@@ -62,7 +62,7 @@ public class AnalysisService implements AnalysisServiceLocal {
         for(Card c : cards) {
 
             if(query.getNewFunctionality() != null) {
-                if(query.getRejected() || query.getSilverBullet()) {
+                if(c.getRejected() || c.getSilverBullet()) {
                     continue;
                 }
             }
@@ -108,7 +108,7 @@ public class AnalysisService implements AnalysisServiceLocal {
                 if(devStart == null) {
                     continue;
                 } else {
-                    if(query.getDevStartFrom().after(devStart.getCreatedOn())) {
+                    if(!devStart.getCreatedOn().after(query.getDevStartFrom())) {
                         continue;
                     }
                 }
@@ -118,28 +118,28 @@ public class AnalysisService implements AnalysisServiceLocal {
                 if(devStart == null) {
                     continue;
                 } else {
-                    if(query.getDevStartTo().before(devStart.getCreatedOn())) {
+                    if(!devStart.getCreatedOn().before(query.getDevStartTo())) {
                         continue;
                     }
                 }
             }
 
-            CardMove devDone = getDone(c, board);
-            if(query.getDevStartFrom() != null) {
-                if(devDone == null) {
+            CardMove devFinished = getFinished(c, board);
+            if(query.getFinishedFrom() != null) {
+                if(devFinished == null) {
                     continue;
                 } else {
-                    if(query.getDevStartFrom().after(devDone.getCreatedOn())) {
+                    if(!devFinished.getCreatedOn().after(query.getFinishedFrom())) {
                         continue;
                     }
                 }
             }
 
-            if(query.getDevStartTo() != null) {
-                if(devDone == null) {
+            if(query.getFinishedTo() != null) {
+                if(devFinished == null) {
                     continue;
                 } else {
-                    if(query.getDevStartTo().after(devDone.getCreatedOn())) {
+                    if(!devFinished.getCreatedOn().before(query.getFinishedTo())) {
                         continue;
                     }
                 }
@@ -179,26 +179,30 @@ public class AnalysisService implements AnalysisServiceLocal {
         }
         cardMoves.sort(Comparator.comparing(CardMove::getCreatedOn));
 
+        Set<UUID> ids = query.getLeafBoardParts().stream().map(BoardPart::getId).collect(Collectors.toSet());
 
         List<BoardPart> leaves = b.getBoardParts().stream()
-                .filter(boardPart -> boardPart.getLeafNumber() != null)
+                .filter(boardPart -> ids.contains(boardPart.getId()))
                 .sorted(Comparator.comparing(BoardPart::getLeafNumber))
                 .collect(Collectors.toList());
 
 
+
         WorkFlowResponse response = new WorkFlowResponse();
 
-        WorkFlowDate date = new WorkFlowDate(cardMoves.get(0).getCreatedOn(), leaves);
-        response.addDate(date);
+        if(!cardMoves.isEmpty()) {
+            WorkFlowDate date = new WorkFlowDate(cardMoves.get(0).getCreatedOn(), leaves);
+            response.addDate(date);
 
-        for(CardMove cm : cardMoves) {
+            for(CardMove cm : cardMoves) {
 
-            if(!date.equalDate(cm.getCreatedOn())) {
-                date = new WorkFlowDate(cm.getCreatedOn(), leaves);
-                response.addDate(date);
+                if(!date.equalDate(cm.getCreatedOn())) {
+                    date = new WorkFlowDate(cm.getCreatedOn(), leaves);
+                    response.addDate(date);
+                }
+
+                date.inc(cm.getTo());
             }
-
-            date.inc(cm.getTo());
         }
 
         return response;

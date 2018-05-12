@@ -150,9 +150,9 @@ export class AnalysisComponent implements OnInit {
     this.fcIsSilverBullet.valueChanges.subscribe(value => {
       if(value) {
         this.resetType(this.fcIsSilverBullet);
-        this.query.isSilverBullet = value;
+        this.query.silverBullet = value;
       } else {
-        delete this.query.isSilverBullet;
+        delete this.query.silverBullet;
       }
     });
 
@@ -160,9 +160,9 @@ export class AnalysisComponent implements OnInit {
     this.fcIsRejected.valueChanges.subscribe(value => {
       if(value) {
         this.resetType(this.fcIsRejected);
-        this.query.isRejected = value;
+        this.query.rejected = value;
       } else {
-        delete this.query.isRejected;
+        delete this.query.rejected;
       }
     });
 
@@ -225,7 +225,7 @@ export class AnalysisComponent implements OnInit {
       }
     });
 
-
+    this.workflowNgxDataSet = null;
     this.api.analysis.getWorkFlow(query).subscribe(value => {
       this.workflowNgxDataSet = value;
     });

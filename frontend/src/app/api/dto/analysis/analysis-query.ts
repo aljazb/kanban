@@ -16,8 +16,8 @@ export class AnalysisQuery {
     workloadFrom: number;
     workloadTo: number;
 
-    isSilverBullet: boolean;
-    isRejected: boolean;
+    silverBullet: boolean;
+    rejected: boolean;
     newFunctionality: boolean;
 
 }

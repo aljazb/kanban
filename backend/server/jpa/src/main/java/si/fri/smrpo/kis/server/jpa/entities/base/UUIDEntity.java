@@ -47,4 +47,11 @@ public abstract class UUIDEntity<E extends UUIDEntity> extends BaseEntity<E, UUI
         return map;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof UUIDEntity) {
+            return id.equals(((UUIDEntity) obj).getId());
+        }
+        return false;
+    }
 }

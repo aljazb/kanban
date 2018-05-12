@@ -1,6 +1,7 @@
 package si.fri.smrpo.kis.server.ejb.seed;
 
 import io.bloco.faker.Faker;
+import javafx.scene.paint.Color;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
@@ -268,8 +269,13 @@ public class SeedService {
 
             c.setColor(color);
 
-            if(i == 1) c.setSilverBullet(true);
-            if(i == 3) c.setRejected(true);
+            if(i == 1) {
+                c.setSilverBullet(true);
+                c.setColor("#C0C0C0");
+            } else if(i == 3) {
+                c.setRejected(true);
+                c.setColor("#000000");
+            }
 
             c = database.create(c);
 
