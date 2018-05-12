@@ -46,7 +46,11 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-12">
+        <div class="col-12 mb-2" *ngIf="boardPart.currentWip != null">
+          Current WIP: {{boardPart.currentWip}}
+        </div>
+
+        <div class="col-12">
           <div class="pull-left">
             {{getName()}}
           </div>
