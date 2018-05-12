@@ -9,6 +9,7 @@ import {ProjectResource} from '../resource/ProjectResource';
 import {UserAccountResource} from '../resource/UserAccountResource';
 import {RequestResource} from '../resource/RequestResource';
 import {CardMoveResource} from '../resource/CardMoveResource';
+import {AnalysisResource} from '../resource/analysis-resource';
 
 @Injectable()
 export class ApiService {
@@ -24,6 +25,8 @@ export class ApiService {
   public userAccount: UserAccountResource;
   public request: RequestResource;
   public cardMove: CardMoveResource;
+
+  public analysis: AnalysisResource;
 
   constructor(
     public httpClient: HttpClient) {
@@ -42,6 +45,8 @@ export class ApiService {
     this.userAccount = new UserAccountResource(this);
     this.request = new RequestResource(this);
     this.cardMove = new CardMoveResource(this);
+
+    this.analysis = new AnalysisResource(this);
   }
 
 

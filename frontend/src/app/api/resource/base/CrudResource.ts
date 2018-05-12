@@ -40,6 +40,4 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
       .pipe(map(content => this.deserialize(content)));
   }
 
-
-
 }

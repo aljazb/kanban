@@ -26,6 +26,14 @@ public class AnalysisService implements AnalysisServiceLocal {
     private DatabaseServiceLocal database;
 
 
+    @Override
+    public List<Project> getProjects(UserAccount authUser) throws LogicBaseException {
+        return database.getEntityManager()
+                .createNamedQuery("projects.with.membership.kanban-master", Project.class)
+                .setParameter("userId", authUser.getId())
+                .getResultList();
+    }
+
     private CardMove getStartDev(Card card, Board board) {
 
         for(CardMove cm : card.getCardMoves()) {
@@ -52,6 +60,12 @@ public class AnalysisService implements AnalysisServiceLocal {
         ArrayList<Card> filteredCards = new ArrayList<>();
 
         for(Card c : cards) {
+
+            if(query.getNewFunctionality() != null) {
+                if(query.getRejected() || query.getSilverBullet()) {
+                    continue;
+                }
+            }
 
             if(query.getRejected() != null) {
                 if(query.getRejected() != c.getRejected()) {
@@ -172,19 +186,19 @@ public class AnalysisService implements AnalysisServiceLocal {
                 .collect(Collectors.toList());
 
 
-
-        WorkFlowDate date = null;
         WorkFlowResponse response = new WorkFlowResponse();
+
+        WorkFlowDate date = new WorkFlowDate(cardMoves.get(0).getCreatedOn(), leaves);
+        response.addDate(date);
 
         for(CardMove cm : cardMoves) {
 
-            if(date == null || !date.getDate().equals(cm.getCreatedOn())) {
+            if(!date.equalDate(cm.getCreatedOn())) {
                 date = new WorkFlowDate(cm.getCreatedOn(), leaves);
                 response.addDate(date);
             }
 
             date.inc(cm.getTo());
-
         }
 
         return response;

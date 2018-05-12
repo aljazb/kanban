@@ -9,4 +9,11 @@ public class WorkFlowQuery extends AnalysisQuery {
 
     private Set<BoardPart> leafBoardParts;
 
+    public Set<BoardPart> getLeafBoardParts() {
+        return leafBoardParts;
+    }
+
+    public void setLeafBoardParts(Set<BoardPart> leafBoardParts) {
+        this.leafBoardParts = leafBoardParts;
+    }
 }

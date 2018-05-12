@@ -1,11 +1,10 @@
-import {BaseEntity} from '../../models/base/BaseEntity';
-import {HttpHeaders, HttpResponse} from '@angular/common/http';
+import {HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {isNullOrUndefined} from 'util';
 import {ApiService} from '../../services/api.service';
 
-export abstract class BaseResource<T extends BaseEntity<T>> {
+export abstract class BaseResource<T> {
 
   protected api: ApiService;
   protected url: string;
@@ -38,14 +37,14 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
     };
   }
 
-  protected deserialize<E extends BaseEntity<E>>(content: any): E {
-    let obj = <E> this.api.jsog.deserialize(content);
+  protected deserialize(content: any): any {
+    let obj = this.api.jsog.deserialize(content);
     this.deleteIds(obj);
     return obj;
   }
 
-  protected deserializeArray<E extends BaseEntity<E>>(content: any): E[] {
-    let obj = <E[]> this.api.jsog.deserialize(content);
+  protected deserializeArray(content: any): any {
+    let obj = this.api.jsog.deserialize(content);
     this.deleteIds(obj);
     return obj;
   }
@@ -67,20 +66,6 @@ export abstract class BaseResource<T extends BaseEntity<T>> {
 
   protected serialize(entity) {
     return this.api.jsog.serialize(entity);
-  }
-
-  protected buildLocation(resp: HttpResponse<T>): T {
-    let entity = resp.body;
-    if(entity == null) {
-      let locationId = resp.headers.get('location');
-      if(locationId) {
-        locationId = locationId.substr(locationId.indexOf("/") + 1);
-
-        entity = {} as T;
-        entity.id = locationId;
-      }
-    }
-    return entity;
   }
 
 }

@@ -26,4 +26,18 @@ export abstract class GetResource<T extends BaseEntity<T>> extends BaseResource<
       .pipe(map(content => this.deserialize(content)));
   }
 
+  protected buildLocation(resp: HttpResponse<T>): T {
+    let entity = resp.body;
+    if(entity == null) {
+      let locationId = resp.headers.get('location');
+      if(locationId) {
+        locationId = locationId.substr(locationId.indexOf("/") + 1);
+
+        entity = {} as T;
+        entity.id = locationId;
+      }
+    }
+    return entity;
+  }
+
 }

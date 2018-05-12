@@ -22,7 +22,7 @@ public class AnalysisQuery {
 
     private Boolean isSilverBullet;
     private Boolean isRejected;
-
+    private Boolean newFunctionality;
 
 
     public Project getProject() {
@@ -106,10 +106,18 @@ public class AnalysisQuery {
     }
 
     public Boolean getRejected() {
-        return isRejected;
+        return newFunctionality;
     }
 
     public void setRejected(Boolean rejected) {
-        isRejected = rejected;
+        newFunctionality = rejected;
+    }
+
+    public Boolean getNewFunctionality() {
+        return newFunctionality;
+    }
+
+    public void setNewFunctionality(Boolean newFunctionality) {
+        this.newFunctionality = newFunctionality;
     }
 }

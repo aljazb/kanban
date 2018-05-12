@@ -5,8 +5,7 @@ import si.fri.smrpo.kis.core.logic.dto.Paging;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.rest.enums.CacheControlType;
 
-import si.fri.smrpo.kis.core.rest.resource.base.BaseResource;
-import si.fri.smrpo.kis.core.rest.source.GetSource;
+import si.fri.smrpo.kis.core.rest.resource.base.BaseEntityResource;
 import si.fri.smrpo.kis.core.rest.source.interfaces.GetSourceImpl;
 
 import javax.ws.rs.GET;
@@ -22,7 +21,7 @@ public abstract class GetResource<
             E extends BaseEntity<E, UUID>,
             S extends GetSourceImpl<E, UUID, A>,
             A extends Serializable
-        > extends BaseResource<E, S, UUID, A> {
+        > extends BaseEntityResource<E, S, UUID, A> {
 
     protected int defaultMaxLimit = 50;
 

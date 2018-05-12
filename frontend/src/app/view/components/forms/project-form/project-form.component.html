@@ -101,7 +101,7 @@
                 formControlName="devTeam"
                 [ngClass]="{ 'is-invalid': fcDevTeam.touched && fcDevTeam.invalid }">
           <option [ngValue]="null">Select team</option>
-          <option *ngFor="let devTeam of devTeams" [ngValue]="devTeam.id">{{devTeam.name}}</option>z
+          <option *ngFor="let devTeam of devTeams" [ngValue]="devTeam.id">{{devTeam.name}}</option>
         </select>
         <div class="invalid-feedback" *ngIf="fcDevTeam.hasError('required')">
           Dev team is required

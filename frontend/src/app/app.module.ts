@@ -1,19 +1,19 @@
 import {APP_INITIALIZER, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
-import { BrowserModule }  from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { HttpClientModule }    from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { KeycloakInitializer } from './api/keycloak/keycloak-init';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AppRoutingModule }     from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 
 import { KeycloakAuthGuardService } from './api/keycloak/keycloak-auth-guard.service';
 
-import { AppComponent }         from './app.component';
-import { DashboardComponent }   from './view/route/dashboard/dashboard.component';
-import { HeaderComponent }   from './view/base/header/header.component';
+import { AppComponent } from './app.component';
+import { DashboardComponent } from './view/route/dashboard/dashboard.component';
+import { HeaderComponent } from './view/base/header/header.component';
 import { FooterComponent } from './view/base/footer/footer.component';
 import { DevTeamComponent } from './view/route/dev-team/dev-team.component';
 import { ProjectComponent } from './view/route/project/project.component';
@@ -50,6 +50,7 @@ import { CardMoveBackConfirmationComponent } from './view/components/forms/card-
 import { ColumnWipViolationConfirmationComponent } from './view/components/forms/column-wip-violation-confirmation/column-wip-violation-confirmation.component';
 import { CardMovesPagingComponent } from './view/components/paging/card-moves-paging/card-moves-paging.component';
 import { AnalysisComponent } from './view/route/analysis/analysis.component';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { AnalysisComponent } from './view/route/analysis/analysis.component';
     HttpClientModule,
     KeycloakAngularModule,
     ToasterModule,
+    NgxChartsModule,
     NgbModule.forRoot()
   ],
   declarations: [

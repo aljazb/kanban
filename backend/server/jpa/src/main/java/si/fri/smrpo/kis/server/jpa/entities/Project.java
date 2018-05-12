@@ -18,7 +18,15 @@ import java.util.UUID;
 @NamedQueries({
         @NamedQuery(name = "project.membership",
                 query = "SELECT m FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers m JOIN m.userAccount ua " +
-                        "WHERE p.id = :projectId AND dt = m.devTeam AND m.userAccount = ua AND ua.id = :userId AND m.isDeleted = false")
+                        "WHERE p.id = :projectId AND dt = m.devTeam AND m.userAccount = ua AND ua.id = :userId AND m.isDeleted = false"),
+        @NamedQuery(name = "projects.with.membership.kanban-master",
+                query = "SELECT p FROM Project p JOIN p.devTeam dt JOIN dt.joinedUsers m JOIN m.userAccount ua " +
+                        "WHERE dt = m.devTeam " +
+                        "AND (" +
+                        "m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER OR " +
+                        "m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER" +
+                        ") " +
+                        "AND m.userAccount = ua AND ua.id = :userId AND m.isDeleted = false")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Project extends UUIDEntity<Project> {

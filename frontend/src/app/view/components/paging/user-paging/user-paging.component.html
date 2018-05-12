@@ -4,29 +4,40 @@
 
     <div class="list-group-item list-group-item-primary">
       <div class="row">
-        <div class="col-sm-4">
+
+        <div class="col-2">
           Users
         </div>
-        <div>
-          <div class="row" *ngIf="enableSearch">
 
-            <div class="col-md-8">
+        <div class="col-10" *ngIf="enableSearch">
+          <div class="row">
+
+            <div class="col-6">
               <div class="form-group">
                 <input #searchIn type="text" class="form-control" placeholder="search"
                        (keyup)="search(searchIn.value, isDeleted.checked)">
               </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-6">
               <div class="form-group">
-                <input #isDeleted type="checkbox" id="in-isDeleted"
-                       (click)="search(searchIn.value, isDeleted.checked)">
-                  <label id="delLabel" for="in-isDeleted">Deleted</label>
+                <div class="row">
+                  <div class="col-6">Deleted</div>
+                  <div class="col-6">
+                    <div class="material-switch">
+                      <input #isDeleted class="form-control" id="is-deleted" name="is-deleted" type="checkbox"
+                             (click)="search(searchIn.value, isDeleted.checked)">
+                      <label for="is-deleted" class="bg-primary"></label>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
           </div>
         </div>
+
+
       </div>
     </div>
 
