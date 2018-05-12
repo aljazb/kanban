@@ -19,7 +19,7 @@ public class WorkFlowColumn {
 
     @JsonProperty("name")
     public String getName() {
-        return boardPart.getName();
+        return String.format("%s [%d]",boardPart.getName(), boardPart.getLeafNumber()) ;
     }
 
     public void incCount() {

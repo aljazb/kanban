@@ -226,7 +226,7 @@
                     <div class="list-inline-item border p-2 m-1 hover-pointer" *ngFor="let bp of leafBoardPartsSelection"
                          (click)="bp.isActive = ! bp.isActive">
                       <div class="col-12">
-                      {{bp.boardPart.name}}
+                      {{bp.boardPart.name}} [{{bp.boardPart.leafNumber}}]
                       </div>
                       <div class="col-12 col-centered">
                         <i class="fa fa-check fa-2x" style="color: green" *ngIf="bp.isActive"></i>

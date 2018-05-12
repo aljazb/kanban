@@ -64,6 +64,8 @@ export class AnalysisComponent implements OnInit {
         let bps = Board.getLeafParts(board.boardParts);
         bps.sort((a, b) => a.leafNumber - b.leafNumber);
 
+        console.log(bps);
+
         this.leafBoardPartsSelection = [];
         bps.forEach(bp => {
           this.leafBoardPartsSelection.push(new BoardPartSelection(bp));
