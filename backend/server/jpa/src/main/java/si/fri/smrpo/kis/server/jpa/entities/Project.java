@@ -104,11 +104,10 @@ public class Project extends UUIDEntity<Project> {
                     firstColumnId = leaf.getId();
                 }
                 if (leaf.getLeafNumber().equals(b.getHighestPriority())) {
+                    highestPriorityId = leaf.getId();
                     for (Card c : leaf.getCards()) {
                         if (c.getSilverBullet()) {
                             silverBulletInHighestPriority = true;
-                            highestPriorityId = leaf.getId();
-                            break;
                         }
                     }
                 }

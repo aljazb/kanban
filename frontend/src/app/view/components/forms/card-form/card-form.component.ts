@@ -105,6 +105,7 @@ export class CardFormComponent extends FormImpl {
     if(Membership.isKanbanMaster(this.project.membership)) {
       this.fcColor.patchValue(Color.SILVER.hexBackgroundColor);
       this.boardPartId = this.project.highestPriorityId;
+      this.isSilverBullet = true;
     } else {
       this.boardPartId = this.project.firstColumnId;
     }
@@ -131,8 +132,10 @@ export class CardFormComponent extends FormImpl {
       this.fcAssignedTo.disable();
       this.fcWorkload.disable();
     } else if(Membership.isKanbanMaster(m)) {
-      this.fcName.disable();
-      this.fcCode.disable();
+      if(this.card.id) {
+        this.fcName.disable();
+        this.fcCode.disable();
+      }
     }
   }
 
