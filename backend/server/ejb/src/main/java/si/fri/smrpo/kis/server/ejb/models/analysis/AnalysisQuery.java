@@ -17,6 +17,9 @@ public class AnalysisQuery {
     private Date devStartFrom;
     private Date devStartTo;
 
+    private Date showFrom;
+    private Date showTo;
+
     private Integer workloadFrom;
     private Integer workloadTo;
 
@@ -119,5 +122,21 @@ public class AnalysisQuery {
 
     public void setNewFunctionality(Boolean newFunctionality) {
         this.newFunctionality = newFunctionality;
+    }
+
+    public Date getShowFrom() {
+        return showFrom;
+    }
+
+    public void setShowFrom(Date showFrom) {
+        this.showFrom = showFrom;
+    }
+
+    public Date getShowTo() {
+        return showTo;
+    }
+
+    public void setShowTo(Date showTo) {
+        this.showTo = showTo;
     }
 }

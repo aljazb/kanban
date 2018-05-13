@@ -31,7 +31,42 @@
 
           <div class="row">
 
-            <div class="col-3">
+            <div class="col-3 border">
+              <p> Show </p>
+
+              <div class="form-group row">
+                <label for="query-show-from" class="col-sm-2 col-form-label">From</label>
+                <div class="col" id="query-show-from">
+                  <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" #sf="ngbDatepicker" name="query-show-from"
+                           formControlName="showFrom" ngbDatepicker>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" (click)="sf.toggle()" type="button">
+                        <img src="https://ng-bootstrap.github.io/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="query-show-from" class="col-sm-2 col-form-label">To</label>
+                <div class="col" id="query-show-to">
+                  <div class="input-group">
+                    <input class="form-control" placeholder="yyyy-mm-dd" #st="ngbDatepicker" name="query-show-to"
+                           formControlName="showTo" ngbDatepicker>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" (click)="st.toggle()" type="button">
+                        <img src="https://ng-bootstrap.github.io/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-3 border">
             <p> Created </p>
 
             <div class="form-group row">
@@ -66,7 +101,7 @@
 
           </div>
 
-            <div class="col-3">
+            <div class="col-3 border">
               <p> Development start </p>
 
               <div class="form-group row">
@@ -101,7 +136,7 @@
 
             </div>
 
-            <div class="col-3">
+            <div class="col-3 border">
               <p> Finished </p>
 
               <div class="form-group row">
@@ -136,7 +171,7 @@
 
             </div>
 
-            <div class="col-3">
+            <div class="col-3 border">
               <p> Workload </p>
 
               <div class="form-group row">
@@ -159,7 +194,7 @@
 
             </div>
 
-            <div class="col-6">
+            <div class="col-6 border">
 
               <div class="row mt-2 mb-2">
                 <div class="col-4">
@@ -200,6 +235,7 @@
             </div>
 
           </div>
+
         </div>
 
       </form>
@@ -251,20 +287,49 @@
 
             </div>
 
-            <div class="row" *ngIf="workflowNgxDataSet">
+            <div class="row" *ngIf="workflowNgxDataSetDisplay">
 
               <div class="col-12 mt-5 mb-5" style="height: 600px;">
 
-                <ngx-charts-bar-vertical-2d
-                  [legend]="true"
-                  [xAxisLabel]="'Date'"
-                  [showXAxisLabel]="true"
-                  [xAxis]="true"
-                  [yAxisLabel]="'Number of cards'"
-                  [showYAxisLabel]="true"
-                  [yAxis]="true"
-                  [results]="workflowNgxDataSet"
-                ></ngx-charts-bar-vertical-2d>
+                <div class="col-2">
+                  <label>
+                    Columns displayed
+                  </label>
+                  <div class="form-group">
+                    <input class="form-control" type="number" #maxWf
+                           value="{{wfMaxDisplay}}"
+                           (change)="updateDisplay(0, maxWf.value)"/>
+                  </div>
+                </div>
+
+                <div *ngIf="showWfGraph">
+
+                  <div class="slidecontainer">
+                    <input class="slider" id="myRange" #wfs
+                           type="range"
+                           min="0"
+                           max="{{getWorkflowMaxValue()}}"
+                           value="{{wfScrollValue}}"
+                           (change)="workflowScrollChanged(wfs.value)">
+                  </div>
+
+                  <div class="graph">
+                    <ngx-charts-bar-vertical-2d
+                      [legend]="true"
+                      [xAxisLabel]="'Date'"
+                      [showXAxisLabel]="true"
+                      [xAxis]="true"
+                      [yAxisLabel]="'Number of cards'"
+                      [showYAxisLabel]="true"
+                      [yAxis]="true"
+                      [results]="workflowNgxDataSetDisplay"
+                    ></ngx-charts-bar-vertical-2d>
+                  </div>
+
+                </div>
+
+                <div class="mt-5">
+                </div>
 
               </div>
 

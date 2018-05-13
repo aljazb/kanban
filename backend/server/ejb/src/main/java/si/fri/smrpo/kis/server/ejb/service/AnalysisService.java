@@ -191,12 +191,24 @@ public class AnalysisService implements AnalysisServiceLocal {
         WorkFlowResponse response = new WorkFlowResponse();
 
         if(!cardMoves.isEmpty()) {
-            WorkFlowDate date = new WorkFlowDate(cardMoves.get(0).getCreatedOn(), leaves);
-            response.addDate(date);
+            WorkFlowDate date = null;
 
             for(CardMove cm : cardMoves) {
 
-                if(!date.equalDate(cm.getCreatedOn())) {
+                if(query.getShowFrom() != null) {
+                    if(query.getShowFrom().after(cm.getCreatedOn())) {
+                        continue;
+                    }
+                }
+
+                if(query.getShowTo() != null) {
+                    if(query.getShowTo().before(cm.getCreatedOn())) {
+                        continue;
+                    }
+                }
+
+
+                if(date == null || !date.equalDate(cm.getCreatedOn())) {
                     date = new WorkFlowDate(cm.getCreatedOn(), leaves);
                     response.addDate(date);
                 }

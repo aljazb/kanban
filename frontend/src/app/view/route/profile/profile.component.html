@@ -18,11 +18,11 @@
       {{ request.sender.email }}:
       {{ request.context }}
       <div>
-        <div *ngIf="request.requestStatus.toString() == requestStatus.PENDING">
+        <div *ngIf="request.requestStatus.toString() == rs.PENDING">
           <button (click)="acceptRequest(request)" type="button" class="btn btn-success">Accept</button>
           <button (click)="declineRequest(request)" type="button" class="btn btn-danger">Decline</button>
         </div>
-        <span *ngIf="request.requestStatus.toString() != requestStatus.PENDING" class="badge badge-primary badge-pill">{{ request.requestStatus }}</span>
+        <span *ngIf="request.requestStatus.toString() != rs.PENDING" class="badge badge-primary badge-pill">{{ request.requestStatus }}</span>
       </div>
     </li>
   </ul>
@@ -37,10 +37,10 @@
       {{ request.receiver.email }}:
       {{ request.context }}
       <div>
-        <div *ngIf="request.requestStatus.toString() == requestStatus.PENDING">
+        <div *ngIf="request.requestStatus.toString() == rs.PENDING">
           <button (click)="cancelRequest(request)" type="button" class="btn btn-danger">Cancel</button>
         </div>
-        <span *ngIf="request.requestStatus.toString() != requestStatus.PENDING" class="badge badge-primary badge-pill">{{ request.requestStatus }}</span>
+        <span *ngIf="request.requestStatus.toString() != rs.PENDING" class="badge badge-primary badge-pill">{{ request.requestStatus }}</span>
       </div>
     </li>
   </ul>

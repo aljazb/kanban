@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Project} from '../../../api/models/Project';
 import {AnalysisQuery} from '../../../api/dto/analysis/analysis-query';
@@ -18,6 +18,8 @@ import {NgxDataSet} from '../../../api/dto/ngx/grouped-series/ngx-data-set';
 })
 export class AnalysisComponent implements OnInit {
 
+  @ViewChild('wfGraph') wfGraph: ElementRef;
+
   query: AnalysisQuery = new AnalysisQuery();
 
   projectSelection: Project[];
@@ -25,6 +27,9 @@ export class AnalysisComponent implements OnInit {
   formQuery: FormGroup;
 
   fcProject: FormControl;
+
+  fcShowFrom: FormControl;
+  fcShowTo: FormControl;
 
   fcCreatedFrom: FormControl;
   fcCreatedTo: FormControl;
@@ -44,7 +49,12 @@ export class AnalysisComponent implements OnInit {
 
   leafBoardPartsSelection: BoardPartSelection[];
 
-  workflowNgxDataSet: NgxDataSet;
+  workflowNgxDataSet: NgxDataSet[];
+
+  workflowNgxDataSetDisplay: NgxDataSet[];
+  wfScrollValue: number;
+  wfMaxDisplay: number = 4;
+  showWfGraph: boolean = false;
 
   constructor(private api: ApiService) {
     api.analysis.getProjects().subscribe(value => this.projectSelection = value);
@@ -63,14 +73,29 @@ export class AnalysisComponent implements OnInit {
       this.api.board.get(value.board.id).subscribe(board => {
         let bps = Board.getLeafParts(board.boardParts);
         bps.sort((a, b) => a.leafNumber - b.leafNumber);
-
-        console.log(bps);
-
         this.leafBoardPartsSelection = [];
         bps.forEach(bp => {
           this.leafBoardPartsSelection.push(new BoardPartSelection(bp));
         });
       });
+    });
+
+    this.fcShowFrom = new FormControl();
+    this.fcShowFrom.valueChanges.subscribe(value => {
+      if(value == null) {
+        delete this.query.showFrom;
+      } else{
+        this.query.showFrom = cDpToTs(value);
+      }
+    });
+
+    this.fcShowTo = new FormControl();
+    this.fcShowTo.valueChanges.subscribe(value => {
+      if(value == null) {
+        delete this.query.showTo;
+      } else{
+        this.query.showTo = cDpToTs(value);
+      }
     });
 
     this.fcCreatedFrom = new FormControl();
@@ -196,6 +221,8 @@ export class AnalysisComponent implements OnInit {
   initFormGroup(): void {
     this.formQuery = new FormGroup({
       project: this.fcProject,
+      showFrom: this.fcShowFrom,
+      showTo: this.fcShowTo,
       createdFrom: this.fcCreatedFrom,
       createdTo: this.fcCreatedTo,
       finishedFrom: this.fcFinishedFrom,
@@ -229,9 +256,36 @@ export class AnalysisComponent implements OnInit {
 
     this.workflowNgxDataSet = null;
     this.api.analysis.getWorkFlow(query).subscribe(value => {
-      this.workflowNgxDataSet = value;
+      this.setWorkflowNgxDataSet(value);
     });
 
+  }
+
+  private setWorkflowNgxDataSet(dataSet: NgxDataSet[]) {
+    this.workflowNgxDataSetDisplay = null;
+    this.workflowNgxDataSet = dataSet;
+    this.updateDisplay(0);
+  }
+
+  updateDisplay(value: number, max:number=null): void {
+    this.showWfGraph = false;
+    if(max) this.wfMaxDisplay = Number(max);
+    this.wfScrollValue = value;
+    this.workflowNgxDataSetDisplay = this.workflowNgxDataSet.slice(this.wfScrollValue, this.wfScrollValue + this.wfMaxDisplay);
+    this.showWfGraph = true;
+  }
+
+  getWorkflowMaxValue(){
+    if(this.workflowNgxDataSet) {
+      return this.workflowNgxDataSet.length - this.wfMaxDisplay;
+    } else {
+      return 0;
+    }
+  }
+
+
+  workflowScrollChanged(value: number) {
+    this.updateDisplay(Number(value));
   }
 
 }

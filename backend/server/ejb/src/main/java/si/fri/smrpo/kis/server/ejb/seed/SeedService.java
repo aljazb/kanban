@@ -1,9 +1,11 @@
 package si.fri.smrpo.kis.server.ejb.seed;
 
 import io.bloco.faker.Faker;
-import javafx.scene.paint.Color;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
+import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.CardMoveServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.CardServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.Membership;
 import si.fri.smrpo.kis.server.jpa.enums.CardType;
@@ -36,19 +38,26 @@ public class SeedService {
     private UserAccount kanbanMasterAccount;
     private UserAccount productOwnerAccount;
 
-    private static final Integer BOARD_PARTS_NUMBER = 4;
-    private static final Integer CARD_NUMBER_MIN = 3;
-    private static final Integer CARD_NUMBER_MAX = 10;
-
 
     @EJB
     private DatabaseServiceLocal database;
 
+    @EJB
+    private CardMoveServiceLocal cardMoveService;
+
+    @EJB
+    private CardServiceLocal cardService;
+
+
     private DevTeam testDevTeam;
-    private Project testProject;
-    private Project testProject2;
     private Board testBoard;
-    private ArrayList<BoardPart> testBoardPartLeafs;
+    private HashMap<Integer, BoardPart> testBoardPartLeafs;
+
+    private Project testProject1;
+    private ArrayList<Card> testCards1;
+
+    private Project testProject2;
+    private ArrayList<Card> testCards2;
 
 
     @PostConstruct
@@ -62,7 +71,8 @@ public class SeedService {
                 generateProjects();
                 generateCards();
                 generateRequests();
-            } catch (DatabaseException e) {
+                generateCardMoves();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -156,56 +166,102 @@ public class SeedService {
 
         testBoard = new Board();
         testBoard.setOwner(kanbanMasterAccount);
-        testBoard.setName(FAKER.app.name());
-        testBoard = database.create(testBoard);
+        testBoard.setName("Kanbanize");
 
+        testBoard.setHighestPriority(1);
+        testBoard.setStartDev(2);
+        testBoard.setEndDev(6);
+        testBoard.setAcceptanceTesting(7);
+
+        testBoard = database.create(testBoard);
+    }
+
+
+    private BoardPart createBoardPart(String name, Integer maxWip) {
+        BoardPart bp = new BoardPart();
+        bp.setCurrentWip(0);
+        bp.setBoard(testBoard);
+        bp.setMaxWip(maxWip);
+        bp.setName(name);
+        return bp;
     }
 
     private void generateBoardParts() throws DatabaseException {
-        testBoardPartLeafs = new ArrayList<>();
+        testBoardPartLeafs = new HashMap<>();
 
-        for(int i=0; i<4; i++) {
-            BoardPart bp = new BoardPart();
-            bp.setCurrentWip(0);
-            bp.setOrderIndex(i);
-            bp.setBoard(testBoard);
-            bp.setMaxWip(FAKER.number.between(7, 15));
-            bp.setName(FAKER.app.name());
+        BoardPart bp = createBoardPart("Product backlog", 0);
+        bp.setOrderIndex(0);
+        bp.setLeafNumber(0);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
 
-            bp = database.create(bp);
+        bp = createBoardPart("Next", 4);
+        bp.setOrderIndex(1);
+        bp.setLeafNumber(1);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
 
-            if(Math.random() > 0.5) {
+        BoardPart bpD = createBoardPart("Development", 6);
+        bpD.setOrderIndex(2);
+        bpD = database.create(bpD);
 
-                database.update(bp);
 
-                for(int j=0; j<2; j++){
-                    BoardPart sbp = new BoardPart();
-                    sbp.setCurrentWip(0);
-                    sbp.setOrderIndex(j);
-                    sbp.setBoard(testBoard);
 
-                    int maxWip = FAKER.number.between(5, 10);
-                    sbp.setMaxWip(Math.min(maxWip, bp.getMaxWip()));
-                    sbp.setName(FAKER.app.name());
-                    sbp.setParent(bp);
+        bp = createBoardPart("Analysis & Design", 0);
+        bp.setOrderIndex(0);
+        bp.setLeafNumber(2);
+        bp.setParent(bpD);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
 
-                    sbp = database.create(sbp);
+        bp = createBoardPart("Coding", 0);
+        bp.setOrderIndex(1);
+        bp.setLeafNumber(3);
+        bp.setParent(bpD);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
 
-                    testBoardPartLeafs.add(sbp);
-                }
-            } else {
-                testBoardPartLeafs.add(bp);
-            }
+        bp = createBoardPart("Testing", 0);
+        bp.setOrderIndex(2);
+        bp.setLeafNumber(4);
+        bp.setParent(bpD);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
 
-            for(int index=0; index<testBoardPartLeafs.size(); index++) {
-                testBoardPartLeafs.get(index).setLeafNumber(index);
-            }
-        }
+        bp = createBoardPart("Integration", 0);
+        bp.setOrderIndex(3);
+        bp.setLeafNumber(5);
+        bp.setParent(bpD);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
 
-        testBoard.setHighestPriority(0);
-        testBoard.setStartDev(1);
-        testBoard.setEndDev(2);
-        testBoard.setAcceptanceTesting(3);
+        bp = createBoardPart("Documentation", 0);
+        bp.setOrderIndex(4);
+        bp.setLeafNumber(6);
+        bp.setParent(bpD);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
+
+
+
+        bp = createBoardPart("Acceptance ready", 4);
+        bp.setOrderIndex(3);
+        bp.setLeafNumber(7);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
+
+        bp = createBoardPart("Acceptance", 2);
+        bp.setOrderIndex(4);
+        bp.setLeafNumber(8);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
+
+        bp = createBoardPart("Done", 0);
+        bp.setOrderIndex(5);
+        bp.setLeafNumber(9);
+        bp = database.create(bp);
+        testBoardPartLeafs.put(bp.getLeafNumber(), bp);
+
 
         testBoard = database.update(testBoard);
     }
@@ -230,58 +286,52 @@ public class SeedService {
     }
 
     private void generateProjects() throws DatabaseException {
-        testProject = createProject();
+        testProject1 = createProject();
         testProject2 = createProject();
     }
 
-    private void createCards(Project project) throws DatabaseException {
 
-        for(int i=0; i<5; i++) {
-            BoardPart bp = testBoardPartLeafs.get(FAKER.number.between(0, testBoardPartLeafs.size()));
+
+    private void createCards(Project project, ArrayList<Card> testCards) throws Exception {
+        database.getEntityManager().flush();
+
+        BoardPart firstColumn = testBoardPartLeafs.get(0);
+        firstColumn.setCards(new HashSet<>());
+
+        BoardPart highestPriorityColumn = testBoardPartLeafs.get(1);
+        highestPriorityColumn.setCards(new HashSet<>());
+
+        for(int i=0; i<10; i++) {
 
             Card c = new Card();
 
-            c.setProject(project);
-            c.setBoardPart(bp);
-
-            c.setRejected(false);
-            c.setSilverBullet(false);
             c.setName(FAKER.app.name());
             c.setCode(FAKER.app.name());
             c.setCardType(CardType.values()[FAKER.number.between(0, 2)]);
             c.setDescription(FAKER.lorem.words(30).stream().collect(Collectors.joining(" ")));
             c.setWorkload(FAKER.number.between(1, 10));
 
-            if(testBoard.getStartDev() <= bp.getLeafNumber() && bp.getLeafNumber() <= testBoard.getEndDev()) {
-                c.setAssignedTo(developerAccount);
-            }
+            c.setProject(project);
+            c.setRejected(false);
 
-            String color = "#9cec9c";
 
-            switch (FAKER.number.between(0, 5)) {
-                case 0: color = "#0450fb"; break;
-                case 1: color = "#df541e"; break;
-                case 2: color = "#58fcc1"; break;
-                case 3: color = "#a10f6f"; break;
-                case 4: color = "#e81f3f"; break;
-                case 5: color = "#7bff47"; break;
-            }
-
-            c.setColor(color);
-
-            if(i == 1) {
+            if(i == 0) {
                 c.setSilverBullet(true);
                 c.setColor("#C0C0C0");
-            } else if(i == 3) {
-                c.setRejected(true);
-                c.setColor("#000000");
+                c.setBoardPart(highestPriorityColumn);
+                c = cardService.create(c, kanbanMasterAccount);
+                highestPriorityColumn.getCards().add(c);
+            } else {
+                c.setSilverBullet(false);
+                c.setColor("#df541e");
+                c.setBoardPart(firstColumn);
+                c = cardService.create(c, productOwnerAccount);
+                firstColumn.getCards().add(c);
             }
 
-            c = database.create(c);
+            testCards.add(c);
 
-            bp.incWip(database);
-
-            int tasks = FAKER.number.between(1,5);
+            int tasks = FAKER.number.between(0,3);
             for(int t=0; t<tasks; t++){
                 SubTask st = new SubTask();
                 st.setName(FAKER.app.name());
@@ -294,12 +344,15 @@ public class SeedService {
         }
     }
 
-    private void generateCards() throws DatabaseException {
-        createCards(testProject);
-        createCards(testProject2);
+    private void generateCards() throws Exception {
+        testCards1 = new ArrayList<>();
+        createCards(testProject1, testCards1);
+
+        testCards2 = new ArrayList<>();
+        createCards(testProject2, testCards2);
     }
 
-    private void generateRequests() throws DatabaseException {
+    private void generateRequests() throws Exception {
 
         Request request = new Request();
         request.setRequestType(RequestType.KANBAN_MASTER_INVITE);
@@ -310,6 +363,117 @@ public class SeedService {
         request.setReferenceId(testDevTeam.getId());
 
         database.create(request);
+    }
+
+
+    private int nextMove(double total, double completed) {
+        if(Math.random() < 0.20) {
+            return 0; // no movement
+        } else {
+            double k = (total - completed) / total;
+            if(Math.random() <= k) {
+                return 1; // move right
+            } else {
+                return -1; // move left
+            }
+        }
+    }
+
+    private void generateCardMove(ArrayList<Card> testCards) throws Exception {
+
+        int hp = testBoard.getHighestPriority();
+        int sd = testBoard.getStartDev();
+        int ed = testBoard.getEndDev();
+        int at = testBoard.getAcceptanceTesting();
+
+        int completed = 0;
+
+        for(Card c : testCards) {
+            database.getEntityManager().flush();
+
+            int dayBefore = 8 + (int)(Math.random() * 8);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            cal.add(Calendar.DATE, -dayBefore);
+
+            for(int d=0; d<dayBefore; d++) {
+                int column = c.getBoardPart().getLeafNumber();
+
+                if(column == testBoardPartLeafs.size() - 1) {
+                    completed++;
+                    break;
+                }
+
+                cal.add(Calendar.DATE, 1);
+
+                CardMove cm = new CardMove();
+                cm.setCard(c);
+
+                if(column == at) {
+                    if(Math.random() > 0.2) {
+                        int rColumn = column + 1;
+                        BoardPart right = testBoardPartLeafs.get(rColumn);
+                        cm.setTo(right);
+
+                        cm = cardMoveService.create(cm, productOwnerAccount);
+                        cm.setCreatedOn(cal.getTime());
+                        cm.setEditedOn(cal.getTime());
+                    } else {
+                        BoardPart colHp = testBoardPartLeafs.get(hp);
+                        cm.setTo(colHp);
+
+                        cm = cardMoveService.create(cm, productOwnerAccount);
+                        cm.setCreatedOn(cal.getTime());
+                        cm.setEditedOn(cal.getTime());
+                    }
+                } else {
+                    int next = nextMove(testCards.size(), completed);
+                    if(next == 1 && column < testBoardPartLeafs.size() - 1) {
+                        int rColumn = column + 1;
+                        BoardPart right = testBoardPartLeafs.get(rColumn);
+                        cm.setTo(right);
+
+                        UserAccount authUser = kanbanMasterAccount;
+                        if(column < hp) {
+                            authUser = productOwnerAccount;
+                        } else if(sd - 1 <= column && column <= ed) {
+                            authUser = developerAccount;
+                        } else if(column >= at) {
+                            authUser = productOwnerAccount;
+                        }
+
+                        cm = cardMoveService.create(cm, authUser);
+                        cm.setCreatedOn(cal.getTime());
+                        cm.setEditedOn(cal.getTime());
+                    } else if(next == -1 && column > 0 && column <= at) {
+                        int lColumn = column - 1;
+                        BoardPart left = testBoardPartLeafs.get(lColumn);
+                        cm.setTo(left);
+
+                        UserAccount authUser = kanbanMasterAccount;
+                        if(column <= hp) {
+                            authUser = productOwnerAccount;
+                        } else if(sd + 1 <= column && column <= ed) {
+                            authUser = developerAccount;
+                        } else if(column >= at) {
+                            continue;
+                        }
+
+                        cm = cardMoveService.create(cm, authUser);
+                        cm.setCreatedOn(cal.getTime());
+                        cm.setEditedOn(cal.getTime());
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    private void generateCardMoves() throws Exception {
+        generateCardMove(testCards1);
+        generateCardMove(testCards2);
     }
 
 }

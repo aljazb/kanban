@@ -13,11 +13,13 @@ import {UserAccount} from '../../../api/models/UserAccount';
 })
 export class ProfileComponent implements OnInit {
 
+  rs = RequestStatus;
+
   user: UserAccount;
 
   sentRequests: Request[];
   receivedRequests: Request[];
-  requestStatus = new RequestStatus();
+
 
   constructor(
     private api: ApiService,

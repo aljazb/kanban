@@ -16,8 +16,11 @@ import {CardMoveType} from '../../../../api/models/enums/CardMoveType';
 })
 export class CardMovesPagingComponent extends PagingImpl<CardMove> implements OnInit {
 
+  cmt = CardMoveType;
+
   @Input()
   moves: CardMove[];
+
 
   constructor() {
     super();

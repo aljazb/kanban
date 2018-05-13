@@ -4,6 +4,9 @@ export class AnalysisQuery {
 
     project: Project;
 
+    showFrom: number;
+    showTo: number;
+
     createdFrom: number;
     createdTo: number;
 

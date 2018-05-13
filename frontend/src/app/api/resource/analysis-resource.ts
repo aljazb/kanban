@@ -18,8 +18,8 @@ export class AnalysisResource extends BaseResource<AnalysisResponse> {
       .pipe(map(content => this.deserialize(content)));
   }
 
-  getWorkFlow (entity: WorkFlowQuery): Observable<NgxDataSet> {
-    return this.api.httpClient.put<NgxDataSet>(this.url + "/WorkFlow", this.serialize(entity), { headers: this.getHeaders(false)})
+  getWorkFlow (entity: WorkFlowQuery): Observable<NgxDataSet[]> {
+    return this.api.httpClient.put<NgxDataSet[]>(this.url + "/WorkFlow", this.serialize(entity), { headers: this.getHeaders(false)})
       .pipe(map(content => this.deserialize(content)));
   }
 

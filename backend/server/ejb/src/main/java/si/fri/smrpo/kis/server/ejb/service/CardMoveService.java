@@ -105,9 +105,14 @@ public class CardMoveService implements CardMoveServiceLocal {
 
         CardMoveType requiredType = isMoveToAvailable(movedTo, movedFrom, false) ? CardMoveType.VALID : CardMoveType.INVALID;
 
-        if (cardMove.getCardMoveType() != requiredType) {
-            throw new TransactionException("CardMoveType is set incorrectly.");
+        if(cardMove.getCardMoveType() != null) {
+            if (cardMove.getCardMoveType() != requiredType) {
+                throw new TransactionException("CardMoveType is set incorrectly.");
+            }
+        } else {
+            cardMove.setCardMoveType(requiredType);
         }
+
 
         movedTo.incWip(database);
         movedFrom.decWip(database);
