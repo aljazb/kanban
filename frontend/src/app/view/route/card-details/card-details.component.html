@@ -1,21 +1,41 @@
 <div *ngIf="card" class="card">
-  <div class="card-header" [style.background]="card.color"></div>
+  <div class="card-header" [style.background]="card.color">
+    <div>
+      <i class="fa fa-times-circle" *ngIf="card.rejected"></i>
+      Rejected
+    </div>
+  </div>
 
   <div class="card-body">
 
     <div class="row">
-      <div class="col-sm-10">
+      <div class="col-6">
         <h4 class="card-title">Card details</h4>
       </div>
 
-      <div class="col-sm-2">
-        <button *ngIf="editEnabled" type="button" class="btn btn-primary pull-right" (click)="openCardEditModal()">Edit
+      <div class="col-6">
+        <button *ngIf="editEnabled" type="button" class="btn btn-primary pull-right mr-1" (click)="openCardEditModal()">Edit
           <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-kartice"
              placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
              (click)="$event.stopPropagation()">
             <i class="fa fa-question-circle"></i>
           </a>
         </button>
+
+        <button *ngIf="card.boardPart.board" type="button" class="btn btn-primary pull-right mr-1" routerLink="/board/{{card.boardPart.board.id}}">Go to board
+          <a placement="right" ngbPopover="Clicking this button will redirect you to card's board" triggers="mouseenter:mouseleave"
+             (click)="$event.stopPropagation()">
+            <i class="fa fa-question-circle"></i>
+          </a>
+        </button>
+
+        <button *ngIf="card.project.id" type="button" class="btn btn-primary pull-right mr-1" routerLink="/project/{{card.project.id}}">Go to project
+          <a placement="right" ngbPopover="Clicking this button will redirect you to card's project" triggers="mouseenter:mouseleave"
+             (click)="$event.stopPropagation()">
+            <i class="fa fa-question-circle"></i>
+          </a>
+        </button>
+
       </div>
 
     </div>
