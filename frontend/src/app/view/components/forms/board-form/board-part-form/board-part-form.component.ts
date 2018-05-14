@@ -91,7 +91,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
     bp.id = UUID();
     bp.parent = this.boardPart;
     bp.board = this.boardPart.board;
-    bp.maxWip = this.boardPart.maxWip;
+    bp.maxWip = 0;
     bp.orderIndex = 0;
     bp.name = this.getChildName();
     return bp;
@@ -192,10 +192,8 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
   }
 
   private wipValid(parent: number, child: number): boolean {
-    if(parent == 0) {
+    if(parent == 0 || child == 0) {
       return true;
-    } else if (child == 0) {
-      return false;
     } else {
       return Number(parent) >= Number(child);
     }

@@ -33,10 +33,13 @@
                        formControlName="maxWip"
                        [ngClass]="{ 'is-invalid': fcMaxWip.touched && fcMaxWip.invalid }">
                 <div class="invalid-feedback" *ngIf="fcMaxWip.hasError('required')">
-                  Max wip is required
+                  WIP is required
                 </div>
                 <div class="invalid-feedback" *ngIf="fcMaxWip.hasError('greaterThanParent')">
-                  Max wip is too big
+                  WIP is too big
+                </div>
+                <div class="invalid-feedback" *ngIf="fcMaxWip.hasError('pattern')">
+                  WIP must be positive number
                 </div>
               </div>
             </div>

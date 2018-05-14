@@ -22,7 +22,7 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "max_wip")
+    @Column(name = "max_wip", nullable = false)
     private Integer maxWip;
 
     @Database(update = false)
@@ -82,7 +82,7 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     @JsonIgnore
     public boolean isWipValid(BoardPart parent) {
-        return maxWip == null || parent.maxWip == null || maxWip <= parent.maxWip;
+        return parent.maxWip == 0 || maxWip <= parent.maxWip;
     }
 
     @JsonIgnore
