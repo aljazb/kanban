@@ -48,7 +48,7 @@ public class AnalysisService implements AnalysisServiceLocal {
     private CardMove getFinished(Card card, Board board) {
 
         for(CardMove cm : card.getCardMoves()) {
-            if(board.getAcceptanceTesting() + 1 == cm.getTo().getLeafNumber()) {
+            if(cm.getTo().getLeafNumber() != null && board.getAcceptanceTesting() + 1 == cm.getTo().getLeafNumber()) {
                 return cm;
             }
         }

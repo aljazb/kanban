@@ -71,7 +71,7 @@ export class CardDetailsComponent implements OnInit {
     modalRef.result
       .then(value =>
         this.apiService.card.put(value, true).subscribe(value => {
-          this.toaster.pop("success", "Card was updated");
+          this.router.navigated = false;
           this.router.navigate(['/card', value.id]);
         }, error2 => {
           this.toaster.pop("error", "Error updating card");

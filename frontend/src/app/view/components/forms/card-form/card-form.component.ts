@@ -39,6 +39,7 @@ export class CardFormComponent extends FormImpl {
 
   isSilverBullet: boolean = false;
   boardPartId: string;
+  boardId: string;
 
   developerSelection: UserAccount[];
   cardTypeSelection: CardType[];
@@ -87,6 +88,7 @@ export class CardFormComponent extends FormImpl {
 
     this.isSilverBullet = card.silverBullet;
     this.boardPartId = card.boardPart.id;
+    this.boardId = this.card.boardPart.board.id;
 
     this.loadProject(card.project);
   }
@@ -163,6 +165,8 @@ export class CardFormComponent extends FormImpl {
 
       c.boardPart = new BoardPart();
       c.boardPart.id = this.boardPartId;
+      c.boardPart.board = new Board();
+      c.boardPart.board.id = this.boardId;
 
       c.project = new Project();
       c.project.id = this.project.id;

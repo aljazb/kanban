@@ -49,13 +49,11 @@
                           <button type="button" class="btn btn-sm btn-primary"
                                   (click)="moveCardLeft(c, td.currentBoardPart, td.leftBoardPart)"
                                   *ngIf="td.leftBoardPart">
-
                             <i class="fa fa-caret-left"></i>
                           </button>
 
                           <a routerLink="/card/{{c.id}}">{{c.name}}</a>
-                          <br>
-                          {{c.cardType.toString().replace("_", " ")}}
+
 
                           <button type="button" class="btn btn-sm btn-primary"
                                   (click)="moveCardRight(c, td.currentBoardPart, td.rightBoardPart)"
@@ -63,6 +61,11 @@
 
                             <i class="fa fa-caret-right"></i>
                           </button>
+                        </div>
+
+                        <div class="list-group-item">
+                          {{c.cardType.toString().replace("_", " ")}} <br>
+                          {{c.assignedTo == null ? '-' : c.assignedTo.email }}
                         </div>
 
                         <div class="list-group" *ngIf="c.subTasks">

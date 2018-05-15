@@ -125,7 +125,7 @@ public class Board extends UUIDEntity<Board> {
         for(Project p : activeProjects) { // Fetch project
             for(Card c : p.getCards()) { // Fetch cards
                 c.getSubTasks().size(); // Fetch sub tasks
-                c.getAssignedTo().getEmail(); // Fetch assigned to
+                c.getAssignedTo(); // Fetch assigned to
             }
         }
     }
