@@ -8,6 +8,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular5-toaster/dist';
 import {Membership} from '../../../api/models/Membership';
 import {Board} from '../../../api/models/Board';
+import {ProjectDeleteConfirmationComponent} from '../../components/forms/project-delete-confirmation/project-delete-confirmation.component';
 
 @Component({
   selector: 'app-card-details',
@@ -20,6 +21,7 @@ export class CardDetailsComponent implements OnInit {
   card: Card;
   moves: CardMove[] = null;
   editEnabled: boolean = false;
+  deleteEnabled: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -53,8 +55,10 @@ export class CardDetailsComponent implements OnInit {
       let leafIndex = this.card.boardPart.leafNumber;
 
       if(Membership.isKanbanMaster(m)) {
+        this.deleteEnabled = true
         if(leafIndex < b.acceptanceTesting) {
           this.editEnabled = true;
+
         }
       } else if(Membership.isDeveloper(m)) {
         if(b.startDev <= leafIndex && leafIndex <= b.endDev) {
@@ -63,10 +67,12 @@ export class CardDetailsComponent implements OnInit {
       } else if(Membership.isProductOwner(m)) {
         if(leafIndex <= b.highestPriority) {
           this.editEnabled = true;
+          this.deleteEnabled = true
         }
       }
     }
   }
+
 
   openCardEditModal() {
     const modalRef = this.modalService.open(CardFormComponent);
@@ -80,5 +86,17 @@ export class CardDetailsComponent implements OnInit {
           this.toaster.pop("error", "Error updating card");
         }), reason => {});
   }
+  openDeleteConfirmationModal() {
+    const modalRef = this.modalService.open(ProjectDeleteConfirmationComponent);
 
+    modalRef.result
+      .then(value => {
+        this.apiService.card.delete(this.id, true).subscribe(value => {
+          this.toaster.pop("success", "Card was deleted");
+          this.router.navigate([`/project`]);
+        }, error2 => {
+          this.toaster.pop("error", "Error deleting project");
+        });
+      });
+  }
 }
