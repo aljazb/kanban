@@ -54,18 +54,17 @@
 
                           <a routerLink="/card/{{c.id}}">{{c.name}}</a>
 
-
                           <button type="button" class="btn btn-sm btn-primary"
                                   (click)="moveCardRight(c, td.currentBoardPart, td.rightBoardPart)"
                                   *ngIf="td.rightBoardPart">
 
                             <i class="fa fa-caret-right"></i>
                           </button>
-                        </div>
-
-                        <div class="list-group-item">
-                          {{c.cardType.toString().replace("_", " ")}} <br>
-                          {{c.assignedTo == null ? '-' : c.assignedTo.email }}
+                          <div class="card col-sm-15">
+                            Priority: {{c.cardType.toString().replace("_", " ")}}
+                            <br>
+                            <strong>Assignee: {{ c.assignedTo == null ? '-' : c.assignedTo.email }} </strong>
+                          </div>
                         </div>
 
                         <div class="list-group" *ngIf="c.subTasks">
