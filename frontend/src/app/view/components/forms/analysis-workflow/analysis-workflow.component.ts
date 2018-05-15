@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {BoardPart} from '../../../../api/models/BoardPart';
 import {NgxDataSet} from '../../../../api/dto/ngx/grouped-series/ngx-data-set';
-import {WorkFlowQuery} from '../../../../api/dto/analysis/work-flow-query';
+import {WorkflowQuery} from '../../../../api/dto/analysis/workflow/workflow-query';
 import {BoardPartSelection} from '../../../route/analysis/utility/board-part-selection';
 import {AnalysisQuery} from '../../../../api/dto/analysis/analysis-query';
 import {ApiService} from '../../../../api/services/api.service';
@@ -16,10 +16,7 @@ import {Project} from '../../../../api/models/Project';
 export class AnalysisWorkflowComponent implements OnInit {
 
   @Input()
-  queryCollapsed: { value: boolean };
-
-  @Input()
-  query: AnalysisQuery;
+  sharedContext: { collapsed: boolean, project: Project, query: AnalysisQuery };
 
   leafBoardPartsSelection: BoardPartSelection[];
 
@@ -33,23 +30,27 @@ export class AnalysisWorkflowComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit() {
+    this.handleProjectSelect(this.sharedContext.project);
   }
 
   handleProjectSelect(project: Project) {
-    this.api.board.get(project.board.id).subscribe(board => {
+    this.leafBoardPartsSelection = [];
+
+    if(project != null && project.board) {
+      this.api.board.get(project.board.id).subscribe(board => {
         let bps = Board.getLeafParts(board.boardParts);
         bps.sort((a, b) => a.leafNumber - b.leafNumber);
-        this.leafBoardPartsSelection = [];
         bps.forEach(bp => {
           this.leafBoardPartsSelection.push(new BoardPartSelection(bp));
         });
       });
+    }
   }
 
   submitWorkFlow() {
-    this.queryCollapsed.value = true;
+    this.sharedContext.collapsed = true;
 
-    let query: WorkFlowQuery = Object.assign(new WorkFlowQuery(), this.query);
+    let query: WorkflowQuery = Object.assign(new WorkflowQuery(), this.sharedContext.query);
 
     this.leafBoardPartsSelection.forEach(bp =>  {
       if(bp.isActive) {

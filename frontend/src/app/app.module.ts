@@ -53,6 +53,8 @@ import { AnalysisComponent } from './view/route/analysis/analysis.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {AnalysisQueryComponent} from './view/components/forms/analysis-query/analysis-query.component';
 import {AnalysisWorkflowComponent} from './view/components/forms/analysis-workflow/analysis-workflow.component';
+import { AnalysisWipComponent } from './view/components/forms/analysis-wip/analysis-wip.component';
+import { AnalysisTimeComponent } from './view/components/forms/analysis-time/analysis-time.component';
 
 
 @NgModule({
@@ -104,7 +106,9 @@ import {AnalysisWorkflowComponent} from './view/components/forms/analysis-workfl
     CardMovesPagingComponent,
     AnalysisComponent,
     AnalysisQueryComponent,
-    AnalysisWorkflowComponent
+    AnalysisWorkflowComponent,
+    AnalysisWipComponent,
+    AnalysisTimeComponent
   ],
   providers: [
     {

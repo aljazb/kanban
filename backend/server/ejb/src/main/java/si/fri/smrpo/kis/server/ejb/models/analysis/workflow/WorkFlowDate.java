@@ -7,6 +7,8 @@ import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static si.fri.smrpo.kis.server.ejb.models.analysis.Utility.trimDate;
+
 public class WorkFlowDate {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -46,18 +48,6 @@ public class WorkFlowDate {
         return isEqual;
     }
 
-    public Date trimDate(Date date) {
-        Calendar c = Calendar.getInstance();
-
-        c.setTime(date);
-
-        c.set(Calendar.MILLISECOND, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-
-        return c.getTime();
-    }
 
     public void inc(BoardPart bp) {
         WorkFlowColumn wfc = map.get(bp.getId());

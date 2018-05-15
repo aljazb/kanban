@@ -5,12 +5,14 @@ import {AnalysisQuery} from '../../../api/dto/analysis/analysis-query';
 import {ApiService} from '../../../api/services/api.service';
 import {Board} from '../../../api/models/Board';
 import {BoardPartSelection} from './utility/board-part-selection';
-import {WorkFlowQuery} from '../../../api/dto/analysis/work-flow-query';
+import {WorkflowQuery} from '../../../api/dto/analysis/workflow/workflow-query';
 import {BoardPart} from '../../../api/models/BoardPart';
 import {cDpToTs} from '../../../utility';
 import {NgxDataSet} from '../../../api/dto/ngx/grouped-series/ngx-data-set';
 import {BoardBaseFormComponent} from '../../components/forms/board-form/board-base-form/board-base-form.component';
 import {AnalysisWorkflowComponent} from '../../components/forms/analysis-workflow/analysis-workflow.component';
+import {AnalysisWipComponent} from '../../components/forms/analysis-wip/analysis-wip.component';
+import {AnalysisTimeComponent} from '../../components/forms/analysis-time/analysis-time.component';
 
 
 @Component({
@@ -23,8 +25,14 @@ export class AnalysisComponent implements OnInit {
   @ViewChild(AnalysisWorkflowComponent)
   workflowComponent: AnalysisWorkflowComponent;
 
-  query: AnalysisQuery = new AnalysisQuery();
-  queryCollapsed: { value: boolean } = { value: false};
+  @ViewChild(AnalysisWipComponent)
+  wipComponent: AnalysisWipComponent;
+
+  @ViewChild(AnalysisTimeComponent)
+  timeComponent: AnalysisTimeComponent;
+
+  sharedContext: { collapsed: boolean, project: Project, query: AnalysisQuery } =
+    { collapsed: false, project: null, query: new AnalysisQuery() };
 
   constructor() {
 
@@ -33,15 +41,21 @@ export class AnalysisComponent implements OnInit {
   ngOnInit() {  }
 
   handleOnProjectSelect(project: Project): void {
-    this.workflowComponent.handleProjectSelect(project);
+    if(this.workflowComponent != null) {
+      this.workflowComponent.handleProjectSelect(project);
+    } else if(this.wipComponent != null) {
+      this.wipComponent.handleProjectSelect(project);
+    } else if(this.timeComponent != null) {
+      this.timeComponent.handleProjectSelect(project);
+    }
   }
 
   openQuery(): void {
-    this.queryCollapsed.value = false;
+    this.sharedContext.collapsed = false;
   }
 
   closeQuery(): void {
-    this.queryCollapsed.value = true;
+    this.sharedContext.collapsed = true;
   }
 
 }

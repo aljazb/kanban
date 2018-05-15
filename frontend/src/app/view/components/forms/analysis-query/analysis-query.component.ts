@@ -12,14 +12,12 @@ import {ApiService} from '../../../../api/services/api.service';
 })
 export class AnalysisQueryComponent implements OnInit {
 
-  @Input()
-  queryCollapsed: { value: boolean };
-
   @Output()
   onProjectSelected: EventEmitter<Project> = new EventEmitter();
 
   @Input()
-  query: AnalysisQuery;
+  sharedContext: { collapsed: boolean, project: Project, query: AnalysisQuery };
+
 
   projectSelection: Project[];
 
@@ -60,62 +58,68 @@ export class AnalysisQueryComponent implements OnInit {
 
     this.fcProject = new FormControl(null, Validators.required);
     this.fcProject.valueChanges.subscribe(value => {
-      this.query.project = new Project();
-      this.query.project.id = value.id;
+      this.sharedContext.project = value;
+      if(value == null) {
+        this.sharedContext.query.project = null;
+      } else {
+        this.sharedContext.query.project = new Project();
+        this.sharedContext.query.project.id = value.id;
+      }
+
       this.onProjectSelected.emit(value);
     });
 
     this.fcShowFrom = new FormControl();
     this.fcShowFrom.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.showFrom;
+        delete this.sharedContext.query.showFrom;
       } else{
-        this.query.showFrom = cDpToTs(value);
+        this.sharedContext.query.showFrom = cDpToTs(value);
       }
     });
 
     this.fcShowTo = new FormControl();
     this.fcShowTo.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.showTo;
+        delete this.sharedContext.query.showTo;
       } else{
-        this.query.showTo = cDpToTs(value);
+        this.sharedContext.query.showTo = cDpToTs(value);
       }
     });
 
     this.fcCreatedFrom = new FormControl();
     this.fcCreatedFrom.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.createdFrom;
+        delete this.sharedContext.query.createdFrom;
       } else{
-        this.query.createdFrom = cDpToTs(value);
+        this.sharedContext.query.createdFrom = cDpToTs(value);
       }
     });
 
     this.fcCreatedTo = new FormControl();
     this.fcCreatedTo.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.createdTo;
+        delete this.sharedContext.query.createdTo;
       } else{
-        this.query.createdTo = cDpToTs(value);
+        this.sharedContext.query.createdTo = cDpToTs(value);
       }
     });
 
     this.fcFinishedFrom = new FormControl();
     this.fcFinishedFrom.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.finishedFrom;
+        delete this.sharedContext.query.finishedFrom;
       } else{
-        this.query.finishedFrom = cDpToTs(value);
+        this.sharedContext.query.finishedFrom = cDpToTs(value);
       }
     });
 
     this.fcFinishedTo = new FormControl();
     this.fcFinishedTo.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.finishedTo;
+        delete this.sharedContext.query.finishedTo;
       } else{
-        this.query.finishedTo = cDpToTs(value);
+        this.sharedContext.query.finishedTo = cDpToTs(value);
       }
     });
 
@@ -123,18 +127,18 @@ export class AnalysisQueryComponent implements OnInit {
     this.fcDevStartFrom = new FormControl();
     this.fcDevStartFrom.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.devStartFrom;
+        delete this.sharedContext.query.devStartFrom;
       } else{
-        this.query.devStartFrom = cDpToTs(value);
+        this.sharedContext.query.devStartFrom = cDpToTs(value);
       }
     });
 
     this.fcDevStartTo = new FormControl();
     this.fcDevStartTo.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.devStartTo;
+        delete this.sharedContext.query.devStartTo;
       } else{
-        this.query.devStartTo = cDpToTs(value);
+        this.sharedContext.query.devStartTo = cDpToTs(value);
       }
     });
 
@@ -142,18 +146,18 @@ export class AnalysisQueryComponent implements OnInit {
     this.fcWorkloadFrom = new FormControl();
     this.fcWorkloadFrom.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.workloadFrom;
+        delete this.sharedContext.query.workloadFrom;
       } else {
-        this.query.workloadFrom = value;
+        this.sharedContext.query.workloadFrom = value;
       }
     });
 
     this.fcWorkloadTo = new FormControl();
     this.fcWorkloadTo.valueChanges.subscribe(value => {
       if(value == null) {
-        delete this.query.workloadTo;
+        delete this.sharedContext.query.workloadTo;
       } else {
-        this.query.workloadTo = value;
+        this.sharedContext.query.workloadTo = value;
       }
     });
 
@@ -162,9 +166,9 @@ export class AnalysisQueryComponent implements OnInit {
     this.fcIsSilverBullet.valueChanges.subscribe(value => {
       if(value) {
         this.resetType(this.fcIsSilverBullet);
-        this.query.silverBullet = value;
+        this.sharedContext.query.silverBullet = value;
       } else {
-        delete this.query.silverBullet;
+        delete this.sharedContext.query.silverBullet;
       }
     });
 
@@ -172,9 +176,9 @@ export class AnalysisQueryComponent implements OnInit {
     this.fcIsRejected.valueChanges.subscribe(value => {
       if(value) {
         this.resetType(this.fcIsRejected);
-        this.query.rejected = value;
+        this.sharedContext.query.rejected = value;
       } else {
-        delete this.query.rejected;
+        delete this.sharedContext.query.rejected;
       }
     });
 
@@ -182,9 +186,9 @@ export class AnalysisQueryComponent implements OnInit {
     this.fcNewFunctionality.valueChanges.subscribe(value => {
       if(value) {
         this.resetType(this.fcNewFunctionality);
-        this.query.newFunctionality = value;
+        this.sharedContext.query.newFunctionality = value;
       } else {
-        delete this.query.newFunctionality;
+        delete this.sharedContext.query.newFunctionality;
       }
     });
   }
@@ -222,8 +226,5 @@ export class AnalysisQueryComponent implements OnInit {
     });
   }
 
-  closeQuery() {
-
-  }
 
 }

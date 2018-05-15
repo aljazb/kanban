@@ -2,16 +2,16 @@
 
   <div class="row">
 
-    <div class="col-12" *ngIf="queryCollapsed.value">
+    <div class="col-12" *ngIf="sharedContext.collapsed">
       <button class="btn btn-primary pull-right mt-2" (click)="openQuery()">Search</button>
     </div>
 
-    <div class="col-12" *ngIf="!queryCollapsed.value">
+    <div class="col-12" *ngIf="!sharedContext.collapsed">
       <button class="btn btn-primary pull-right mt-2" (click)="closeQuery()">Hide</button>
     </div>
 
-    <div class="col-12" *ngIf="!queryCollapsed.value">
-      <app-analysis-query [query]="query" (onProjectSelected)="handleOnProjectSelect($event)"></app-analysis-query>
+    <div class="col-12" *ngIf="!sharedContext.collapsed">
+      <app-analysis-query [sharedContext]="sharedContext" (onProjectSelected)="handleOnProjectSelect($event)"></app-analysis-query>
     </div>
 
 
@@ -20,9 +20,20 @@
       <ngb-tabset>
 
         <ngb-tab title="Card workflow diagram">
-
           <ng-template ngbTabContent>
-            <app-analysis-workflow [query]="query" [queryCollapsed]="queryCollapsed"></app-analysis-workflow>
+            <app-analysis-workflow [sharedContext]="sharedContext"></app-analysis-workflow>
+          </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Card WIP exceeded">
+          <ng-template ngbTabContent>
+            <app-analysis-wip [sharedContext]="sharedContext"></app-analysis-wip>
+          </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Card time diagram">
+          <ng-template ngbTabContent>
+            <app-analysis-time [sharedContext]="sharedContext"></app-analysis-time>
           </ng-template>
         </ngb-tab>
 

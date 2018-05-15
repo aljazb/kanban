@@ -1,14 +1,20 @@
 package si.fri.smrpo.kis.server.ejb.service;
 
+import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.models.analysis.AnalysisQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipDate;
+import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowDate;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowResponse;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.AnalysisServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
+import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
+import sun.rmi.runtime.Log;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -152,7 +158,7 @@ public class AnalysisService implements AnalysisServiceLocal {
         return filteredCards;
     }
 
-    private void validate(WorkFlowQuery query, UserAccount authUser) throws LogicBaseException {
+    private void validate(AnalysisQuery query, UserAccount authUser) throws LogicBaseException {
         if(query.getProject() == null || query.getProject().getId() == null) {
             throw new TransactionException("Query must have project id");
         }
@@ -175,12 +181,16 @@ public class AnalysisService implements AnalysisServiceLocal {
 
         ArrayList<CardMove> cardMoves = new ArrayList<>();
         for(Card c : filteredCards) {
-            cardMoves.addAll(c.getCardMoves());
+            cardMoves.addAll(
+                    c.getCardMoves().stream()
+                            .filter(cm -> query.isShowDateValid(cm))
+                            .collect(Collectors.toSet())
+            );
         }
         cardMoves.sort(Comparator.comparing(CardMove::getCreatedOn));
 
-        Set<UUID> ids = query.getLeafBoardParts().stream().map(BoardPart::getId).collect(Collectors.toSet());
 
+        Set<UUID> ids = query.getLeafBoardParts().stream().map(BoardPart::getId).collect(Collectors.toSet());
         List<BoardPart> leaves = b.getBoardParts().stream()
                 .filter(boardPart -> ids.contains(boardPart.getId()))
                 .sorted(Comparator.comparing(BoardPart::getLeafNumber))
@@ -194,19 +204,6 @@ public class AnalysisService implements AnalysisServiceLocal {
             WorkFlowDate date = null;
 
             for(CardMove cm : cardMoves) {
-
-                if(query.getShowFrom() != null) {
-                    if(query.getShowFrom().after(cm.getCreatedOn())) {
-                        continue;
-                    }
-                }
-
-                if(query.getShowTo() != null) {
-                    if(query.getShowTo().before(cm.getCreatedOn())) {
-                        continue;
-                    }
-                }
-
 
                 if(date == null || !date.equalDate(cm.getCreatedOn())) {
                     date = new WorkFlowDate(cm.getCreatedOn(), leaves);
@@ -225,4 +222,50 @@ public class AnalysisService implements AnalysisServiceLocal {
         return buildWorkFlowResponse(query);
     }
 
+
+    private WipResponse buildWipResponse(WipQuery query) throws DatabaseException {
+        Project p = database.find(Project.class, query.getProject().getId());
+        Board b = p.getBoard();
+
+        ArrayList<Card> filteredCards = filterCards(p.getCards(), b, query);
+
+
+        ArrayList<CardMove> cardMoves = new ArrayList<>();
+        for(Card c : filteredCards) {
+            cardMoves.addAll(
+                    c.getCardMoves().stream()
+                            .filter(cm -> cm.getCardMoveType() != CardMoveType.VALID && query.isShowDateValid(cm))
+                            .collect(Collectors.toSet())
+            );
+        }
+        cardMoves.sort(Comparator.comparing(CardMove::getCreatedOn));
+
+
+        WipResponse response = new WipResponse();
+
+        if(!cardMoves.isEmpty()) {
+            WipDate date = null;
+
+            for(CardMove cm : cardMoves) {
+
+                if(date == null || !date.equalDate(cm.getCreatedOn())) {
+                    date = new WipDate(cm.getCreatedOn());
+                    response.addDate(date);
+                }
+
+                cm.getMovedBy().getEmail(); // Fetch
+                cm.getTo().getLeafNumber(); // Fetch
+                cm.getFrom().getLeafNumber(); // Fetch
+
+                date.addCardMove(cm);
+            }
+        }
+
+        return response;
+    }
+
+    public WipResponse processWipResponse(WipQuery query, UserAccount authUser) throws LogicBaseException {
+        validate(query, authUser);
+        return buildWipResponse(query);
+    }
 }

@@ -1,5 +1,6 @@
 package si.fri.smrpo.kis.server.ejb.models.analysis;
 
+import si.fri.smrpo.kis.server.jpa.entities.CardMove;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 
 import java.util.Date;
@@ -26,6 +27,23 @@ public class AnalysisQuery {
     private Boolean silverBullet;
     private Boolean rejected;
     private Boolean newFunctionality;
+
+
+    public boolean isShowDateValid(CardMove cm) {
+        if(getShowFrom() != null) {
+            if(getShowFrom().after(cm.getCreatedOn())) {
+                return false;
+            }
+        }
+
+        if(getShowTo() != null) {
+            if(getShowTo().before(cm.getCreatedOn())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 
     public Project getProject() {

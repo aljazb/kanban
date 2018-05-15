@@ -2,6 +2,8 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.rest.resource.base.BaseResource;
+import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowResponse;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.AnalysisServiceLocal;
@@ -38,6 +40,13 @@ public class AnalysisResource extends BaseResource {
     public Response getWorkFlowAnalysis(WorkFlowQuery query) throws Exception {
         WorkFlowResponse response = service.processWorkFlowResponse(query, getAuthUser());
         return Response.status(Response.Status.OK).entity(response.getDates()).build();
+    }
+
+    @Path("Wip")
+    @PUT
+    public Response getWipAnalysis(WipQuery query) throws Exception {
+        WipResponse response = service.processWipResponse(query, getAuthUser());
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
 }
