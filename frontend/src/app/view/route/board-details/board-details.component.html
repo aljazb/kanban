@@ -60,11 +60,13 @@
 
                             <i class="fa fa-caret-right"></i>
                           </button>
-                          <div class="card col-sm-15">
+
+                          <div class="col-15">
                             Priority: {{c.cardType.toString().replace("_", " ")}}
                             <br>
                             <strong>Assignee: {{ c.assignedTo == null ? '-' : c.assignedTo.email }} </strong>
                           </div>
+
                         </div>
 
                         <div class="list-group" *ngIf="c.subTasks">
