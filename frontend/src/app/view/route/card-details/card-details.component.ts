@@ -30,6 +30,10 @@ export class CardDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
+    this.onInit();
+  }
+
+  private onInit(): void {
     this.api.card.get(this.id).subscribe(card => {
       this.card = card;
 
@@ -71,8 +75,7 @@ export class CardDetailsComponent implements OnInit {
     modalRef.result
       .then(value =>
         this.apiService.card.put(value, true).subscribe(value => {
-          this.router.navigated = false;
-          this.router.navigate(['/card', value.id]);
+          this.onInit();
         }, error2 => {
           this.toaster.pop("error", "Error updating card");
         }), reason => {});

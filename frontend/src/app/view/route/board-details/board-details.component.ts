@@ -39,6 +39,10 @@ export class BoardDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
+    this.onInit();
+  }
+
+  private onInit(): void {
     this.login.getUser().subscribe(user => {
       this.api.board.get(this.id).subscribe(board => {
         this.isOwner = board.owner.id == user.id;
@@ -80,13 +84,12 @@ export class BoardDetailsComponent implements OnInit {
   }
 
   private postCardMove(cm: CardMove): void {
-    this.api.cardMove.post(cm, false).subscribe(() =>
-      this.api.board.get(this.id).subscribe(board => {
-        this.init(board);
-        this.toaster.pop("success", "Moved card");
-      }), error2 => {
-        this.toaster.pop("error", "Error moving card");
-      });
+    this.api.cardMove.post(cm, false).subscribe(() => {
+      this.onInit();
+      this.toaster.pop("success", "Moved card");
+    }, error2 => {
+      this.toaster.pop("error", "Error moving card");
+    });
   }
 
   moveCardBack(c: Card, from: BoardPart, boardParts: BoardPart[]) {

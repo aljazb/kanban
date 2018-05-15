@@ -8,8 +8,10 @@ import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -116,6 +118,11 @@ public class Project extends UUIDEntity<Project> {
             b.setBoardParts(null);
             b.setProjects(null);
         }
+    }
+
+    @JsonIgnore
+    public void queryCards() {
+        setCards(getCards().stream().filter(c -> !c.getIsDeleted()).collect(Collectors.toSet()));
     }
 
 

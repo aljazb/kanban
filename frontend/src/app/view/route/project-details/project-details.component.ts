@@ -34,7 +34,10 @@ export class ProjectDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
+    this.onInit();
+  }
 
+  private onInit(): void {
     this.login.getUser().subscribe(authUser => {
       this.apiService.project.get(this.id).subscribe(project => {
         this.project = project;
@@ -60,6 +63,7 @@ export class ProjectDetailsComponent implements OnInit {
       .then(value =>
         this.apiService.project.put(value, true).subscribe(value => {
           this.toaster.pop("success", "Project was updated");
+          this.onInit();
         }, error2 => {
           this.toaster.pop("error", "Error updating project")
         }));
@@ -75,6 +79,7 @@ export class ProjectDetailsComponent implements OnInit {
         this.apiService.card.post(value, true).subscribe(value => {
           this.toaster.pop("success", "Card was updated");
           this.router.navigate(['/card', value.id])
+          this.onInit();
         }, error2 => {
           this.toaster.pop("error", "Error creating card");
         }), reason => {});

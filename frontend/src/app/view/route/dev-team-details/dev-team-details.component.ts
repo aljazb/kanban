@@ -36,6 +36,10 @@ export class DevTeamDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
+    this.onInit();
+  }
+
+  private onInit(): void {
     this.loginService.getUser().subscribe(user => {
       this.user = user;
       this.loadData();
@@ -81,8 +85,9 @@ export class DevTeamDetailsComponent implements OnInit {
     modalRef.result
       .then(value =>
         this.api.devTeam.put(value, true).subscribe(devTeam => {
-          this.loadData();
-        }))
+          this.onInit();
+        })
+      )
       .catch(reason => console.log(reason));
   }
 

@@ -67,7 +67,6 @@ export class AdminComponent implements OnInit {
       this.toasterService.pop('success', 'Updated user: ' + user.username);
       this.selectedUser = value;
       this.userPagingComp.refresh();
-
     }, error => {
       this.toasterService.pop('error', 'Error updating user: ' + user.username);
     });

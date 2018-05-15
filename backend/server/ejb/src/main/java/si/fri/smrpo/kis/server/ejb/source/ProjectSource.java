@@ -66,7 +66,7 @@ public class ProjectSource extends CrudSource<Project, UUID, UserAccount> implem
         }
 
         entity.queryBoard();
-        entity.getCards().size(); // Fetch cards
+        entity.queryCards();
 
         return entity;
     }
