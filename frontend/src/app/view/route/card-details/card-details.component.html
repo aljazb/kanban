@@ -14,6 +14,14 @@
       </div>
 
       <div class="col-6">
+        <button *ngIf="deleteEnabled" type="button" class="btn btn-danger  pull-right mr-1" (click)="openDeleteConfirmationModal()">Delete
+          <a placement="right" ngbPopover="Clicking Delete button will delete the Card" triggers="mouseenter:mouseleave"
+             (click)="$event.stopPropagation()">
+            <i class="fa fa-question-circle"></i>
+          </a>
+
+        </button>
+
         <button *ngIf="editEnabled" type="button" class="btn btn-primary pull-right mr-1" (click)="openCardEditModal()">Edit
           <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-kartice"
              placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
