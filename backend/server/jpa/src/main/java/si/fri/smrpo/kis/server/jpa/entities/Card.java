@@ -37,6 +37,10 @@ public class Card extends UUIDEntity<Card> {
     @Column(name = "work_load")
     private Integer workload;
 
+    @Database(update = false)
+    @Column(name = "delete_message")
+    private String deleteMessage;
+
     @Column(name = "color")
     private String color;
 
@@ -194,5 +198,13 @@ public class Card extends UUIDEntity<Card> {
 
     public void setRejected(Boolean rejected) {
         this.rejected = rejected;
+    }
+
+    public String getDeleteMessage() {
+        return deleteMessage;
+    }
+
+    public void setDeleteMessage(String deleteMessage) {
+        this.deleteMessage = deleteMessage;
     }
 }

@@ -98,8 +98,8 @@ public class CardSource extends CrudSource<Card, UUID, UserAccount> implements C
     }
 
     @Override
-    public Card delete(Class<Card> c, UUID id, UserAccount authUser) throws Exception {
-        return cardService.delete(id, authUser);
+    public Card delete(Class<Card> c, UUID id, String deleteMessage,  UserAccount authUser) throws Exception {
+        return cardService.delete(id, deleteMessage, authUser);
     }
 
 }

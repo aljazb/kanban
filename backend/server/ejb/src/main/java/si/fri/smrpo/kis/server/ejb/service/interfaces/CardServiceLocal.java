@@ -10,6 +10,6 @@ public interface CardServiceLocal {
     Card create(Card card, UserAccount authUser) throws Exception;
     Card update(Card card, UserAccount authUser) throws Exception;
     Card patch(Card card, UserAccount authUser) throws Exception;
-    Card delete(UUID id, UserAccount authUser) throws Exception;
+    Card delete(UUID id, String deleteMessage, UserAccount authUser) throws Exception;
 
 }

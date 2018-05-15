@@ -82,11 +82,10 @@ public class CardResource extends CrudResource<Card, CardSourceLocal, UserAccoun
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})
-    @DELETE
-    @Path("{id}")
-    @Override
-    public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return buildResponse(source.delete(type, id, getAuthUser()), xContent).build();
+    @PUT
+    @Path("delete/{id}")
+    public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, Card card) throws Exception {
+        return buildResponse(source.delete(type, id, card.getDeleteMessage(), getAuthUser()), xContent).build();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})

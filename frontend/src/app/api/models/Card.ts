@@ -14,6 +14,8 @@ export class Card extends BaseEntity<Card> {
   description: string;
   workload: number;
 
+  deleteMessage: string;
+
   color: string;
 
   assignedTo: UserAccount;

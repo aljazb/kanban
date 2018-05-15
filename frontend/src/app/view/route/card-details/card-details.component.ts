@@ -91,7 +91,7 @@ export class CardDetailsComponent implements OnInit {
 
     modalRef.result
       .then(value => {
-        this.apiService.card.delete(this.id, true).subscribe(value => {
+        this.apiService.card.deleteWithMessage(this.id, "No real reason :S", true).subscribe(value => {
           this.toaster.pop("success", "Card was deleted");
           this.router.navigate([`/project`]);
         }, error2 => {

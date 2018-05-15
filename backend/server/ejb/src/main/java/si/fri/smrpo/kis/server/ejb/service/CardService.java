@@ -181,13 +181,15 @@ public class CardService implements CardServiceLocal {
     }
 
     @Override
-    public Card delete(UUID id, UserAccount authUser) throws Exception {
+    public Card delete(UUID id, String deleteMessage, UserAccount authUser) throws Exception {
         Card c = new Card();
         c.setId(id);
 
         checkAccess(c, authUser);
 
         Card card = database.delete(Card.class, id);
+        card.setDeleteMessage(deleteMessage);
+
         updateCardHolders(card);
         card.getBoardPart().decWip(database);
 

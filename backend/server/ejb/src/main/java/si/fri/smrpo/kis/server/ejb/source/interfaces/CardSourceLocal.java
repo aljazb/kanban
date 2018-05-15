@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface CardSourceLocal extends CrudSourceImpl<Card, UUID, UserAccount> {
 
+    Card delete(Class<Card> c, UUID id, String deleteMessage, UserAccount authUser) throws Exception;
+
 }
