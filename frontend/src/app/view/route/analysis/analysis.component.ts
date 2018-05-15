@@ -13,6 +13,8 @@ import {BoardBaseFormComponent} from '../../components/forms/board-form/board-ba
 import {AnalysisWorkflowComponent} from '../../components/forms/analysis-workflow/analysis-workflow.component';
 import {AnalysisWipComponent} from '../../components/forms/analysis-wip/analysis-wip.component';
 import {AnalysisTimeComponent} from '../../components/forms/analysis-time/analysis-time.component';
+import {AnalysisQueryComponent} from '../../components/forms/analysis-query/analysis-query.component';
+import {SharedContext} from './utility/shared-context';
 
 
 @Component({
@@ -21,6 +23,9 @@ import {AnalysisTimeComponent} from '../../components/forms/analysis-time/analys
   styleUrls: ['./analysis.component.css']
 })
 export class AnalysisComponent implements OnInit {
+
+  @ViewChild(AnalysisQueryComponent)
+  queryComponent: AnalysisQueryComponent;
 
   @ViewChild(AnalysisWorkflowComponent)
   workflowComponent: AnalysisWorkflowComponent;
@@ -31,11 +36,9 @@ export class AnalysisComponent implements OnInit {
   @ViewChild(AnalysisTimeComponent)
   timeComponent: AnalysisTimeComponent;
 
-  sharedContext: { collapsed: boolean, project: Project, query: AnalysisQuery } =
-    { collapsed: false, project: null, query: new AnalysisQuery() };
+  sharedContext: SharedContext = new SharedContext(false, 1, null, new AnalysisQuery());
 
   constructor() {
-
   }
 
   ngOnInit() {  }
@@ -56,6 +59,17 @@ export class AnalysisComponent implements OnInit {
 
   closeQuery(): void {
     this.sharedContext.collapsed = true;
+  }
+
+  handleTabChange(value: string) {
+    this.sharedContext.activeTab = Number(value);
+    if(this.queryComponent) {
+      if(this.sharedContext.activeTab == 1 || this.sharedContext.activeTab == 2) {
+        this.queryComponent.setShowFilterEnable(true);
+      } else {
+        this.queryComponent.setShowFilterEnable(false);
+      }
+    }
   }
 
 }

@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {AnalysisQuery} from '../../../../api/dto/analysis/analysis-query';
 import {ApiService} from '../../../../api/services/api.service';
 import {WipQuery} from '../../../../api/dto/analysis/wip/wip-query';
 import {Project} from '../../../../api/models/Project';
+import {SharedContext} from '../../../route/analysis/utility/shared-context';
 
 @Component({
   selector: 'app-analysis-wip',
@@ -12,11 +12,12 @@ import {Project} from '../../../../api/models/Project';
 export class AnalysisWipComponent implements OnInit {
 
   @Input()
-  sharedContext: { collapsed: boolean, project: Project, query: AnalysisQuery };
+  sharedContext: SharedContext;
 
   constructor(private api: ApiService) { }
 
   ngOnInit() {
+
   }
 
   handleProjectSelect(project: Project) {

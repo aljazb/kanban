@@ -7,7 +7,6 @@ import {FormImpl} from '../../form-impl';
 import * as UUID from 'uuid/v4';
 import {Project} from '../../../../../api/models/Project';
 import {ApiService} from '../../../../../api/services/api.service';
-import {isNullOrUndefined} from "util";
 import {BoardEvent, BoardEventType} from '../utility/board-event';
 
 @Component({
@@ -25,7 +24,7 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
 
   leafBoardParts: BoardPart[];
 
-  formBoard: FormGroup;
+  formTime: FormGroup;
   fcName: FormControl;
 
   fcHighestPrioritySelection: BoardPart[];
@@ -139,7 +138,7 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   }
 
   private initFormGroup(): void {
-    this.formBoard = new FormGroup({
+    this.formTime = new FormGroup({
       name: this.fcName,
       highestPriority: this.fcHighestPriority,
       startDev: this.fcStartDev,
@@ -181,8 +180,8 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
   }
 
   isValid(): boolean {
-    this.validateForm(this.formBoard);
-    if(this.formBoard.valid) {
+    this.validateForm(this.formTime);
+    if(this.formTime.valid) {
       this.viewChildren.forEach(item => {
         if(!item.isValid()) {
           return false;
@@ -250,6 +249,13 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     }
   }
 
+  private refreshForm(): void {
+    this.fcHighestPriority.patchValue(this.fcHighestPriority.value);
+    this.fcStartDev.patchValue(this.fcStartDev.value);
+    this.fcEndDev.patchValue(this.fcEndDev.value);
+    this.fcAcceptanceTesting.patchValue(this.fcAcceptanceTesting.value);
+  }
+
   private updateSelection (){
     this.fcHighestPrioritySelection = this.buildAllBoardParts(this.leafBoardParts, this.getStartEndIndex(0));
     this.fcStartDevSelection = this.buildAllBoardParts(this.leafBoardParts, this.getStartEndIndex(1));
@@ -278,13 +284,6 @@ export class BoardBaseFormComponent extends FormImpl implements OnInit {
     }
 
     return { start: start, end: end };
-  }
-
-  private refreshForm(): void {
-    this.fcHighestPriority.patchValue(this.fcHighestPriority.value);
-    this.fcStartDev.patchValue(this.fcStartDev.value);
-    this.fcEndDev.patchValue(this.fcEndDev.value);
-    this.fcAcceptanceTesting.patchValue(this.fcAcceptanceTesting.value);
   }
 
   private buildAllBoardParts(boardParts: BoardPart[], index: { start: number, end: number }): BoardPart[] {

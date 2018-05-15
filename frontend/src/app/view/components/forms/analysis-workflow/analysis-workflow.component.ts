@@ -7,6 +7,7 @@ import {AnalysisQuery} from '../../../../api/dto/analysis/analysis-query';
 import {ApiService} from '../../../../api/services/api.service';
 import {Board} from '../../../../api/models/Board';
 import {Project} from '../../../../api/models/Project';
+import {SharedContext} from '../../../route/analysis/utility/shared-context';
 
 @Component({
   selector: 'app-analysis-workflow',
@@ -16,7 +17,7 @@ import {Project} from '../../../../api/models/Project';
 export class AnalysisWorkflowComponent implements OnInit {
 
   @Input()
-  sharedContext: { collapsed: boolean, project: Project, query: AnalysisQuery };
+  sharedContext: SharedContext;
 
   leafBoardPartsSelection: BoardPartSelection[];
 

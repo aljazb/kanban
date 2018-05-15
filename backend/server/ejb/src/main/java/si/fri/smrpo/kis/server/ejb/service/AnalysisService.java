@@ -5,6 +5,9 @@ import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.models.analysis.AnalysisQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeCard;
+import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipDate;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipResponse;
@@ -14,7 +17,6 @@ import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowResponse;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.AnalysisServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
-import sun.rmi.runtime.Log;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -66,6 +68,9 @@ public class AnalysisService implements AnalysisServiceLocal {
         ArrayList<Card> filteredCards = new ArrayList<>();
 
         for(Card c : cards) {
+            if(c.getIsDeleted()) {
+                continue;
+            }
 
             if(query.getNewFunctionality() != null) {
                 if(c.getRejected() || c.getSilverBullet()) {
@@ -217,6 +222,7 @@ public class AnalysisService implements AnalysisServiceLocal {
         return response;
     }
 
+    @Override
     public WorkFlowResponse processWorkFlowResponse(WorkFlowQuery query, UserAccount authUser) throws LogicBaseException {
         validate(query, authUser);
         return buildWorkFlowResponse(query);
@@ -264,8 +270,47 @@ public class AnalysisService implements AnalysisServiceLocal {
         return response;
     }
 
+    @Override
     public WipResponse processWipResponse(WipQuery query, UserAccount authUser) throws LogicBaseException {
         validate(query, authUser);
         return buildWipResponse(query);
     }
+
+    private TimeResponse buildTimeResponse(TimeQuery query) throws LogicBaseException {
+        Project p = database.find(Project.class, query.getProject().getId());
+        Board b = p.getBoard();
+
+        ArrayList<Card> filteredCards = filterCards(p.getCards(), b, query);
+
+        TimeResponse response = new TimeResponse();
+
+        for(Card c : filteredCards) {
+
+            CardMove from = c.getCardMoves().stream()
+                    .filter(e -> e.getTo().getId().equals(query.getFrom().getId()))
+                    .findFirst().orElse(null);
+
+            CardMove to =c.getCardMoves().stream()
+                    .filter(e -> e.getTo().getId().equals(query.getTo().getId()))
+                    .findFirst().orElse(null);
+
+            if(to != null && from != null) {
+                Long time = to.getCreatedOn().getTime() - from.getCreatedOn().getTime();
+                time /= 1000;
+
+                response.addTimeCard(new TimeCard(time, c));
+            }
+        }
+
+        response.calculateAverageTime();
+
+        return response;
+    }
+
+    @Override
+    public TimeResponse processTimeResponse(TimeQuery query, UserAccount authUser) throws LogicBaseException {
+        validate(query, authUser);
+        return buildTimeResponse(query);
+    }
+
 }

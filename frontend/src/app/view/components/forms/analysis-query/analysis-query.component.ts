@@ -4,6 +4,7 @@ import {Project} from '../../../../api/models/Project';
 import {AnalysisQuery} from '../../../../api/dto/analysis/analysis-query';
 import {cDpToTs} from '../../../../utility';
 import {ApiService} from '../../../../api/services/api.service';
+import {SharedContext} from '../../../route/analysis/utility/shared-context';
 
 @Component({
   selector: 'app-analysis-query',
@@ -16,7 +17,7 @@ export class AnalysisQueryComponent implements OnInit {
   onProjectSelected: EventEmitter<Project> = new EventEmitter();
 
   @Input()
-  sharedContext: { collapsed: boolean, project: Project, query: AnalysisQuery };
+  sharedContext: SharedContext;
 
 
   projectSelection: Project[];
@@ -52,6 +53,9 @@ export class AnalysisQueryComponent implements OnInit {
   }
 
   ngOnInit() {
+    if(this.sharedContext.activeTab == 3) {
+      this.setShowFilterEnable(false)
+    }
   }
 
   initFormControls(): void {
@@ -226,5 +230,13 @@ export class AnalysisQueryComponent implements OnInit {
     });
   }
 
-
+  setShowFilterEnable(enable: boolean) {
+    if(enable) {
+      this.fcShowFrom.enable();
+      this.fcShowTo.enable();
+    } else {
+      this.fcShowFrom.disable();
+      this.fcShowTo.disable()
+    }
+  }
 }

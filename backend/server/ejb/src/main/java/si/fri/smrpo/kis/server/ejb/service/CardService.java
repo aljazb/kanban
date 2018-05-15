@@ -59,12 +59,17 @@ public class CardService implements CardServiceLocal {
     }
 
     private void checkAccess(Card entity, UserAccount authUser) throws LogicBaseException {
+        Card card = entity;
 
-        Project p = database.get(Project.class, entity.getProject().getId());
+        if(card.getId() != null) {
+            card = database.get(Card.class, card.getId());
+        }
+
+        Project p = database.get(Project.class, card.getProject().getId());
         p.queryMembership(database.getEntityManager(), authUser.getId());
         Membership m = p.getMembership();
 
-        BoardPart dbBp = database.find(BoardPart.class, entity.getBoardPart().getId());
+        BoardPart dbBp = database.find(BoardPart.class, card.getBoardPart().getId());
         Board dbBoard = dbBp.getBoard();
 
         int cardColumn = dbBp.getLeafNumber();
@@ -72,12 +77,12 @@ public class CardService implements CardServiceLocal {
         if(m == null) {
             throw new TransactionException("User is not part of project", ExceptionType.INSUFFICIENT_RIGHTS);
         } else {
-            if(entity.getId() == null) {
+            if(card.getId() == null) {
                 if(dbBoard.getHighestPriority() < cardColumn) {
                     throw new TransactionException("Card can only be created in columns before and in highest priority",
                             ExceptionType.INSUFFICIENT_RIGHTS);
                 }
-                if(entity.getSilverBullet()) {
+                if(card.getSilverBullet()) {
                     if(!m.isKanbanMaster()) {
                         throw new TransactionException("User must be in role kanban master to create silver bullet",
                                 ExceptionType.INSUFFICIENT_RIGHTS);

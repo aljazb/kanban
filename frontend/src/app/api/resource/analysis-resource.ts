@@ -8,6 +8,8 @@ import {Project} from '../models/Project';
 import {NgxDataSet} from '../dto/ngx/grouped-series/ngx-data-set';
 import {WipQuery} from '../dto/analysis/wip/wip-query';
 import {WipResponse} from '../dto/analysis/wip/wip-response';
+import {TimeQuery} from '../dto/analysis/time/time-query';
+import {TimeResponse} from '../dto/analysis/time/time-response';
 
 export class AnalysisResource extends BaseResource<AnalysisResponse> {
 
@@ -30,4 +32,8 @@ export class AnalysisResource extends BaseResource<AnalysisResponse> {
       .pipe(map(content => this.deserialize(content)));
   }
 
+  getTime (entity: TimeQuery): Observable<TimeResponse> {
+    return this.api.httpClient.put<TimeResponse>(this.url + "/Time", this.serialize(entity), { headers: this.getHeaders(false)})
+      .pipe(map(content => this.deserialize(content)));
+  }
 }

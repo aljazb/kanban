@@ -17,21 +17,21 @@
 
     <div class="col-12 mt-2">
 
-      <ngb-tabset>
+      <ngb-tabset (tabChange)="handleTabChange($event.nextId)">
 
-        <ngb-tab title="Card workflow diagram">
+        <ngb-tab title="Card workflow diagram" id="1">
           <ng-template ngbTabContent>
             <app-analysis-workflow [sharedContext]="sharedContext"></app-analysis-workflow>
           </ng-template>
         </ngb-tab>
 
-        <ngb-tab title="Card WIP exceeded">
+        <ngb-tab title="Card WIP exceeded" id="2">
           <ng-template ngbTabContent>
             <app-analysis-wip [sharedContext]="sharedContext"></app-analysis-wip>
           </ng-template>
         </ngb-tab>
 
-        <ngb-tab title="Card time diagram">
+        <ngb-tab title="Card time diagram" id="3">
           <ng-template ngbTabContent>
             <app-analysis-time [sharedContext]="sharedContext"></app-analysis-time>
           </ng-template>

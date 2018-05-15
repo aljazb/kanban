@@ -1,6 +1,8 @@
 package si.fri.smrpo.kis.server.ejb.service.interfaces;
 
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowQuery;
@@ -18,5 +20,7 @@ public interface AnalysisServiceLocal  {
     WorkFlowResponse processWorkFlowResponse(WorkFlowQuery query, UserAccount authUser) throws LogicBaseException;
 
     WipResponse processWipResponse(WipQuery query, UserAccount authUser) throws LogicBaseException;
+
+    TimeResponse processTimeResponse(TimeQuery query, UserAccount authUser) throws LogicBaseException;
 
 }
