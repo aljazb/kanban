@@ -51,6 +51,8 @@ import { ColumnWipViolationConfirmationComponent } from './view/components/forms
 import { CardMovesPagingComponent } from './view/components/paging/card-moves-paging/card-moves-paging.component';
 import { AnalysisComponent } from './view/route/analysis/analysis.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {AnalysisQueryComponent} from './view/components/forms/analysis-query/analysis-query.component';
+import {AnalysisWorkflowComponent} from './view/components/forms/analysis-workflow/analysis-workflow.component';
 
 
 @NgModule({
@@ -100,7 +102,9 @@ import {NgxChartsModule} from '@swimlane/ngx-charts';
     CardMoveBackConfirmationComponent,
     ColumnWipViolationConfirmationComponent,
     CardMovesPagingComponent,
-    AnalysisComponent
+    AnalysisComponent,
+    AnalysisQueryComponent,
+    AnalysisWorkflowComponent
   ],
   providers: [
     {

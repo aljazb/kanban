@@ -1,0 +1,84 @@
+<div class="row" *ngIf="!queryCollapsed.value" >
+
+  <div class="col-12" *ngIf="!leafBoardPartsSelection">
+    <h5 class="col-12 text-center mt-5">
+      No project selected
+    </h5>
+  </div>
+
+  <div class="col-12 border" *ngIf="leafBoardPartsSelection">
+
+    <div class="col-12 mt-3 mb-3">
+      Select columns
+    </div>
+
+    <div class="col-12">
+
+      <div class="list-inline">
+        <div class="list-inline-item border p-2 m-1 hover-pointer" *ngFor="let bp of leafBoardPartsSelection"
+             (click)="bp.isActive = ! bp.isActive">
+          <div class="col-12">
+          {{bp.boardPart.name}} [{{bp.boardPart.leafNumber}}]
+          </div>
+          <div class="col-12 col-centered">
+            <i class="fa fa-check fa-2x" style="color: green" *ngIf="bp.isActive"></i>
+            <i class="fa fa-times fa-2x" style="color: red" *ngIf="!bp.isActive"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-12">
+      <button class="btn btn-primary mt-2 mb-2 pull-right" (click)="submitWorkFlow()">Submit</button>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="row" *ngIf="workflowNgxDataSetDisplay">
+
+  <div class="col-12 mt-5 mb-5">
+
+    <div class="col-4">
+      <div class="form-group row">
+        <label class="col-form-label col-9" for="columnsMax">Columns displayed</label>
+        <input class="form-control col-3" min="1" type="number" #maxWf id="columnsMax"
+               value="{{wfMaxDisplay}}"
+               (change)="updateDisplay(0, maxWf.value)"/>
+      </div>
+    </div>
+
+    <div *ngIf="showWfGraph">
+
+      <div class="slidecontainer">
+        <input class="slider" id="myRange" #wfs
+               type="range"
+               min="0"
+               max="{{getWorkflowMaxValue()}}"
+               value="{{wfScrollValue}}"
+               (change)="workflowScrollChanged(wfs.value)">
+      </div>
+
+      <div class="graph">
+        <ngx-charts-bar-vertical-2d
+          [legend]="true"
+          [xAxisLabel]="'Date'"
+          [showXAxisLabel]="true"
+          [xAxis]="true"
+          [yAxisLabel]="'Number of cards'"
+          [showYAxisLabel]="true"
+          [yAxis]="true"
+          [results]="workflowNgxDataSetDisplay"
+        ></ngx-charts-bar-vertical-2d>
+      </div>
+
+    </div>
+
+    <div class="mt-5">
+    </div>
+
+  </div>
+
+</div>
