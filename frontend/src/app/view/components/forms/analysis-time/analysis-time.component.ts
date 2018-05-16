@@ -7,6 +7,8 @@ import {BoardPart} from '../../../../api/models/BoardPart';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {TimeQuery} from '../../../../api/dto/analysis/time/time-query';
 import {SharedContext} from '../../../route/analysis/utility/shared-context';
+import {TimeResponse} from '../../../../api/dto/analysis/time/time-response';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-analysis-time',
@@ -28,6 +30,15 @@ export class AnalysisTimeComponent implements OnInit {
   leafBpFromSelection: BoardPart[];
   leafBpToSelection: BoardPart[];
 
+  response: TimeResponse;
+
+  formFormat: FormGroup;
+  fcFormat: FormControl;
+  timeUnit: string;
+
+  cardToTime: Map<string, string>;
+  averageTime: string;
+
 
   constructor(private api: ApiService) {
     this.initFormControl();
@@ -46,13 +57,23 @@ export class AnalysisTimeComponent implements OnInit {
 
     this.fcTo = new FormControl(null, Validators.required);
     this.fcTo.valueChanges.subscribe(value => this.updateSelection());
+
+    this.timeUnit = "h";
+    this.fcFormat = new FormControl("h", Validators.required);
+    this.fcFormat.valueChanges.subscribe(value => {
+      this.timeUnit = value;
+      this.updateCardTimes();
+    });
   }
 
   private initFormGroup(): void {
     this.formTime = new FormGroup({
       from: this.fcFrom,
       to: this.fcTo
-    })
+    });
+    this.formFormat = new FormGroup({
+      format: this.fcFormat
+    });
   }
 
   private updateSelection(): void {
@@ -101,8 +122,39 @@ export class AnalysisTimeComponent implements OnInit {
     query.to.id = this.fcTo.value.id;
 
     this.api.analysis.getTime(query).subscribe(value => {
-      console.log(value);
+      this.response = value;
+      this.cardToTime = new Map<string, string>();
+      this.averageTime = undefined;
+      this.updateCardTimes();
     });
   }
 
+  private convertTime(time: number) : string {
+    let timeConverted: number = null;
+    switch (this.timeUnit) {
+      case "s":
+        timeConverted = time;
+        break;
+      case "min":
+        timeConverted = time / 60.0;
+        break;
+      case "h":
+        timeConverted = time / (60.0 * 60);
+        break;
+      case "d":
+        timeConverted = time / (60.0 * 60 * 24);
+        break;
+    }
+
+    return Number(timeConverted.toPrecision(2)).toString();
+  }
+
+  private updateCardTimes() {
+    if (!isNullOrUndefined(this.response)) {
+      this.response.cards.forEach(tc => {
+        this.cardToTime.set(tc.card.id, this.convertTime(tc.time));
+      });
+      this.averageTime = this.convertTime(this.response.averageTime);
+    }
+  }
 }
