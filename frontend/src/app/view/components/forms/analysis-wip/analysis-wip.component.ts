@@ -25,7 +25,6 @@ export class AnalysisWipComponent implements OnInit {
   }
 
   submitWip() {
-    this.sharedContext.collapsed = true;
     let query: WipQuery = Object.assign(new WipQuery(), this.sharedContext.query);
     this.api.analysis.getWip(query).subscribe(value => {
       console.log(value);

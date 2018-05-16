@@ -112,7 +112,6 @@ export class AnalysisTimeComponent implements OnInit {
   }
 
   submitTime() {
-    this.sharedContext.collapsed = true;
     let query: TimeQuery = Object.assign(new TimeQuery(), this.sharedContext.query);
 
     query.from = new BoardPart();
