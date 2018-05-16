@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
                         "m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.KANBAN_MASTER OR " +
                         "m.memberType = si.fri.smrpo.kis.server.jpa.enums.MemberType.DEVELOPER_AND_KANBAN_MASTER" +
                         ") " +
-                        "AND m.userAccount = ua AND ua.id = :userId AND m.isDeleted = false")
+                        "AND m.userAccount = ua AND ua.id = :userId AND m.isDeleted = false AND p.isDeleted = false ")
 })
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class Project extends UUIDEntity<Project> {
