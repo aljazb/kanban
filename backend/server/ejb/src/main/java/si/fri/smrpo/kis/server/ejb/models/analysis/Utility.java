@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Utility {
 
-    public static Date trimDate(Date date) {
+    public static Date roundUpDateToDay(Date date) {
         Calendar c = Calendar.getInstance();
 
         c.setTime(date);

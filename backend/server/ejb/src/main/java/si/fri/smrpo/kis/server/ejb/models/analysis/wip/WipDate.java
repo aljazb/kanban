@@ -5,7 +5,7 @@ import si.fri.smrpo.kis.server.jpa.entities.CardMove;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static si.fri.smrpo.kis.server.ejb.models.analysis.Utility.trimDate;
+import static si.fri.smrpo.kis.server.ejb.models.analysis.Utility.roundUpDateToDay;
 
 public class WipDate {
 
@@ -18,7 +18,7 @@ public class WipDate {
     }
 
     public boolean equalDate(Date date) {
-        Date trim = trimDate(date);
+        Date trim = roundUpDateToDay(date);
         boolean isEqual = this.date.equals(trim);
         return isEqual;
     }

@@ -26,6 +26,10 @@ public class WorkFlowColumn {
         count++;
     }
 
+    public void decCount() {
+        count--;
+    }
+
     public BoardPart getBoardPart() {
         return boardPart;
     }
@@ -40,5 +44,12 @@ public class WorkFlowColumn {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    @JsonIgnore
+    public WorkFlowColumn copy() {
+        WorkFlowColumn wfc = new WorkFlowColumn(boardPart);
+        wfc.count = count;
+        return wfc;
     }
 }

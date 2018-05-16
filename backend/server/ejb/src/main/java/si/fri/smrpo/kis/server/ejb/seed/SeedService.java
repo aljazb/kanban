@@ -301,7 +301,7 @@ public class SeedService {
         BoardPart highestPriorityColumn = testBoardPartLeafs.get(1);
         highestPriorityColumn.setCards(new HashSet<>());
 
-        for(int i=0; i<=10; i++) {
+        for(int i=0; i<10; i++) {
 
             Card c = new Card();
 
