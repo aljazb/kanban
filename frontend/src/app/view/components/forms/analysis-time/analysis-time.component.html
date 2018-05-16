@@ -8,7 +8,7 @@
 
     <form [formGroup]="formTime" class="border">
 
-    <div class="form-group row">
+    <div class="form-group row mt-2">
       <label for="time-to" class="col-sm-5 col-form-label">From</label>
       <div class="col-sm-7">
         <select name="time-to" class="form-control" id="time-from"
@@ -43,13 +43,25 @@
 
 <div class="row mt-2" *ngIf="response">
   <div class="col-12">
-    <h3>Statistics:</h3>
+    <div class="d-flex justify-content-between">
+      <h3>Statistics:</h3>
+      <div class="mr-2">
+        <form [formGroup]="formFormat" class="border">
+          <select name="time-format" class="form-control" id="time-format" formControlName="format">
+            <option value="s">Seconds</option>
+            <option value="min">Minutes</option>
+            <option value="h">Hours</option>
+            <option value="d">Days</option>
+          </select>
+        </form>
+      </div>
+    </div>
     <div>
       <p>
         <strong>Number of Cards</strong>: {{response.cards.length}}
       </p>
       <p>
-        <strong>Average Lead Time</strong>: {{response.averageTime}}
+        <strong>Average Lead Time</strong>: {{averageTime}} {{timeUnit}}
       </p>
     </div>
   </div>
@@ -63,7 +75,7 @@
           <i class="fa fa-square mr-2" [style.color]="timeCard.card.color"></i><strong>{{timeCard.card.name}}</strong>
         </div>
         <div>
-          {{timeCard.time}}
+          {{cardToTime.get(timeCard.card.id)}} {{timeUnit}}
         </div>
       </a>
     </div>
