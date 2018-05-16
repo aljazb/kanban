@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {BoardPart} from '../../../../api/models/BoardPart';
 import {NgxDataSet} from '../../../../api/dto/ngx/grouped-series/ngx-data-set';
 import {WorkflowQuery} from '../../../../api/dto/analysis/workflow/workflow-query';
@@ -15,6 +15,10 @@ import {SharedContext} from '../../../route/analysis/utility/shared-context';
   styleUrls: ['./analysis-workflow.component.css']
 })
 export class AnalysisWorkflowComponent implements OnInit {
+
+
+  @ViewChild('workflowTab')
+  workflowTabComponent: ElementRef;
 
   @Input()
   sharedContext: SharedContext;
@@ -49,8 +53,6 @@ export class AnalysisWorkflowComponent implements OnInit {
   }
 
   submitWorkFlow() {
-    this.sharedContext.collapsed = true;
-
     let query: WorkflowQuery = Object.assign(new WorkflowQuery(), this.sharedContext.query);
 
     this.leafBoardPartsSelection.forEach(bp =>  {
@@ -67,21 +69,29 @@ export class AnalysisWorkflowComponent implements OnInit {
     this.api.analysis.getWorkFlow(query).subscribe(value => {
       this.setWorkflowNgxDataSet(value);
     });
-
   }
 
   private setWorkflowNgxDataSet(dataSet: NgxDataSet[]) {
     this.workflowNgxDataSetDisplay = null;
     this.workflowNgxDataSet = dataSet;
+
+    this.showWfGraph = false;
     this.updateDisplay(0);
+
+    setTimeout(() => {
+      this.showWfGraph = true;
+      setTimeout(() => { this.scrollToBottom(); }, 400);
+    }, 100);
+  }
+
+  scrollToBottom(): void {
+    window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
   }
 
   updateDisplay(value: number, max:number=null): void {
-    this.showWfGraph = false;
     if(max) this.wfMaxDisplay = Number(max);
     this.wfScrollValue = value;
     this.workflowNgxDataSetDisplay = this.workflowNgxDataSet.slice(this.wfScrollValue, this.wfScrollValue + this.wfMaxDisplay);
-    this.showWfGraph = true;
   }
 
   getWorkflowMaxValue(){

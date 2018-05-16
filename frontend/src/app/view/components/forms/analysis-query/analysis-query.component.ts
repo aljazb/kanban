@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Project} from '../../../../api/models/Project';
 import {AnalysisQuery} from '../../../../api/dto/analysis/analysis-query';
-import {cDpToTs} from '../../../../utility';
+import {cDpToTs, cTsToDp} from '../../../../utility';
 import {ApiService} from '../../../../api/services/api.service';
 import {SharedContext} from '../../../route/analysis/utility/shared-context';
 
@@ -61,16 +61,17 @@ export class AnalysisQueryComponent implements OnInit {
   initFormControls(): void {
 
     this.fcProject = new FormControl(null, Validators.required);
-    this.fcProject.valueChanges.subscribe(value => {
-      this.sharedContext.project = value;
-      if(value == null) {
+    this.fcProject.valueChanges.subscribe(p => {
+      this.sharedContext.project = p;
+
+      if(p == null) {
         this.sharedContext.query.project = null;
       } else {
         this.sharedContext.query.project = new Project();
-        this.sharedContext.query.project.id = value.id;
+        this.sharedContext.query.project.id = p.id;
       }
 
-      this.onProjectSelected.emit(value);
+      this.onProjectSelected.emit(p);
     });
 
     this.fcShowFrom = new FormControl();

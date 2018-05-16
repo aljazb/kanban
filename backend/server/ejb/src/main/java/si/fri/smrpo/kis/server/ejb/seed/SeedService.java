@@ -301,7 +301,7 @@ public class SeedService {
         BoardPart highestPriorityColumn = testBoardPartLeafs.get(1);
         highestPriorityColumn.setCards(new HashSet<>());
 
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<=10; i++) {
 
             Card c = new Card();
 
@@ -391,11 +391,18 @@ public class SeedService {
         for(Card c : testCards) {
             database.getEntityManager().flush();
 
-            int dayBefore = 8 + (int)(Math.random() * 8);
+            int dayBefore = 12 + (int)(Math.random() * 4);
 
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             cal.add(Calendar.DATE, -dayBefore);
+
+            c.setCreatedOn(cal.getTime());
+            c.setEditedOn(cal.getTime());
+            for(CardMove cm : c.getCardMoves()) {
+                cm.setCreatedOn(cal.getTime());
+                cm.setEditedOn(cal.getTime());
+            }
 
             for(int d=0; d<dayBefore; d++) {
                 int column = c.getBoardPart().getLeafNumber();

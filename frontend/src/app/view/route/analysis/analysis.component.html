@@ -2,18 +2,9 @@
 
   <div class="row">
 
-    <div class="col-12" *ngIf="sharedContext.collapsed">
-      <button class="btn btn-primary pull-right mt-2" (click)="openQuery()">Search</button>
-    </div>
-
-    <div class="col-12" *ngIf="!sharedContext.collapsed">
-      <button class="btn btn-primary pull-right mt-2" (click)="closeQuery()">Hide</button>
-    </div>
-
-    <div class="col-12" *ngIf="!sharedContext.collapsed">
+    <div class="col-12">
       <app-analysis-query [sharedContext]="sharedContext" (onProjectSelected)="handleOnProjectSelect($event)"></app-analysis-query>
     </div>
-
 
     <div class="col-12 mt-2">
 

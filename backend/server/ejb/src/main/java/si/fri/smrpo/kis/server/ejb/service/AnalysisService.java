@@ -25,6 +25,8 @@ import javax.ejb.Stateless;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static si.fri.smrpo.kis.server.ejb.models.analysis.Utility.trimDate;
+
 @PermitAll
 @Stateless
 @Local(AnalysisServiceLocal.class)
@@ -176,6 +178,13 @@ public class AnalysisService implements AnalysisServiceLocal {
         }
     }
 
+    private boolean sameDate(Date d1, Date d2) {
+        Date trim1 = trimDate(d1);
+        Date trim2 = trimDate(d2);
+        return trim1.equals(trim2);
+    }
+
+
     private WorkFlowResponse buildWorkFlowResponse(WorkFlowQuery query) throws LogicBaseException {
 
         Project p = database.find(Project.class, query.getProject().getId());
@@ -186,14 +195,26 @@ public class AnalysisService implements AnalysisServiceLocal {
 
         ArrayList<CardMove> cardMoves = new ArrayList<>();
         for(Card c : filteredCards) {
-            cardMoves.addAll(
-                    c.getCardMoves().stream()
-                            .filter(cm -> query.isShowDateValid(cm))
-                            .collect(Collectors.toSet())
-            );
-        }
-        cardMoves.sort(Comparator.comparing(CardMove::getCreatedOn));
+            ArrayList<CardMove> orderedCm = new ArrayList<>(c.getCardMoves());
+            orderedCm.sort((o1, o2) -> o1.getCreatedOn().compareTo(o2.getCreatedOn()));
 
+            CardMove sameDay = null;
+            for(CardMove cm : orderedCm) {
+
+                if(sameDay != null && query.isShowDateValid(cm)) {
+                    if(!sameDate(sameDay.getCreatedOn(), cm.getCreatedOn())) {
+                        cardMoves.add(sameDay);
+                    }
+                }
+
+                sameDay = cm;
+            }
+            if(sameDay != null) {
+                cardMoves.add(sameDay);
+            }
+        }
+
+        cardMoves.sort(Comparator.comparing(CardMove::getCreatedOn));
 
         Set<UUID> ids = query.getLeafBoardParts().stream().map(BoardPart::getId).collect(Collectors.toSet());
         List<BoardPart> leaves = b.getBoardParts().stream()

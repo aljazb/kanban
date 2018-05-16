@@ -17,6 +17,11 @@
         </div>
 
         <div *ngIf="cm.from.id == cm.to.id">
+          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.CREATE">
+            User <strong>{{cm.movedBy.email}}</strong> created card in board part
+            <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
+          </p>
+
           <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID_WIP_CHANGE">
             User <strong>{{cm.movedBy.email}}</strong> violated WIP by reducing maximal WIP of board part
             <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
@@ -25,11 +30,6 @@
           <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID_ON_CREATE">
             User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
             when creating card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
-          </p>
-
-          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID_SILVER_BULLET_ON_CREATE">
-            User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
-            when creating silver bullet at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
           </p>
 
         </div>

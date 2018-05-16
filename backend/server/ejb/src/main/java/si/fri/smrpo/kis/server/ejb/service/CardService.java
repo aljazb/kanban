@@ -13,12 +13,12 @@ import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.xml.registry.infomodel.User;
+import java.util.HashSet;
 import java.util.UUID;
 
 import static si.fri.smrpo.kis.server.jpa.entities.BoardPart.isMoveToAvailable;
-import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.INVALID_ON_CREATE;
-import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.INVALID_SILVER_BULLET_ON_CREATE;
-import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.VALID;
+import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.*;
 
 
 @PermitAll
@@ -129,16 +129,23 @@ public class CardService implements CardServiceLocal {
 
     private void checkWip(Card card, UserAccount authUser) throws DatabaseException {
         BoardPart boardPart = database.find(BoardPart.class, card.getBoardPart().getId());
-        if(!isMoveToAvailable(boardPart, null, false)) {
-            CardMove cm = new CardMove();
-            cm.setCard(card);
-            cm.setFrom(boardPart);
-            cm.setTo(boardPart);
-            cm.setCardMoveType(INVALID_ON_CREATE);
-            cm.setMovedBy(authUser);
 
-            database.create(cm);
+        CardMove cm = new CardMove();
+        cm.setCard(card);
+        cm.setFrom(boardPart);
+        cm.setTo(boardPart);
+        cm.setMovedBy(authUser);
+
+        if(!isMoveToAvailable(boardPart, null, false)) {
+            cm.setCardMoveType(INVALID_ON_CREATE);
+        } else {
+            cm.setCardMoveType(CREATE);
         }
+
+        cm = database.create(cm);
+
+        card.setCardMoves(new HashSet<>());
+        card.getCardMoves().add(cm);
     }
 
     @Override

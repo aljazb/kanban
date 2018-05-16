@@ -1,4 +1,4 @@
-<div class="row" *ngIf="!sharedContext.collapsed" >
+<div #workflowTab class="row mb-4">
 
   <div class="col-12" *ngIf="!sharedContext.project">
     <h5 class="col-12 text-center mt-5">
@@ -43,7 +43,8 @@
 
 </div>
 
-<div class="row" *ngIf="workflowNgxDataSetDisplay">
+
+<div class="row border" *ngIf="workflowNgxDataSetDisplay">
 
   <div class="col-12 mt-5 mb-5">
 
@@ -67,7 +68,7 @@
                (change)="workflowScrollChanged(wfs.value)">
       </div>
 
-      <div class="graph">
+      <div class="graph" (click)="wfs.focus()">
         <ngx-charts-bar-vertical-2d
           [legend]="true"
           [xAxisLabel]="'Date'"

@@ -36,7 +36,7 @@ export class AnalysisComponent implements OnInit {
   @ViewChild(AnalysisTimeComponent)
   timeComponent: AnalysisTimeComponent;
 
-  sharedContext: SharedContext = new SharedContext(false, 1, null, new AnalysisQuery());
+  sharedContext: SharedContext = new SharedContext(1, null, new AnalysisQuery());
 
   constructor() {
   }
@@ -51,14 +51,6 @@ export class AnalysisComponent implements OnInit {
     } else if(this.timeComponent != null) {
       this.timeComponent.handleProjectSelect(project);
     }
-  }
-
-  openQuery(): void {
-    this.sharedContext.collapsed = false;
-  }
-
-  closeQuery(): void {
-    this.sharedContext.collapsed = true;
   }
 
   handleTabChange(value: string) {
