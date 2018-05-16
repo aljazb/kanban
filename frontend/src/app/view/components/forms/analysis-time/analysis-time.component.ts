@@ -7,6 +7,7 @@ import {BoardPart} from '../../../../api/models/BoardPart';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {TimeQuery} from '../../../../api/dto/analysis/time/time-query';
 import {SharedContext} from '../../../route/analysis/utility/shared-context';
+import {TimeResponse} from '../../../../api/dto/analysis/time/time-response';
 
 @Component({
   selector: 'app-analysis-time',
@@ -27,6 +28,8 @@ export class AnalysisTimeComponent implements OnInit {
 
   leafBpFromSelection: BoardPart[];
   leafBpToSelection: BoardPart[];
+
+  response: TimeResponse;
 
 
   constructor(private api: ApiService) {
@@ -101,7 +104,8 @@ export class AnalysisTimeComponent implements OnInit {
     query.to.id = this.fcTo.value.id;
 
     this.api.analysis.getTime(query).subscribe(value => {
-      console.log(value);
+      console.log(value); // TODO remove
+      this.response = value;
     });
   }
 
