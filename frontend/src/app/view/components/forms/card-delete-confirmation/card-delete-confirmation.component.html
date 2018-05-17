@@ -3,11 +3,13 @@
 </div>
 <div class="modal-body">
   <div class="col-sm-9">
-        <textarea type="text" name="card-description" class="form-control" id="in-description"  placeholder="Enter reason for deletion"
-                  formControlName="description"></textarea>
+        <textarea name="card-delete-reason" class="form-control"
+                  placeholder="Enter reason for deletion"
+                  [(ngModel)]="deleteMessage"
+        ></textarea>
   </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn" (click)="cancelCard()">Cancel</button>
-  <button class="btn btn-danger" (click)="deleteCard()">Delete</button>
+  <button class="btn btn-danger" (click)="deleteCard()" [disabled]="deleteMessage.trim().length == 0">Delete</button>
 </div>

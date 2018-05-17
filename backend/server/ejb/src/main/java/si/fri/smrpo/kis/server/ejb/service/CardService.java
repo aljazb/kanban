@@ -189,6 +189,10 @@ public class CardService implements CardServiceLocal {
 
     @Override
     public Card delete(UUID id, String deleteMessage, UserAccount authUser) throws Exception {
+        if(deleteMessage == null) {
+            throw new TransactionException("Delete message is needed");
+        }
+
         Card c = new Card();
         c.setId(id);
 

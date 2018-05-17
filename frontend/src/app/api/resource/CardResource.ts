@@ -15,10 +15,7 @@ export class CardResource extends CrudResource<Card> {
   }
 
   deleteWithMessage (id: string, deleteMessage: string, xContent = this.api.xContent): Observable<Card> {
-    let c = new Card();
-    c.deleteMessage = deleteMessage;
-
-    return this.api.httpClient.put<Card>(this.url + "/delete/" + id, c, { headers: this.getHeaders(xContent)})
+    return this.api.httpClient.delete<Card>(this.url + "/" + id, { headers: this.getHeaders(xContent), params: { message: deleteMessage }})
       .pipe(map(content => this.deserialize(content)));
   }
 

@@ -8,10 +8,13 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class CardDeleteConfirmationComponent {
 
+  deleteMessage: string = '';
+
   constructor(public activeModal: NgbActiveModal) { }
 
+
   deleteCard() {
-    this.activeModal.close();
+    this.activeModal.close(this.deleteMessage);
   }
 
   cancelCard() {
