@@ -108,7 +108,7 @@ public class Project extends UUIDEntity<Project> {
                 if (leaf.getLeafNumber().equals(b.getHighestPriority())) {
                     highestPriorityId = leaf.getId();
                     for (Card c : leaf.getCards()) {
-                        if (c.getSilverBullet()) {
+                        if (!c.getIsDeleted() && c.getSilverBullet()) {
                             silverBulletInHighestPriority = true;
                         }
                     }
