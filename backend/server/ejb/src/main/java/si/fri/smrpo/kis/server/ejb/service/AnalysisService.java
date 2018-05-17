@@ -252,7 +252,10 @@ public class AnalysisService implements AnalysisServiceLocal {
         for(Card c : filteredCards) {
             cardMoves.addAll(
                     c.getCardMoves().stream()
-                            .filter(cm -> cm.getCardMoveType() != CardMoveType.VALID && query.isShowDateValid(cm))
+                            .filter(cm ->
+                                        cm.getCardMoveType() != CardMoveType.VALID &&
+                                        cm.getCardMoveType() != CardMoveType.CREATE &&
+                                        query.isShowDateValid(cm))
                             .collect(Collectors.toSet())
             );
         }
@@ -262,12 +265,12 @@ public class AnalysisService implements AnalysisServiceLocal {
         WipResponse response = new WipResponse();
 
         if(!cardMoves.isEmpty()) {
-            WipDate date = null;
+            WipDate date = new WipDate(roundUpDateToDay(cardMoves.get(0).getCreatedOn()));
 
             for(CardMove cm : cardMoves) {
 
-                if(date == null || !date.equalDate(cm.getCreatedOn())) {
-                    date = new WipDate(cm.getCreatedOn());
+                if(!date.equalDate(cm.getCreatedOn())) {
+                    date = new WipDate(roundUpDateToDay(cm.getCreatedOn()));
                     response.addDate(date);
                 }
 

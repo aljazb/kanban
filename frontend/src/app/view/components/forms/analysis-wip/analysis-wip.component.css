@@ -1,0 +1,10 @@
+.card-info {
+  width: 350px;
+}
+
+.scroll-group {
+  overflow-x: scroll;
+  white-space: nowrap;
+  display: block;
+  flex-wrap: nowrap;
+}

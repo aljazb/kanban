@@ -12,6 +12,47 @@
     </h5>
   </div>
 
+  <div class="col-12" *ngIf="sharedContext.project && sharedContext.project.board">
 
-  <button class="btn btn-primary mt-2 mb-2 pull-right" (click)="submitWip()">Submit</button>
+    <button class="btn btn-primary mt-2 mb-2 pull-right" (click)="submitWip()">Submit</button>
+
+  </div>
+
 </div>
+
+<div #content class="row scroll-group mt-5" *ngIf="response">
+
+  <table>
+    <thead>
+      <tr>
+        <td *ngFor="let d of response.dates">
+          <h3>{{d.date | date:'dd-MM-yyyy'}}</h3>
+        </td>
+      </tr>
+    </thead>
+
+    <tr>
+      <td *ngFor="let d of response.dates" valign="top">
+        <div class="list-group">
+          <div class="list-group-item card-info" *ngFor="let cm of d.cardMoves">
+
+            Card: <strong>{{cm.card.name}}</strong> <br>
+            Moved at: {{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}} <br>
+            From: <strong>{{cm.from.name}}</strong> To: <strong>{{cm.to.name}}</strong> <br>
+            Reason:
+            <span *ngIf="cm.cardMoveType == cmt.INVALID">Exceeded WIP with moving</span>
+            <span *ngIf="cm.cardMoveType == cmt.INVALID_WIP_CHANGE">Exceeded WIP with changing WIP</span>
+            <span *ngIf="cm.cardMoveType == cmt.INVALID_ON_CREATE">Exceeded WIP with creating card</span>
+
+          </div>
+        </div>
+
+      </td>
+    </tr>
+
+  </table>
+
+</div>
+
+
+
