@@ -20,6 +20,9 @@ export class AnalysisQueryComponent implements OnInit {
   sharedContext: SharedContext;
 
 
+  projectSelectionKanbanMaster: Project[];
+  projectSelectionUser: Project[];
+
   projectSelection: Project[];
 
   formQuery: FormGroup;
@@ -46,7 +49,15 @@ export class AnalysisQueryComponent implements OnInit {
   fcNewFunctionality: FormControl;
 
   constructor(private api: ApiService) {
-    api.analysis.getProjects().subscribe(value => this.projectSelection = value);
+    api.analysis.getProjects().subscribe(value => {
+      this.projectSelectionKanbanMaster = value;
+      this.setProjectSelection();
+    });
+
+    api.project.getList().subscribe(value => {
+      this.projectSelectionUser = value.items;
+      this.setProjectSelection();
+    });
 
     this.initFormControls();
     this.initFormGroup();
@@ -55,6 +66,16 @@ export class AnalysisQueryComponent implements OnInit {
   ngOnInit() {
     if(this.sharedContext.activeTab == 3) {
       this.setShowFilterEnable(false)
+    }
+
+    this.setProjectSelection();
+  }
+
+  setProjectSelection() {
+    if(this.sharedContext.activeTab == 1) {
+      this.projectSelection = this.projectSelectionUser;
+    } else {
+      this.projectSelection = this.projectSelectionKanbanMaster;
     }
   }
 

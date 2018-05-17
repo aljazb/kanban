@@ -1,3 +1,17 @@
-<div class="col-12">
+<div class="row">
+
+  <div class="col-12" *ngIf="!sharedContext.project">
+    <h5 class="col-12 text-center mt-5">
+      No project selected
+    </h5>
+  </div>
+
+  <div class="col-12" *ngIf="sharedContext.project && !sharedContext.project.board">
+    <h5 class="col-12 text-center mt-5">
+      Project has no board
+    </h5>
+  </div>
+
+
   <button class="btn btn-primary mt-2 mb-2 pull-right" (click)="submitWip()">Submit</button>
 </div>

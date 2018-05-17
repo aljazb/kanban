@@ -9,13 +9,14 @@ import {TimeQuery} from '../../../../api/dto/analysis/time/time-query';
 import {SharedContext} from '../../../route/analysis/utility/shared-context';
 import {TimeResponse} from '../../../../api/dto/analysis/time/time-response';
 import {isNullOrUndefined} from 'util';
+import {FormImpl} from '../form-impl';
 
 @Component({
   selector: 'app-analysis-time',
   templateUrl: './analysis-time.component.html',
   styleUrls: ['./analysis-time.component.css']
 })
-export class AnalysisTimeComponent implements OnInit {
+export class AnalysisTimeComponent extends FormImpl implements OnInit {
 
   @Input()
   sharedContext: SharedContext;
@@ -41,6 +42,8 @@ export class AnalysisTimeComponent implements OnInit {
 
 
   constructor(private api: ApiService) {
+    super();
+
     this.initFormControl();
     this.initFormGroup();
   }
@@ -111,21 +114,32 @@ export class AnalysisTimeComponent implements OnInit {
     }
   }
 
+  scrollToBottom(): void {
+    window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
   submitTime() {
-    let query: TimeQuery = Object.assign(new TimeQuery(), this.sharedContext.query);
+    this.validateForm(this.formTime);
 
-    query.from = new BoardPart();
-    query.from.id = this.fcFrom.value.id;
+    if(this.formTime.valid) {
 
-    query.to = new BoardPart();
-    query.to.id = this.fcTo.value.id;
+      let query: TimeQuery = Object.assign(new TimeQuery(), this.sharedContext.query);
 
-    this.api.analysis.getTime(query).subscribe(value => {
-      this.response = value;
-      this.cardToTime = new Map<string, string>();
-      this.averageTime = undefined;
-      this.updateCardTimes();
-    });
+      query.from = new BoardPart();
+      query.from.id = this.fcFrom.value.id;
+
+      query.to = new BoardPart();
+      query.to.id = this.fcTo.value.id;
+
+      this.api.analysis.getTime(query).subscribe(value => {
+        this.response = value;
+        this.cardToTime = new Map<string, string>();
+        this.averageTime = undefined;
+        this.updateCardTimes();
+        setTimeout(() => { this.scrollToBottom() }, 300);
+      });
+
+    }
   }
 
   private convertTime(time: number) : string {

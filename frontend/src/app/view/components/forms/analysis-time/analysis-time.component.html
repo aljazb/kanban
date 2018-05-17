@@ -1,83 +1,106 @@
-<div class="row">
+<div class="row border">
 
   <div class="col-12" *ngIf="!sharedContext.project">
-    No project selected
+    <h5 class="col-12 text-center mt-5">
+      No project selected
+    </h5>
   </div>
 
-  <div class="col-12 mt-3" *ngIf="sharedContext.project && leafBoardPartsSelection">
-
-    <form [formGroup]="formTime" class="border">
-
-    <div class="form-group row mt-2">
-      <label for="time-to" class="col-sm-5 col-form-label">From</label>
-      <div class="col-sm-7">
-        <select name="time-to" class="form-control" id="time-from"
-                formControlName="from">
-          <option [ngValue]="null">Select column</option>
-          <option *ngFor="let b of leafBpFromSelection" [ngValue]="b">{{b.name}}</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="time-to" class="col-sm-5 col-form-label">To</label>
-      <div class="col-sm-7">
-        <select name="time-to" class="form-control" id="time-to"
-                formControlName="to">
-          <option [ngValue]="null">Select column</option>
-          <option *ngFor="let b of leafBpToSelection" [ngValue]="b">{{b.name}}</option>
-        </select>
-      </div>
-    </div>
-
-  </form>
-
-  <div class="col-12">
-    <button class="btn btn-primary mt-2 mb-2 pull-right" (click)="submitTime()">Submit</button>
+  <div class="col-12" *ngIf="sharedContext.project && !sharedContext.project.board">
+    <h5 class="col-12 text-center mt-5">
+      Project has no board
+    </h5>
   </div>
 
+  <div class="col-12 m-3" *ngIf="sharedContext.project && leafBoardPartsSelection">
+
+    <div class="col-12">
+
+      <form [formGroup]="formTime">
+
+        <div class="form-group row m-2">
+          <label for="time-to" class="col-2 col-form-label">From</label>
+          <div class="col-4">
+            <select name="time-to" class="form-control" id="time-from"
+                    formControlName="from">
+              <option [ngValue]="null">Select column</option>
+              <option *ngFor="let b of leafBpFromSelection" [ngValue]="b">{{b.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row m-2">
+          <label for="time-to" class="col-2 col-form-label">To</label>
+          <div class="col-4">
+            <select name="time-to" class="form-control" id="time-to"
+                    formControlName="to">
+              <option [ngValue]="null">Select column</option>
+              <option *ngFor="let b of leafBpToSelection" [ngValue]="b">{{b.name}}</option>
+            </select>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="col-12">
+      <button class="btn btn-primary mb-2 pull-right" (click)="submitTime()">Submit</button>
+    </div>
 
   </div>
 
 </div>
 
-<div class="row mt-2" *ngIf="response">
+<div class="row border" *ngIf="response">
+
   <div class="col-12">
-    <div class="d-flex justify-content-between">
-      <h3>Statistics:</h3>
-      <div class="mr-2">
-        <form [formGroup]="formFormat" class="border">
-          <select name="time-format" class="form-control" id="time-format" formControlName="format">
-            <option value="s">Seconds</option>
-            <option value="min">Minutes</option>
-            <option value="h">Hours</option>
-            <option value="d">Days</option>
-          </select>
-        </form>
-      </div>
-    </div>
-    <div>
-      <p>
-        <strong>Number of Cards</strong>: {{response.cards.length}}
-      </p>
-      <p>
-        <strong>Average Lead Time</strong>: {{averageTime}} {{timeUnit}}
-      </p>
-    </div>
-  </div>
-</div>
-<div class="row" *ngIf="response">
-  <div class="col-12">
-    <h3>Cards:</h3>
-    <div class="list-group">
-      <a *ngFor="let timeCard of response.cards" class="list-group-item list-group-item-action d-flex justify-content-between" routerLink="/card/{{timeCard.card.id}}">
-        <div>
-          <i class="fa fa-square mr-2" [style.color]="timeCard.card.color"></i><strong>{{timeCard.card.name}}</strong>
+
+    <div class="row">
+      <div class="col-12 mt-3">
+        <div class="d-flex justify-content-between">
+          <h3>Statistics:</h3>
+          <div class="mr-2">
+            <form [formGroup]="formFormat" class="border">
+              <select name="time-format" class="form-control" id="time-format" formControlName="format">
+                <option value="s">Seconds</option>
+                <option value="min">Minutes</option>
+                <option value="h">Hours</option>
+                <option value="d">Days</option>
+              </select>
+            </form>
+          </div>
         </div>
         <div>
-          {{cardToTime.get(timeCard.card.id)}} {{timeUnit}}
+          <p>
+            <strong>Number of Cards</strong>: {{response.cards.length}}
+          </p>
+          <p>
+            <strong>Average Lead Time</strong>: {{averageTime}} {{timeUnit}}
+          </p>
         </div>
-      </a>
+      </div>
     </div>
+
+    <div class="row mb-5">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <h3>Cards:</h3>
+        <div class="list-group">
+          <a *ngFor="let timeCard of response.cards" class="list-group-item list-group-item-action d-flex justify-content-between" routerLink="/card/{{timeCard.card.id}}">
+            <div>
+              <i class="fa fa-square mr-2" [style.color]="timeCard.card.color"></i><strong>{{timeCard.card.name}}</strong>
+            </div>
+            <div>
+              {{cardToTime.get(timeCard.card.id)}} {{timeUnit}}
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
   </div>
+
 </div>
+
+<div class="bottom-padding"></div>

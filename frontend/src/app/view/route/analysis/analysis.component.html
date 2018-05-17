@@ -10,19 +10,19 @@
 
       <ngb-tabset (tabChange)="handleTabChange($event.nextId)">
 
-        <ngb-tab title="Card workflow diagram" id="1">
-          <ng-template ngbTabContent>
-            <app-analysis-workflow [sharedContext]="sharedContext"></app-analysis-workflow>
-          </ng-template>
-        </ngb-tab>
-
-        <ngb-tab title="Card WIP exceeded" id="2">
+         <ngb-tab title="Card WIP exceeded" id="1">
           <ng-template ngbTabContent>
             <app-analysis-wip [sharedContext]="sharedContext"></app-analysis-wip>
           </ng-template>
         </ngb-tab>
 
-        <ngb-tab title="Card time diagram" id="3">
+        <ngb-tab title="Card workflow diagram" id="2" *ngIf="authUser != null && authUser.inRoleKanbanMaster">
+          <ng-template ngbTabContent>
+            <app-analysis-workflow [sharedContext]="sharedContext"></app-analysis-workflow>
+          </ng-template>
+        </ngb-tab>
+
+        <ngb-tab title="Card time diagram" id="3" *ngIf="authUser != null && authUser.inRoleKanbanMaster">
           <ng-template ngbTabContent>
             <app-analysis-time [sharedContext]="sharedContext"></app-analysis-time>
           </ng-template>

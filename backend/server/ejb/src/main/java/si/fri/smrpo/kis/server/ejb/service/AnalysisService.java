@@ -166,6 +166,10 @@ public class AnalysisService implements AnalysisServiceLocal {
     }
 
     private void validate(AnalysisQuery query, UserAccount authUser) throws LogicBaseException {
+        validate(query, authUser, false);
+    }
+
+    private void validate(AnalysisQuery query, UserAccount authUser, boolean anyRoleAllowed) throws LogicBaseException {
         if(query.getProject() == null || query.getProject().getId() == null) {
             throw new TransactionException("Query must have project id");
         }
@@ -173,7 +177,7 @@ public class AnalysisService implements AnalysisServiceLocal {
         Project p = database.get(Project.class, query.getProject().getId());
 
         Membership m = p.queryMembership(database.getEntityManager(), authUser.getId());
-        if(m == null || !m.isKanbanMaster()) {
+        if(m == null || !(anyRoleAllowed || m.isKanbanMaster())) {
             throw new TransactionException("User is not kanban master");
         }
     }
@@ -280,7 +284,7 @@ public class AnalysisService implements AnalysisServiceLocal {
 
     @Override
     public WipResponse processWipResponse(WipQuery query, UserAccount authUser) throws LogicBaseException {
-        validate(query, authUser);
+        validate(query, authUser, true);
         return buildWipResponse(query);
     }
 
@@ -294,13 +298,25 @@ public class AnalysisService implements AnalysisServiceLocal {
 
         for(Card c : filteredCards) {
 
-            CardMove from = c.getCardMoves().stream()
-                    .filter(e -> e.getTo().getId().equals(query.getFrom().getId()))
-                    .findFirst().orElse(null);
+            CardMove from = null, to = null;
 
-            CardMove to =c.getCardMoves().stream()
-                    .filter(e -> e.getTo().getId().equals(query.getTo().getId()))
-                    .findFirst().orElse(null);
+            for(CardMove cm : c.getCardMoves()) {
+                if(cm.getTo().getId().equals(query.getFrom().getId())) {
+                    if(from == null) {
+                        from = cm;
+                    } else if(from.getCreatedOn().after(cm.getCreatedOn())) {
+                        from = cm;
+                    }
+                }
+
+                if(cm.getTo().getId().equals(query.getTo().getId())) {
+                    if(to == null) {
+                        to = cm;
+                    } else if(to.getCreatedOn().before(cm.getCreatedOn())) {
+                        to = cm;
+                    }
+                }
+            }
 
             if(to != null && from != null) {
                 Long time = to.getCreatedOn().getTime() - from.getCreatedOn().getTime();

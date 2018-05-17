@@ -15,6 +15,8 @@ import {AnalysisWipComponent} from '../../components/forms/analysis-wip/analysis
 import {AnalysisTimeComponent} from '../../components/forms/analysis-time/analysis-time.component';
 import {AnalysisQueryComponent} from '../../components/forms/analysis-query/analysis-query.component';
 import {SharedContext} from './utility/shared-context';
+import {UserAccount} from '../../../api/models/UserAccount';
+import {LoginService} from '../../../api/services/login.service';
 
 
 @Component({
@@ -38,10 +40,14 @@ export class AnalysisComponent implements OnInit {
 
   sharedContext: SharedContext = new SharedContext(1, null, new AnalysisQuery());
 
-  constructor() {
+  authUser: UserAccount;
+
+  constructor(private login: LoginService) {
   }
 
-  ngOnInit() {  }
+  ngOnInit() {
+    this.login.getUser().subscribe(value => this.authUser = value);
+  }
 
   handleOnProjectSelect(project: Project): void {
     if(this.workflowComponent != null) {

@@ -24,6 +24,10 @@ export class AnalysisWipComponent implements OnInit {
     console.log(project);
   }
 
+  scrollToBottom(): void {
+    window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+
   submitWip() {
     let query: WipQuery = Object.assign(new WipQuery(), this.sharedContext.query);
     this.api.analysis.getWip(query).subscribe(value => {
