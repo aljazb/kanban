@@ -8,8 +8,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular5-toaster/dist';
 import {Membership} from '../../../api/models/Membership';
 import {Board} from '../../../api/models/Board';
-import {ProjectDeleteConfirmationComponent} from '../../components/forms/project-delete-confirmation/project-delete-confirmation.component';
-
+import {CardDeleteConfirmationComponent} from '../../components/forms/card-delete-confirmation/card-delete-confirmation.component';
 @Component({
   selector: 'app-card-details',
   templateUrl: './card-details.component.html',
@@ -87,7 +86,7 @@ export class CardDetailsComponent implements OnInit {
         }), reason => {});
   }
   openDeleteConfirmationModal() {
-    const modalRef = this.modalService.open(ProjectDeleteConfirmationComponent);
+    const modalRef = this.modalService.open(CardDeleteConfirmationComponent);
 
     modalRef.result
       .then(value => {
@@ -95,7 +94,7 @@ export class CardDetailsComponent implements OnInit {
           this.toaster.pop("success", "Card was deleted");
           this.router.navigate([`/project`]);
         }, error2 => {
-          this.toaster.pop("error", "Error deleting project");
+          this.toaster.pop("error", "Error deleting Card");
         });
       });
   }

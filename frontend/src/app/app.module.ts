@@ -55,6 +55,7 @@ import {AnalysisQueryComponent} from './view/components/forms/analysis-query/ana
 import {AnalysisWorkflowComponent} from './view/components/forms/analysis-workflow/analysis-workflow.component';
 import { AnalysisWipComponent } from './view/components/forms/analysis-wip/analysis-wip.component';
 import { AnalysisTimeComponent } from './view/components/forms/analysis-time/analysis-time.component';
+import { CardDeleteConfirmationComponent } from './view/components/forms/card-delete-confirmation/card-delete-confirmation.component';
 
 
 @NgModule({
@@ -108,7 +109,8 @@ import { AnalysisTimeComponent } from './view/components/forms/analysis-time/ana
     AnalysisQueryComponent,
     AnalysisWorkflowComponent,
     AnalysisWipComponent,
-    AnalysisTimeComponent
+    AnalysisTimeComponent,
+    CardDeleteConfirmationComponent
   ],
   providers: [
     {
@@ -130,6 +132,7 @@ import { AnalysisTimeComponent } from './view/components/forms/analysis-time/ana
     UserAccountPasswordFormComponent,
     ProjectFormComponent,
     ProjectDeleteConfirmationComponent,
+    CardDeleteConfirmationComponent,
     UserAccountFormComponent,
     DevTeamFormComponent,
     CardMoveConfirmationComponent,
