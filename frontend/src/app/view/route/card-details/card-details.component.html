@@ -64,6 +64,11 @@
     </div>
 
     <div class="row">
+      <p class="col-sm-2 col-label">Due Date</p>
+      <p class="col-sm-2 col-label"><strong><span *ngIf="card.dueDate">{{ card.dueDate | date:'dd-MM-yyyy' }}</span><span *ngIf="!card.dueDate">unspecified</span></strong></p>
+    </div>
+
+    <div class="row">
       <p class="col-sm-2 col-label">Workload</p>
       <p class="col-sm-10 col-label"><strong>{{ card.workload }}</strong></p>
     </div>
