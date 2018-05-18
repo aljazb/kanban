@@ -1,20 +1,20 @@
 import {Component} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {Card} from '../../../../api/models/Card';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {FormImpl} from '../form-impl';
 import {Project} from '../../../../api/models/Project';
 import {BoardPart} from '../../../../api/models/BoardPart';
 import {ApiService} from '../../../../api/services/api.service';
 import {Board} from '../../../../api/models/Board';
-import {Color, COLOR_PALETTE} from './utility/color';
-import {cTsToDp} from '../../../../utility';
+import {Color} from './utility/color';
+import {cDpToTs, cTsToDp, DTDateFormat} from '../../../../utility';
 import {UserAccount} from '../../../../api/models/UserAccount';
 import {CardType} from '../../../../api/models/enums/card-type';
 import {DevTeam} from '../../../../api/models/DevTeam';
 import {LoginService} from '../../../../api/services/login.service';
-import {MemberType} from '../../../../api/models/enums/MemberType';
 import {Membership} from '../../../../api/models/Membership';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-card-form',
@@ -33,6 +33,7 @@ export class CardFormComponent extends FormImpl {
   fcDescription: FormControl;
   fcWorkload: FormControl;
   fcColor: FormControl;
+  fcDueDate: FormControl;
   fcAssignedTo: FormControl;
   fcReason: FormControl;
 
@@ -56,12 +57,15 @@ export class CardFormComponent extends FormImpl {
   }
 
   initFormControls(): void {
+    let start = cTsToDp(Date.now());
+
     this.fcCode = new FormControl('', Validators.required);
     this.fcName = new FormControl('', Validators.required);
     this.fcCardType = new FormControl(CardType.MUST_HAVE, Validators.required);
     this.fcDescription = new FormControl('', Validators.required);
     this.fcWorkload = new FormControl('');
     this.fcColor = new FormControl('#499dcf', Validators.required);
+    this.fcDueDate = new FormControl(undefined, [this.isDateAfterNow(start)]);
     this.fcAssignedTo = new FormControl(null);
     this.fcReason = new FormControl('');
   }
@@ -74,8 +78,9 @@ export class CardFormComponent extends FormImpl {
       description: this.fcDescription,
       workload: this.fcWorkload,
       color: this.fcColor,
-      assignedTo: this.fcAssignedTo,
-      reason: this.fcReason
+      reason: this.fcReason,
+      dueDate: this.fcDueDate,
+      assignedTo: this.fcAssignedTo
     });
   }
 
@@ -156,6 +161,10 @@ export class CardFormComponent extends FormImpl {
       c.description = this.fcDescription.value;
       c.workload = this.fcWorkload.value;
 
+      if (!isNullOrUndefined(this.fcDueDate.value)) {
+        c.dueDate = cDpToTs(this.fcDueDate.value);
+      }
+
       c.color = this.fcColor.value;
       c.silverBullet = this.isSilverBullet;
 
@@ -181,12 +190,28 @@ export class CardFormComponent extends FormImpl {
   }
 
   get isViolatingWip() {
-    if(this.isSilverBullet) {
+    if (this.isSilverBullet) {
       return this.project.highestPriorityFull;
     } else {
       return this.project.firstColumnFull;
     }
   }
 
+  isDateAfterNow(nowDate: DTDateFormat): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      if (isNullOrUndefined(control.value)) {
+        return null;
+      }
+      let startDate: DTDateFormat = control.value;
+      if(this.sameOrAfter(nowDate, startDate)) {
+        return {'beforeNow': {value: control.value}};
+      }
+      return null;
+    };
+  }
+
+  private sameOrAfter(date1: DTDateFormat, date2: DTDateFormat): boolean {
+    return new Date(date1.year, date1.month, date1.day) >= new Date(date2.year, date2.month, date2.day);
+  }
 }
 

@@ -16,6 +16,9 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular5-toaster/dist';
 import {CardMoveConfirmationComponent} from '../../components/forms/card-move-confirmation/card-move-confirmation.component';
 import {CardMoveBackConfirmationComponent} from '../../components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {cTsToDp} from '../../../utility';
+import {CardType} from '../../../api/models/enums/card-type';
 
 @Component({
   selector: 'app-board-details',
@@ -31,6 +34,11 @@ export class BoardDetailsComponent implements OnInit {
   isOwner: boolean;
   isAuthUserKanbanMaster: boolean;
 
+  showDisplayOptions: boolean;
+
+  formDisplayOptions: FormGroup;
+  fcCriticalDays: FormControl;
+
   constructor(private route: ActivatedRoute,
               private api: ApiService,
               private login: LoginService,
@@ -40,6 +48,20 @@ export class BoardDetailsComponent implements OnInit {
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.onInit();
+    this.showDisplayOptions = false;
+    this.initFormControls();
+    this.initFormGroup();
+  }
+
+  initFormControls(): void {
+    this.fcCriticalDays = new FormControl(undefined);
+    this.fcCriticalDays.valueChanges.subscribe(value => this.setCriticalCards(value))
+  }
+
+  initFormGroup(): void {
+    this.formDisplayOptions = new FormGroup({
+      criticalDays: this.fcCriticalDays,
+    });
   }
 
   private onInit(): void {
@@ -108,6 +130,18 @@ export class BoardDetailsComponent implements OnInit {
 
   moveCardRight(c: Card, from: BoardPart, to: BoardPart) {
     this.moveCard(c, from, to)
+  }
+
+  toggleDisplayOptions() : void {
+    this.showDisplayOptions = !this.showDisplayOptions;
+  }
+
+  private setCriticalCards(n: number) : void {
+    if (!isNullOrUndefined(n) && n >= 0) {
+      console.log(n);
+    } else {
+      // reset
+    }
   }
 
 }

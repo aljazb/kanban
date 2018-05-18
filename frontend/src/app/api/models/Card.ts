@@ -28,4 +28,6 @@ export class Card extends BaseEntity<Card> {
   cardMoves: CardMove[];
   subTasks: SubTask[];
   membership: Membership;
+
+  dueDate: number;
 }
