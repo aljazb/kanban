@@ -1,6 +1,6 @@
 <div *ngIf="card" class="card">
   <div class="card-header" [style.background]="card.color">
-    <div *ngIf="card.rejected">
+    <div class="rejected" *ngIf="card.rejected">
       <i class="fa fa-times-circle"></i>
       Rejected
     </div>

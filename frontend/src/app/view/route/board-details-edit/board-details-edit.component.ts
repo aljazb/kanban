@@ -142,13 +142,12 @@ export class BoardDetailsEditComponent implements OnInit {
   update(): void {
     if(this.boardBaseFormComp.isValid()) {
 
-      this.checkCurrentWipExceeded().then(() => {
-        this.api.board.put(this.board).subscribe(board => {
+      this.checkCurrentWipExceeded().then(reason => {
+        this.api.board.put(this.board, false, reason).subscribe(board => {
           this.toaster.pop('success', "Form updated");
           this.back();
         }, error2 => {
           this.toaster.pop('error', "Error updating form");
-          this.back();
         });
       });
     } else {

@@ -52,12 +52,14 @@
 
 </div>
 
-<div class="row border" *ngIf="response">
+<div class="row border" *ngIf="ngxDataSet">
 
   <div class="col-12">
 
     <div class="row">
+
       <div class="col-12 mt-3">
+
         <div class="d-flex justify-content-between">
           <h3>Statistics:</h3>
           <div class="mr-2">
@@ -71,36 +73,40 @@
             </form>
           </div>
         </div>
+
         <div>
           <p>
-            <strong>Number of Cards</strong>: {{response.cards.length}}
+            <strong>Number of Cards</strong>: {{ngxDataSet.length}}
           </p>
           <p>
             <strong>Average Lead Time</strong>: {{averageTime}} {{timeUnit}}
           </p>
         </div>
+
       </div>
+
     </div>
 
-    <div class="row mb-5">
-      <div class="col-3"></div>
-      <div class="col-6">
-        <h3>Cards:</h3>
-        <div class="list-group">
-          <a *ngFor="let timeCard of response.cards" class="list-group-item list-group-item-action d-flex justify-content-between" routerLink="/card/{{timeCard.card.id}}">
-            <div>
-              <i class="fa fa-square mr-2" [style.color]="timeCard.card.color"></i><strong>{{timeCard.card.name}}</strong>
-            </div>
-            <div>
-              {{cardToTime.get(timeCard.card.id)}} {{timeUnit}}
-            </div>
-          </a>
-        </div>
+    <div class="col-12 mt-5 mb-5">
+
+      <div class="graph">
+        <ngx-charts-bar-horizontal
+          [legend]="true"
+          [xAxisLabel]="'Time'"
+          [showXAxisLabel]="true"
+          [xAxis]="true"
+          [yAxisLabel]="'Card'"
+          [showYAxisLabel]="true"
+          [yAxis]="true"
+          [results]="ngxDataSet"
+        ></ngx-charts-bar-horizontal>
       </div>
+
+      <div class="mt-5">
+      </div>
+
     </div>
 
   </div>
 
 </div>
-
-<div class="bottom-padding"></div>

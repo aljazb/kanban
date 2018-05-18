@@ -8,10 +8,12 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class CardMoveConfirmationComponent {
 
+  WIPViolationReason: string = '';
+
   constructor(public activeModal: NgbActiveModal) { }
 
   yes(): void {
-    this.activeModal.close();
+    this.activeModal.close(this.WIPViolationReason);
   }
 
   no(): void {

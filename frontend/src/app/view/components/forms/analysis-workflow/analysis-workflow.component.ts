@@ -24,13 +24,7 @@ export class AnalysisWorkflowComponent implements OnInit {
   sharedContext: SharedContext;
 
   leafBoardPartsSelection: BoardPartSelection[];
-
   workflowNgxDataSet: NgxDataSet[];
-
-  workflowNgxDataSetDisplay: NgxDataSet[];
-  wfScrollValue: number;
-  wfMaxDisplay: number = 4;
-  showWfGraph: boolean = false;
 
   constructor(private api: ApiService) { }
 
@@ -72,39 +66,15 @@ export class AnalysisWorkflowComponent implements OnInit {
   }
 
   private setWorkflowNgxDataSet(dataSet: NgxDataSet[]) {
-    this.workflowNgxDataSetDisplay = null;
     this.workflowNgxDataSet = dataSet;
 
-    this.showWfGraph = false;
-    this.updateDisplay(0);
-
     setTimeout(() => {
-      this.showWfGraph = true;
       setTimeout(() => { this.scrollToBottom(); }, 400);
     }, 100);
   }
 
   scrollToBottom(): void {
     window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: 'smooth' });
-  }
-
-  updateDisplay(value: number, max:number=null): void {
-    if(max) this.wfMaxDisplay = Number(max);
-    this.wfScrollValue = value;
-    this.workflowNgxDataSetDisplay = this.workflowNgxDataSet.slice(this.wfScrollValue, this.wfScrollValue + this.wfMaxDisplay);
-  }
-
-  getWorkflowMaxValue(){
-    if(this.workflowNgxDataSet) {
-      return this.workflowNgxDataSet.length - this.wfMaxDisplay;
-    } else {
-      return 0;
-    }
-  }
-
-
-  workflowScrollChanged(value: number) {
-    this.updateDisplay(Number(value));
   }
 
 }

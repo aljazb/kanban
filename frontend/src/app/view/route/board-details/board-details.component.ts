@@ -72,11 +72,12 @@ export class BoardDetailsComponent implements OnInit {
     let wipExceeded = this.boardRepresentation.willExceedWip(to, from);
     if (wipExceeded) {
       cm.cardMoveType = CardMoveType.INVALID;
-
       const modalRef = this.modalService.open(CardMoveConfirmationComponent);
-
       modalRef.result
-        .then(value => this.postCardMove(cm));
+        .then(value => {
+          cm.reason = value;
+          this.postCardMove(cm)
+        }, reason => {});
 
     } else {
       this.postCardMove(cm);

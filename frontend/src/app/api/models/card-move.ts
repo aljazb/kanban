@@ -9,6 +9,8 @@ export class CardMove extends BaseEntity<CardMove> {
   cardMoveType: CardMoveType;
   movedBy: UserAccount;
 
+  reason: string;
+
   to: BoardPart;
   from: BoardPart;
 

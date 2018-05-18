@@ -21,6 +21,7 @@ export class Project extends BaseEntity<Project> {
 
   membership: Membership;
 
+  highestPriorityFull: boolean;
   firstColumnFull: boolean;
   silverBulletInHighestPriority: boolean;
 

@@ -34,6 +34,7 @@ export class CardFormComponent extends FormImpl {
   fcWorkload: FormControl;
   fcColor: FormControl;
   fcAssignedTo: FormControl;
+  fcReason: FormControl;
 
   isFormSubmitted: boolean = false;
 
@@ -62,6 +63,7 @@ export class CardFormComponent extends FormImpl {
     this.fcWorkload = new FormControl('');
     this.fcColor = new FormControl('#499dcf', Validators.required);
     this.fcAssignedTo = new FormControl(null);
+    this.fcReason = new FormControl('');
   }
 
   initFormGroup(): void {
@@ -72,7 +74,8 @@ export class CardFormComponent extends FormImpl {
       description: this.fcDescription,
       workload: this.fcWorkload,
       color: this.fcColor,
-      assignedTo: this.fcAssignedTo
+      assignedTo: this.fcAssignedTo,
+      reason: this.fcReason
     });
   }
 
@@ -171,7 +174,17 @@ export class CardFormComponent extends FormImpl {
       c.project = new Project();
       c.project.id = this.project.id;
 
+      c.deleteMessage = this.fcReason.value;
+
       this.activeModal.close(c);
+    }
+  }
+
+  get isViolatingWip() {
+    if(this.isSilverBullet) {
+      return this.project.highestPriorityFull;
+    } else {
+      return this.project.firstColumnFull;
     }
   }
 

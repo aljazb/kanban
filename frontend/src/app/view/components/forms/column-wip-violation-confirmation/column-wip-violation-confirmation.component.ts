@@ -8,19 +8,19 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class ColumnWipViolationConfirmationComponent implements OnInit {
 
+  WIPViolationReason: string = '';
   exceedingColumns: string[];
 
   constructor(public activeModal: NgbActiveModal) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   setExceedingColumns(columns: string[]) {
     this.exceedingColumns = columns;
   }
 
   yes(): void {
-    this.activeModal.close();
+    this.activeModal.close(this.WIPViolationReason);
   }
 
   no(): void {

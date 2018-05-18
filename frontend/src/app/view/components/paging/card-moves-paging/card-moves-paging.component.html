@@ -10,29 +10,31 @@
 
       <div *ngFor="let cm of paging.items" class="list-group-item list-group-item-action flex-column align-items-start">
 
-        <div *ngIf="cm.from.id != cm.to.id">
+        <div *ngIf="cm.cardMoveType == cmt.VALID || cm.cardMoveType == cmt.INVALID">
           <p class="mb-1">User <strong>{{cm.movedBy.email}}</strong> moved card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.</p>
           <p class="mb-1">From: <strong>{{cm.from.name}}</strong> To: <strong>{{cm.to.name}}</strong></p>
           <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID"><strong>WIP Exceeded!</strong></p>
         </div>
 
-        <div *ngIf="cm.from.id == cm.to.id">
-          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.CREATE">
-            User <strong>{{cm.movedBy.email}}</strong> created card in board part
-            <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
-          </p>
+        <p class="mb-1" *ngIf="cm.cardMoveType == cmt.CREATE">
+          User <strong>{{cm.movedBy.email}}</strong> created card in board part
+          <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
+        </p>
 
-          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID_WIP_CHANGE">
-            User <strong>{{cm.movedBy.email}}</strong> violated WIP by reducing maximal WIP of board part
-            <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
-          </p>
+        <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID_WIP_CHANGE">
+          User <strong>{{cm.movedBy.email}}</strong> violated WIP by reducing maximal WIP of board part
+          <strong>{{cm.from.name}}</strong> at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
+        </p>
 
-          <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID_ON_CREATE">
-            User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
-            when creating card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
-          </p>
+        <p class="mb-1 text-danger" *ngIf="cm.cardMoveType == cmt.INVALID_ON_CREATE">
+          User <strong>{{cm.movedBy.email}}</strong> violated WIP of board part <strong>{{cm.from.name}}</strong>
+          when creating card at <strong>{{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}}</strong>.
+        </p>
 
-        </div>
+        <p *ngIf="cm.reason">
+          Reason: {{cm.reason}}
+        </p>
+
       </div>
 
       <ngb-pagination (pageChange)="refresh()"

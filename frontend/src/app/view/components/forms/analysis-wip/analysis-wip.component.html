@@ -39,10 +39,11 @@
             Card: <strong>{{cm.card.name}}</strong> <br>
             Moved at: {{cm.createdOn| date:'d. M. yyyy HH:mm:ss'}} <br>
             From: <strong>{{cm.from.name}}</strong> To: <strong>{{cm.to.name}}</strong> <br>
-            Reason:
+            Type:
             <span *ngIf="cm.cardMoveType == cmt.INVALID">Exceeded WIP with moving</span>
             <span *ngIf="cm.cardMoveType == cmt.INVALID_WIP_CHANGE">Exceeded WIP with changing WIP</span>
             <span *ngIf="cm.cardMoveType == cmt.INVALID_ON_CREATE">Exceeded WIP with creating card</span>
+            <span *ngIf="cm.reason">Reason: {{cm.reason}}</span>
 
           </div>
         </div>

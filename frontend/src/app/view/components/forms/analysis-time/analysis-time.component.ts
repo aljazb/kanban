@@ -10,6 +10,7 @@ import {SharedContext} from '../../../route/analysis/utility/shared-context';
 import {TimeResponse} from '../../../../api/dto/analysis/time/time-response';
 import {isNullOrUndefined} from 'util';
 import {FormImpl} from '../form-impl';
+import {NgxSeries} from '../../../../api/dto/ngx/grouped-series/ngx-series';
 
 @Component({
   selector: 'app-analysis-time',
@@ -23,7 +24,6 @@ export class AnalysisTimeComponent extends FormImpl implements OnInit {
 
   leafBoardPartsSelection: BoardPart[];
 
-
   formTime: FormGroup;
   fcFrom: FormControl;
   fcTo: FormControl;
@@ -31,15 +31,14 @@ export class AnalysisTimeComponent extends FormImpl implements OnInit {
   leafBpFromSelection: BoardPart[];
   leafBpToSelection: BoardPart[];
 
-  response: TimeResponse;
-
   formFormat: FormGroup;
   fcFormat: FormControl;
   timeUnit: string;
 
-  cardToTime: Map<string, string>;
-  averageTime: string;
+  response: TimeResponse;
+  averageTime: number;
 
+  ngxDataSet: NgxSeries[];
 
   constructor(private api: ApiService) {
     super();
@@ -132,17 +131,14 @@ export class AnalysisTimeComponent extends FormImpl implements OnInit {
       query.to.id = this.fcTo.value.id;
 
       this.api.analysis.getTime(query).subscribe(value => {
-        this.response = value;
-        this.cardToTime = new Map<string, string>();
-        this.averageTime = undefined;
-        this.updateCardTimes();
+        this.handleResponse(value);
         setTimeout(() => { this.scrollToBottom() }, 300);
       });
 
     }
   }
 
-  private convertTime(time: number) : string {
+  private convertTime(time: number) : number {
     let timeConverted: number = null;
     switch (this.timeUnit) {
       case "s":
@@ -159,14 +155,26 @@ export class AnalysisTimeComponent extends FormImpl implements OnInit {
         break;
     }
 
-    return Number(timeConverted.toPrecision(2)).toString();
+    return Number(timeConverted.toPrecision(2));
+  }
+
+  private handleResponse(response: TimeResponse) {
+        this.response = response;
+        this.averageTime = undefined;
+        this.updateCardTimes();
   }
 
   private updateCardTimes() {
-    if (!isNullOrUndefined(this.response)) {
-      this.response.cards.forEach(tc => {
-        this.cardToTime.set(tc.card.id, this.convertTime(tc.time));
+    if (this.response) {
+      let series: NgxSeries[] = [];
+
+      this.response.cards.forEach(value => {
+          let s = Object.assign({}, value);
+          s.value = this.convertTime(s.value);
+          series.push(s);
       });
+
+      this.ngxDataSet = series;
       this.averageTime = this.convertTime(this.response.averageTime);
     }
   }

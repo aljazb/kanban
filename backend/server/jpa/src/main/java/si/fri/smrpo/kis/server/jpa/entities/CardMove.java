@@ -18,6 +18,8 @@ public class CardMove extends UUIDEntity<CardMove> {
     @Enumerated(EnumType.STRING)
     private CardMoveType cardMoveType;
 
+    private String reason;
+
     @ManyToOne
     @JoinColumn(name = "moved_by_user_account_id")
     private UserAccount movedBy;
@@ -74,4 +76,13 @@ public class CardMove extends UUIDEntity<CardMove> {
     public void setCard(Card card) {
         this.card = card;
     }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
 }

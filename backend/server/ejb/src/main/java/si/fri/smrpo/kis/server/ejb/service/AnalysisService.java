@@ -11,7 +11,8 @@ import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipDate;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipResponse;
-import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowDate;
+import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowBoardPart;
+import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowColumn;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowResponse;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.AnalysisServiceLocal;
@@ -210,26 +211,54 @@ public class AnalysisService implements AnalysisServiceLocal {
         Set<UUID> ids = query.getLeafBoardParts().stream().map(BoardPart::getId).collect(Collectors.toSet());
         List<BoardPart> leaves = b.getBoardParts().stream()
                 .filter(boardPart -> ids.contains(boardPart.getId()))
-                .sorted(Comparator.comparing(BoardPart::getLeafNumber))
+                .sorted((o1, o2) -> o1.getLeafNumber() - o2.getLeafNumber())
                 .collect(Collectors.toList());
 
 
         WorkFlowResponse response = new WorkFlowResponse();
 
         if(!cardMoves.isEmpty()) {
-            WorkFlowDate date = new WorkFlowDate(roundUpDateToDay(cardMoves.get(0).getCreatedOn()), leaves);
-            response.addDate(date);
+
+            Date from = query.getShowFrom();
+            if(from == null) from = roundUpDateToDay(cardMoves.get(0).getCreatedOn());
+
+            Date to = query.getShowTo();
+            if(to == null) to = roundUpDateToDay(cardMoves.get(cardMoves.size() - 1).getCreatedOn());
+
+            HashMap<UUID, WorkFlowBoardPart> map = new HashMap<>();
+
+            for(BoardPart bp : leaves) {
+                WorkFlowBoardPart wfbp = new WorkFlowBoardPart(bp, from, to);
+                map.put(bp.getId(), wfbp);
+                response.addDate(wfbp);
+            }
 
             for(CardMove cm : cardMoves) {
 
-                if(!date.equalDate(cm.getCreatedOn())) {
-                    date = date.copy(roundUpDateToDay(cm.getCreatedOn()));
-                    response.addDate(date);
+                Date now = roundUpDateToDay(cm.getCreatedOn());
+
+                WorkFlowBoardPart toColumn = map.get(cm.getTo().getId());
+                if(toColumn != null) {
+                    toColumn.inc(now);
                 }
 
-                date.handle(cm);
+                if(cm.getCardMoveType() != CardMoveType.CREATE) {
+                    WorkFlowBoardPart fromColumn = map.get(cm.getFrom().getId());
+                    if(fromColumn != null) {
+                        fromColumn.dec(now);
+                    }
+                }
             }
+
+            for(WorkFlowBoardPart wfbp : response.getDates()) {
+                for(int i=1; i<wfbp.getColumns().size(); i++) {
+                    wfbp.getColumns().get(i).add(wfbp.getColumns().get(i - 1).getCount());
+                }
+            }
+
         }
+
+        Collections.reverse(response.getDates());
 
         return response;
     }
@@ -239,7 +268,6 @@ public class AnalysisService implements AnalysisServiceLocal {
         validate(query, authUser);
         return buildWorkFlowResponse(query);
     }
-
 
     private WipResponse buildWipResponse(WipQuery query) throws DatabaseException {
         Project p = database.find(Project.class, query.getProject().getId());
@@ -266,6 +294,7 @@ public class AnalysisService implements AnalysisServiceLocal {
 
         if(!cardMoves.isEmpty()) {
             WipDate date = new WipDate(roundUpDateToDay(cardMoves.get(0).getCreatedOn()));
+            response.addDate(date);
 
             for(CardMove cm : cardMoves) {
 

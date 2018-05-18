@@ -11,4 +11,6 @@ import java.util.UUID;
 
 public interface BoardSourceLocal extends CrudSourceImpl<Board, UUID, UserAccount> {
 
+    Board update(Board newEntity, UserAccount authUser, String reason) throws Exception;
+
 }

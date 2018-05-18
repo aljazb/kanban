@@ -44,43 +44,21 @@
 </div>
 
 
-<div class="row border" *ngIf="workflowNgxDataSetDisplay">
+<div class="row border" *ngIf="workflowNgxDataSet">
 
   <div class="col-12 mt-5 mb-5">
 
-    <div class="col-4">
-      <div class="form-group row">
-        <label class="col-form-label col-9" for="columnsMax">Columns displayed</label>
-        <input class="form-control col-3" min="1" type="number" #maxWf id="columnsMax"
-               value="{{wfMaxDisplay}}"
-               (change)="updateDisplay(0, maxWf.value)"/>
-      </div>
-    </div>
-
-    <div *ngIf="showWfGraph">
-
-      <div class="slidecontainer">
-        <input class="slider" id="myRange" #wfs
-               type="range"
-               min="0"
-               max="{{getWorkflowMaxValue()}}"
-               value="{{wfScrollValue}}"
-               (change)="workflowScrollChanged(wfs.value)">
-      </div>
-
-      <div class="graph" (click)="wfs.focus()">
-        <ngx-charts-bar-vertical-2d
-          [legend]="true"
-          [xAxisLabel]="'Date'"
-          [showXAxisLabel]="true"
-          [xAxis]="true"
-          [yAxisLabel]="'Number of cards'"
-          [showYAxisLabel]="true"
-          [yAxis]="true"
-          [results]="workflowNgxDataSetDisplay"
-        ></ngx-charts-bar-vertical-2d>
-      </div>
-
+    <div class="graph">
+      <ngx-charts-area-chart-stacked
+        [legend]="true"
+        [xAxisLabel]="'Date'"
+        [showXAxisLabel]="true"
+        [xAxis]="true"
+        [yAxisLabel]="'Number of cards'"
+        [showYAxisLabel]="true"
+        [yAxis]="true"
+        [results]="workflowNgxDataSet"
+      ></ngx-charts-area-chart-stacked>
     </div>
 
     <div class="mt-5">

@@ -47,7 +47,7 @@ public class BoardService implements BoardServiceLocal {
             throw new TransactionException("No board part specified");
         }
 
-        validateMarks(board);
+        validateColumnsTypes(board);
         validate(board.getBoardParts());
 
         if(board.getProjects() != null) {
@@ -81,7 +81,7 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
-    private void validateMarks(Board board) throws TransactionException {
+    private void validateColumnsTypes(Board board) throws TransactionException {
         if(!(
                 board.getHighestPriority() < board.getStartDev() &&
                 board.getStartDev() < board.getEndDev() &&
@@ -230,7 +230,7 @@ public class BoardService implements BoardServiceLocal {
         database.delete(BoardPart.class, bp.getId());
     }
 
-    private void updateBoardParts(Set<BoardPart> dbBoardPart, Set<BoardPart> newBoardPart, UserAccount authUser) throws LogicBaseException {
+    private void updateBoardParts(Set<BoardPart> dbBoardPart, Set<BoardPart> newBoardPart, UserAccount authUser, String reason) throws LogicBaseException {
         HashMap<UUID, BoardPart> map = UUIDEntity.buildMap(dbBoardPart);
 
         for(BoardPart nBp : newBoardPart) {
@@ -247,14 +247,14 @@ public class BoardService implements BoardServiceLocal {
 
                 if (!nBp.getMaxWip().equals(dbBp.getMaxWip()) && nBp.getMaxWip() != 0 &&
                         dbBp.getCurrentWip() > nBp.getMaxWip()) {
-                    createWipViolations(dbBp, dbBp, authUser);
+                    createWipViolations(dbBp, dbBp, authUser, reason);
                 }
 
                 database.update(nBp);
                 map.remove(dbBp.getId());
             }
             if(nBp.getChildren() == null) nBp.setChildren(new HashSet<>());
-            updateBoardParts(dbBp.getChildren(), nBp.getChildren(), authUser);
+            updateBoardParts(dbBp.getChildren(), nBp.getChildren(), authUser, reason);
         }
 
         for(BoardPart bp : map.values()) {
@@ -274,7 +274,7 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
-    private void createWipViolations(BoardPart dbBoardPart, BoardPart originalBp, UserAccount authUser) throws DatabaseException {
+    private void createWipViolations(BoardPart dbBoardPart, BoardPart originalBp, UserAccount authUser, String reason) throws DatabaseException {
         if(dbBoardPart.getLeafNumber() != null) {
             for (Card c : dbBoardPart.getCards()) {
                 CardMove violationMove = new CardMove();
@@ -283,13 +283,14 @@ public class BoardService implements BoardServiceLocal {
                 violationMove.setTo(originalBp);
                 violationMove.setCardMoveType(CardMoveType.INVALID_WIP_CHANGE);
                 violationMove.setMovedBy(authUser);
+                violationMove.setReason(reason);
 
                 database.create(violationMove);
                 database.update(c);
             }
         } else {
             for (BoardPart bp : dbBoardPart.getChildren()) {
-                createWipViolations(bp, originalBp, authUser);
+                createWipViolations(bp, originalBp, authUser, reason);
             }
         }
     }
@@ -313,11 +314,11 @@ public class BoardService implements BoardServiceLocal {
         }
     }
 
-    private Board updateBoard(Board dbBoard, Board newBoard, UserAccount authUser) throws LogicBaseException {
+    private Board updateBoard(Board dbBoard, Board newBoard, UserAccount authUser, String reason) throws LogicBaseException {
         updateProject(dbBoard, newBoard);
 
         dbBoard.buildBoardPartsReferences();
-        updateBoardParts(dbBoard.getBoardParts(), newBoard.getBoardParts(), authUser);
+        updateBoardParts(dbBoard.getBoardParts(), newBoard.getBoardParts(), authUser, reason);
 
         dbBoard = database.update(newBoard);
 
@@ -332,7 +333,7 @@ public class BoardService implements BoardServiceLocal {
     }
 
     @Override
-    public Board update(Board board, UserAccount authUser) throws LogicBaseException {
+    public Board update(Board board, UserAccount authUser, String reason) throws LogicBaseException {
         validate(board);
 
         Board dbBoard = database.get(Board.class, board.getId());
@@ -340,7 +341,7 @@ public class BoardService implements BoardServiceLocal {
         validateProject(dbBoard, board);
         checkEditAccess(dbBoard, authUser);
 
-        dbBoard = updateBoard(dbBoard, board, authUser);
+        dbBoard = updateBoard(dbBoard, board, authUser, reason);
 
         return dbBoard;
     }

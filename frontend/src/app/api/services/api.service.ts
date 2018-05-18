@@ -10,6 +10,7 @@ import {UserAccountResource} from '../resource/UserAccountResource';
 import {RequestResource} from '../resource/RequestResource';
 import {CardMoveResource} from '../resource/CardMoveResource';
 import {AnalysisResource} from '../resource/analysis-resource';
+import {SubTaskResource} from '../resource/sub-task-resource';
 
 @Injectable()
 export class ApiService {
@@ -25,6 +26,7 @@ export class ApiService {
   public userAccount: UserAccountResource;
   public request: RequestResource;
   public cardMove: CardMoveResource;
+  public subTask: SubTaskResource;
 
   public analysis: AnalysisResource;
 
@@ -45,6 +47,7 @@ export class ApiService {
     this.userAccount = new UserAccountResource(this);
     this.request = new RequestResource(this);
     this.cardMove = new CardMoveResource(this);
+    this.subTask = new SubTaskResource(this);
 
     this.analysis = new AnalysisResource(this);
   }

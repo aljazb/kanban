@@ -138,6 +138,8 @@ public class CardService implements CardServiceLocal {
 
         if(!isMoveToAvailable(boardPart, null, false)) {
             cm.setCardMoveType(INVALID_ON_CREATE);
+            cm.setReason(card.getDeleteMessage());
+            card.setDeleteMessage(null);
         } else {
             cm.setCardMoveType(CREATE);
         }

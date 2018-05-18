@@ -65,7 +65,9 @@ public class BoardResource extends CrudResource<Board, BoardSourceLocal, UserAcc
     @PUT
     @Path("{id}")
     public Response update(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, Board entity) throws Exception {
-        return super.update(xContent, id, entity);
+        String reason = uriInfo.getQueryParameters().getFirst("reason");
+        entity.setId(id);
+        return buildResponse(source.update(entity, getAuthUser(), reason), xContent).build();
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})

@@ -216,7 +216,7 @@ export class BoardPartFormComponent extends FormImpl implements OnInit {
   }
 
   get hasChildren(): boolean {
-    return this.boardPart.leafNumber != null && this.boardPart.children != null && this.boardPart.children.length > 0;
+    return this.boardPart.leafNumber == null && this.boardPart.children != null && this.boardPart.children.length > 0;
   }
 
 }

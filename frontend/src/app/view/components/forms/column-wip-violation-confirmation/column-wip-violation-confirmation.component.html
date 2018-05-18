@@ -3,9 +3,13 @@
 </div>
 <div class="modal-body">
   <p>Current WIP will be exceeded in the following columns. Are you sure?</p>
-    <ul>
-      <li *ngFor="let col of exceedingColumns">{{col}}</li>
-    </ul>
+  <ul>
+    <li *ngFor="let col of exceedingColumns">{{col}}</li>
+  </ul>
+  <textarea name="card-delete-reason" class="form-control"
+            placeholder="Enter reason for violating WIP"
+            [(ngModel)]="WIPViolationReason"
+  ></textarea>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn" (click)="yes()">Yes</button>

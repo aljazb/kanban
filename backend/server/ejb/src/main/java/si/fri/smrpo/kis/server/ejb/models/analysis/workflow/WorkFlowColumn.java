@@ -4,22 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import si.fri.smrpo.kis.server.jpa.entities.BoardPart;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class WorkFlowColumn {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
     @JsonIgnore
-    private BoardPart boardPart;
+    private Date date;
 
     @JsonProperty("value")
     private Integer count;
 
-    public WorkFlowColumn(BoardPart boardPart) {
-        this.boardPart = boardPart;
+    public WorkFlowColumn(Date date) {
+        this.date = date;
         this.count = 0;
     }
 
     @JsonProperty("name")
     public String getName() {
-        return String.format("%s [%d]",boardPart.getName(), boardPart.getLeafNumber()) ;
+        return sdf.format(date);
     }
 
     public void incCount() {
@@ -30,12 +35,16 @@ public class WorkFlowColumn {
         count--;
     }
 
-    public BoardPart getBoardPart() {
-        return boardPart;
+    public void add(int value) {
+        count += value;
     }
 
-    public void setBoardPart(BoardPart boardPart) {
-        this.boardPart = boardPart;
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Integer getCount() {
@@ -48,7 +57,7 @@ public class WorkFlowColumn {
 
     @JsonIgnore
     public WorkFlowColumn copy() {
-        WorkFlowColumn wfc = new WorkFlowColumn(boardPart);
+        WorkFlowColumn wfc = new WorkFlowColumn(date);
         wfc.count = count;
         return wfc;
     }

@@ -20,8 +20,8 @@ export abstract class CrudResource<T extends BaseEntity<T>> extends GetResource<
       );
   }
 
-  put (entity: T, xContent = this.api.xContent): Observable<T> {
-    return this.api.httpClient.put<T>(this.url + "/" + entity.id, this.serialize(entity), { headers: this.getHeaders(xContent)})
+  put (entity: T, xContent = this.api.xContent, reason: string = null): Observable<T> {
+    return this.api.httpClient.put<T>(this.url + "/" + entity.id, this.serialize(entity), { headers: this.getHeaders(xContent), params: { reason: reason }})
       .pipe(map(content => this.deserialize(content)));
   }
 
