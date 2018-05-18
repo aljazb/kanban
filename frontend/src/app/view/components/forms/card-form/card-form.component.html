@@ -55,6 +55,26 @@
     </div>
 
     <div class="form-group row">
+      <label for="in-start-date" class="col-sm-2 col-form-label">Due Date</label>
+      <div class="col" id="in-start-date">
+        <div class="input-group">
+          <input class="form-control" placeholder="yyyy-mm-dd" #d="ngbDatepicker" name="dp1"
+                 formControlName="dueDate" ngbDatepicker>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" (click)="d.toggle()" type="button">
+              <img src="https://ng-bootstrap.github.io/img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="fcDueDate.touched && fcDueDate.invalid">
+          <div class="date-invalid-feedback" *ngIf="fcDueDate.hasError('beforeNow')">
+            Due date must be after today.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
       <label for="in-workload" class="col-sm-3 col-form-label">Workload</label>
       <div class="col-sm-9">
         <input type="number" name="card-workload" class="form-control" id="in-workload" placeholder="Workload"
