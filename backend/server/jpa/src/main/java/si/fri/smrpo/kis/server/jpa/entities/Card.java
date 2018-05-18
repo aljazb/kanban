@@ -8,6 +8,7 @@ import si.fri.smrpo.kis.server.jpa.enums.CardType;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,6 +41,10 @@ public class Card extends UUIDEntity<Card> {
     @Database(update = false)
     @Column(name = "delete_message")
     private String deleteMessage;
+
+    @Column(name = "due_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Date dueDate;
 
     @Column(name = "color")
     private String color;
@@ -206,5 +211,13 @@ public class Card extends UUIDEntity<Card> {
 
     public void setDeleteMessage(String deleteMessage) {
         this.deleteMessage = deleteMessage;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
     }
 }
