@@ -6,19 +6,16 @@ import {BoardPart} from '../../../api/models/BoardPart';
 import {ApiService} from '../../../api/services/api.service';
 import {BoardRepresentation} from './utility/board-representation';
 import {LoginService} from '../../../api/services/login.service';
-import {UserAccount} from '../../../api/models/UserAccount';
 import {CardMove} from '../../../api/models/card-move';
 import {CardMoveType} from '../../../api/models/enums/CardMoveType';
 import {isNullOrUndefined} from 'util';
 import {Membership} from '../../../api/models/Membership';
-import {ProjectDeleteConfirmationComponent} from '../../components/forms/project-delete-confirmation/project-delete-confirmation.component';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular5-toaster/dist';
 import {CardMoveConfirmationComponent} from '../../components/forms/card-move-confirmation/card-move-confirmation.component';
 import {CardMoveBackConfirmationComponent} from '../../components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {cTsToDp} from '../../../utility';
-import {CardType} from '../../../api/models/enums/card-type';
 
 @Component({
   selector: 'app-board-details',
@@ -38,6 +35,8 @@ export class BoardDetailsComponent implements OnInit {
 
   formDisplayOptions: FormGroup;
   fcCriticalDays: FormControl;
+  criticalCardIds: Set<string>;
+  criticalAnimation;
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
@@ -49,6 +48,8 @@ export class BoardDetailsComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.onInit();
     this.showDisplayOptions = false;
+    this.criticalCardIds = new Set<string>();
+    this.criticalAnimation = null;
     this.initFormControls();
     this.initFormGroup();
   }
@@ -137,11 +138,25 @@ export class BoardDetailsComponent implements OnInit {
   }
 
   private setCriticalCards(n: number) : void {
+    this.criticalCardIds.clear();
     if (!isNullOrUndefined(n) && n >= 0) {
-      console.log(n);
-    } else {
-      // reset
+      let today = cTsToDp(Date.now());
+      let dateLimit = new Date(today.year, today.month, today.day + n);
+      this.boardRepresentation.projectTable.forEach(pt => {
+        pt.cardTables.forEach(ct => {
+          ct.cards.forEach(c => {
+            if (isNullOrUndefined(c.dueDate)) {
+              return;
+            }
+
+            let cardDateDp = cTsToDp(c.dueDate);
+            let cardDate = new Date(cardDateDp.year, cardDateDp.month, cardDateDp.day);
+            if (cardDate <= dateLimit) {
+              this.criticalCardIds.add(c.id);
+            }
+          });
+        });
+      });
     }
   }
-
 }

@@ -13,7 +13,7 @@
   <div *ngIf="showDisplayOptions" class="row mb-3" id="displayOptions">
     <form [formGroup]="formDisplayOptions">
       <div class="form-group row">
-        <label for="in-criticalDays" class="col-md-6 col-form-label">Show Cards Due in <strong>n</strong> days</label>
+        <label for="in-criticalDays" class="col-md-6 col-form-label">Show Cards Due in <strong>n</strong> Days</label>
         <div class="col-md-6">
           <input type="number" name="card-criticalDays" class="form-control" id="in-criticalDays" placeholder="Critical Days"
                  formControlName="criticalDays">
@@ -57,7 +57,7 @@
                 <td *ngFor="let td of tr.cardTables" class="align-top">
 
                       <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
-                           [style.background]="c.color">
+                           [style.background]="c.color" [ngClass]="{'blink-background': criticalCardIds.has(c.id)}">
 
                         <div class="list-group-item mt-3">
                           <button type="button" class="btn btn-sm btn-primary"
