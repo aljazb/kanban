@@ -57,4 +57,8 @@ export class UserAccountResource extends GetResource<UserAccount> {
   isAvailable(entity: UserAccount): Observable<UserAccount> {
     return this.api.httpClient.put<UserAccount>(this.url + "/available", entity);
   }
+
+  triggerNotification (): Observable<string> {
+    return this.api.httpClient.get<string>(this.url + "/notification", { headers: this.getHeaders()});
+  }
 }

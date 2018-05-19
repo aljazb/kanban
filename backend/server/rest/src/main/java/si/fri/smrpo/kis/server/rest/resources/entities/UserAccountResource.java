@@ -6,7 +6,9 @@ import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.core.lynx.beans.QueryParameters;
 import si.fri.smrpo.kis.core.rest.resource.uuid.GetResource;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
+import si.fri.smrpo.kis.server.ejb.service.NotificationService;
 import si.fri.smrpo.kis.server.ejb.service.UserAccountService;
+import si.fri.smrpo.kis.server.ejb.service.interfaces.NotificationServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.UserAccountServiceLocal;
 import si.fri.smrpo.kis.server.ejb.source.UserAccountSource;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.UserAccountSourceLocal;
@@ -27,6 +29,9 @@ import static si.fri.smrpo.kis.server.ejb.Constants.*;
 @Path("UserAccount")
 @RequestScoped
 public class UserAccountResource extends GetResource<UserAccount, UserAccountSourceLocal, UserAccount> {
+
+    @EJB
+    private NotificationServiceLocal notification;
 
     @EJB
     private UserAccountSourceLocal userAccountSource;
@@ -118,6 +123,14 @@ public class UserAccountResource extends GetResource<UserAccount, UserAccountSou
     @Path("available")
     public Response checkAvailability(UserAccount entity) throws Exception {
         source.checkAvailability(entity, getAuthUser());
+        return buildResponse(null, false).build();
+    }
+
+    @RolesAllowed(ROLE_ADMINISTRATOR)
+    @GET
+    @Path("notification")
+    public Response notification(UserAccount entity) throws Exception {
+        notification.sendEmailNotifications();
         return buildResponse(null, false).build();
     }
 }

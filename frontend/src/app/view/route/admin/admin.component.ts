@@ -106,4 +106,12 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  sendCardNotificationEmail(): void {
+    this.api.userAccount.triggerNotification().subscribe(value => {
+      this.toasterService.pop('success', 'E-Mails send');
+    }, error2 => {
+      this.toasterService.pop('error', 'Error sending E-Mails');
+    });
+  }
+
 }

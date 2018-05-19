@@ -345,4 +345,11 @@ public class BoardService implements BoardServiceLocal {
 
         return dbBoard;
     }
+
+    public Board updateRemainingDays(UUID id, Integer remainingDays, UserAccount authUser) throws LogicBaseException {
+        Board dbBoard = database.get(Board.class, id);
+        checkEditAccess(dbBoard, authUser);
+        dbBoard.setRemainingDays(remainingDays);
+        return dbBoard;
+    }
 }

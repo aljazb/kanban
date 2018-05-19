@@ -26,6 +26,8 @@ public class Board extends UUIDEntity<Board> {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "remaining_days")
+    private Integer remainingDays;
 
     @Column(name = "highest_priority")
     private Integer highestPriority;
@@ -203,5 +205,13 @@ public class Board extends UUIDEntity<Board> {
 
     public void setMembership(Membership membership) {
         this.membership = membership;
+    }
+
+    public Integer getRemainingDays() {
+        return remainingDays;
+    }
+
+    public void setRemainingDays(Integer remainingDays) {
+        this.remainingDays = remainingDays;
     }
 }

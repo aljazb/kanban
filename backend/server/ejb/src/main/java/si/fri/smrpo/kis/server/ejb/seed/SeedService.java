@@ -124,7 +124,7 @@ public class SeedService {
 
         kanbanMasterAccount = genUserAccount("tkm");
         kanbanMasterAccount.setId(UUID.fromString(KANBAN_MASTER_USER_ID));
-        kanbanMasterAccount.setEmail("kanban@master.com");
+        kanbanMasterAccount.setEmail("kanban.master.smrpo7@mail.com");
         kanbanMasterAccount.setInRoleKanbanMaster(true);
         kanbanMasterAccount = database.create(kanbanMasterAccount);
 
@@ -172,6 +172,8 @@ public class SeedService {
         testBoard.setStartDev(2);
         testBoard.setEndDev(6);
         testBoard.setAcceptanceTesting(7);
+
+        testBoard.setRemainingDays(5);
 
         testBoard = database.create(testBoard);
     }
@@ -310,6 +312,18 @@ public class SeedService {
             c.setCardType(CardType.values()[FAKER.number.between(0, 2)]);
             c.setDescription(FAKER.lorem.words(30).stream().collect(Collectors.joining(" ")));
             c.setWorkload(FAKER.number.between(1, 10));
+
+            if(Math.random() > 0.5) {
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.MILLISECOND, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+
+                cal.add(Calendar.DAY_OF_MONTH, FAKER.number.between(8, 1));
+
+                c.setDueDate(cal.getTime());
+            }
 
             c.setProject(project);
             c.setRejected(false);

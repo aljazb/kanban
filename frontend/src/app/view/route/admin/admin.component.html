@@ -1,5 +1,18 @@
 <div class="row">
 
+  <div class="col-12 mb-3">
+
+    <button class="btn btn-primary pull-right" (click)="sendCardNotificationEmail()">
+      Send card notification email
+      <a target="_blank" href="https://jgasp.github.io/slate/#vzdrzevanje-uporabnikov"
+         placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+         (click)="$event.stopPropagation()">
+        <i class="fa fa-question-circle"></i>
+      </a>
+    </button>
+
+  </div>
+
   <div class="col-md-5">
     <div class="border rounded">
 
@@ -55,5 +68,6 @@
     </div>
 
   </div>
+
 
 </div>
