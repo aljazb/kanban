@@ -24,7 +24,7 @@ public class BoardService implements BoardServiceLocal {
     @EJB
     private DatabaseServiceLocal database;
 
-    private void validate(Board board) throws LogicBaseException {
+    private void validate(Board board, UserAccount authUser) throws LogicBaseException {
         if(board.getOwner() == null || board.getOwner().getId() == null) {
             throw new TransactionException("Owner not specified");
         }
@@ -57,6 +57,10 @@ public class BoardService implements BoardServiceLocal {
                     throw new TransactionException("Specified project does not exist");
                 } else if (dbProject.getBoard() != null && !dbProject.getBoard().getId().equals(board.getId())) {
                     throw new TransactionException("Project is already taken by another board");
+                }
+                dbProject.queryMembership(database.getEntityManager(), authUser.getId());
+                if(dbProject.getMembership() == null) {
+                    throw new TransactionException("User is not assigned to project");
                 }
             }
         } else {
@@ -199,7 +203,7 @@ public class BoardService implements BoardServiceLocal {
     public Board create(Board board, UserAccount authUser) throws LogicBaseException {
         board.setOwner(authUser);
 
-        validate(board);
+        validate(board, authUser);
         return persist(board);
     }
 
@@ -334,7 +338,7 @@ public class BoardService implements BoardServiceLocal {
 
     @Override
     public Board update(Board board, UserAccount authUser, String reason) throws LogicBaseException {
-        validate(board);
+        validate(board, authUser);
 
         Board dbBoard = database.get(Board.class, board.getId());
 
@@ -346,10 +350,14 @@ public class BoardService implements BoardServiceLocal {
         return dbBoard;
     }
 
-    public Board updateRemainingDays(UUID id, Integer remainingDays, UserAccount authUser) throws LogicBaseException {
-        Board dbBoard = database.get(Board.class, id);
+    @Override
+    public Board patch(Board board, UserAccount authUser) throws LogicBaseException {
+        Board dbBoard = database.get(Board.class, board.getId());
         checkEditAccess(dbBoard, authUser);
-        dbBoard.setRemainingDays(remainingDays);
+
+        dbBoard = database.patch(board);
+
         return dbBoard;
     }
+
 }

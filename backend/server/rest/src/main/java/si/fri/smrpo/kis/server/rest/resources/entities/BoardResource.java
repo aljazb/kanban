@@ -1,9 +1,7 @@
 package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
-import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
-import si.fri.smrpo.kis.server.ejb.service.interfaces.BoardServiceLocal;
-import si.fri.smrpo.kis.server.ejb.source.BoardSource;
+import si.fri.smrpo.kis.core.rest.providers.configuration.PATCH;
 import si.fri.smrpo.kis.server.ejb.source.interfaces.BoardSourceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.Board;
 import si.fri.smrpo.kis.core.rest.resource.uuid.CrudResource;
@@ -73,8 +71,8 @@ public class BoardResource extends CrudResource<Board, BoardSourceLocal, UserAcc
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
     @PATCH
     @Path("{id}")
-    public Response patch(Boolean xContent, UUID id, Board entity) throws Exception {
-        return buildNotImplemented();
+    public Response patch(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id, Board entity) throws Exception {
+        return super.patch(xContent, id, entity);
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})

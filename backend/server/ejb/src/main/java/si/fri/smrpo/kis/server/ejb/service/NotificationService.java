@@ -86,7 +86,9 @@ public class NotificationService implements NotificationServiceLocal {
                     for(Card c : p.getCards()) {
                         if(c.getDueDate() != null) {
                             if(c.getDueDate().after(warning)) {
-                                en.addCard(c);
+                                if(c.getBoardPart().getLeafNumber() <= b.getAcceptanceTesting()) {
+                                    en.addCard(c);
+                                }
                             }
                         }
                     }

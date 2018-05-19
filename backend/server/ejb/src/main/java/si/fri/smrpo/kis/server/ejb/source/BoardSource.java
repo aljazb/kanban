@@ -92,4 +92,8 @@ public class BoardSource extends CrudSource<Board, UUID, UserAccount> implements
         return service.update(newEntity, authUser, reason);
     }
 
+    @Override
+    public Board patch(Board newEntity, UserAccount authUser) throws Exception {
+        return service.patch(newEntity, authUser);
+    }
 }

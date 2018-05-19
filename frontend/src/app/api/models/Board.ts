@@ -12,6 +12,8 @@ export class Board extends BaseEntity<Board> {
   endDev: number;
   acceptanceTesting: number;
 
+  remainingDays: number;
+
   owner: UserAccount;
   boardParts: BoardPart[];
   projects: Project[];

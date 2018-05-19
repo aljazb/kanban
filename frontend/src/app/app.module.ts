@@ -56,6 +56,7 @@ import {AnalysisWorkflowComponent} from './view/components/forms/analysis-workfl
 import { AnalysisWipComponent } from './view/components/forms/analysis-wip/analysis-wip.component';
 import { AnalysisTimeComponent } from './view/components/forms/analysis-time/analysis-time.component';
 import { CardDeleteConfirmationComponent } from './view/components/forms/card-delete-confirmation/card-delete-confirmation.component';
+import { BoardSettingsComponent } from './view/components/forms/board-settings/board-settings.component';
 
 
 @NgModule({
@@ -110,7 +111,8 @@ import { CardDeleteConfirmationComponent } from './view/components/forms/card-de
     AnalysisWorkflowComponent,
     AnalysisWipComponent,
     AnalysisTimeComponent,
-    CardDeleteConfirmationComponent
+    CardDeleteConfirmationComponent,
+    BoardSettingsComponent
   ],
   providers: [
     {
@@ -137,7 +139,8 @@ import { CardDeleteConfirmationComponent } from './view/components/forms/card-de
     DevTeamFormComponent,
     CardMoveConfirmationComponent,
     CardMoveBackConfirmationComponent,
-    ColumnWipViolationConfirmationComponent
+    ColumnWipViolationConfirmationComponent,
+    BoardSettingsComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

@@ -8,5 +8,6 @@ public interface BoardServiceLocal {
 
     Board create(Board board, UserAccount authUser) throws LogicBaseException;
     Board update(Board board, UserAccount authUser, String reason) throws LogicBaseException;
+    Board patch(Board board, UserAccount authUser) throws LogicBaseException;
 
 }
