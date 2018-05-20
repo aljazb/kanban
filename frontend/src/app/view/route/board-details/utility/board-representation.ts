@@ -63,14 +63,27 @@ export class BoardRepresentation {
     if(Array.isArray(this.board.projects)) {
       let cardMoveRulesMap = new Map<string, CardMoveRule[]>();
 
-      this.board.cardMoveRules.forEach(cmr => {
-        let array: CardMoveRule[] = cardMoveRulesMap.get(cmr.from.id);
-        if(array == null) {
-          array = [];
-          cardMoveRulesMap.set(cmr.from.id, array);
-        }
-        array.push(cmr);
-      });
+      if(this.board.cardMoveRules) {
+        this.board.cardMoveRules.forEach(cmr => {
+
+          let array: CardMoveRule[] = cardMoveRulesMap.get(cmr.from.id);
+          if(array == null) {
+            array = [];
+            cardMoveRulesMap.set(cmr.from.id, array);
+          }
+          array.push(cmr);
+
+          if(cmr.bidirectionalMovement) {
+            let array: CardMoveRule[] = cardMoveRulesMap.get(cmr.to.id);
+            if(array == null) {
+              array = [];
+              cardMoveRulesMap.set(cmr.to.id, array);
+            }
+            array.push(cmr);
+          }
+
+        });
+      }
 
       this.board.projects.sort((a, b) => a.name.localeCompare(b.name));
       this.board.projects.forEach(project => {

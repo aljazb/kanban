@@ -39,10 +39,15 @@ export class ProjectTable {
             if(cmr.canReject) {
               moveBack = moveBackBoardParts;
             } else {
-              if(cmr.to.leafNumber > currentBp.leafNumber) {
-                rightBp.push(cmr.to);
+              let to: BoardPart = cmr.to;
+              if(to.leafNumber == currentBp.leafNumber) {
+                to = cmr.from;
+              }
+
+              if(to.leafNumber > currentBp.leafNumber) {
+                rightBp.push(to);
               } else {
-                leftBp.push(cmr.to);
+                leftBp.push(to);
               }
             }
           }
