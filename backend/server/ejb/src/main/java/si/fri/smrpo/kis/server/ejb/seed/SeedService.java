@@ -2,7 +2,6 @@ package si.fri.smrpo.kis.server.ejb.seed;
 
 import io.bloco.faker.Faker;
 import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
-import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.CardMoveServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.CardServiceLocal;
@@ -68,6 +67,7 @@ public class SeedService {
                 generateDevTeams();
                 generateBoard();
                 generateBoardParts();
+                generateCardMoveRules();
                 generateProjects();
                 generateCards();
                 generateRequests();
@@ -267,6 +267,202 @@ public class SeedService {
 
         testBoard = database.update(testBoard);
     }
+
+    private void generateCardMoveRules() throws DatabaseException {
+
+        /**
+         * Product backlog <=> Next
+         */
+
+        CardMoveRules cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(0));
+        cmr.setTo(testBoardPartLeafs.get(1));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleProductOwnerAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(1));
+        cmr.setTo(testBoardPartLeafs.get(0));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleProductOwnerAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Next <=> Analysis and design
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(1));
+        cmr.setTo(testBoardPartLeafs.get(2));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(2));
+        cmr.setTo(testBoardPartLeafs.get(1));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Analysis and design <=> Coding
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(2));
+        cmr.setTo(testBoardPartLeafs.get(3));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(3));
+        cmr.setTo(testBoardPartLeafs.get(2));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Coding <=> Testing
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(3));
+        cmr.setTo(testBoardPartLeafs.get(4));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(4));
+        cmr.setTo(testBoardPartLeafs.get(3));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Testing <=> Integration
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(4));
+        cmr.setTo(testBoardPartLeafs.get(5));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(5));
+        cmr.setTo(testBoardPartLeafs.get(4));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Integration <=> Documentation
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(5));
+        cmr.setTo(testBoardPartLeafs.get(6));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(6));
+        cmr.setTo(testBoardPartLeafs.get(5));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Documentation <=> Acceptance ready
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(6));
+        cmr.setTo(testBoardPartLeafs.get(7));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleDeveloperAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(7));
+        cmr.setTo(testBoardPartLeafs.get(6));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Acceptance ready <=> Acceptance
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(7));
+        cmr.setTo(testBoardPartLeafs.get(8));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleProductOwnerAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(8));
+        cmr.setTo(testBoardPartLeafs.get(7));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleProductOwnerAllowed(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Acceptance [REJECT]
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(8));
+        cmr.setTo(testBoardPartLeafs.get(8));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleProductOwnerAllowed(true);
+        cmr.setCanReject(true);
+        cmr = database.create(cmr);
+
+        /**
+         * Acceptance <=> Done
+         */
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(8));
+        cmr.setTo(testBoardPartLeafs.get(9));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleProductOwnerAllowed(true);
+        cmr = database.create(cmr);
+
+        cmr = new CardMoveRules();
+        cmr.setBoard(testBoard);
+        cmr.setFrom(testBoardPartLeafs.get(9));
+        cmr.setTo(testBoardPartLeafs.get(8));
+        cmr.setRoleKanbanMasterAllowed(true);
+        cmr.setRoleProductOwnerAllowed(true);
+        cmr = database.create(cmr);
+
+    }
+
 
     private Project createProject() throws DatabaseException {
         Project p = new Project();

@@ -14,9 +14,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ToasterService} from 'angular5-toaster/dist';
 import {CardMoveConfirmationComponent} from '../../components/forms/card-move-confirmation/card-move-confirmation.component';
 import {CardMoveBackConfirmationComponent} from '../../components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup } from '@angular/forms';
 import {cTsToDp} from '../../../utility';
-import {BoardSettingsComponent} from '../../components/forms/board-settings/board-settings.component';
 
 @Component({
   selector: 'app-board-details',
@@ -162,19 +161,4 @@ export class BoardDetailsComponent implements OnInit {
     }
   }
 
-  openSettings(): void {
-    const modalRef = this.modalService.open(BoardSettingsComponent);
-    (<BoardSettingsComponent> modalRef.componentInstance).setBoard(this.board);
-
-    modalRef.result
-      .then(value => {
-        this.api.board.patch(value).subscribe(res => {
-          this.onInit();
-          this.toaster.pop("success", "Board settings were updated");
-        },error2 => {
-          this.toaster.pop("error", "Error updating board settings")
-        });
-      }, reason => {});
-
-  }
 }

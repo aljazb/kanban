@@ -241,6 +241,7 @@ public class BoardService implements BoardServiceLocal {
             BoardPart dbBp = map.get(nBp.getId());
             if(dbBp == null) {
                 dbBp = database.create(nBp);
+
                 dbBp.setChildren(new HashSet<>());
             } else {
                 if(dbBp.getLeafNumber() != null && hasCardsAssigned(dbBp)) {
@@ -326,14 +327,28 @@ public class BoardService implements BoardServiceLocal {
 
         dbBoard = database.update(newBoard);
 
-
-
-        dbBoard = database.get(Board.class, dbBoard.getId());
-        dbBoard.buildBoardPartsReferences();
-        dbBoard.fetchActiveProjectsWithCards();
-
-
         return dbBoard;
+    }
+
+    private void updateCardMoveRules(Board dbBoard, Board board) throws DatabaseException {
+        HashMap<UUID, BoardPart> leavesMap = UUIDEntity.buildMap(dbBoard.buildLeavesBoardParts());
+        HashMap<UUID, CardMoveRules> assignedProject = UUIDEntity.buildMap(dbBoard.getCardMoveRules());
+
+        for(CardMoveRules r : board.getCardMoveRules()) {
+            if(leavesMap.get(r.getFrom().getId()) != null && leavesMap.get(r.getTo().getId()) != null) {
+                if(r.getId() == null) {
+                    r.setBoard(dbBoard);
+                    database.create(r);
+                } else {
+                    CardMoveRules dbR = assignedProject.get(r.getId());
+                    assignedProject.remove(dbR.getId());
+                }
+            }
+        }
+
+        for(CardMoveRules r : assignedProject.values()) {
+            database.permDelete(CardMoveRules.class, r.getId());
+        }
     }
 
     @Override
@@ -347,6 +362,8 @@ public class BoardService implements BoardServiceLocal {
 
         dbBoard = updateBoard(dbBoard, board, authUser, reason);
 
+        updateCardMoveRules(dbBoard, board);
+
         return dbBoard;
     }
 
@@ -356,6 +373,8 @@ public class BoardService implements BoardServiceLocal {
         checkEditAccess(dbBoard, authUser);
 
         dbBoard = database.patch(board);
+
+        updateCardMoveRules(dbBoard, board);
 
         return dbBoard;
     }

@@ -3,6 +3,7 @@ import {BoardPart} from './BoardPart';
 import {Project} from './Project';
 import {UserAccount} from './UserAccount';
 import {Membership} from './Membership';
+import {CardMoveRule} from '../resource/card-move-rules';
 
 export class Board extends BaseEntity<Board> {
   name: string;
@@ -18,6 +19,8 @@ export class Board extends BaseEntity<Board> {
   boardParts: BoardPart[];
   projects: Project[];
   membership: Membership;
+
+  cardMoveRules: CardMoveRule[];
 
 
   public static getLeafParts(boardParts: BoardPart[], leafBoardParts: BoardPart[]=[]): BoardPart[] {

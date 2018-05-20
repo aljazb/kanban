@@ -69,6 +69,7 @@ public class BoardSource extends CrudSource<Board, UUID, UserAccount> implements
 
         entity.buildBoardPartsReferences();
         entity.fetchActiveProjectsWithCards();
+        entity.getCardMoveRules().size();
         entity.getProjects().forEach(project -> {
             project.setBoard(entity);
             project.queryMembership(database.getEntityManager(), authUser.getId());

@@ -92,7 +92,7 @@ public class ProjectResource extends CrudResource<Project, ProjectSourceLocal, U
     @Path("{id}/toggleIsDeleted")
     @Override
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return super.toggleIsDeleted(xContent, id);
+        return buildNotImplemented();
     }
 
 }

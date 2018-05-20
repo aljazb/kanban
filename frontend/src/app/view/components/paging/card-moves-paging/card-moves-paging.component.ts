@@ -46,6 +46,7 @@ export class CardMovesPagingComponent extends PagingImpl<CardMove> implements On
       return of(paging);
     }
   }
+
 }
 
 class CardMoveQuery extends DevTeam implements QueryImpl<CardMove> {

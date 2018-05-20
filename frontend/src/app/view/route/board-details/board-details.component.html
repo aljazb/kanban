@@ -4,7 +4,7 @@
       <h3>{{board.name}}</h3>
     </div>
     <div *ngIf="isAuthUserKanbanMaster || isOwner" class="col-6">
-      <button class="btn btn-primary pull-right" (click)="openSettings()">Settings</button>
+      <button class="btn btn-primary pull-right" routerLink="/board/{{id}}/settings">Settings</button>
       <button class="btn btn-primary pull-right mr-3" routerLink="/board/{{id}}/edit">Edit</button>
     </div>
   </div>

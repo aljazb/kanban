@@ -1,0 +1,135 @@
+<div class="row">
+
+  <div class="col-12 mb-3">
+    <button class="btn btn-primary pull-right" (click)="onSubmit()">Apply</button>
+  </div>
+
+  <div class="col-6">
+
+    <div class="col-12 border">
+      <h5 class="mb-4 mt-2">Board settings</h5>
+
+      <form [formGroup]="formBoard">
+
+        <div class="form-group row">
+         <label for="in-remaining-days" class="col-sm-3 col-form-label">Remaining days</label>
+          <div class="col-sm-9">
+            <input type="number" name="board-remaining-days" class="form-control" id="in-remaining-days" placeholder="Name"
+                   formControlName="remainingDays">
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="col-12 border">
+      <h5 class="mb-4 mt-2">Add card move rule</h5>
+
+      <form [formGroup]="formRule" (ngSubmit)="addRule()">
+
+        <div class="form-group row">
+          <label for="in-from" class="col-sm-5 col-form-label">From</label>
+          <div class="col-sm-7">
+            <select name="card-rule-from" class="form-control" id="in-from"
+                    formControlName="from">
+              <option [ngValue]="null">Select column</option>
+              <option *ngFor="let bp of fromSelection" [ngValue]="bp">{{bp.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="in-to" class="col-sm-5 col-form-label">To</label>
+          <div class="col-sm-7">
+            <select name="card-rule-to" class="form-control" id="in-to"
+                    formControlName="to">
+              <option [ngValue]="null">Select column</option>
+              <option *ngFor="let bp of toSelection" [ngValue]="bp">{{bp.name}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-4">Developer</div>
+          <div class="col-sm-8">
+            <div class="material-switch">
+              <input type="checkbox" name="user-inRoleDeveloper" class="form-check-input" id="in-inRoleDeveloper"
+                     formControlName="roleDeveloper">
+              <label for="in-inRoleDeveloper" class="bg-primary"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-4">Kanban Master</div>
+          <div class="col-sm-8">
+            <div class="material-switch">
+              <input type="checkbox" name="user-inRoleKanbanMaster" class="form-check-input" id="in-inRoleKanbanMaster"
+                     formControlName="roleKanbanMaster">
+              <label for="in-inRoleKanbanMaster" class="bg-primary"></label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-4">Product owner</div>
+          <div class="col-sm-8">
+            <div class="material-switch">
+              <input type="checkbox" name="user-inRoleProductOwner" class="form-check-input" id="in-inRoleProductOwner"
+                     formControlName="roleProductOwner">
+              <label for="in-inRoleProductOwner" class="bg-primary"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-4">Administrator</div>
+          <div class="col-sm-8">
+            <div class="material-switch">
+              <input type="checkbox" name="user-inRoleAdministrator" class="form-check-input" id="in-inRoleAdministrator"
+                     formControlName="roleAdministrator">
+              <label for="in-inRoleAdministrator" class="bg-primary"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-4">Can reject</div>
+          <div class="col-sm-8">
+            <div class="material-switch">
+              <input type="checkbox" name="user-inRoleAdministrator" class="form-check-input" id="in-can-reject"
+                     formControlName="canReject">
+              <label for="in-can-reject" class="bg-primary"></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="container">
+            <button type="submit" class="btn btn-primary float-right">Add card rule</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+
+  <div class="col-6">
+
+
+
+    <div class="col-12 border">
+        <div *ngIf="cardMoveRulesEditing">
+
+          <app-card-move-rules-paging [cardMoveRules]="cardMoveRulesEditing" (onDelete)="handleOnDelete($event)"></app-card-move-rules-paging>
+
+        </div>
+
+      </div>
+
+  </div>
+
+</div>

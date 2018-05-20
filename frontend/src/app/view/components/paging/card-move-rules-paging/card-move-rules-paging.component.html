@@ -1,0 +1,39 @@
+<div class="row">
+
+  <div class="col-12">
+    <h5 class="mb-3">Card move rules</h5>
+  </div>
+
+  <div class="col-12">
+
+    <div class="list-group" *ngIf="paging && paging.count > 0">
+
+      <div *ngFor="let cmr of paging.items" class="list-group-item list-group-item-action flex-column align-items-start">
+        <span class="item-font" *ngIf="cmr.canReject">Able to reject </span>
+        <span *ngIf="!cmr.canReject">From: {{cmr.from.name}} To: {{cmr.to.name}} </span>
+        Allowed to: {{rolesToSting(cmr)}}
+
+        <button class="btn btn-sm btn-danger pull-right" type="button" (click)="emitOnDelete(cmr)">
+          <i class="fa fa-times-circle"></i>
+        </button>
+      </div>
+
+      <ngb-pagination (pageChange)="refresh()"
+                      [collectionSize]="collectionSize"
+                      [pageSize]="pageSize"
+                      [(page)]="page"
+                      [maxSize]="5"
+                      [rotate]="true"
+                      [ellipses]="false"
+                      [boundaryLinks]="true">
+      </ngb-pagination>
+
+    </div>
+
+    <div *ngIf="paging == null || paging.count == 0">
+      <strong>No card move rules!</strong>
+    </div>
+
+  </div>
+
+</div>

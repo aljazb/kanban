@@ -79,14 +79,14 @@ public class BoardResource extends CrudResource<Board, BoardSourceLocal, UserAcc
     @DELETE
     @Path("{id}")
     public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return super.delete(xContent, id);
+        return buildNotImplemented();
     }
 
     @RolesAllowed({ROLE_KANBAN_MASTER, ROLE_ADMINISTRATOR})
     @PUT
     @Path("{id}/status")
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return super.toggleIsDeleted(xContent, id);
+        return buildNotImplemented();
     }
 
 

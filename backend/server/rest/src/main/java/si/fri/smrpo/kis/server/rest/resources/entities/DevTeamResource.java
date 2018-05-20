@@ -82,7 +82,7 @@ public class DevTeamResource extends CrudResource<DevTeam, DevTeamSourceLocal, U
     @Path("{id}")
     @Override
     public Response delete(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return super.delete(xContent, id);
+        return buildNotImplemented();
     }
 
     @RolesAllowed({ROLE_ADMINISTRATOR})
@@ -90,7 +90,7 @@ public class DevTeamResource extends CrudResource<DevTeam, DevTeamSourceLocal, U
     @Path("{id}/toggleIsDeleted")
     @Override
     public Response toggleIsDeleted(@HeaderParam("X-Content") Boolean xContent, @PathParam("id") UUID id) throws Exception {
-        return super.toggleIsDeleted(xContent, id);
+        return buildNotImplemented();
     }
 
     @RolesAllowed({ROLE_DEVELOPER, ROLE_KANBAN_MASTER, ROLE_PRODUCT_OWNER, ROLE_ADMINISTRATOR})

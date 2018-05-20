@@ -52,6 +52,9 @@ public class Board extends UUIDEntity<Board> {
     @OneToMany(mappedBy = "board")
     private Set<Project> projects;
 
+    @OneToMany(mappedBy = "board")
+    private Set<CardMoveRules> cardMoveRules;
+
 
     @Transient
     private Membership membership;
@@ -213,5 +216,13 @@ public class Board extends UUIDEntity<Board> {
 
     public void setRemainingDays(Integer remainingDays) {
         this.remainingDays = remainingDays;
+    }
+
+    public Set<CardMoveRules> getCardMoveRules() {
+        return cardMoveRules;
+    }
+
+    public void setCardMoveRules(Set<CardMoveRules> cardMoveRules) {
+        this.cardMoveRules = cardMoveRules;
     }
 }

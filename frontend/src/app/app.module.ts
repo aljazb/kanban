@@ -56,7 +56,8 @@ import {AnalysisWorkflowComponent} from './view/components/forms/analysis-workfl
 import { AnalysisWipComponent } from './view/components/forms/analysis-wip/analysis-wip.component';
 import { AnalysisTimeComponent } from './view/components/forms/analysis-time/analysis-time.component';
 import { CardDeleteConfirmationComponent } from './view/components/forms/card-delete-confirmation/card-delete-confirmation.component';
-import { BoardSettingsComponent } from './view/components/forms/board-settings/board-settings.component';
+import { CardMoveRulesPagingComponent } from './view/components/paging/card-move-rules-paging/card-move-rules-paging.component';
+import {BoardSettingsComponent} from './view/route/board-settings/board-settings.component';
 
 
 @NgModule({
@@ -112,7 +113,8 @@ import { BoardSettingsComponent } from './view/components/forms/board-settings/b
     AnalysisWipComponent,
     AnalysisTimeComponent,
     CardDeleteConfirmationComponent,
-    BoardSettingsComponent
+    BoardSettingsComponent,
+    CardMoveRulesPagingComponent
   ],
   providers: [
     {
@@ -139,8 +141,7 @@ import { BoardSettingsComponent } from './view/components/forms/board-settings/b
     DevTeamFormComponent,
     CardMoveConfirmationComponent,
     CardMoveBackConfirmationComponent,
-    ColumnWipViolationConfirmationComponent,
-    BoardSettingsComponent
+    ColumnWipViolationConfirmationComponent
   ],
   schemas: [ NO_ERRORS_SCHEMA ]
 })

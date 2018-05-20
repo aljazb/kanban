@@ -10,7 +10,7 @@ export class BoardRepresentation {
 
   private board: Board;
   private rootBoardParts: BoardPart[];
-  private leafBoardParts: BoardPart[];
+  private _leafBoardParts: BoardPart[];
 
   private _maxDepth: number;
   private _maxWidth: number;
@@ -43,7 +43,7 @@ export class BoardRepresentation {
     this.rootBoardParts = this.board.boardParts;
 
     Board.sortBoardParts(this.rootBoardParts);
-    this.leafBoardParts = Board.getLeafParts(this.rootBoardParts);
+    this._leafBoardParts = Board.getLeafParts(this.rootBoardParts);
   }
 
   private initCards(){
@@ -167,5 +167,9 @@ export class BoardRepresentation {
 
   get maxDepth(): number {
     return this._maxDepth;
+  }
+
+  get leafBoardParts(): BoardPart[] {
+    return this._leafBoardParts;
   }
 }

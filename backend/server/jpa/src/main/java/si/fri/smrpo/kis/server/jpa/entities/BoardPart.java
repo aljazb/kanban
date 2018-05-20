@@ -56,6 +56,11 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     private Set<CardMove> cardMovesTo;
 
 
+    @OneToMany(mappedBy = "from")
+    private Set<CardMoveRules> cardMovesRulesFrom;
+
+    @OneToMany(mappedBy = "to")
+    private Set<CardMoveRules> cardMovesRulesTo;
 
     @JsonIgnore
     public void incWip(DatabaseCrudImpl<UUID> database) throws DatabaseException {
@@ -214,5 +219,21 @@ public class BoardPart extends UUIDEntity<BoardPart> {
 
     public void setCurrentWip(Integer currentWip) {
         this.currentWip = currentWip;
+    }
+
+    public Set<CardMoveRules> getCardMovesRulesFrom() {
+        return cardMovesRulesFrom;
+    }
+
+    public void setCardMovesRulesFrom(Set<CardMoveRules> cardMovesRulesFrom) {
+        this.cardMovesRulesFrom = cardMovesRulesFrom;
+    }
+
+    public Set<CardMoveRules> getCardMovesRulesTo() {
+        return cardMovesRulesTo;
+    }
+
+    public void setCardMovesRulesTo(Set<CardMoveRules> cardMovesRulesTo) {
+        this.cardMovesRulesTo = cardMovesRulesTo;
     }
 }
