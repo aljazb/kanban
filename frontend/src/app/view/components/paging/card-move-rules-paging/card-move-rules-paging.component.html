@@ -9,13 +9,23 @@
     <div class="list-group" *ngIf="paging && paging.count > 0">
 
       <div *ngFor="let cmr of paging.items" class="list-group-item list-group-item-action flex-column align-items-start">
-        <span class="item-font" *ngIf="cmr.canReject">Able to reject </span>
-        <span *ngIf="!cmr.canReject">From: {{cmr.from.name}} To: {{cmr.to.name}} </span>
-        Allowed to: {{rolesToSting(cmr)}}
+
+        <span class="item-font" *ngIf="cmr.canReject">
+          [Reject] <strong>{{cmr.from.name}}</strong>
+        </span>
+
+        <span *ngIf="!cmr.canReject">
+          [<span *ngIf="cmr.bidirectionalMovement">Bidirectional </span>Movement] From: <strong>{{cmr.from.name}}</strong> To: <strong>{{cmr.to.name}}</strong>
+        </span>
+
+        <span>
+          <br> Allowed to: <strong>{{rolesToSting(cmr)}}</strong>
+        </span>
 
         <button class="btn btn-sm btn-danger pull-right" type="button" (click)="emitOnDelete(cmr)">
           <i class="fa fa-times-circle"></i>
         </button>
+
       </div>
 
       <ngb-pagination (pageChange)="refresh()"

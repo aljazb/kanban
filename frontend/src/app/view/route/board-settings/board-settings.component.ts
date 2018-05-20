@@ -38,6 +38,7 @@ export class BoardSettingsComponent implements OnInit {
   fcRoleKanbanMaster: FormControl;
   fcRoleProductOwner: FormControl;
   fcCanReject: FormControl;
+  fcBidirectionalMovement: FormControl;
 
   fromSelection: BoardPart[];
   toSelection: BoardPart[];
@@ -56,11 +57,19 @@ export class BoardSettingsComponent implements OnInit {
 
     this.fcBoardPartFrom = new FormControl(null, Validators.required);
     this.fcBoardPartFrom.valueChanges.subscribe(selectedBp => {
-      this.toSelection = this.leaves.filter(bp => bp.id != selectedBp.id);
+      if(selectedBp) {
+        this.toSelection = this.leaves.filter(bp => bp.id != selectedBp.id);
+      } else {
+        this.toSelection = this.leaves;
+      }
     });
     this.fcBoardPartTo = new FormControl(null, Validators.required);
     this.fcBoardPartTo.valueChanges.subscribe(selectedBp => {
-      this.fromSelection = this.leaves.filter(bp => bp.id != selectedBp.id);
+      if(selectedBp) {
+        this.fromSelection = this.leaves.filter(bp => bp.id != selectedBp.id);
+      } else {
+        this.fromSelection = this.leaves;
+      }
     });
 
     this.fcRoleDeveloper = new FormControl(false);
@@ -70,10 +79,13 @@ export class BoardSettingsComponent implements OnInit {
     this.fcCanReject.valueChanges.subscribe(value => {
       if(value) {
         this.fcBoardPartTo.disable();
+        this.fcBidirectionalMovement.disable();
       } else {
         this.fcBoardPartTo.enable();
+        this.fcBidirectionalMovement.enable();
       }
     });
+    this.fcBidirectionalMovement = new FormControl(true);
   }
 
   private initFormGroup(): void {
@@ -86,7 +98,8 @@ export class BoardSettingsComponent implements OnInit {
       roleDeveloper: this.fcRoleDeveloper,
       roleKanbanMaster: this.fcRoleKanbanMaster,
       roleProductOwner: this.fcRoleProductOwner,
-      canReject: this.fcCanReject
+      canReject: this.fcCanReject,
+      bidirectionalMovement: this.fcBidirectionalMovement
     })
   }
 
@@ -152,18 +165,16 @@ export class BoardSettingsComponent implements OnInit {
       r.from = this.fcBoardPartFrom.value;
       r.to = this.fcBoardPartTo.value;
 
-
       r.canReject = this.fcCanReject.value;
       if(r.canReject) {
         r.from = r.to;
+      } else {
+        r.bidirectionalMovement = this.fcBidirectionalMovement.value;
       }
 
       r.roleDeveloperAllowed = this.fcRoleDeveloper.value;
       r.roleKanbanMasterAllowed = this.fcRoleKanbanMaster.value;
       r.roleProductOwnerAllowed = this.fcRoleProductOwner.value;
-
-
-      console.log(r);
 
       this.cardMoveRulesEditing = [r].concat(this.cardMoveRulesEditing);
       this.cardMoveRulePagingComponent.refresh();

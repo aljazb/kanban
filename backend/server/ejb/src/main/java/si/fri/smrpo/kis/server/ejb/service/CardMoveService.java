@@ -73,7 +73,10 @@ public class CardMoveService implements CardMoveServiceLocal {
                     }
                 }
             } else if (!rejected && !cmr.getCanReject()) {
-                if(cmr.getTo().getId().equals(movedTo.getId()) && cmr.getFrom().getId().equals(movedFrom.getId())) {
+                if(
+                        (cmr.getTo().getId().equals(movedTo.getId()) && cmr.getFrom().getId().equals(movedFrom.getId())) ||
+                        (cmr.getBidirectionalMovement() && cmr.getTo().getId().equals(movedFrom.getId()) && cmr.getFrom().getId().equals(movedTo.getId()))
+                ) {
                     if(validCardMoveRole(cmr, m)) {
                         return;
                     }

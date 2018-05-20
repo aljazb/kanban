@@ -9,6 +9,7 @@ export class CardMoveRule extends BaseEntity<CardMoveRule> {
   roleProductOwnerAllowed: boolean;
 
   canReject: boolean;
+  bidirectionalMovement: boolean;
 
   from: BoardPart;
   to: BoardPart;

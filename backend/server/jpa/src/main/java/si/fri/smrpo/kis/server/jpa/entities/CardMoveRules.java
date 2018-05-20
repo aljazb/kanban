@@ -16,6 +16,7 @@ public class CardMoveRules extends UUIDEntity<CardMoveRules> {
     private Boolean roleDeveloperAllowed = false;
     private Boolean roleProductOwnerAllowed = false;
     private Boolean canReject = false;
+    private Boolean bidirectionalMovement = false;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,5 +86,13 @@ public class CardMoveRules extends UUIDEntity<CardMoveRules> {
 
     public void setRoleProductOwnerAllowed(Boolean roleProductOwnerAllowed) {
         this.roleProductOwnerAllowed = roleProductOwnerAllowed;
+    }
+
+    public Boolean getBidirectionalMovement() {
+        return bidirectionalMovement;
+    }
+
+    public void setBidirectionalMovement(Boolean bidirectionalMovement) {
+        this.bidirectionalMovement = bidirectionalMovement;
     }
 }

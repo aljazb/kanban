@@ -24,7 +24,7 @@ export class CardMoveRulesPagingComponent extends PagingImpl<CardMoveRule> imple
 
   constructor() {
     super();
-    this.pageSize = 10;
+    this.pageSize = 7;
   }
 
   ngOnInit() {
