@@ -30,4 +30,5 @@ export class Card extends BaseEntity<Card> {
   membership: Membership;
 
   dueDate: number;
+
 }

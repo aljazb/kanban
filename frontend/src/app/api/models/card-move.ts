@@ -16,4 +16,7 @@ export class CardMove extends BaseEntity<CardMove> {
 
   card: Card;
 
+  //Transient
+  rejected: boolean;
+
 }

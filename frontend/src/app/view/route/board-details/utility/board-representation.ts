@@ -5,6 +5,7 @@ import {ProjectTable} from './project-table';
 import {Board} from '../../../../api/models/Board';
 import {Project} from '../../../../api/models/Project';
 import {UserAccount} from '../../../../api/models/UserAccount';
+import {CardMoveRule} from '../../../../api/resource/card-move-rules';
 
 export class BoardRepresentation {
 
@@ -60,9 +61,20 @@ export class BoardRepresentation {
 
   private initProjectTable() {
     if(Array.isArray(this.board.projects)) {
+      let cardMoveRulesMap = new Map<string, CardMoveRule[]>();
+
+      this.board.cardMoveRules.forEach(cmr => {
+        let array: CardMoveRule[] = cardMoveRulesMap.get(cmr.from.id);
+        if(array == null) {
+          array = [];
+          cardMoveRulesMap.set(cmr.from.id, array);
+        }
+        array.push(cmr);
+      });
+
       this.board.projects.sort((a, b) => a.name.localeCompare(b.name));
       this.board.projects.forEach(project => {
-        this.projectTable.push(new ProjectTable(project, this._maxWidth, this.leafBoardParts));
+        this.projectTable.push(new ProjectTable(project, this._maxWidth, this.leafBoardParts, cardMoveRulesMap));
       });
     }
   }

@@ -7,10 +7,7 @@ import si.fri.smrpo.kis.server.ejb.service.interfaces.CardMoveServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.CardServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 import si.fri.smrpo.kis.server.jpa.entities.Membership;
-import si.fri.smrpo.kis.server.jpa.enums.CardType;
-import si.fri.smrpo.kis.server.jpa.enums.MemberType;
-import si.fri.smrpo.kis.server.jpa.enums.RequestStatus;
-import si.fri.smrpo.kis.server.jpa.enums.RequestType;
+import si.fri.smrpo.kis.server.jpa.enums.*;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -60,7 +57,7 @@ public class SeedService {
 
 
     @PostConstruct
-    public void init() {
+    public void init()  {
         if(isDatabaseEmpty()){
             try {
                 generateUserAccounts();
@@ -270,6 +267,8 @@ public class SeedService {
 
     private void generateCardMoveRules() throws DatabaseException {
 
+        testBoard.setCardMoveRules(new HashSet<>());
+
         /**
          * Product backlog <=> Next
          */
@@ -281,6 +280,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -289,6 +289,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Next <=> Analysis and design
@@ -301,6 +302,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -308,6 +310,7 @@ public class SeedService {
         cmr.setTo(testBoardPartLeafs.get(1));
         cmr.setRoleKanbanMasterAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Analysis and design <=> Coding
@@ -320,6 +323,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -328,6 +332,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Coding <=> Testing
@@ -340,6 +345,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -348,6 +354,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Testing <=> Integration
@@ -360,6 +367,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -368,6 +376,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Integration <=> Documentation
@@ -380,6 +389,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -388,6 +398,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Documentation <=> Acceptance ready
@@ -400,6 +411,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -407,6 +419,7 @@ public class SeedService {
         cmr.setTo(testBoardPartLeafs.get(6));
         cmr.setRoleKanbanMasterAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Acceptance ready <=> Acceptance
@@ -419,6 +432,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -427,6 +441,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Acceptance [REJECT]
@@ -440,6 +455,7 @@ public class SeedService {
         cmr.setRoleProductOwnerAllowed(true);
         cmr.setCanReject(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         /**
          * Acceptance <=> Done
@@ -452,6 +468,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
         cmr = new CardMoveRules();
         cmr.setBoard(testBoard);
@@ -460,6 +477,7 @@ public class SeedService {
         cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr = database.create(cmr);
+        testBoard.getCardMoveRules().add(cmr);
 
     }
 
@@ -627,7 +645,7 @@ public class SeedService {
                 CardMove cm = new CardMove();
                 cm.setCard(c);
 
-                if(column == at) {
+                if(column == at + 1) {
                     if(Math.random() > 0.2) {
                         int rColumn = column + 1;
                         BoardPart right = testBoardPartLeafs.get(rColumn);
@@ -640,6 +658,7 @@ public class SeedService {
                         BoardPart colHp = testBoardPartLeafs.get(hp);
                         cm.setTo(colHp);
 
+                        cm.setRejected(true);
                         cm = cardMoveService.create(cm, productOwnerAccount);
                         cm.setCreatedOn(cal.getTime());
                         cm.setEditedOn(cal.getTime());

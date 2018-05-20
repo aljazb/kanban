@@ -3,12 +3,13 @@ import {Card} from '../../../../api/models/Card';
 import {BoardPart} from '../../../../api/models/BoardPart';
 import {Project} from '../../../../api/models/Project';
 import {Membership} from '../../../../api/models/Membership';
+import {CardMoveRule} from '../../../../api/resource/card-move-rules';
 
 export class ProjectTable {
   project: Project;
   cardTables: CardTable[];
 
-  constructor(project: Project, rows: number, leafBoardParts: BoardPart[]) {
+  constructor(project: Project, rows: number, leafBoardParts: BoardPart[], cardMoveRulesMap: Map<string, CardMoveRule[]>) {
     this.project = project;
     this.cardTables = [];
 
@@ -16,56 +17,36 @@ export class ProjectTable {
 
     for(let i=0; i<rows; i++) {
       let currentBp: BoardPart = leafBoardParts[i];
-      let leftBp: BoardPart = null;
-      let rightBp: BoardPart = null;
+      let leftBp: BoardPart[] = [];
+      let rightBp: BoardPart[] = [];
       let moveBack: BoardPart[] = null;
 
-      let isAllowedToMoveCardsLeft = true;
-      let isAllowedToMoveCardsRight = true;
-      let isAllowedToMoveCards = false;
-      let isAllowedMoveBack = false;
 
       if(project.membership != null) {
         let isDeveloper = Membership.isDeveloper(project.membership);
         let isProductOwner = Membership.isProductOwner(project.membership);
         let isKanbanMaster = Membership.isKanbanMaster(project.membership);
 
-        if(project.board.acceptanceTesting <= i) {
+        let cardMoveRules = cardMoveRulesMap.get(currentBp.id);
 
-          isAllowedToMoveCards = isProductOwner;
-          if (project.board.acceptanceTesting == i && isProductOwner) {
-            isAllowedToMoveCardsLeft = false;
-            isAllowedMoveBack = true;
+        cardMoveRules.forEach(cmr => {
+
+          if(
+            (cmr.roleKanbanMasterAllowed && isKanbanMaster) ||
+            (cmr.roleProductOwnerAllowed && isProductOwner) ||
+            (cmr.roleDeveloperAllowed && isDeveloper)
+          ) {
+            if(cmr.canReject) {
+              moveBack = moveBackBoardParts;
+            } else {
+              if(cmr.to.leafNumber > currentBp.leafNumber) {
+                rightBp.push(cmr.to);
+              } else {
+                leftBp.push(cmr.to);
+              }
+            }
           }
-        } else if(isKanbanMaster) {
-
-          isAllowedToMoveCards = true;
-
-        } else if(project.board.startDev - 1 <= i && i <= project.board.endDev) {
-
-          isAllowedToMoveCards = isDeveloper;
-          if(i == project.board.startDev - 1) isAllowedToMoveCardsLeft = false;
-          if(i == project.board.startDev) isAllowedToMoveCardsLeft = false;
-
-        } else if(i <= project.board.highestPriority) {
-
-          isAllowedToMoveCards = isProductOwner;
-          if(i == project.board.highestPriority) isAllowedToMoveCardsRight = false;
-
-        }
-      }
-
-      if(isAllowedToMoveCards) {
-        if(isAllowedToMoveCardsLeft && i != 0) {
-          leftBp = leafBoardParts[i - 1];
-        }
-        if(isAllowedToMoveCardsRight && i + 1 < leafBoardParts.length) {
-          rightBp = leafBoardParts[i + 1];
-        }
-      }
-
-      if(isAllowedMoveBack) {
-        moveBack = moveBackBoardParts;
+        });
       }
 
       this.cardTables.push(new CardTable(currentBp, leftBp, rightBp, moveBack));

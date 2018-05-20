@@ -37,7 +37,6 @@ export class BoardSettingsComponent implements OnInit {
   fcRoleDeveloper: FormControl;
   fcRoleKanbanMaster: FormControl;
   fcRoleProductOwner: FormControl;
-  fcRoleAdministrator: FormControl;
   fcCanReject: FormControl;
 
   fromSelection: BoardPart[];
@@ -67,8 +66,14 @@ export class BoardSettingsComponent implements OnInit {
     this.fcRoleDeveloper = new FormControl(false);
     this.fcRoleKanbanMaster = new FormControl(false);
     this.fcRoleProductOwner = new FormControl(false);
-    this.fcRoleAdministrator = new FormControl(false);
     this.fcCanReject = new FormControl(false);
+    this.fcCanReject.valueChanges.subscribe(value => {
+      if(value) {
+        this.fcBoardPartTo.disable();
+      } else {
+        this.fcBoardPartTo.enable();
+      }
+    });
   }
 
   private initFormGroup(): void {
@@ -81,7 +86,6 @@ export class BoardSettingsComponent implements OnInit {
       roleDeveloper: this.fcRoleDeveloper,
       roleKanbanMaster: this.fcRoleKanbanMaster,
       roleProductOwner: this.fcRoleProductOwner,
-      roleAdministrator: this.fcRoleAdministrator,
       canReject: this.fcCanReject
     })
   }
@@ -123,7 +127,6 @@ export class BoardSettingsComponent implements OnInit {
       cmr.roleProductOwnerAllowed = value.roleProductOwnerAllowed;
       cmr.roleKanbanMasterAllowed = value.roleKanbanMasterAllowed;
       cmr.roleDeveloperAllowed = value.roleDeveloperAllowed;
-      cmr.roleAdministratorAllowed = value.roleAdministratorAllowed;
       cmr.canReject = value.canReject;
       b.cardMoveRules.push(cmr);
     });
@@ -146,14 +149,19 @@ export class BoardSettingsComponent implements OnInit {
       r.board = new Board();
       r.board.id = this.board.id;
 
-      r.to = this.fcBoardPartTo.value;
       r.from = this.fcBoardPartFrom.value;
+      r.to = this.fcBoardPartTo.value;
 
-      r.roleAdministratorAllowed = this.fcRoleAdministrator.value;
+
+      r.canReject = this.fcCanReject.value;
+      if(r.canReject) {
+        r.from = r.to;
+      }
+
       r.roleDeveloperAllowed = this.fcRoleDeveloper.value;
       r.roleKanbanMasterAllowed = this.fcRoleKanbanMaster.value;
       r.roleProductOwnerAllowed = this.fcRoleProductOwner.value;
-      r.canReject = this.fcCanReject.value;
+
 
       console.log(r);
 

@@ -56,10 +56,6 @@ export class CardMoveRulesPagingComponent extends PagingImpl<CardMoveRule> imple
 
     let str = '';
 
-    if(cardMoveRule.roleAdministratorAllowed) {
-      str += 'Admin, '
-    }
-
     if(cardMoveRule.roleKanbanMasterAllowed) {
       str += 'Kanban master, '
     }

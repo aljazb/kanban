@@ -36,6 +36,10 @@ public class CardMove extends UUIDEntity<CardMove> {
     @JoinColumn(name = "card_id")
     private Card card;
 
+    @Transient
+    private Boolean rejected = false;
+
+
 
     public UserAccount getMovedBy() {
         return movedBy;
@@ -85,4 +89,11 @@ public class CardMove extends UUIDEntity<CardMove> {
         this.reason = reason;
     }
 
+    public Boolean getRejected() {
+        return rejected;
+    }
+
+    public void setRejected(Boolean rejected) {
+        this.rejected = rejected;
+    }
 }

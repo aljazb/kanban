@@ -5,7 +5,6 @@ import {BaseEntity} from '../models/base/BaseEntity';
 export class CardMoveRule extends BaseEntity<CardMoveRule> {
 
   roleKanbanMasterAllowed: boolean;
-  roleAdministratorAllowed: boolean;
   roleDeveloperAllowed: boolean;
   roleProductOwnerAllowed: boolean;
 

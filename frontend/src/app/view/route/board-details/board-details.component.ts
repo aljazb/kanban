@@ -87,11 +87,12 @@ export class BoardDetailsComponent implements OnInit {
     return bp;
   }
 
-  private moveCard(c: Card, from: BoardPart, to: BoardPart) {
+  moveCard(c: Card, from: BoardPart, to: BoardPart, rejected: boolean=false) {
     let cm = new CardMove();
     cm.to = to;
     cm.card = c;
     cm.cardMoveType = CardMoveType.VALID;
+    cm.rejected = rejected;
 
     let wipExceeded = this.boardRepresentation.willExceedWip(to, from);
     if (wipExceeded) {
@@ -117,21 +118,14 @@ export class BoardDetailsComponent implements OnInit {
     });
   }
 
-  moveCardBack(c: Card, from: BoardPart, boardParts: BoardPart[]) {
+  rejectCard(c: Card, from: BoardPart, boardParts: BoardPart[]) {
     const modalRef = this.modalService.open(CardMoveBackConfirmationComponent);
     (<CardMoveBackConfirmationComponent> modalRef.componentInstance).setBoardParts(boardParts);
 
     modalRef.result
-      .then(value => this.moveCard(c, from, value))
-      .catch(reason => console.log(reason));
-  }
-
-  moveCardLeft(c: Card, from: BoardPart, to: BoardPart) {
-    this.moveCard(c, from, to)
-  }
-
-  moveCardRight(c: Card, from: BoardPart, to: BoardPart) {
-    this.moveCard(c, from, to)
+      .then(value => {
+        this.moveCard(c, from, value, true);
+      }).catch(reason => console.log(reason));
   }
 
   toggleDisplayOptions() : void {
@@ -146,14 +140,14 @@ export class BoardDetailsComponent implements OnInit {
       this.boardRepresentation.projectTable.forEach(pt => {
         pt.cardTables.forEach(ct => {
           ct.cards.forEach(c => {
-            if (isNullOrUndefined(c.dueDate)) {
+            if (isNullOrUndefined(c.card.dueDate)) {
               return;
             }
 
-            let cardDateDp = cTsToDp(c.dueDate);
+            let cardDateDp = cTsToDp(c.card.dueDate);
             let cardDate = new Date(cardDateDp.year, cardDateDp.month, cardDateDp.day);
             if (cardDate <= dateLimit) {
-              this.criticalCardIds.add(c.id);
+              this.criticalCardIds.add(c.card.id);
             }
           });
         });

@@ -35,7 +35,29 @@ public class CardMoveService implements CardMoveServiceLocal {
         card.setRejected(true);
     }
 
-    private void validateAuthUserRights(Card card, BoardPart movedFrom, BoardPart movedTo) throws TransactionException {
+    private boolean validCardMoveRole(CardMoveRules cmr, Membership m) {
+        if(cmr.getRoleDeveloperAllowed()) {
+            if(m.isDeveloper()) {
+                return true;
+            }
+        }
+
+        if(cmr.getRoleKanbanMasterAllowed()) {
+            if(m.isKanbanMaster()) {
+                return true;
+            }
+        }
+
+        if(cmr.getRoleProductOwnerAllowed()) {
+            if(m.isProductOwner()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void validateAuthUserRights(Card card, BoardPart movedFrom, BoardPart movedTo, Boolean rejected) throws TransactionException {
         Board board = movedFrom.getBoard();
 
         Membership m = card.getMembership();
@@ -43,39 +65,23 @@ public class CardMoveService implements CardMoveServiceLocal {
             throw new TransactionException("User is not allowed to move card.");
         }
 
-        int from = movedFrom.getLeafNumber();
-        int to = movedTo.getLeafNumber();
-
-        int diff = Math.abs(from - to);
-        if(diff > 1) {
-            if(from >= board.getAcceptanceTesting() && to <= board.getHighestPriority()) {
-                if(!m.isProductOwner()) {
-                    throw new TransactionException("User is not in role product owner.");
+        for(CardMoveRules cmr : board.getCardMoveRules()) {
+            if(rejected && cmr.getCanReject()) {
+                if(cmr.getFrom().getId().equals(movedFrom.getId())) {
+                    if(validCardMoveRole(cmr, m)) {
+                        return;
+                    }
                 }
-
-                handleRejectedCard(card);
-
-            } else {
-                throw new TransactionException("Movement for more than 1 field is not allowed.");
-            }
-        } else if(from >= board.getAcceptanceTesting() && to >= board.getAcceptanceTesting()) {
-            if(!m.isProductOwner()) {
-                throw new TransactionException("User is not in role product owner.");
-            }
-        } else if(m.isKanbanMaster()) {
-
-        } else if(
-                board.getStartDev() - 1 <= from && from <= board.getEndDev() + 1 &&
-                board.getStartDev() - 1 <= to   &&   to <= board.getEndDev() + 1)
-        {
-            if(!m.isDeveloper()) {
-                throw new TransactionException("User is not allowed to move card in development columns.");
-            }
-        } else if(from <= board.getHighestPriority() && to <= board.getHighestPriority()) {
-            if(!m.isProductOwner()) {
-                throw new TransactionException("User is not allowed to move card in columns highest priority and before.");
+            } else if (!rejected && !cmr.getCanReject()) {
+                if(cmr.getTo().getId().equals(movedTo.getId()) && cmr.getFrom().getId().equals(movedFrom.getId())) {
+                    if(validCardMoveRole(cmr, m)) {
+                        return;
+                    }
+                }
             }
         }
+
+        throw new TransactionException("Card move rules for this does not exist.");
     }
 
     private void validate(CardMove cardMove, UserAccount authUser) throws LogicBaseException {
@@ -97,7 +103,13 @@ public class CardMoveService implements CardMoveServiceLocal {
             throw new TransactionException("BoardPart to not found.");
         }
 
-        validateAuthUserRights(card, movedFrom, movedTo);
+        Boolean rejected = cardMove.getRejected();
+
+        validateAuthUserRights(card, movedFrom, movedTo, rejected);
+
+        if(rejected) {
+            handleRejectedCard(card);
+        }
 
         cardMove.setFrom(movedFrom);
         cardMove.setTo(movedTo);
@@ -125,6 +137,7 @@ public class CardMoveService implements CardMoveServiceLocal {
         database.update(c.getProject().getBoard());
     }
 
+    @Override
     public CardMove create(CardMove cardMove, UserAccount authUser) throws LogicBaseException {
         validate(cardMove, authUser);
 
