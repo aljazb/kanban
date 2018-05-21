@@ -14,6 +14,7 @@ import {DevTeam} from '../../../../api/models/DevTeam';
 import {LoginService} from '../../../../api/services/login.service';
 import {Membership} from '../../../../api/models/Membership';
 import {isNullOrUndefined} from 'util';
+import {SubTask} from '../../../../api/models/sub-task';
 
 @Component({
   selector: 'app-subtask-form',
@@ -22,28 +23,20 @@ import {isNullOrUndefined} from 'util';
 })
 export class SubtaskFormComponent extends FormImpl {
 
-  card = new Card();
   project = new Project();
+  card = new Card();
+  subtask = new SubTask();
 
   formSubtask: FormGroup;
-  fcCode: FormControl;
   fcName: FormControl;
-  fcCardType: FormControl;
   fcDescription: FormControl;
   fcWorkload: FormControl;
-  fcColor: FormControl;
-  fcDueDate: FormControl;
   fcAssignedTo: FormControl;
-  fcReason: FormControl;
+  fcCompleted: FormControl;
 
   isFormSubmitted: boolean = false;
 
-  isSilverBullet: boolean = false;
-  boardPartId: string;
-  boardId: string;
-
   developerSelection: UserAccount[];
-  cardTypeSelection: CardType[];
 
   constructor(public activeModal: NgbActiveModal,
               private apiService: ApiService,
@@ -51,53 +44,37 @@ export class SubtaskFormComponent extends FormImpl {
     super();
     this.initFormControls();
     this.initFormGroup();
-
-    this.cardTypeSelection = [CardType.MUST_HAVE, CardType.SHOULD_HAVE, CardType.COULD_HAVE];
   }
 
   initFormControls(): void {
     let start = cTsToDp(Date.now());
 
-    this.fcCode = new FormControl('', Validators.required);
     this.fcName = new FormControl('', Validators.required);
-    this.fcCardType = new FormControl(CardType.MUST_HAVE, Validators.required);
     this.fcDescription = new FormControl('', Validators.required);
     this.fcWorkload = new FormControl('');
-    this.fcColor = new FormControl('#499dcf', Validators.required);
-    this.fcDueDate = new FormControl(undefined, [this.isDateAfterNow(start)]);
     this.fcAssignedTo = new FormControl(null);
-    this.fcReason = new FormControl('');
+    this.fcCompleted = new FormControl(false);
   }
 
   initFormGroup(): void {
     this.formSubtask = new FormGroup({
-      code: this.fcCode,
       name: this.fcName,
-      cardType: this.fcCardType,
       description: this.fcDescription,
       workload: this.fcWorkload,
-      color: this.fcColor,
-      reason: this.fcReason,
-      dueDate: this.fcDueDate,
-      assignedTo: this.fcAssignedTo
+      assignedTo: this.fcAssignedTo,
+      completed: this.fcCompleted
     });
   }
 
-  setCard(card: Card) {
-    this.card = card;
-    this.fcCode.setValue(card.code);
-    this.fcName.setValue(card.name);
-    this.fcCardType.setValue(card.cardType);
-    this.fcDescription.setValue(card.description);
-    this.fcWorkload.setValue(card.workload);
-    this.fcColor.setValue(card.color);
-    this.fcAssignedTo.setValue(card.assignedTo == null ? null : card.assignedTo.id);
+  setSubtask(subtask: SubTask) {
+    this.subtask = subtask;
+    this.fcName.setValue(subtask.name);
+    this.fcDescription.setValue(subtask.description);
+    this.fcWorkload.setValue(subtask.workingHours);
+    this.fcAssignedTo.setValue(subtask.assignedTo == null ? null : subtask.assignedTo.id);
+    this.fcCompleted.setValue(subtask.completed);
 
-    this.isSilverBullet = card.silverBullet;
-    this.boardPartId = card.boardPart.id;
-    this.boardId = this.card.boardPart.board.id;
-
-    this.loadProject(card.project);
+    this.loadCard(subtask.card);
   }
 
   loadProject(project: Project) {
@@ -108,15 +85,21 @@ export class SubtaskFormComponent extends FormImpl {
     }
   }
 
-  initCardCreation(project: Project) {
-    this.setProject(project);
-
-    if(Membership.isKanbanMaster(this.project.membership)) {
-      this.boardPartId = this.project.highestPriorityId;
-      this.isSilverBullet = true;
-    } else {
-      this.boardPartId = this.project.firstColumnId;
+  loadCard(card: Card) {
+    if(this.card == null || this.card.name == null) {
+      this.apiService.card.get(card.id).subscribe(c => {
+        this.setCard(c);
+      });
     }
+  }
+
+  setCard(card: Card) {
+    this.card = card;
+  }
+
+  initSubtaskCreation(project: Project, card: Card) {
+    this.setProject(project);
+    this.setCard(card);
   }
 
   setProject(project: Project) {
@@ -125,91 +108,31 @@ export class SubtaskFormComponent extends FormImpl {
     this.apiService.devTeam.get(project.devTeam.id).subscribe(devTeam => {
       this.developerSelection = DevTeam.getDevelopers(devTeam);
     });
-
-    this.setEditingRights();
-  }
-
-
-  setEditingRights() {
-    let m = this.project.membership;
-    if(Membership.isDeveloper(m)) {
-      this.fcName.disable();
-      this.fcCode.disable();
-      this.fcCardType.disable();
-    } else if(Membership.isProductOwner(m)) {
-      this.fcAssignedTo.disable();
-      this.fcWorkload.disable();
-    } else if(Membership.isKanbanMaster(m)) {
-      if(this.card.id) {
-        this.fcName.disable();
-        this.fcCode.disable();
-      }
-    }
   }
 
   onSubmit() {
     this.isFormSubmitted = true;
     this.validateForm(this.formSubtask);
     if (this.formSubtask.valid) {
-      let c = this.card;
+      let s = this.subtask;
 
-      c.code = this.fcCode.value;
-      c.name = this.fcName.value;
-      c.cardType = this.fcCardType.value;
-      c.description = this.fcDescription.value;
-      c.workload = this.fcWorkload.value;
-
-      if (!isNullOrUndefined(this.fcDueDate.value)) {
-        c.dueDate = cDpToTs(this.fcDueDate.value);
-      }
-
-      c.color = this.fcColor.value;
-      c.silverBullet = this.isSilverBullet;
+      s.name = this.fcName.value;
+      s.description = this.fcDescription.value;
+      s.workingHours = this.fcWorkload.value;
+      s.completed = this.fcCompleted.value;
 
       let devId = this.fcAssignedTo.value;
       if(devId) {
-        c.assignedTo = this.developerSelection.find(value => value.id == devId);
+        s.assignedTo = this.developerSelection.find(value => value.id == devId);
       } else {
-        c.assignedTo = null;
+        s.assignedTo = null;
       }
 
-      c.boardPart = new BoardPart();
-      c.boardPart.id = this.boardPartId;
-      c.boardPart.board = new Board();
-      c.boardPart.board.id = this.boardId;
+      s.card = new Card()
+      s.card.id = this.card.id;
 
-      c.project = new Project();
-      c.project.id = this.project.id;
-
-      c.deleteMessage = this.fcReason.value;
-
-      this.activeModal.close(c);
+      this.activeModal.close(s);
     }
-  }
-
-  get isViolatingWip() {
-    if (this.isSilverBullet) {
-      return this.project.highestPriorityFull;
-    } else {
-      return this.project.firstColumnFull;
-    }
-  }
-
-  isDateAfterNow(nowDate: DTDateFormat): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } => {
-      if (isNullOrUndefined(control.value)) {
-        return null;
-      }
-      let startDate: DTDateFormat = control.value;
-      if(this.sameOrAfter(nowDate, startDate)) {
-        return {'beforeNow': {value: control.value}};
-      }
-      return null;
-    };
-  }
-
-  private sameOrAfter(date1: DTDateFormat, date2: DTDateFormat): boolean {
-    return new Date(date1.year, date1.month, date1.day) >= new Date(date2.year, date2.month, date2.day);
   }
 }
 

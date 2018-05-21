@@ -7,6 +7,7 @@ export class SubTask extends BaseEntity<SubTask> {
   name: string;
   description: string;
   workingHours: number;
+  completed: boolean;
 
   assignedTo: UserAccount;
 
