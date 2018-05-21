@@ -44,6 +44,14 @@
           </a>
         </button>
 
+        <button type="button" class="btn btn-primary pull-right mr-1" (click)="openCreateSubtaskModal()">Create sub-task
+          <a target="_blank" href="https://jgasp.github.io/slate/#kreiranje-nalog"
+             placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
+             (click)="$event.stopPropagation()">
+            <i class="fa fa-question-circle"></i>
+          </a>
+        </button>
+
       </div>
 
     </div>

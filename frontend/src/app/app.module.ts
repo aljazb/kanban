@@ -58,6 +58,7 @@ import { AnalysisTimeComponent } from './view/components/forms/analysis-time/ana
 import { CardDeleteConfirmationComponent } from './view/components/forms/card-delete-confirmation/card-delete-confirmation.component';
 import { CardMoveRulesPagingComponent } from './view/components/paging/card-move-rules-paging/card-move-rules-paging.component';
 import {BoardSettingsComponent} from './view/route/board-settings/board-settings.component';
+import {SubtaskFormComponent} from './view/components/forms/subtask-form/subtask-form.component';
 
 
 @NgModule({
@@ -90,6 +91,7 @@ import {BoardSettingsComponent} from './view/route/board-settings/board-settings
     ProfileComponent,
     ProjectFormComponent,
     CardFormComponent,
+    SubtaskFormComponent,
     UserAccountFormComponent,
     ProjectDeleteConfirmationComponent,
     UserSelectionFormComponent,
@@ -132,6 +134,7 @@ import {BoardSettingsComponent} from './view/route/board-settings/board-settings
   entryComponents: [
     ProjectFormComponent,
     CardFormComponent,
+    SubtaskFormComponent,
     UserSelectionFormComponent,
     UserAccountPasswordFormComponent,
     ProjectFormComponent,
