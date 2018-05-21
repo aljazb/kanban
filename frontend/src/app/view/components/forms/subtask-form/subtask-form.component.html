@@ -1,0 +1,68 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create subtask</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="formSubtask" (ngSubmit)="onSubmit()">
+
+    <div class="form-group row">
+     <label for="in-name" class="col-sm-3 col-form-label">Name</label>
+      <div class="col-sm-9">
+        <input type="text" name="subtask-name" class="form-control" id="in-name"  placeholder="Name"
+                formControlName="name">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-name" class="col-3 col-form-label">Description</label>
+      <div class="col-9">
+        <textarea type="text" name="subtask-description" class="form-control" id="in-description" placeholder="Description"
+                  formControlName="description"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-workload" class="col-sm-3 col-form-label">Workload</label>
+      <div class="col-sm-9">
+        <input type="number" name="subtask-workload" class="form-control" id="in-workload" placeholder="Workload"
+               formControlName="workload">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-assigned-to" class="col-sm-3 col-form-label">Assigned to</label>
+      <div class="col-sm-9">
+        <select name="subtask-assigned-to" class="form-control" id="in-assigned-to" formControlName="assignedTo"
+                [ngClass]="{ 'is-invalid': fcAssignedTo.touched && fcAssignedTo.invalid }">
+          <option [ngValue]="null">Select developer</option>
+          <option *ngFor="let d of developerSelection" [ngValue]="d.id">
+            {{d.email}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="in-completed" class="col-sm-3 col-form-label">Completed</label>
+      <div class="col-sm-9">
+        <input type="checkbox" name="subtask-completed" class="form-control" id="in-completed" placeholder="Completed"
+               formControlName="completed" (enabled)="false">
+      </div>
+    </div>
+
+    <div class="form-group row">
+
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary pull-right mt-3">Submit</button>
+        </div>
+
+    </div>
+
+
+  </form>
+
+</div>
