@@ -67,7 +67,7 @@
                   </a>
                 </td>
                 <td *ngFor="let td of tr.cardTables" class="align-top">
-                  <div class="vericaltext align-middle" [ngbCollapse]="!isCollapsed">{{td.currentBoardPart.name}}</div>
+                  <div class="vericaltext" [ngbCollapse]="!isCollapsed">{{td.currentBoardPart.name}}</div>
                   <div [ngbCollapse]="isCollapsed">
 
                       <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
