@@ -23,6 +23,8 @@ export class CardDetailsComponent implements OnInit {
   moves: CardMove[] = null;
   editEnabled: boolean = false;
   deleteEnabled: boolean = false;
+  isAuthUserKanbanMaster: boolean = false;
+  isAuthUserDeveloper: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -43,6 +45,11 @@ export class CardDetailsComponent implements OnInit {
       if (card.cardMoves) {
         this.moves = card.cardMoves.sort((a, b) => b.createdOn - a.createdOn);
       }
+
+      this.api.project.get(this.card.project.id).subscribe(project => {
+        this.isAuthUserKanbanMaster = Membership.isDeveloper(project.membership);
+        this.isAuthUserDeveloper = Membership.isKanbanMaster(project.membership);
+      });
 
       this.checkEdit();
     });
@@ -95,7 +102,8 @@ export class CardDetailsComponent implements OnInit {
     modalRef.result
       .then(value =>
         this.apiService.subTask.post(value, true).subscribe(value => {
-          console.log(value)
+          console.log(value);
+          location.reload();
         }, error2 => {
           this.toaster.pop("error", "Error creating subtask");
         }), reason => {});

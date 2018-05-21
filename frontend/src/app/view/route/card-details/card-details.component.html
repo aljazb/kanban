@@ -44,7 +44,7 @@
           </a>
         </button>
 
-        <button type="button" class="btn btn-primary pull-right mr-1" (click)="openCreateSubtaskModal()">Create sub-task
+        <button type="button" class="btn btn-primary pull-right mr-1" *ngIf="isAuthUserDeveloper || isAuthUserKanbanMaster" (click)="openCreateSubtaskModal()">Create sub-task
           <a target="_blank" href="https://jgasp.github.io/slate/#kreiranje-nalog"
              placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
              (click)="$event.stopPropagation()">
@@ -110,7 +110,7 @@
             </div>
             <div class="d-flex w-100 justify-content-between">
               <p class="mb-1">Assigned to: <strong>{{t.assignedTo == null ? '-' : t.assignedTo.email}}</strong></p>
-              <button type="button" class="btn btn-primary pull-right mr-1" (click)="openEditSubtaskModal(t)">Edit
+              <button *ngIf="isAuthUserDeveloper || isAuthUserKanbanMaster" type="button" class="btn btn-primary pull-right mr-1" (click)="openEditSubtaskModal(t)">Edit
                 <a target="_blank" href="https://jgasp.github.io/slate/#posodabljanje-vsebine-naloge"
                    placement="right" ngbPopover="Click for help" triggers="mouseenter:mouseleave"
                    (click)="$event.stopPropagation()">
@@ -120,7 +120,8 @@
             </div>
             <p class="mb-1">Descriuption: {{t.description}}</p>
             <p class="mb-1">Completed:
-              <input type="checkbox" name="subtask-completed" id="in-completed" [checked]="t.completed" (click)="updateCompleted(t)">
+              <input type="checkbox" name="subtask-completed" id="in-completed" [checked]="t.completed"
+                     [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" (click)="updateCompleted(t)">
             </p>
           </div>
         </div>
