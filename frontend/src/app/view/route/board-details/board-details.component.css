@@ -36,7 +36,11 @@ table.table-bordered > tbody > tr > td{
 table.table{
   border-collapse: separate;
 }
-
+.vericaltext{
+  width:1px;
+  word-wrap: break-word;
+  white-space:pre-wrap;
+}
 .blink-background {
   -webkit-animation: blink 1s infinite;  /* Safari 4+ */
   -moz-animation: blink 1s infinite;  /* Fx 5+ */

@@ -9,6 +9,7 @@ import {ToasterService} from 'angular5-toaster/dist';
 import {Membership} from '../../../api/models/Membership';
 import {Board} from '../../../api/models/Board';
 import {CardDeleteConfirmationComponent} from '../../components/forms/card-delete-confirmation/card-delete-confirmation.component';
+import {SubtaskFormComponent} from '../../components/forms/subtask-form/subtask-form.component';
 @Component({
   selector: 'app-card-details',
   templateUrl: './card-details.component.html',
@@ -85,6 +86,20 @@ export class CardDetailsComponent implements OnInit {
           this.toaster.pop("error", "Error updating card");
         }), reason => {});
   }
+
+  openCreateSubtaskModal() {
+    const modalRef = this.modalService.open(SubtaskFormComponent);
+    (<CardFormComponent> modalRef.componentInstance).setCard(this.card);
+
+    modalRef.result
+      .then(value =>
+        this.apiService.subTask.post(value, true).subscribe(value => {
+          this.onInit();
+        }, error2 => {
+          this.toaster.pop("error", "Error creating subtask");
+        }), reason => {});
+  }
+
   openDeleteConfirmationModal() {
     const modalRef = this.modalService.open(CardDeleteConfirmationComponent);
 
