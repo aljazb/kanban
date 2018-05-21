@@ -10,6 +10,7 @@ import {Membership} from '../../../api/models/Membership';
 import {Board} from '../../../api/models/Board';
 import {CardDeleteConfirmationComponent} from '../../components/forms/card-delete-confirmation/card-delete-confirmation.component';
 import {SubtaskFormComponent} from '../../components/forms/subtask-form/subtask-form.component';
+import {SubTask} from '../../../api/models/sub-task';
 @Component({
   selector: 'app-card-details',
   templateUrl: './card-details.component.html',
@@ -55,7 +56,7 @@ export class CardDetailsComponent implements OnInit {
       let leafIndex = this.card.boardPart.leafNumber;
 
       if(Membership.isKanbanMaster(m)) {
-        this.deleteEnabled = true
+        this.deleteEnabled = true;
         if(leafIndex < b.acceptanceTesting) {
           this.editEnabled = true;
 
@@ -97,6 +98,19 @@ export class CardDetailsComponent implements OnInit {
           console.log(value)
         }, error2 => {
           this.toaster.pop("error", "Error creating subtask");
+        }), reason => {});
+  }
+
+  openEditSubtaskModal(subtask: SubTask) {
+    const modalRef = this.modalService.open(SubtaskFormComponent);
+    (<SubtaskFormComponent> modalRef.componentInstance).setSubtask(subtask, this.card);
+
+    modalRef.result
+      .then(value =>
+        this.apiService.subTask.put(value, true).subscribe(value => {
+          console.log(value)
+        }, error2 => {
+          this.toaster.pop("error", "Error updating subtask");
         }), reason => {});
   }
 

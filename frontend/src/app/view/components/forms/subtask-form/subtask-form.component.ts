@@ -66,15 +66,16 @@ export class SubtaskFormComponent extends FormImpl {
     });
   }
 
-  setSubtask(subtask: SubTask) {
+  setSubtask(subtask: SubTask, card: Card) {
+    this.loadProject(card.project);
+    this.setCard(card);
+
     this.subtask = subtask;
     this.fcName.setValue(subtask.name);
     this.fcDescription.setValue(subtask.description);
     this.fcWorkload.setValue(subtask.workingHours);
     this.fcAssignedTo.setValue(subtask.assignedTo == null ? null : subtask.assignedTo.id);
     this.fcCompleted.setValue(subtask.completed);
-
-    this.loadCard(subtask.card);
   }
 
   loadProject(project: Project) {
