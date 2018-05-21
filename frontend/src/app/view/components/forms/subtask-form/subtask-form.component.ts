@@ -97,8 +97,8 @@ export class SubtaskFormComponent extends FormImpl {
     this.card = card;
   }
 
-  initSubtaskCreation(project: Project, card: Card) {
-    this.setProject(project);
+  initSubtaskCreation(card: Card) {
+    this.loadProject(card.project);
     this.setCard(card);
   }
 
@@ -128,7 +128,7 @@ export class SubtaskFormComponent extends FormImpl {
         s.assignedTo = null;
       }
 
-      s.card = new Card()
+      s.card = new Card();
       s.card.id = this.card.id;
 
       this.activeModal.close(s);

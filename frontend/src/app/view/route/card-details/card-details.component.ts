@@ -89,12 +89,12 @@ export class CardDetailsComponent implements OnInit {
 
   openCreateSubtaskModal() {
     const modalRef = this.modalService.open(SubtaskFormComponent);
-    (<CardFormComponent> modalRef.componentInstance).setCard(this.card);
+    (<SubtaskFormComponent> modalRef.componentInstance).initSubtaskCreation(this.card);
 
     modalRef.result
       .then(value =>
         this.apiService.subTask.post(value, true).subscribe(value => {
-          this.onInit();
+          console.log(value)
         }, error2 => {
           this.toaster.pop("error", "Error creating subtask");
         }), reason => {});
