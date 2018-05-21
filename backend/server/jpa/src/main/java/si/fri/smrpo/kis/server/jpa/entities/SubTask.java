@@ -21,6 +21,9 @@ public class SubTask extends UUIDEntity<SubTask> {
     @Column(name = "working_hours")
     private Integer workingHours;
 
+    @Column(name = "completed", nullable = false)
+    private Boolean completed = false;
+
     @ManyToOne
     @JoinColumn(name = "assigned_user_account_id")
     private UserAccount assignedTo;
@@ -68,5 +71,13 @@ public class SubTask extends UUIDEntity<SubTask> {
 
     public void setCard(Card card) {
         this.card = card;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 }
