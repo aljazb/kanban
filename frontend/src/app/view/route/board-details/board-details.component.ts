@@ -16,6 +16,7 @@ import {CardMoveConfirmationComponent} from '../../components/forms/card-move-co
 import {CardMoveBackConfirmationComponent} from '../../components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
 import {FormControl, FormGroup } from '@angular/forms';
 import {cTsToDp} from '../../../utility';
+import {SubTask} from '../../../api/models/sub-task';
 
 @Component({
   selector: 'app-board-details',
@@ -130,6 +131,16 @@ export class BoardDetailsComponent implements OnInit {
 
   toggleDisplayOptions() : void {
     this.showDisplayOptions = !this.showDisplayOptions;
+  }
+
+  updateCompleted(subtask: SubTask) {
+    subtask.completed = !subtask.completed;
+
+    this.api.subTask.put(subtask, true).subscribe(value => {
+      console.log(value)
+    }, error2 => {
+      this.toaster.pop("error", "Error updating subtask");
+    });
   }
 
   private setCriticalCards(n: number) : void {

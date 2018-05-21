@@ -110,7 +110,10 @@
 
                         <div class="list-group" *ngIf="c.card.subTasks">
                           <div *ngFor="let t of c.card.subTasks" class="list-group-item list-group-item-action">
-                            {{t.name}} - {{t.workingHours}}
+                            <input style="float:left; width:20%" type="checkbox" name="subtask-completed" id="in-completed" [checked]="t.completed" (click)="updateCompleted(t)">
+                            <p style="float:left; align-content: left; width:30%"><strong>{{t.name}}</strong> </p>
+                            <p *ngIf="t.workingHours" style="float:right; width:30%">[{{t.workingHours}} h]</p>
+
                           </div>
                         </div>
 

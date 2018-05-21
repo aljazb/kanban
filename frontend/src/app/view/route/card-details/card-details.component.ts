@@ -101,6 +101,16 @@ export class CardDetailsComponent implements OnInit {
         }), reason => {});
   }
 
+  updateCompleted(subtask: SubTask) {
+    subtask.completed = !subtask.completed;
+
+    this.apiService.subTask.put(subtask, true).subscribe(value => {
+      console.log(value)
+    }, error2 => {
+      this.toaster.pop("error", "Error updating subtask");
+    });
+  }
+
   openEditSubtaskModal(subtask: SubTask) {
     const modalRef = this.modalService.open(SubtaskFormComponent);
     (<SubtaskFormComponent> modalRef.componentInstance).setSubtask(subtask, this.card);

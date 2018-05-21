@@ -120,7 +120,7 @@
             </div>
             <p class="mb-1">Descriuption: {{t.description}}</p>
             <p class="mb-1">Completed:
-              <input type="checkbox" name="subtask-completed" id="in-completed" (enabled)="t.completed">
+              <input type="checkbox" name="subtask-completed" id="in-completed" [checked]="t.completed" (click)="updateCompleted(t)">
             </p>
           </div>
         </div>
