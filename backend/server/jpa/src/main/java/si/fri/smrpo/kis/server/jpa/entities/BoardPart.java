@@ -10,7 +10,6 @@ import si.fri.smrpo.kis.core.logic.exceptions.DatabaseException;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
-import java.lang.reflect.Field;
 import java.util.*;
 
 @Entity
@@ -91,46 +90,31 @@ public class BoardPart extends UUIDEntity<BoardPart> {
     }
 
     @JsonIgnore
-    public static boolean isMoveToAvailable(BoardPart to, BoardPart from, boolean movedFrom) {
-        int currentWip = to.getCurrentWip();
+    public static boolean isMoveWipValid(BoardPart to, BoardPart from) {
+        HashSet<UUID> parentIds = new HashSet<>();
 
-        if(!movedFrom && from != null) {
-            movedFrom = hasChild(to, from);
+        while (from != null) {
+            parentIds.add(from.getId());
+            from = from.getParent();
         }
 
-        if(movedFrom) {
-            currentWip--;
-        }
+        while (to != null) {
+            if(to.getMaxWip() != 0) {
+                int currentWip = to.getCurrentWip();
+                if(parentIds.contains(to.getId())) {
+                    currentWip--;
+                }
 
-        if(to.getMaxWip() == 0 || to.getMaxWip() > currentWip) {
-            if(to.getParent() == null) {
-                return true;
-            } else {
-                return isMoveToAvailable(to.getParent(), from, movedFrom);
-            }
-        }
-        return false;
-    }
-
-    @JsonIgnore
-    public static boolean hasChild(BoardPart parent, BoardPart leafChild) {
-        if(parent.hasChildren()) {
-            for(BoardPart c : parent.getChildren()) {
-                if(hasChild(c, leafChild)) {
-                    return true;
+                if(to.getMaxWip() <= currentWip) {
+                    return false;
                 }
             }
-            return false;
-        } else {
-            if(parent.getId().equals(leafChild.getId())) {
-                return true;
-            } else {
-                return false;
-            }
+
+            to = to.getParent();
         }
+
+        return true;
     }
-
-
 
 
     public BoardPart getParent() {

@@ -110,11 +110,11 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     if (wipExceeded) {
       cm.cardMoveType = CardMoveType.INVALID;
       const modalRef = this.modalService.open(CardMoveConfirmationComponent);
-      modalRef.result
-        .then(value => {
+
+      modalRef.result.then(value => {
           cm.reason = value;
-          this.postCardMove(cm)
-        }, reason => {});
+          this.postCardMove(cm);
+        }, reason => { console.log(reason)});
 
     } else {
       this.postCardMove(cm);

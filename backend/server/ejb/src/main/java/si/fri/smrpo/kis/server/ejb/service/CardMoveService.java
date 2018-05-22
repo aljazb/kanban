@@ -16,7 +16,7 @@ import javax.ejb.Stateless;
 
 import java.awt.*;
 
-import static si.fri.smrpo.kis.server.jpa.entities.BoardPart.isMoveToAvailable;
+import static si.fri.smrpo.kis.server.jpa.entities.BoardPart.isMoveWipValid;
 
 @PermitAll
 @Stateless
@@ -118,7 +118,7 @@ public class CardMoveService implements CardMoveServiceLocal {
         cardMove.setTo(movedTo);
         cardMove.setCard(card);
 
-        CardMoveType requiredType = isMoveToAvailable(movedTo, movedFrom, false) ? CardMoveType.VALID : CardMoveType.INVALID;
+        CardMoveType requiredType = isMoveWipValid(movedTo, movedFrom) ? CardMoveType.VALID : CardMoveType.INVALID;
 
         if(cardMove.getCardMoveType() != null) {
             if (cardMove.getCardMoveType() != requiredType) {

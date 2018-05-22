@@ -29,29 +29,31 @@ export class ProjectTable {
 
         let cardMoveRules = cardMoveRulesMap.get(currentBp.id);
 
-        cardMoveRules.forEach(cmr => {
+        if(cardMoveRules) {
+          cardMoveRules.forEach(cmr => {
 
-          if(
-            (cmr.roleKanbanMasterAllowed && isKanbanMaster) ||
-            (cmr.roleProductOwnerAllowed && isProductOwner) ||
-            (cmr.roleDeveloperAllowed && isDeveloper)
-          ) {
-            if(cmr.canReject) {
-              moveBack = moveBackBoardParts;
-            } else {
-              let to: BoardPart = cmr.to;
-              if(to.leafNumber == currentBp.leafNumber) {
-                to = cmr.from;
-              }
-
-              if(to.leafNumber > currentBp.leafNumber) {
-                rightBp.push(to);
+            if(
+              (cmr.roleKanbanMasterAllowed && isKanbanMaster) ||
+              (cmr.roleProductOwnerAllowed && isProductOwner) ||
+              (cmr.roleDeveloperAllowed && isDeveloper)
+            ) {
+              if(cmr.canReject) {
+                moveBack = moveBackBoardParts;
               } else {
-                leftBp.push(to);
+                let to: BoardPart = cmr.to;
+                if(to.leafNumber == currentBp.leafNumber) {
+                  to = cmr.from;
+                }
+
+                if(to.leafNumber > currentBp.leafNumber) {
+                  rightBp.push(to);
+                } else {
+                  leftBp.push(to);
+                }
               }
             }
-          }
-        });
+          });
+        }
       }
 
       this.cardTables.push(new CardTable(currentBp, leftBp, rightBp, moveBack));

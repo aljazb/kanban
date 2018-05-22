@@ -7,17 +7,15 @@ import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.CardServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
-import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.xml.registry.infomodel.User;
 import java.util.HashSet;
 import java.util.UUID;
 
-import static si.fri.smrpo.kis.server.jpa.entities.BoardPart.isMoveToAvailable;
+import static si.fri.smrpo.kis.server.jpa.entities.BoardPart.isMoveWipValid;
 import static si.fri.smrpo.kis.server.jpa.enums.CardMoveType.*;
 
 
@@ -136,7 +134,7 @@ public class CardService implements CardServiceLocal {
         cm.setTo(boardPart);
         cm.setMovedBy(authUser);
 
-        if(!isMoveToAvailable(boardPart, null, false)) {
+        if(!isMoveWipValid(boardPart, null)) {
             cm.setCardMoveType(INVALID_ON_CREATE);
             cm.setReason(card.getDeleteMessage());
             card.setDeleteMessage(null);

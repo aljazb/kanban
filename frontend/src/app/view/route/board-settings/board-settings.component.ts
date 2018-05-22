@@ -6,6 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {BoardPart} from '../../../api/models/BoardPart';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {CardMoveRule} from '../../../api/resource/card-move-rules';
+import {Location} from '@angular/common';
 import {CardMoveRulesPagingComponent} from '../../components/paging/card-move-rules-paging/card-move-rules-paging.component';
 
 @Component({
@@ -46,6 +47,7 @@ export class BoardSettingsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
+              private location: Location,
               private api: ApiService,
               private toaster: ToasterService) {
     this.initFormControl();
@@ -103,6 +105,10 @@ export class BoardSettingsComponent implements OnInit {
     })
   }
 
+  back(): void {
+    this.location.back();
+  }
+
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
     this.api.board.get(this.id).subscribe(board => this.init(board));
@@ -135,12 +141,15 @@ export class BoardSettingsComponent implements OnInit {
     this.cardMoveRulesEditing.forEach(value => {
       let cmr = new CardMoveRule();
       cmr.id = value.id;
-      cmr.from = value.from;
-      cmr.to = value.to;
+      cmr.from = new BoardPart();
+      cmr.from.id = value.from.id;
+      cmr.to = new BoardPart();
+      cmr.to.id = value.to.id;
       cmr.roleProductOwnerAllowed = value.roleProductOwnerAllowed;
       cmr.roleKanbanMasterAllowed = value.roleKanbanMasterAllowed;
       cmr.roleDeveloperAllowed = value.roleDeveloperAllowed;
       cmr.canReject = value.canReject;
+      cmr.bidirectionalMovement = value.bidirectionalMovement;
       b.cardMoveRules.push(cmr);
     });
 
@@ -169,8 +178,10 @@ export class BoardSettingsComponent implements OnInit {
       if(r.canReject) {
         r.from = r.to;
       } else {
+        console.log("WTF");
         r.bidirectionalMovement = this.fcBidirectionalMovement.value;
       }
+      console.log(r);
 
       r.roleDeveloperAllowed = this.fcRoleDeveloper.value;
       r.roleKanbanMasterAllowed = this.fcRoleKanbanMaster.value;

@@ -8,7 +8,6 @@ import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -106,11 +105,11 @@ public class Project extends UUIDEntity<Project> {
             for (BoardPart leaf : b.buildLeavesBoardParts()) {
                 if (leaf.getLeafNumber() == 0) {
                     firstColumnId = leaf.getId();
-                    firstColumnFull = !BoardPart.isMoveToAvailable(leaf, null, false);
+                    firstColumnFull = !BoardPart.isMoveWipValid(leaf, null);
                 }
                 if (leaf.getLeafNumber().equals(b.getHighestPriority())) {
                     highestPriorityId = leaf.getId();
-                    highestPriorityFull = !BoardPart.isMoveToAvailable(leaf, null, false);
+                    highestPriorityFull = !BoardPart.isMoveWipValid(leaf, null);
                     for (Card c : leaf.getCards()) {
                         if (!c.getIsDeleted() && c.getSilverBullet()) {
                             silverBulletInHighestPriority = true;

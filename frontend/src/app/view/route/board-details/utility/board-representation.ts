@@ -115,19 +115,27 @@ export class BoardRepresentation {
     }
   }
 
-  willExceedWip(boardPart: BoardPart, from: BoardPart) {
-    let fromBpt = this._boardPartIdToIndexMap.get(from.id);
-    this.decWip(fromBpt);
+  willExceedWip(to: BoardPart, from: BoardPart=null) {
+    let parentIds: Set<string> = new Set<string>();
 
-    let bpt = this._boardPartIdToIndexMap.get(boardPart.id);
-    while (bpt != null) {
-      if (bpt.boardPart.maxWip != 0 && bpt.currentWip + 1 > bpt.boardPart.maxWip) {
-        return true
-      }
-      bpt = bpt.parent;
+    while (from != null) {
+      parentIds.add(from.id);
+      from = from.parent;
     }
 
-    this.incWip(fromBpt);
+    while (to != null) {
+      if (to.maxWip != 0) {
+        let currentWip = to.currentWip;
+        if(parentIds.has(to.id)) {
+          currentWip--;
+        }
+
+        if(to.maxWip <= currentWip) {
+          return true;
+        }
+      }
+      to = to.parent;
+    }
 
     return false;
   }
