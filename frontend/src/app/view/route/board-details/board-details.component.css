@@ -36,7 +36,7 @@ table.table-bordered > tbody > tr > td{
 table.table{
   border-collapse: separate;
 }
-.vericaltext{
+.verical-text{
   width:1px;
   word-wrap: break-word;
   white-space:pre-wrap;

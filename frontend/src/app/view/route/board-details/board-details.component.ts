@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
 import {Board} from '../../../api/models/Board';
 import {Card} from '../../../api/models/Card';
 import {BoardPart} from '../../../api/models/BoardPart';
@@ -18,13 +18,15 @@ import {FormControl, FormGroup } from '@angular/forms';
 import {cTsToDp} from '../../../utility';
 import {SubTask} from '../../../api/models/sub-task';
 import {fn} from '@angular/compiler/src/output/output_ast';
+import {JsogService} from 'jsog-typescript';
+import {CollapsedSetting} from './utility/collapsed-setting';
 
 @Component({
   selector: 'app-board-details',
   templateUrl: './board-details.component.html',
   styleUrls: ['./board-details.component.css']
 })
-export class BoardDetailsComponent implements OnInit {
+export class BoardDetailsComponent implements OnInit, OnDestroy {
 
   id: string;
   board: Board;
@@ -47,17 +49,20 @@ export class BoardDetailsComponent implements OnInit {
               private api: ApiService,
               private login: LoginService,
               private modalService: NgbModal,
-              private toaster: ToasterService) { }
-
-  ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id');
-    this.collapsedSettings = new Map<string, boolean>();
+              private toaster: ToasterService)
+  {
     this.showDisplayOptions = false;
     this.criticalCardIds = new Set<string>();
     this.criticalAnimation = null;
+    this.collapsedSettings = new Map<string, boolean>();
+
     this.initFormControls();
     this.initFormGroup();
+  }
 
+  ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.initCollapsedSettings();
     this.onInit();
   }
 
@@ -181,19 +186,62 @@ export class BoardDetailsComponent implements OnInit {
     }
   }
 
-  getIsCollapsed(id: string):boolean {
-    let isCollapsed = this.collapsedSettings.get(id);
-
-    if(isCollapsed == null) {
-      return true
-    } else {
-      return isCollapsed
+  initCollapsedSettings(): void {
+    let key = this.getCollapsedSettingsKey(this.id);
+    let content: CollapsedSetting[] = JSON.parse(window.localStorage.getItem(key));
+    if(content) {
+      content.forEach(iten => {
+        this.collapsedSettings.set(iten.id, iten.value);
+      });
     }
   }
 
-  toggleIsCollapsed(id: string): void {
-    let isCollapsed = this.getIsCollapsed(id);
-    this.collapsedSettings.set(id, !isCollapsed);
+  persistCollapsedSettings(): void {
+    if(this.collapsedSettings) {
+      let key = this.getCollapsedSettingsKey(this.id);
+      let content: CollapsedSetting[] = [];
+
+      this.collapsedSettings.forEach((value, key) => {
+        content.push(new CollapsedSetting(key, value));
+      });
+
+      let json = JSON.stringify(content);
+
+      window.localStorage.setItem(key, json);
+    }
+  }
+
+  getIsCollapsed(boardPart: BoardPart):boolean {
+    let isCollapsed = this.collapsedSettings.get(boardPart.id);
+
+    if(isCollapsed == null) {
+      return false;
+    } else {
+      return isCollapsed;
+    }
+  }
+
+  toggleIsCollapsed(boardPart: BoardPart, value=null): void {
+    let isCollapsed = !this.getIsCollapsed(boardPart);
+    if(value) {
+      isCollapsed = value;
+    }
+    this.collapsedSettings.set(boardPart.id, isCollapsed);
+
+    if(BoardPart.hasChildren(boardPart)) {
+      boardPart.children.forEach(value => {
+        this.toggleIsCollapsed(value, isCollapsed);
+      });
+    }
+
+  }
+
+  private getCollapsedSettingsKey(id: string) {
+    return "CS_" + id;
+  }
+
+  ngOnDestroy(): void {
+    this.persistCollapsedSettings();
   }
 
 }

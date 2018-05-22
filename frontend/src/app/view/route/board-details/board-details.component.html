@@ -43,11 +43,11 @@
                     'dev-end': td.boardPart.leafNumber == board.endDev,
                     'acceptance-ready': td.boardPart.leafNumber == board.acceptanceTesting}">
 
-                  {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
+                  <span *ngIf="!getIsCollapsed(td.boardPart)">{{td.boardPart.name}}</span> [{{td.currentWip}}/{{td.boardPart.maxWip}}]
 
-                  <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart.id)">
-                    <i *ngIf="!getIsCollapsed(td.boardPart.id)" class="fa fa-minus"></i>
-                    <i *ngIf="getIsCollapsed(td.boardPart.id)" class="fa fa-plus"></i>
+                  <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart)">
+                    <i *ngIf="!getIsCollapsed(td.boardPart)" class="fa fa-minus"></i>
+                    <i *ngIf="getIsCollapsed(td.boardPart)" class="fa fa-plus"></i>
                   </button>
 
                 </td>
@@ -64,8 +64,10 @@
                   </a>
                 </td>
                 <td *ngFor="let td of tr.cardTables" class="align-top">
-                  <!--<div class="vericaltext">{{td.currentBoardPart.name}}</div>-->
-                  <div>
+                  <div class="verical-text" *ngIf="getIsCollapsed(td.currentBoardPart)">
+                    {{td.currentBoardPart.name}}
+                  </div>
+                  <div *ngIf="!getIsCollapsed(td.currentBoardPart)">
 
                       <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
                            [style.background]="c.card.color" [ngClass]="{'blink-background': criticalCardIds.has(c.card.id)}">
