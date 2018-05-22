@@ -46,6 +46,15 @@ public class Board extends UUIDEntity<Board> {
     @JoinColumn(name = "owner_id", nullable = false)
     public UserAccount owner;
 
+    @Column(name = "show_card_type")
+    public Boolean showCardType = false;
+
+    @Column(name = "show_workload")
+    public Boolean showWorkload = false;
+
+    @Column(name = "show_due_date")
+    public Boolean showDueDate = false;
+
     @OneToMany(mappedBy = "board")
     private Set<BoardPart> boardParts;
 
@@ -224,5 +233,29 @@ public class Board extends UUIDEntity<Board> {
 
     public void setCardMoveRules(Set<CardMoveRules> cardMoveRules) {
         this.cardMoveRules = cardMoveRules;
+    }
+
+    public Boolean getShowCardType() {
+        return showCardType;
+    }
+
+    public void setShowCardType(Boolean showCardType) {
+        this.showCardType = showCardType;
+    }
+
+    public Boolean getShowWorkload() {
+        return showWorkload;
+    }
+
+    public void setShowWorkload(Boolean showWorkload) {
+        this.showWorkload = showWorkload;
+    }
+
+    public Boolean getShowDueDate() {
+        return showDueDate;
+    }
+
+    public void setShowDueDate(Boolean showDueDate) {
+        this.showDueDate = showDueDate;
     }
 }

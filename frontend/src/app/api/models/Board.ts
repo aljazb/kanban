@@ -13,6 +13,10 @@ export class Board extends BaseEntity<Board> {
   endDev: number;
   acceptanceTesting: number;
 
+  showCardType: boolean;
+  showWorkload: boolean;
+  showDueDate: boolean;
+
   remainingDays: number;
 
   owner: UserAccount;

@@ -29,6 +29,9 @@ export class BoardSettingsComponent implements OnInit {
 
   formBoard: FormGroup;
   fcRemainingDays: FormControl;
+  fcShowWorkload: FormControl;
+  fcShowCardType: FormControl;
+  fcShowDueDate: FormControl;
 
 
   formRule: FormGroup;
@@ -56,6 +59,9 @@ export class BoardSettingsComponent implements OnInit {
 
   private initFormControl(): void {
     this.fcRemainingDays = new FormControl();
+    this.fcShowDueDate = new FormControl();
+    this.fcShowCardType = new FormControl();
+    this.fcShowWorkload = new FormControl();
 
     this.fcBoardPartFrom = new FormControl(null, Validators.required);
     this.fcBoardPartFrom.valueChanges.subscribe(selectedBp => {
@@ -92,7 +98,10 @@ export class BoardSettingsComponent implements OnInit {
 
   private initFormGroup(): void {
     this.formBoard = new FormGroup({
-      remainingDays: this.fcRemainingDays
+      remainingDays: this.fcRemainingDays,
+      showWorkload: this.fcShowWorkload,
+      showCardType: this.fcShowCardType,
+      showDueDate: this.fcShowDueDate
     });
     this.formRule = new FormGroup({
       from: this.fcBoardPartFrom,
@@ -123,7 +132,11 @@ export class BoardSettingsComponent implements OnInit {
 
     this.fromSelection = this.leaves;
     this.toSelection = this.leaves;
+
     this.fcRemainingDays.patchValue(this.board.remainingDays);
+    this.fcShowCardType.patchValue(this.board.showCardType);
+    this.fcShowDueDate.patchValue(this.board.showDueDate);
+    this.fcShowWorkload.patchValue(this.board.showWorkload);
   }
 
   handleOnDelete(cardMoveRule: CardMoveRule): void {
@@ -136,6 +149,9 @@ export class BoardSettingsComponent implements OnInit {
     let b = new Board();
     b.id = this.board.id;
     b.remainingDays = this.fcRemainingDays.value;
+    b.showWorkload = this.fcShowWorkload.value;
+    b.showDueDate = this.fcShowDueDate.value;
+    b.showCardType = this.fcShowCardType.value;
     b.cardMoveRules = [];
 
     this.cardMoveRulesEditing.forEach(value => {

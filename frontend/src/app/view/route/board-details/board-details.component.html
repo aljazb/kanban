@@ -120,9 +120,9 @@
 
                           <div class="col-12">
                             <a class="small"><strong>Assignee: {{ c.card.assignedTo == null ? '-' : (c.card.assignedTo.email.length>15)? (c.card.assignedTo.email | slice:0:12)+"...":(c.card.assignedTo.email) }}</strong> </a>
-
-                            <br>
-                            <a class="small"><strong>Priority: {{c.card.cardType.toString().replace("_", " ")}}</strong></a>
+                            <a class="small" *ngIf="board.showCardType" ><br><strong>Priority: {{c.card.cardType.toString().replace("_", " ")}}</strong></a>
+                            <a class="small" *ngIf="board.showWorkload" ><br><strong>Workload: {{c.card.workload}}</strong></a>
+                            <a class="small" *ngIf="board.showDueDate" ><br><strong>Due date: {{c.card.dueDate | date:'dd.MM.yyyy'}}</strong></a>
                           </div>
 
                         </div>
