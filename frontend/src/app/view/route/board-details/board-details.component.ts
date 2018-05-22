@@ -20,7 +20,6 @@ import {SubTask} from '../../../api/models/sub-task';
 import {CollapsedSetting} from './utility/collapsed-setting';
 import {BoardPartTable} from './utility/board-part-table';
 import {CardTable} from './utility/card-table';
-import {ProjectTable} from './utility/project-table';
 
 @Component({
   selector: 'app-board-details',
@@ -44,7 +43,6 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
   formDisplayOptions: FormGroup;
   fcCriticalDays: FormControl;
   criticalCardIds: Set<string>;
-  criticalAnimation;
 
   constructor(private route: ActivatedRoute,
               private api: ApiService,
@@ -54,7 +52,6 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
   {
     this.showDisplayOptions = false;
     this.criticalCardIds = new Set<string>();
-    this.criticalAnimation = null;
     this.collapsedSettings = new Map<string, boolean>();
 
     this.initFormControls();
@@ -93,6 +90,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     this.isAuthUserDeveloper = Membership.isDeveloper(board.membership);
     this.boardRepresentation = this.buildBoardRepresentation();
     this.fcCriticalDays.patchValue(this.board.remainingDays);
+    this.validateCollapseSettings();
   }
 
   private buildBoardRepresentation(): BoardRepresentation {
@@ -146,17 +144,17 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     this.showDisplayOptions = !this.showDisplayOptions;
   }
 
-  updateCompleted(subtask: SubTask) {
-    subtask.completed = !subtask.completed;
+  updateCompleted(subTask: SubTask) {
+    subTask.completed = !subTask.completed;
 
-    this.api.subTask.put(subtask, true).subscribe(value => {
+    this.api.subTask.put(subTask, true).subscribe(value => {
       console.log(value)
     }, error2 => {
       this.toaster.pop("error", "Error updating subtask");
     });
   }
 
-  subtaskMoveWarning(card: Card) {
+  subTaskMoveWarning(card: Card) {
     if (card.boardPart.leafNumber + 1 == this.board.acceptanceTesting)
       for (let s of card.subTasks)
         if (!s.completed)
@@ -197,6 +195,25 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  validateCollapseSettings(): void {
+    this.board.boardParts.forEach(bp => {
+      this.validateCollapseSettingsRec(bp);
+    });
+  }
+
+  private validateCollapseSettingsRec(boardPart: BoardPart) {
+    let isCollapsed = this.getIsCollapsed(boardPart);
+    if(!isCollapsed) {
+      this.toggleIsCollapsed(boardPart, isCollapsed);
+    } else {
+      if(BoardPart.hasChildren(boardPart)) {
+        boardPart.children.forEach(bp => {
+          this.validateCollapseSettingsRec(bp);
+        });
+      }
+    }
+  }
+
   persistCollapsedSettings(): void {
     if(this.collapsedSettings) {
       let key = this.getCollapsedSettingsKey(this.id);
@@ -214,7 +231,7 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
 
   filterCardTable(ct: CardTable[]): CardTable[] {
     if(ct) {
-      return ct.filter(value => !this.getIsCollapsed(value.currentBoardPart.parent));
+      return ct.filter(value => !this.getIsCollapsed(value.currentBoardPart));
     } else {
       return [];
     }
@@ -238,9 +255,18 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  toggleIsCollapsed(boardPart: BoardPart): void {
+  toggleIsCollapsed(boardPart: BoardPart, collapsed=null): void {
     let isCollapsed = !this.getIsCollapsed(boardPart);
+    if(collapsed != null) {
+      isCollapsed = collapsed;
+    }
     this.collapsedSettings.set(boardPart.id, isCollapsed);
+
+    if(BoardPart.hasChildren(boardPart)) {
+      boardPart.children.forEach(bp => {
+        this.toggleIsCollapsed(bp, isCollapsed);
+      });
+    }
   }
 
   private getCollapsedSettingsKey(id: string) {

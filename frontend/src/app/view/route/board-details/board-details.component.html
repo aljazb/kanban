@@ -35,31 +35,36 @@
 
                 <td class="lane-name" *ngIf="i == 0" [attr.rowspan]="boardRepresentation.maxDepth">Projects</td>
 
-                <td class="align-top" *ngFor="let td of filterBoardPartTable(tr)" [attr.colspan]="td.colSpan" [attr.rowspan]="td.getRowSpan(getIsCollapsed(td.boardPart))"
+                <td *ngFor="let td of filterBoardPartTable(tr)" [attr.colspan]="td.colSpan" [attr.rowspan]="td.getRowSpan(getIsCollapsed(td.boardPart))"
                     [ngClass]="{
                     'over-max-wip-warning': td.boardPart.maxWip != 0 && td.boardPart.maxWip < td.currentWip,
                     'highest-priority': td.boardPart.leafNumber == board.highestPriority,
                     'dev-start': td.boardPart.leafNumber == board.startDev,
                     'dev-end': td.boardPart.leafNumber == board.endDev,
-                    'acceptance-ready': td.boardPart.leafNumber == board.acceptanceTesting}">
+                    'acceptance-ready': td.boardPart.leafNumber == board.acceptanceTesting,
+                    'align-top': getIsCollapsed(td.boardPart)}">
 
-                  <div>
-                    <span *ngIf="!getIsCollapsed(td.boardPart)">
-                      {{td.boardPart.name}}
-                    </span>
-
-                    {{td.getRowSpan(getIsCollapsed(td.boardPart))}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
+                  <div *ngIf="!getIsCollapsed(td.boardPart)">
+                    {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
 
                     <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart)">
-                      <i *ngIf="!getIsCollapsed(td.boardPart)" class="fa fa-minus"></i>
-                      <i *ngIf="getIsCollapsed(td.boardPart)" class="fa fa-plus"></i>
+                      <i class="fa fa-minus"></i>
                     </button>
                   </div>
 
-                  <div class="align-middle mt-3" *ngIf="getIsCollapsed(td.boardPart)">
-                    <p class="vertical-text">
-                      {{td.boardPart.name}}
-                    </p>
+                  <div class="" *ngIf="getIsCollapsed(td.boardPart)">
+                    <div class="m-3">
+
+                      <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart)">
+                        <i class="fa fa-plus"></i>
+                      </button>
+
+                      <p class="mt-3">[{{td.currentWip}}/{{td.boardPart.maxWip}}]</p>
+
+                      <p class="vertical-text">
+                        {{td.boardPart.name}}
+                      </p>
+                    </div>
                   </div>
 
                 </td>
@@ -78,12 +83,7 @@
 
                 <td class="align-top" *ngFor="let td of filterCardTable(tr.cardTables)">
 
-                  <div *ngIf="getIsCollapsed(td.currentBoardPart)" class="align-top">
-                    <div class="vertical-text">{{td.currentBoardPart.name}}</div>
-                  </div>
-
-                  <div *ngIf="!getIsCollapsed(td.currentBoardPart)">
-
+                  <div>
                       <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
                            [style.background]="c.card.color" [ngClass]="{'blink-background': criticalCardIds.has(c.card.id)}">
 
@@ -102,9 +102,9 @@
 
                             <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>9)? (c.card.name | slice:0:9)+"...":(c.card.name) }}</a>
                             <span #pDown="ngbPopover" ngbPopover="All sub-tasks have to be completed in order to move the card to acceptance testing."
-                                  popoverTitle="Sub-tasks uncompleted" triggers="manual" (mouseenter)="c.card.subTasks && subtaskMoveWarning(c.card) && pDown.open()" (mouseleave)="pDown.close()">
+                                  popoverTitle="Sub-tasks uncompleted" triggers="manual" (mouseenter)="c.card.subTasks && subTaskMoveWarning(c.card) && pDown.open()" (mouseleave)="pDown.close()">
                               <div class="dropdown pull-right">
-                                <button (click)="c.showRight = !c.showRight" class="btn btn-sm" [disabled]="c.card.subTasks && subtaskMoveWarning(c.card)">
+                                <button (click)="c.showRight = !c.showRight" class="btn btn-sm" [disabled]="c.card.subTasks && subTaskMoveWarning(c.card)">
                                   <i class="fa fa-caret-right"></i>
                                 </button>
                                 <div class="dropdown-content" [ngClass]="{ 'show': c.showRight }">

@@ -148,7 +148,7 @@ export class BoardRepresentation {
       });
     } else {
       boardPartTable.rowSpan = maxDeep;
-      boardPartTable.collapsedRowSpan = maxDeep;
+      boardPartTable.collapsedRowSpan = maxDeep + this.board.projects.length;
     }
   }
 
