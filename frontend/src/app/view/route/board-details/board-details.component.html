@@ -30,12 +30,12 @@
         <div class="row">
 
           <table class="table table-bordered">
-            <thead>
+            <!--<thead>-->
               <tr *ngFor="let tr of boardRepresentation.boardPartTable; let i = index">
 
                 <td class="lane-name" *ngIf="i == 0" [attr.rowspan]="boardRepresentation.maxDepth">Projects</td>
 
-                <td *ngFor="let td of tr" [attr.colspan]="td.colspan" [attr.rowspan]="td.rowspan"
+                <td class="align-top" *ngFor="let td of filterBoardPartTable(tr)" [attr.colspan]="td.colSpan" [attr.rowspan]="td.getRowSpan(getIsCollapsed(td.boardPart))"
                     [ngClass]="{
                     'over-max-wip-warning': td.boardPart.maxWip != 0 && td.boardPart.maxWip < td.currentWip,
                     'highest-priority': td.boardPart.leafNumber == board.highestPriority,
@@ -43,30 +43,45 @@
                     'dev-end': td.boardPart.leafNumber == board.endDev,
                     'acceptance-ready': td.boardPart.leafNumber == board.acceptanceTesting}">
 
-                  <span *ngIf="!getIsCollapsed(td.boardPart)">{{td.boardPart.name}}</span> [{{td.currentWip}}/{{td.boardPart.maxWip}}]
+                  <div>
+                    <span *ngIf="!getIsCollapsed(td.boardPart)">
+                      {{td.boardPart.name}}
+                    </span>
 
-                  <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart)">
-                    <i *ngIf="!getIsCollapsed(td.boardPart)" class="fa fa-minus"></i>
-                    <i *ngIf="getIsCollapsed(td.boardPart)" class="fa fa-plus"></i>
-                  </button>
+                    {{td.getRowSpan(getIsCollapsed(td.boardPart))}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
+
+                    <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart)">
+                      <i *ngIf="!getIsCollapsed(td.boardPart)" class="fa fa-minus"></i>
+                      <i *ngIf="getIsCollapsed(td.boardPart)" class="fa fa-plus"></i>
+                    </button>
+                  </div>
+
+                  <div class="align-middle mt-3" *ngIf="getIsCollapsed(td.boardPart)">
+                    <p class="vertical-text">
+                      {{td.boardPart.name}}
+                    </p>
+                  </div>
 
                 </td>
 
               </tr>
-            </thead>
+            <!--</thead>-->
 
-            <tbody>
-
+            <!--<tbody>-->
               <tr *ngFor="let tr of boardRepresentation.projectTable">
+
                 <td class="lane-name hover-pointer">
                   <a routerLink="/project/{{tr.project.id}}">
                     [{{tr.project.name}}]
                   </a>
                 </td>
-                <td *ngFor="let td of tr.cardTables" class="align-top">
+
+                <td class="align-top" *ngFor="let td of filterCardTable(tr.cardTables)">
+
                   <div *ngIf="getIsCollapsed(td.currentBoardPart)" class="align-top">
-                    <div class="verical-text">{{td.currentBoardPart.name}}</div>
+                    <div class="vertical-text">{{td.currentBoardPart.name}}</div>
                   </div>
+
                   <div *ngIf="!getIsCollapsed(td.currentBoardPart)">
 
                       <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
@@ -136,8 +151,10 @@
 
                 </div>
                 </td>
+
               </tr>
-            </tbody>
+            <!--</tbody>-->
+
           </table>
 
         </div>

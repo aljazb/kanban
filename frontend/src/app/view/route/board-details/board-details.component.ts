@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {Board} from '../../../api/models/Board';
 import {Card} from '../../../api/models/Card';
 import {BoardPart} from '../../../api/models/BoardPart';
@@ -17,9 +17,10 @@ import {CardMoveBackConfirmationComponent} from '../../components/forms/card-mov
 import {FormControl, FormGroup } from '@angular/forms';
 import {cTsToDp} from '../../../utility';
 import {SubTask} from '../../../api/models/sub-task';
-import {fn} from '@angular/compiler/src/output/output_ast';
-import {JsogService} from 'jsog-typescript';
 import {CollapsedSetting} from './utility/collapsed-setting';
+import {BoardPartTable} from './utility/board-part-table';
+import {CardTable} from './utility/card-table';
+import {ProjectTable} from './utility/project-table';
 
 @Component({
   selector: 'app-board-details',
@@ -211,29 +212,35 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getIsCollapsed(boardPart: BoardPart):boolean {
-    let isCollapsed = this.collapsedSettings.get(boardPart.id);
-
-    if(isCollapsed == null) {
-      return false;
+  filterCardTable(ct: CardTable[]): CardTable[] {
+    if(ct) {
+      return ct.filter(value => !this.getIsCollapsed(value.currentBoardPart.parent));
     } else {
-      return isCollapsed;
+      return [];
     }
   }
 
-  toggleIsCollapsed(boardPart: BoardPart, value=null): void {
+  filterBoardPartTable(ct: BoardPartTable[]): BoardPartTable[] {
+    if(ct) {
+      return ct.filter(value => value.boardPart == null || !this.getIsCollapsed(value.boardPart.parent));
+    } else {
+      return [];
+    }
+  }
+
+  getIsCollapsed(boardPart: BoardPart): boolean {
+    if(boardPart != null) {
+      let isCollapsed = this.collapsedSettings.get(boardPart.id);
+      if(isCollapsed != null) {
+        return isCollapsed;
+      }
+    }
+    return false;
+  }
+
+  toggleIsCollapsed(boardPart: BoardPart): void {
     let isCollapsed = !this.getIsCollapsed(boardPart);
-    if(value) {
-      isCollapsed = value;
-    }
     this.collapsedSettings.set(boardPart.id, isCollapsed);
-
-    if(BoardPart.hasChildren(boardPart)) {
-      boardPart.children.forEach(value => {
-        this.toggleIsCollapsed(value, isCollapsed);
-      });
-    }
-
   }
 
   private getCollapsedSettingsKey(id: string) {

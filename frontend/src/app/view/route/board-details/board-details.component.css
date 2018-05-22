@@ -36,12 +36,13 @@ table.table-bordered > tbody > tr > td{
 table.table{
   border-collapse: separate;
 }
-.verical-text{
-  width:1px;
-  word-wrap: break-word;
-  white-space:pre-wrap;
-  alignment: top;
+
+.vertical-text{
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 20px;
 }
+
 .blink-background {
   -webkit-animation: blink 1s infinite;  /* Safari 4+ */
   -moz-animation: blink 1s infinite;  /* Fx 5+ */

@@ -8,8 +8,17 @@ export class BoardPartTable {
   parent: BoardPartTable;
   children: BoardPartTable[];
 
-  colspan: number;
-  rowspan: number;
+  colSpan: number;
+  rowSpan: number;
+  collapsedRowSpan: number;
+
+  getRowSpan(isCollapsed: boolean): number {
+    if(isCollapsed) {
+      return this.collapsedRowSpan;
+    } else {
+      return this.rowSpan;
+    }
+  }
 
   constructor(boardPart: BoardPart) {
     this.boardPart = boardPart;

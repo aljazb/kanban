@@ -141,12 +141,14 @@ export class BoardRepresentation {
 
   private recSetRowSpanBoardPartTable(boardPartTable: BoardPartTable, maxDeep: number): void {
     if(boardPartTable.children) {
-      boardPartTable.rowspan = 1;
+      boardPartTable.rowSpan = 1;
+      boardPartTable.collapsedRowSpan = maxDeep + this.board.projects.length;
       boardPartTable.children.forEach(bpt => {
         this.recSetRowSpanBoardPartTable(bpt, maxDeep - 1);
       });
     } else {
-      boardPartTable.rowspan = maxDeep;
+      boardPartTable.rowSpan = maxDeep;
+      boardPartTable.collapsedRowSpan = maxDeep;
     }
   }
 
@@ -170,15 +172,15 @@ export class BoardRepresentation {
 
     if(boardPart.children && boardPart.children.length > 0) {
       bpt.children = [];
-      bpt.colspan = 0;
+      bpt.colSpan = 0;
       boardPart.children.forEach(boardPart => {
         let cBpt = this.recInitBoardPartTable(boardPart, deep + 1);
         cBpt.parent = bpt;
         bpt.children.push(cBpt);
-        bpt.colspan += cBpt.colspan;
+        bpt.colSpan += cBpt.colSpan;
       });
     } else {
-      bpt.colspan = 1;
+      bpt.colSpan = 1;
       bpt.index = this._maxWidth;
       this._boardPartIdToIndexMap.set(boardPart.id, bpt);
       this._maxWidth++;
