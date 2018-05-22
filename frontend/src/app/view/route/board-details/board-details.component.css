@@ -40,6 +40,7 @@ table.table{
   width:1px;
   word-wrap: break-word;
   white-space:pre-wrap;
+  alignment: top;
 }
 .blink-background {
   -webkit-animation: blink 1s infinite;  /* Safari 4+ */

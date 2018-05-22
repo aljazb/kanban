@@ -64,8 +64,8 @@
                   </a>
                 </td>
                 <td *ngFor="let td of tr.cardTables" class="align-top">
-                  <div class="verical-text" *ngIf="getIsCollapsed(td.currentBoardPart)">
-                    {{td.currentBoardPart.name}}
+                  <div *ngIf="getIsCollapsed(td.currentBoardPart)" class="align-top">
+                    <div class="verical-text">{{td.currentBoardPart.name}}</div>
                   </div>
                   <div *ngIf="!getIsCollapsed(td.currentBoardPart)">
 
