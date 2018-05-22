@@ -31,6 +31,8 @@ export class BoardDetailsComponent implements OnInit {
   isOwner: boolean;
   isAuthUserKanbanMaster: boolean;
 
+  collapsedSettings: Map<string, boolean>;
+
   showDisplayOptions: boolean;
 
   formDisplayOptions: FormGroup;
@@ -46,12 +48,14 @@ export class BoardDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.paramMap.get('id');
-    this.onInit();
+    this.collapsedSettings = new Map<string, boolean>();
     this.showDisplayOptions = false;
     this.criticalCardIds = new Set<string>();
     this.criticalAnimation = null;
     this.initFormControls();
     this.initFormGroup();
+
+    this.onInit();
   }
 
   initFormControls(): void {
@@ -153,6 +157,21 @@ export class BoardDetailsComponent implements OnInit {
         });
       });
     }
+  }
+
+  getIsCollapsed(id: string):boolean {
+    let isCollapsed = this.collapsedSettings.get(id);
+
+    if(isCollapsed == null) {
+      return true
+    } else {
+      return isCollapsed
+    }
+  }
+
+  toggleIsCollapsed(id: string): void {
+    let isCollapsed = this.getIsCollapsed(id);
+    this.collapsedSettings.set(id, !isCollapsed);
   }
 
 }
