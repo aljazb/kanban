@@ -30,7 +30,7 @@
       <div class="col-sm-9">
         <select name="card-card-type" class="form-control" id="in-card-type" formControlName="cardType">
           <option *ngFor="let c of cardTypeSelection" [ngValue]="c">
-            {{c.replace("_", " ")}}
+            {{c.replace('_', " ").replace('_', " ").replace('_', " ")}}
           </option>
         </select>
       </div>

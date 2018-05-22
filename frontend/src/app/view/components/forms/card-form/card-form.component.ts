@@ -53,7 +53,7 @@ export class CardFormComponent extends FormImpl {
     this.initFormControls();
     this.initFormGroup();
 
-    this.cardTypeSelection = [CardType.MUST_HAVE, CardType.SHOULD_HAVE, CardType.COULD_HAVE];
+    this.cardTypeSelection = [CardType.MUST_HAVE, CardType.SHOULD_HAVE, CardType.COULD_HAVE, CardType.WONT_HAVE_THIS_TIME];
   }
 
   initFormControls(): void {

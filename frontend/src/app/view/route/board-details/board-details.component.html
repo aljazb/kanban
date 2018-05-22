@@ -84,15 +84,17 @@
                             </div>
 
                             <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>9)? (c.card.name | slice:0:9)+"...":(c.card.name) }}</a>
-
-                            <div class="dropdown pull-right">
-                              <button (click)="c.showRight = !c.showRight" class="btn btn-sm">
-                                <i class="fa fa-caret-right"></i>
-                              </button>
-                              <div class="dropdown-content" [ngClass]="{ 'show': c.showRight }">
-                                <div class="hover-pointer" *ngFor="let toBp of td.rightBoardPart" (click)="moveCard(c.card, td.currentBoardPart, toBp)">{{toBp.name}}</div>
+                            <span #pDown="ngbPopover" ngbPopover="All sub-tasks have to be completed in order to move the card to acceptance testing."
+                                  popoverTitle="Sub-tasks uncompleted" triggers="manual" (mouseenter)="c.card.subTasks && subtaskMoveWarning(c.card) && pDown.open()" (mouseleave)="pDown.close()">
+                              <div class="dropdown pull-right">
+                                <button (click)="c.showRight = !c.showRight" class="btn btn-sm" [disabled]="c.card.subTasks && subtaskMoveWarning(c.card)">
+                                  <i class="fa fa-caret-right"></i>
+                                </button>
+                                <div class="dropdown-content" [ngClass]="{ 'show': c.showRight }">
+                                  <div class="hover-pointer" *ngFor="let toBp of td.rightBoardPart" (click)="moveCard(c.card, td.currentBoardPart, toBp)">{{toBp.name}}</div>
+                                </div>
                               </div>
-                            </div>
+                            </span>
 
                           </div>
 
@@ -107,7 +109,11 @@
 
                         <div class="list-group" *ngIf="c.card.subTasks">
                           <div *ngFor="let t of c.card.subTasks" class="list-group-item list-group-item-action">
-                            {{t.name}} - {{t.workingHours}}
+                            <input style="float:left; width:20%" type="checkbox" name="subtask-completed" id="in-completed"
+                                   [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" [checked]="t.completed" (click)="updateCompleted(t)">
+                            <p style="float:left; align-content: left; width:30%"><strong>{{t.name}}</strong> </p>
+                            <p *ngIf="t.workingHours" style="float:right; width:30%">[{{t.workingHours}} h]</p>
+
                           </div>
                         </div>
 

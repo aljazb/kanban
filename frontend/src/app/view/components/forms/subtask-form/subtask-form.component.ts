@@ -66,15 +66,16 @@ export class SubtaskFormComponent extends FormImpl {
     });
   }
 
-  setSubtask(subtask: SubTask) {
+  setSubtask(subtask: SubTask, card: Card) {
+    this.loadProject(card.project);
+    this.setCard(card);
+
     this.subtask = subtask;
     this.fcName.setValue(subtask.name);
     this.fcDescription.setValue(subtask.description);
     this.fcWorkload.setValue(subtask.workingHours);
     this.fcAssignedTo.setValue(subtask.assignedTo == null ? null : subtask.assignedTo.id);
     this.fcCompleted.setValue(subtask.completed);
-
-    this.loadCard(subtask.card);
   }
 
   loadProject(project: Project) {
@@ -97,8 +98,8 @@ export class SubtaskFormComponent extends FormImpl {
     this.card = card;
   }
 
-  initSubtaskCreation(project: Project, card: Card) {
-    this.setProject(project);
+  initSubtaskCreation(card: Card) {
+    this.loadProject(card.project);
     this.setCard(card);
   }
 
@@ -128,7 +129,7 @@ export class SubtaskFormComponent extends FormImpl {
         s.assignedTo = null;
       }
 
-      s.card = new Card()
+      s.card = new Card();
       s.card.id = this.card.id;
 
       this.activeModal.close(s);

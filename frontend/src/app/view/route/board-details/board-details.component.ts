@@ -16,6 +16,8 @@ import {CardMoveConfirmationComponent} from '../../components/forms/card-move-co
 import {CardMoveBackConfirmationComponent} from '../../components/forms/card-move-back-confirmation/card-move-back-confirmation.component';
 import {FormControl, FormGroup } from '@angular/forms';
 import {cTsToDp} from '../../../utility';
+import {SubTask} from '../../../api/models/sub-task';
+import {fn} from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-board-details',
@@ -30,6 +32,7 @@ export class BoardDetailsComponent implements OnInit {
 
   isOwner: boolean;
   isAuthUserKanbanMaster: boolean;
+  isAuthUserDeveloper: boolean;
 
   collapsedSettings: Map<string, boolean>;
 
@@ -81,6 +84,7 @@ export class BoardDetailsComponent implements OnInit {
   private init(board: Board): void {
     this.board = board;
     this.isAuthUserKanbanMaster = Membership.isKanbanMaster(board.membership);
+    this.isAuthUserDeveloper = Membership.isDeveloper(board.membership);
     this.boardRepresentation = this.buildBoardRepresentation();
     this.fcCriticalDays.patchValue(this.board.remainingDays);
   }
@@ -134,6 +138,24 @@ export class BoardDetailsComponent implements OnInit {
 
   toggleDisplayOptions() : void {
     this.showDisplayOptions = !this.showDisplayOptions;
+  }
+
+  updateCompleted(subtask: SubTask) {
+    subtask.completed = !subtask.completed;
+
+    this.api.subTask.put(subtask, true).subscribe(value => {
+      console.log(value)
+    }, error2 => {
+      this.toaster.pop("error", "Error updating subtask");
+    });
+  }
+
+  subtaskMoveWarning(card: Card) {
+    if (card.boardPart.leafNumber + 1 == this.board.acceptanceTesting)
+      for (let s of card.subTasks)
+        if (!s.completed)
+          return true;
+    return false;
   }
 
   private setCriticalCards(n: number) : void {
