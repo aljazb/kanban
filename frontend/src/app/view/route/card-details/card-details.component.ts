@@ -11,6 +11,7 @@ import {Board} from '../../../api/models/Board';
 import {CardDeleteConfirmationComponent} from '../../components/forms/card-delete-confirmation/card-delete-confirmation.component';
 import {SubtaskFormComponent} from '../../components/forms/subtask-form/subtask-form.component';
 import {SubTask} from '../../../api/models/sub-task';
+import {ProjectDeleteConfirmationComponent} from '../../components/forms/project-delete-confirmation/project-delete-confirmation.component';
 @Component({
   selector: 'app-card-details',
   templateUrl: './card-details.component.html',
@@ -130,6 +131,20 @@ export class CardDetailsComponent implements OnInit {
         }, error2 => {
           this.toaster.pop("error", "Error updating subtask");
         }), reason => {});
+  }
+
+  openSubtaskDeleteConfirmationModal(subtask: SubTask) {
+    const modalRef = this.modalService.open(ProjectDeleteConfirmationComponent);
+
+    modalRef.result
+      .then(value => {
+        this.apiService.subTask.delete(subtask.id, true).subscribe(value => {
+          this.toaster.pop("success", "Sub-task was deleted");
+          location.reload();
+        }, error2 => {
+          this.toaster.pop("error", "Error deleting sub-task");
+        });
+      });
   }
 
   openDeleteConfirmationModal() {
