@@ -19,7 +19,6 @@
              (click)="$event.stopPropagation()">
             <i class="fa fa-question-circle"></i>
           </a>
-
         </button>
 
         <button *ngIf="editEnabled" type="button" class="btn btn-primary pull-right mr-1" (click)="openCardEditModal()">Edit
@@ -119,10 +118,19 @@
               </button>
             </div>
             <p class="mb-1">Descriuption: {{t.description}}</p>
-            <p class="mb-1">Completed:
-              <input type="checkbox" name="subtask-completed" id="in-completed" [checked]="t.completed"
-                     [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" (click)="updateCompleted(t)">
-            </p>
+            <div class="d-flex w-100 justify-content-between">
+              <p class="mb-1">Completed:
+                <input type="checkbox" name="subtask-completed" id="in-completed" [checked]="t.completed"
+                       [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" (click)="updateCompleted(t)">
+              </p>
+              <button *ngIf="isAuthUserDeveloper || isAuthUserKanbanMaster" type="button" class="btn btn-danger pull-right mr-1" (click)="openSubtaskDeleteConfirmationModal(t)">Delete
+                <a placement="right" ngbPopover="Clicking Delete button will delete the sub-task" triggers="mouseenter:mouseleave"
+                   (click)="$event.stopPropagation()">
+                  <i class="fa fa-question-circle"></i>
+                </a>
+              </button>
+            </div>
+
           </div>
         </div>
         <div *ngIf="!card.subTasks"><strong>No subtasks!</strong></div>
