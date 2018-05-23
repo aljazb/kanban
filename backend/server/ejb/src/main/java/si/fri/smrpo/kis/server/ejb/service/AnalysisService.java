@@ -62,10 +62,13 @@ public class AnalysisService implements AnalysisServiceLocal {
 
     private CardMove getFinished(Card card, Board board) {
 
-        for(CardMove cm : card.getCardMoves()) {
-            if(cm.getTo().getLeafNumber() != null && board.getAcceptanceTesting() + 1 == cm.getTo().getLeafNumber()) {
-                return cm;
-            }
+        ArrayList<CardMove> cardMoves = new ArrayList<>(card.getCardMoves());
+
+        cardMoves.sort((o1, o2) -> o2.getCreatedOn().compareTo(o1.getCreatedOn()));
+
+        CardMove cm = cardMoves.get(0);
+        if(board.getAcceptanceTesting() + 1 <= cm.getTo().getLeafNumber()) {
+            return cm;
         }
 
         return null;
@@ -185,12 +188,6 @@ public class AnalysisService implements AnalysisServiceLocal {
         if(m == null || !(anyRoleAllowed || m.isKanbanMaster())) {
             throw new TransactionException("User is not kanban master");
         }
-    }
-
-    private boolean sameDate(Date d1, Date d2) {
-        Date trim1 = roundUpDateToDay(d1);
-        Date trim2 = roundUpDateToDay(d2);
-        return trim1.equals(trim2);
     }
 
 
