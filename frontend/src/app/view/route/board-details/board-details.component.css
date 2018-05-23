@@ -53,7 +53,9 @@ table.table{
   }
 }
 
-
+.column-name {
+  min-width: 200px;
+}
 
 /* Dropdown Button */
 .dropbtn {

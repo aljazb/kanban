@@ -44,12 +44,14 @@
                     'acceptance-ready': td.boardPart.leafNumber == board.acceptanceTesting,
                     'align-top': getIsCollapsed(td.boardPart)}">
 
-                  <div *ngIf="!getIsCollapsed(td.boardPart)">
+                  <div class="column-name" *ngIf="!getIsCollapsed(td.boardPart)">
+
                     {{td.boardPart.name}} [{{td.currentWip}}/{{td.boardPart.maxWip}}]
 
                     <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart)">
                       <i class="fa fa-minus"></i>
                     </button>
+
                   </div>
 
                   <div *ngIf="getIsCollapsed(td.boardPart)">
@@ -86,72 +88,84 @@
 
                 <td class="align-top" *ngFor="let td of filterCardTable(tr.cardTables)">
 
-                      <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
-                           [style.background]="c.card.color" [ngClass]="{'blink-background': criticalCardIds.has(c.card.id)}">
+                      <div class="card mt-1" *ngFor="let c of td.cards">
 
-                        <div class="list-group-item mt-3">
-                          <small>{{ c.card.code }}</small>
-                          <div class="list-group-item">
+                        <div class="card-header" [style.background]="c.card.color" [ngClass]="{'blink-background': criticalCardIds.has(c.card.id)}">
 
-                            <div class="dropdown pull-left" *ngIf="td.leftBoardPart.length > 0">
-                              <button (click)="c.showLeft = !c.showLeft" class="btn btn-sm">
-                                <i class="fa fa-caret-left"></i>
+                          <div class="dropdown pull-left" *ngIf="td.leftBoardPart.length > 0">
+                            <button (click)="c.showLeft = !c.showLeft" class="btn btn-sm">
+                              <i class="fa fa-caret-left"></i>
+                            </button>
+                            <div class="dropdown-content" [ngClass]="{ 'show': c.showLeft }">
+                              <div class="hover-pointer" *ngFor="let toBp of td.leftBoardPart"
+                                   (mouseleave)="c.showLeft = false"
+                                   (click)="moveCard(c.card, td.currentBoardPart, toBp)">{{toBp.name}}</div>
+                            </div>
+                          </div>
+
+                          <small class="text-white" >Code: {{ c.card.code }}</small>
+
+                          <span #pDown="ngbPopover" ngbPopover="All sub-tasks have to be completed in order to move the card to acceptance testing."
+                                popoverTitle="Sub-tasks uncompleted" triggers="manual" (mouseenter)="c.card.subTasks && subTaskMoveWarning(c.card) && pDown.open()" (mouseleave)="pDown.close()">
+
+                            <div class="dropdown pull-right" *ngIf="td.rightBoardPart.length > 0" (focusout)="c.hideRight()">
+
+                              <button (click)="c.showRight = !c.showRight" class="btn btn-sm" [disabled]="c.card.subTasks && subTaskMoveWarning(c.card)">
+                                <i class="fa fa-caret-right"></i>
                               </button>
-                              <div class="dropdown-content" [ngClass]="{ 'show': c.showLeft }">
-                                <div class="hover-pointer" *ngFor="let toBp of td.leftBoardPart" (mouseleave)="c.showLeft = false" (click)="moveCard(c.card, td.currentBoardPart, toBp)">{{toBp.name}}</div>
-                              </div>
-                            </div>
 
-                            <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>15)? (c.card.name | slice:0:7)+"...":(c.card.name) }}</a>
-
-                            <span #pDown="ngbPopover" ngbPopover="All sub-tasks have to be completed in order to move the card to acceptance testing."
-                                  popoverTitle="Sub-tasks uncompleted" triggers="manual" (mouseenter)="c.card.subTasks && subTaskMoveWarning(c.card) && pDown.open()" (mouseleave)="pDown.close()">
-
-                              <div class="dropdown pull-right" *ngIf="td.rightBoardPart.length > 0" (focusout)="c.hideRight()">
-                                <button (click)="c.showRight = !c.showRight" class="btn btn-sm" [disabled]="c.card.subTasks && subTaskMoveWarning(c.card)">
-                                  <i class="fa fa-caret-right"></i>
-                                </button>
-                                <div class="dropdown-content" [ngClass]="{ 'show': c.showRight }">
-                                  <div class="hover-pointer" *ngFor="let toBp of td.rightBoardPart" (click)="moveCard(c.card, td.currentBoardPart, toBp)">{{toBp.name}}</div>
-                                </div>
+                              <div class="dropdown-content" [ngClass]="{ 'show': c.showRight }">
+                                <div class="hover-pointer" *ngFor="let toBp of td.rightBoardPart" (click)="moveCard(c.card, td.currentBoardPart, toBp)">{{toBp.name}}</div>
                               </div>
 
-                            </span>
-
-                          </div>
-
-                          <div class="list-group-item">
-                            <a class="small"><strong>Assignee: {{ c.card.assignedTo == null ? '-' : (c.card.assignedTo.email.length>15)? (c.card.assignedTo.email | slice:0:7)+"...":(c.card.assignedTo.email) }}</strong> </a>
-                            <a class="small" *ngIf="board.showCardType" ><br><strong>Priority: {{c.card.cardType.toString().replace("_", " ")}}</strong></a>
-                            <a class="small" *ngIf="board.showWorkload" ><br><strong>Workload: {{c.card.workload}}</strong></a>
-                            <a class="small" *ngIf="board.showDueDate" ><br><strong>Due date: {{c.card.dueDate | date:'dd.MM.yyyy'}}</strong></a>
-                          </div>
-                          <div class="list-group" *ngIf="c.card.subTasks">
-                            <div class="list-group-item small"><strong>Subtasks:</strong></div>
-                            <div *ngFor="let t of c.card.subTasks" class="list-group-item list-group-item-action small">
-                              <input style="float:left; width: 15%" type="checkbox" name="subtask-completed" id="in-completed"
-                                     [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" [checked]="t.completed" (click)="updateCompleted(t)">
-                              <a style="float:left; align-content: left; width:15%"><strong>{{(t.name.length>20)? (t.name | slice:0:17)+"...":(t.name)}}</strong> </a>
-                              <a *ngIf="t.workingHours" style="float:right; width:15%">[{{t.workingHours}} h]</a>
                             </div>
+
+                          </span>
+
+                        </div> <!-- Header end -->
+
+                        <div class="card-body">
+
+                          <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>15)? (c.card.name | slice:0:7)+"...":(c.card.name) }}</a> <br>
+                          <span class="small"><strong>Assignee: {{ c.card.assignedTo == null ? '-' : (c.card.assignedTo.email.length>15)? (c.card.assignedTo.email | slice:0:7)+"...":(c.card.assignedTo.email) }}</strong> </span>
+                          <span class="small" *ngIf="board.showCardType" ><br><strong>Priority: {{c.card.cardType.toString().replace("_", " ")}}</strong></span>
+                          <span class="small" *ngIf="board.showWorkload" ><br><strong>Workload: {{c.card.workload}}</strong></span>
+                          <span class="small" *ngIf="board.showDueDate" ><br><strong>Due date: {{c.card.dueDate | date:'dd.MM.yyyy'}}</strong></span>
+
+                        </div> <!-- Body end -->
+
+                        <div class="list-group list-group-flush" *ngIf="c.card.subTasks">
+
+                          <div class="list-group-item small" *ngFor="let t of c.card.subTasks">
+
+                            <input style="float:left; width: 15%" type="checkbox" name="subtask-completed" id="in-completed"
+                                   [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" [checked]="t.completed" (click)="updateCompleted(t)">
+
+                            <span style="float:left; align-content: left; width:15%"><strong>{{(t.name.length>20)? (t.name | slice:0:17)+"...":(t.name)}}</strong></span>
+                            <span *ngIf="t.workingHours" style="float:right; width:15%">[{{t.workingHours}} h]</span>
+
                           </div>
 
                         </div>
 
+                        <div class="card-footer" *ngIf="td.moveBack">
 
+                          <button type="button" class="btn btn-sm btn-danger pull-right mt-0"
+                                  (click)="rejectCard(c.card, td.currentBoardPart, td.moveBack)">
 
-                        <button type="button" class="btn btn-sm btn-danger pull-right mt-0"
-                                (click)="rejectCard(c.card, td.currentBoardPart, td.moveBack)" *ngIf="td.moveBack">
+                            <i class="fa fa-arrow-circle-left fa-1x"> Reject
+                              <a placement="bottom" ngbPopover="with this button you can reject this card and send it back infront of Development phase" triggers="mouseenter:mouseleave"
+                                 (click)="$event.stopPropagation()">
+                                <i class="fa fa-question-circle"></i>
+                              </a>
+                            </i>
 
-                          <i class="fa fa-arrow-circle-left fa-1x"> Reject
-                            <a placement="bottom" ngbPopover="with this button you can reject this card and send it back infront of Development phase" triggers="mouseenter:mouseleave"
-                               (click)="$event.stopPropagation()">
-                              <i class="fa fa-question-circle"></i>
-                            </a>
+                          </button>
 
-                          </i>
-                        </button>
-                </div>
+                        </div> <!-- Footer end -->
+
+                    </div> <!-- Card end -->
+
                 </td>
 
               </tr>
