@@ -100,7 +100,7 @@
                               </div>
                             </div>
 
-                            <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>9)? (c.card.name | slice:0:9)+"...":(c.card.name) }}</a>
+                            <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>15)? (c.card.name | slice:0:12)+"...":(c.card.name) }}</a>
 
                             <span #pDown="ngbPopover" ngbPopover="All sub-tasks have to be completed in order to move the card to acceptance testing."
                                   popoverTitle="Sub-tasks uncompleted" triggers="manual" (mouseenter)="c.card.subTasks && subTaskMoveWarning(c.card) && pDown.open()" (mouseleave)="pDown.close()">
