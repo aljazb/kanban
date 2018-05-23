@@ -117,24 +117,25 @@
 
                           </div>
 
-                          <div class="list-group-item mt-1">
+                          <div class="list-group-item">
                             <a class="small"><strong>Assignee: {{ c.card.assignedTo == null ? '-' : (c.card.assignedTo.email.length>15)? (c.card.assignedTo.email | slice:0:7)+"...":(c.card.assignedTo.email) }}</strong> </a>
                             <a class="small" *ngIf="board.showCardType" ><br><strong>Priority: {{c.card.cardType.toString().replace("_", " ")}}</strong></a>
                             <a class="small" *ngIf="board.showWorkload" ><br><strong>Workload: {{c.card.workload}}</strong></a>
                             <a class="small" *ngIf="board.showDueDate" ><br><strong>Due date: {{c.card.dueDate | date:'dd.MM.yyyy'}}</strong></a>
                           </div>
-
-                        </div>
-
-                        <div class="list-group" *ngIf="c.card.subTasks">
-                          <div *ngFor="let t of c.card.subTasks" class="list-group-item list-group-item-action">
-                            <input style="float:left; width:20%" type="checkbox" name="subtask-completed" id="in-completed"
-                                   [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" [checked]="t.completed" (click)="updateCompleted(t)">
-                            <p style="float:left; align-content: left; width:30%"><strong>{{t.name}}</strong> </p>
-                            <p *ngIf="t.workingHours" style="float:right; width:30%">[{{t.workingHours}} h]</p>
-
+                          <div class="list-group" *ngIf="c.card.subTasks">
+                            <div class="list-group-item small"><strong>Subtasks:</strong></div>
+                            <div *ngFor="let t of c.card.subTasks" class="list-group-item list-group-item-action small">
+                              <input style="float:left; width: 15%" type="checkbox" name="subtask-completed" id="in-completed"
+                                     [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" [checked]="t.completed" (click)="updateCompleted(t)">
+                              <a style="float:left; align-content: left; width:15%"><strong>{{(t.name.length>20)? (t.name | slice:0:17)+"...":(t.name)}}</strong> </a>
+                              <a *ngIf="t.workingHours" style="float:right; width:15%">[{{t.workingHours}} h]</a>
+                            </div>
                           </div>
+
                         </div>
+
+
 
                         <button type="button" class="btn btn-sm btn-danger pull-right mt-0"
                                 (click)="rejectCard(c.card, td.currentBoardPart, td.moveBack)" *ngIf="td.moveBack">
