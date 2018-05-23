@@ -86,13 +86,12 @@
 
                 <td class="align-top" *ngFor="let td of filterCardTable(tr.cardTables)">
 
-                  <div>
                       <div class="list-group mt-1 rounded-top" *ngFor="let c of td.cards"
                            [style.background]="c.card.color" [ngClass]="{'blink-background': criticalCardIds.has(c.card.id)}">
 
                         <div class="list-group-item mt-3">
                           <small>{{ c.card.code }}</small>
-                          <div class="col-12">
+                          <div class="list-group-item">
 
                             <div class="dropdown pull-left" *ngIf="td.leftBoardPart.length > 0">
                               <button (click)="c.showLeft = !c.showLeft" class="btn btn-sm">
@@ -103,7 +102,7 @@
                               </div>
                             </div>
 
-                            <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>15)? (c.card.name | slice:0:12)+"...":(c.card.name) }}</a>
+                            <a routerLink="/card/{{c.card.id}}">{{ (c.card.name.length>15)? (c.card.name | slice:0:7)+"...":(c.card.name) }}</a>
 
                             <span #pDown="ngbPopover" ngbPopover="All sub-tasks have to be completed in order to move the card to acceptance testing."
                                   popoverTitle="Sub-tasks uncompleted" triggers="manual" (mouseenter)="c.card.subTasks && subTaskMoveWarning(c.card) && pDown.open()" (mouseleave)="pDown.close()">
@@ -121,24 +120,25 @@
 
                           </div>
 
-                          <div class="col-12">
-                            <a class="small"><strong>Assignee: {{ c.card.assignedTo == null ? '-' : (c.card.assignedTo.email.length>15)? (c.card.assignedTo.email | slice:0:12)+"...":(c.card.assignedTo.email) }}</strong> </a>
+                          <div class="list-group-item">
+                            <a class="small"><strong>Assignee: {{ c.card.assignedTo == null ? '-' : (c.card.assignedTo.email.length>15)? (c.card.assignedTo.email | slice:0:7)+"...":(c.card.assignedTo.email) }}</strong> </a>
                             <a class="small" *ngIf="board.showCardType" ><br><strong>Priority: {{c.card.cardType.toString().replace("_", " ")}}</strong></a>
                             <a class="small" *ngIf="board.showWorkload" ><br><strong>Workload: {{c.card.workload}}</strong></a>
                             <a class="small" *ngIf="board.showDueDate" ><br><strong>Due date: {{c.card.dueDate | date:'dd.MM.yyyy'}}</strong></a>
                           </div>
-
-                        </div>
-
-                        <div class="list-group" *ngIf="c.card.subTasks">
-                          <div *ngFor="let t of c.card.subTasks" class="list-group-item list-group-item-action">
-                            <input style="float:left; width:20%" type="checkbox" name="subtask-completed" id="in-completed"
-                                   [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" [checked]="t.completed" (click)="updateCompleted(t)">
-                            <p style="float:left; align-content: left; width:30%"><strong>{{t.name}}</strong> </p>
-                            <p *ngIf="t.workingHours" style="float:right; width:30%">[{{t.workingHours}} h]</p>
-
+                          <div class="list-group" *ngIf="c.card.subTasks">
+                            <div class="list-group-item small"><strong>Subtasks:</strong></div>
+                            <div *ngFor="let t of c.card.subTasks" class="list-group-item list-group-item-action small">
+                              <input style="float:left; width: 15%" type="checkbox" name="subtask-completed" id="in-completed"
+                                     [disabled]="!isAuthUserDeveloper && !isAuthUserKanbanMaster" [checked]="t.completed" (click)="updateCompleted(t)">
+                              <a style="float:left; align-content: left; width:15%"><strong>{{(t.name.length>20)? (t.name | slice:0:17)+"...":(t.name)}}</strong> </a>
+                              <a *ngIf="t.workingHours" style="float:right; width:15%">[{{t.workingHours}} h]</a>
+                            </div>
                           </div>
+
                         </div>
+
+
 
                         <button type="button" class="btn btn-sm btn-danger pull-right mt-0"
                                 (click)="rejectCard(c.card, td.currentBoardPart, td.moveBack)" *ngIf="td.moveBack">
@@ -151,10 +151,6 @@
 
                           </i>
                         </button>
-
-
-                      </div>
-
                 </div>
                 </td>
 
