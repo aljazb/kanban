@@ -88,7 +88,7 @@
                            [style.background]="c.card.color" [ngClass]="{'blink-background': criticalCardIds.has(c.card.id)}">
 
                         <div class="list-group-item mt-3">
-
+                          <small>{{ c.card.code }}</small>
                           <div class="col-12">
 
                             <div class="dropdown pull-left" *ngIf="td.leftBoardPart.length > 0">
