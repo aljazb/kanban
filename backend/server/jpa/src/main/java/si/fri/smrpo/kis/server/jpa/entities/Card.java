@@ -1,6 +1,7 @@
 package si.fri.smrpo.kis.server.jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
@@ -11,6 +12,7 @@ import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name="card")
@@ -92,6 +94,10 @@ public class Card extends UUIDEntity<Card> {
         return membership;
     }
 
+    @JsonIgnore
+    public void querySubtasks() {
+        setSubTasks(getSubTasks().stream().filter(c -> !c.getIsDeleted()).collect(Collectors.toSet()));
+    }
 
     public Project getProject() {
         return project;

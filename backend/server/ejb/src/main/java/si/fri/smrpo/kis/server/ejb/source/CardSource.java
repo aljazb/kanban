@@ -76,7 +76,7 @@ public class CardSource extends CrudSource<Card, UUID, UserAccount> implements C
         if(entity.getAssignedTo() != null) {
             entity.getAssignedTo().getEmail(); // Fetch assigned to user
         }
-        entity.getSubTasks().size();
+        entity.querySubtasks();
         entity.getCardMoves().size();
 
         return entity;
