@@ -150,13 +150,21 @@ export class BoardRepresentation {
   private recSetRowSpanBoardPartTable(boardPartTable: BoardPartTable, maxDeep: number): void {
     if(boardPartTable.children) {
       boardPartTable.rowSpan = 1;
-      boardPartTable.collapsedRowSpan = maxDeep + this.board.projects.length;
+      boardPartTable.collapsedRowSpan = maxDeep + this.getProjectLength();
       boardPartTable.children.forEach(bpt => {
         this.recSetRowSpanBoardPartTable(bpt, maxDeep - 1);
       });
     } else {
       boardPartTable.rowSpan = maxDeep;
-      boardPartTable.collapsedRowSpan = maxDeep + this.board.projects.length;
+      boardPartTable.collapsedRowSpan = maxDeep + this.getProjectLength();
+    }
+  }
+
+  private getProjectLength(): number {
+    if(this.board.projects == null) {
+      return 0;
+    } else{
+      return this.board.projects.length;
     }
   }
 

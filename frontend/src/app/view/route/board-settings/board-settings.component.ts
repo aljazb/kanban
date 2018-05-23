@@ -127,8 +127,12 @@ export class BoardSettingsComponent implements OnInit {
     this.board = board;
     this.leaves = Board.getLeafParts(this.board.boardParts);
 
-    this.board.cardMoveRules.sort((a, b) => b.createdOn - a.createdOn);
-    this.cardMoveRulesEditing = Object.assign([], this.board.cardMoveRules);
+    if(this.board.cardMoveRules == null){
+      this.cardMoveRulesEditing = [];
+    } else {
+      this.board.cardMoveRules.sort((a, b) => b.createdOn - a.createdOn);
+      this.cardMoveRulesEditing = Object.assign([], this.board.cardMoveRules);
+    }
 
     this.fromSelection = this.leaves;
     this.toSelection = this.leaves;
