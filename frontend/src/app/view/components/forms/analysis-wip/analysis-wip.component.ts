@@ -15,7 +15,7 @@ export class AnalysisWipComponent implements OnInit {
 
   cmt = CardMoveType;
 
-  @ViewChild('content')
+  @ViewChild('wipContent')
   contentDiv: ElementRef;
 
   @Input()

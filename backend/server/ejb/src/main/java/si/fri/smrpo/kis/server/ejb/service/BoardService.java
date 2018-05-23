@@ -334,14 +334,16 @@ public class BoardService implements BoardServiceLocal {
         HashMap<UUID, BoardPart> leavesMap = UUIDEntity.buildMap(dbBoard.buildLeavesBoardParts());
         HashMap<UUID, CardMoveRules> assignedProject = UUIDEntity.buildMap(dbBoard.getCardMoveRules());
 
-        for(CardMoveRules r : board.getCardMoveRules()) {
-            if(leavesMap.get(r.getFrom().getId()) != null && leavesMap.get(r.getTo().getId()) != null) {
-                if(r.getId() == null) {
-                    r.setBoard(dbBoard);
-                    database.create(r);
-                } else {
-                    CardMoveRules dbR = assignedProject.get(r.getId());
-                    assignedProject.remove(dbR.getId());
+        if(board.getCardMoveRules() != null) {
+            for (CardMoveRules r : board.getCardMoveRules()) {
+                if (leavesMap.get(r.getFrom().getId()) != null && leavesMap.get(r.getTo().getId()) != null) {
+                    if (r.getId() == null) {
+                        r.setBoard(dbBoard);
+                        database.create(r);
+                    } else {
+                        CardMoveRules dbR = assignedProject.get(r.getId());
+                        assignedProject.remove(dbR.getId());
+                    }
                 }
             }
         }

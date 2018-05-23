@@ -12,15 +12,13 @@
     </h5>
   </div>
 
-  <div class="col-12" *ngIf="sharedContext.project && sharedContext.project.board">
-
-    <button class="btn btn-primary mt-2 mb-2 pull-right" (click)="submitWip()">Submit</button>
-
+  <div class="col-12 border" *ngIf="sharedContext.project && sharedContext.project.board">
+    <button class="btn btn-primary m-3 pull-right" (click)="submitWip()">Submit</button>
   </div>
 
 </div>
 
-<div #content class="row scroll-group mt-5" *ngIf="response">
+<div #wipContent class="row scroll-group mt-5" *ngIf="response">
 
   <table>
     <thead>

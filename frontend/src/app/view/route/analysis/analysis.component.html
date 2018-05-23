@@ -28,6 +28,12 @@
           </ng-template>
         </ngb-tab>
 
+        <ngb-tab title="Developer ratio" id="4" *ngIf="authUser != null && authUser.inRoleKanbanMaster">
+          <ng-template ngbTabContent>
+            <app-analysis-dev-ratio [sharedContext]="sharedContext"></app-analysis-dev-ratio>
+          </ng-template>
+        </ngb-tab>
+
       </ngb-tabset>
 
     </div>

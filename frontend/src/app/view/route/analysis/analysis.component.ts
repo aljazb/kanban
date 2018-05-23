@@ -62,7 +62,7 @@ export class AnalysisComponent implements OnInit {
   handleTabChange(value: string) {
     this.sharedContext.activeTab = Number(value);
     if(this.queryComponent) {
-      if(this.sharedContext.activeTab == 1 || this.sharedContext.activeTab == 2) {
+      if(this.sharedContext.activeTab != 3) {
         this.queryComponent.setShowFilterEnable(true);
       } else {
         this.queryComponent.setShowFilterEnable(false);

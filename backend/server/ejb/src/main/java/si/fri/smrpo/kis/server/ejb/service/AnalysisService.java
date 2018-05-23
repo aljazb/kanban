@@ -5,6 +5,9 @@ import si.fri.smrpo.kis.core.logic.exceptions.TransactionException;
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
 import si.fri.smrpo.kis.server.ejb.database.DatabaseServiceLocal;
 import si.fri.smrpo.kis.server.ejb.models.analysis.AnalysisQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.devRatio.DeveloperRatioQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.devRatio.DeveloperRatioResponse;
+import si.fri.smrpo.kis.server.ejb.models.analysis.devRatio.DeveloperRatioSeries;
 import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeCard;
 import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeResponse;
@@ -17,6 +20,7 @@ import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowResponse;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.AnalysisServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
+import si.fri.smrpo.kis.server.jpa.entities.base.UUIDEntity;
 import si.fri.smrpo.kis.server.jpa.enums.CardMoveType;
 
 import javax.annotation.security.PermitAll;
@@ -368,5 +372,42 @@ public class AnalysisService implements AnalysisServiceLocal {
         validate(query, authUser);
         return buildTimeResponse(query);
     }
+
+
+    public DeveloperRatioResponse buildDeveloperRationResponse(DeveloperRatioQuery query, UserAccount authUser) throws DatabaseException {
+        Project p = database.find(Project.class, query.getProject().getId());
+        Board b = p.getBoard();
+
+        ArrayList<Card> filteredCards = filterCards(p.getCards(), b, query);
+        HashMap<UUID, DeveloperRatioSeries> developers = new HashMap<>();
+
+        DeveloperRatioResponse response = new DeveloperRatioResponse();
+
+        for(UserAccount dev : p.getDevTeam().getDevelopers()) {
+            DeveloperRatioSeries drs = new DeveloperRatioSeries(dev);
+
+            developers.put(dev.getId(), drs);
+            response.add(drs);
+        }
+
+        for(Card c : filteredCards) {
+            if(c.getAssignedTo() != null) {
+                DeveloperRatioSeries drs = developers.get(c.getAssignedTo().getId());
+                drs.incCards();
+                if(c.getWorkload() != null) {
+                    drs.incWorkload(c.getWorkload());
+                }
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public DeveloperRatioResponse processDeveloperRatio(DeveloperRatioQuery query, UserAccount authUser) throws LogicBaseException {
+        validate(query, authUser);
+        return buildDeveloperRationResponse(query, authUser);
+    }
+
 
 }

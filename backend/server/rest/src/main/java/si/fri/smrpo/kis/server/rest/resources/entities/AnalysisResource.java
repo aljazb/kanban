@@ -2,6 +2,8 @@ package si.fri.smrpo.kis.server.rest.resources.entities;
 
 import org.keycloak.KeycloakPrincipal;
 import si.fri.smrpo.kis.core.rest.resource.base.BaseResource;
+import si.fri.smrpo.kis.server.ejb.models.analysis.devRatio.DeveloperRatioQuery;
+import si.fri.smrpo.kis.server.ejb.models.analysis.devRatio.DeveloperRatioResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipQuery;
@@ -55,6 +57,13 @@ public class AnalysisResource extends BaseResource {
     @PUT
     public Response getTimeAnalysis(TimeQuery query) throws Exception {
         TimeResponse response = service.processTimeResponse(query, getAuthUser());
+        return Response.status(Response.Status.OK).entity(response).build();
+    }
+
+    @Path("DevRatio")
+    @PUT
+    public Response getDevRatio(DeveloperRatioQuery query) throws Exception {
+        DeveloperRatioResponse response = service.processDeveloperRatio(query, getAuthUser());
         return Response.status(Response.Status.OK).entity(response).build();
     }
 

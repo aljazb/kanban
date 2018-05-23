@@ -14,11 +14,14 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Startup
 @Singleton
 public class SeedService {
+
+    private static final Logger LOG = Logger.getLogger(SeedService.class.getName());
 
     private static final Faker FAKER = new Faker();
 
@@ -30,9 +33,14 @@ public class SeedService {
 
     private UserAccount testAccount;
     private UserAccount adminAccount;
-    private UserAccount developerAccount;
+    private UserAccount developerAccount1;
+    private UserAccount developerAccount2;
+    private UserAccount developerAccount3;
+    private UserAccount developerAccount4;
     private UserAccount kanbanMasterAccount;
     private UserAccount productOwnerAccount;
+
+    private List<UserAccount> developers;
 
 
     @EJB
@@ -70,7 +78,7 @@ public class SeedService {
                 generateRequests();
                 generateCardMoves();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.severe(e.toString());
             }
         }
     }
@@ -113,11 +121,26 @@ public class SeedService {
         adminAccount.setInRoleAdministrator(true);
         adminAccount = database.create(adminAccount);
 
-        developerAccount = genUserAccount("td");
-        developerAccount.setId(UUID.fromString(DEVELOPER_USER_ID));
-        developerAccount.setEmail("developer@developer.com");
-        developerAccount.setInRoleDeveloper(true);
-        developerAccount = database.create(developerAccount);
+        developerAccount1 = genUserAccount("td");
+        developerAccount1.setId(UUID.fromString(DEVELOPER_USER_ID));
+        developerAccount1.setEmail("developer@developer.com");
+        developerAccount1.setInRoleDeveloper(true);
+        developerAccount1 = database.create(developerAccount1);
+
+        developerAccount2 = genUserAccount("td2");
+        developerAccount2.setEmail("dev2@smrpo7.com");
+        developerAccount2.setInRoleDeveloper(true);
+        developerAccount2 = database.create(developerAccount2);
+
+        developerAccount3 = genUserAccount("td3");
+        developerAccount3.setEmail("dev3@smrpo7.com");
+        developerAccount3.setInRoleDeveloper(true);
+        developerAccount3 = database.create(developerAccount3);
+
+        developerAccount4 = genUserAccount("td4");
+        developerAccount4.setEmail("dev4@smrpo7.com");
+        developerAccount4.setInRoleDeveloper(true);
+        developerAccount4 = database.create(developerAccount4);
 
         kanbanMasterAccount = genUserAccount("tkm");
         kanbanMasterAccount.setId(UUID.fromString(KANBAN_MASTER_USER_ID));
@@ -130,6 +153,12 @@ public class SeedService {
         productOwnerAccount.setEmail("product@owner.com");
         productOwnerAccount.setInRoleProductOwner(true);
         productOwnerAccount = database.create(productOwnerAccount);
+
+        developers = new ArrayList<>();
+        developers.add(developerAccount1);
+        developers.add(developerAccount2);
+        developers.add(developerAccount3);
+        developers.add(developerAccount4);
     }
 
     private void generateDevTeams() throws DatabaseException {
@@ -151,7 +180,25 @@ public class SeedService {
         database.create(m);
 
         m = new Membership();
-        m.setUserAccount(developerAccount);
+        m.setUserAccount(developerAccount1);
+        m.setDevTeam(testDevTeam);
+        m.setMemberType(MemberType.DEVELOPER);
+        database.create(m);
+
+        m = new Membership();
+        m.setUserAccount(developerAccount2);
+        m.setDevTeam(testDevTeam);
+        m.setMemberType(MemberType.DEVELOPER);
+        database.create(m);
+
+        m = new Membership();
+        m.setUserAccount(developerAccount3);
+        m.setDevTeam(testDevTeam);
+        m.setMemberType(MemberType.DEVELOPER);
+        database.create(m);
+
+        m = new Membership();
+        m.setUserAccount(developerAccount4);
         m.setDevTeam(testDevTeam);
         m.setMemberType(MemberType.DEVELOPER);
         database.create(m);
@@ -612,6 +659,11 @@ public class SeedService {
                         cm.setEditedOn(cal.getTime());
                     }
                 } else {
+                    if(column == sd) {
+                        c.setAssignedTo(developers.get(FAKER.number.between(0, developers.size())));
+                        database.update(c);
+                    }
+
                     int next = nextMove(testCards.size(), completed);
                     if(next == 1 && column < testBoardPartLeafs.size() - 1) {
                         int rColumn = column + 1;
@@ -622,7 +674,7 @@ public class SeedService {
                         if(column < hp) {
                             authUser = productOwnerAccount;
                         } else if(sd - 1 <= column && column <= ed) {
-                            authUser = developerAccount;
+                            authUser = developerAccount1;
                         } else if(column >= at) {
                             authUser = productOwnerAccount;
                         }
@@ -639,7 +691,7 @@ public class SeedService {
                         if(column <= hp) {
                             authUser = productOwnerAccount;
                         } else if(sd + 1 <= column && column <= ed) {
-                            authUser = developerAccount;
+                            authUser = developerAccount1;
                         } else if(column >= at) {
                             continue;
                         }

@@ -1,6 +1,8 @@
 package si.fri.smrpo.kis.server.ejb.service.interfaces;
 
 import si.fri.smrpo.kis.core.logic.exceptions.base.LogicBaseException;
+import si.fri.smrpo.kis.server.ejb.models.analysis.devRatio.DeveloperRatioResponse;
+import si.fri.smrpo.kis.server.ejb.models.analysis.devRatio.DeveloperRatioQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeQuery;
 import si.fri.smrpo.kis.server.ejb.models.analysis.time.TimeResponse;
 import si.fri.smrpo.kis.server.ejb.models.analysis.wip.WipQuery;
@@ -10,7 +12,6 @@ import si.fri.smrpo.kis.server.ejb.models.analysis.workflow.WorkFlowResponse;
 import si.fri.smrpo.kis.server.jpa.entities.Project;
 import si.fri.smrpo.kis.server.jpa.entities.UserAccount;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface AnalysisServiceLocal  {
@@ -22,5 +23,7 @@ public interface AnalysisServiceLocal  {
     WipResponse processWipResponse(WipQuery query, UserAccount authUser) throws LogicBaseException;
 
     TimeResponse processTimeResponse(TimeQuery query, UserAccount authUser) throws LogicBaseException;
+
+    DeveloperRatioResponse processDeveloperRatio(DeveloperRatioQuery query, UserAccount authUser) throws LogicBaseException;
 
 }

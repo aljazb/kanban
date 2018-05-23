@@ -5,6 +5,7 @@ import si.fri.smrpo.kis.core.jpa.anotations.Database;
 import si.fri.smrpo.kis.server.jpa.enums.MemberType;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public abstract class UUIDEntity<E extends UUIDEntity> extends BaseEntity<E, UUI
         }
     }
 
-    public static  <U extends UUIDEntity> HashMap<UUID, U> buildMap(Set<U> entitySet) {
+    public static  <U extends UUIDEntity> HashMap<UUID, U> buildMap(Collection<U> entitySet) {
         HashMap<UUID, U> map = new HashMap<>();
 
         for(U u : entitySet) {

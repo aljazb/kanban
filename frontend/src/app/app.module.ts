@@ -59,6 +59,7 @@ import { CardDeleteConfirmationComponent } from './view/components/forms/card-de
 import { CardMoveRulesPagingComponent } from './view/components/paging/card-move-rules-paging/card-move-rules-paging.component';
 import {BoardSettingsComponent} from './view/route/board-settings/board-settings.component';
 import {SubtaskFormComponent} from './view/components/forms/subtask-form/subtask-form.component';
+import { AnalysisDevRatioComponent } from './view/components/forms/analysis-dev-ratio/analysis-dev-ratio.component';
 
 
 @NgModule({
@@ -116,7 +117,8 @@ import {SubtaskFormComponent} from './view/components/forms/subtask-form/subtask
     AnalysisTimeComponent,
     CardDeleteConfirmationComponent,
     BoardSettingsComponent,
-    CardMoveRulesPagingComponent
+    CardMoveRulesPagingComponent,
+    AnalysisDevRatioComponent
   ],
   providers: [
     {
