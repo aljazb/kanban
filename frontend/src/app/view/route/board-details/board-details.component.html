@@ -52,8 +52,8 @@
                     </button>
                   </div>
 
-                  <div class="" *ngIf="getIsCollapsed(td.boardPart)">
-                    <div class="m-3">
+                  <div *ngIf="getIsCollapsed(td.boardPart)">
+                    <div>
 
                       <button class="btn btn-sm" (click)="toggleIsCollapsed(td.boardPart)">
                         <i class="fa fa-plus"></i>
@@ -61,9 +61,12 @@
 
                       <p class="mt-3">[{{td.currentWip}}/{{td.boardPart.maxWip}}]</p>
 
-                      <p class="vertical-text">
-                        {{td.boardPart.name}}
+                      <p>
+                        <span *ngFor="let l of td.boardPart.name.split('')" >
+                          {{l}} <br>
+                        </span>
                       </p>
+
                     </div>
                   </div>
 

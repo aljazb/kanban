@@ -37,12 +37,6 @@ table.table{
   border-collapse: separate;
 }
 
-.vertical-text{
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  font-size: 20px;
-}
-
 .blink-background {
   -webkit-animation: blink 1s infinite;  /* Safari 4+ */
   -moz-animation: blink 1s infinite;  /* Fx 5+ */
