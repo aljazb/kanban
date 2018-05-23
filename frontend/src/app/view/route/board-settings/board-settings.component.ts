@@ -81,11 +81,12 @@ export class BoardSettingsComponent implements OnInit {
     });
 
     this.fcRoleDeveloper = new FormControl(false);
-    this.fcRoleKanbanMaster = new FormControl(false);
+    this.fcRoleKanbanMaster = new FormControl(true);
     this.fcRoleProductOwner = new FormControl(false);
     this.fcCanReject = new FormControl(false);
     this.fcCanReject.valueChanges.subscribe(value => {
       if(value) {
+        this.fcBidirectionalMovement.patchValue(false);
         this.fcBoardPartTo.disable();
         this.fcBidirectionalMovement.disable();
       } else {
@@ -183,6 +184,10 @@ export class BoardSettingsComponent implements OnInit {
     });
   }
 
+  atLeastOneRole(): boolean {
+    return this.fcRoleDeveloper.value || this.fcRoleKanbanMaster || this.fcRoleProductOwner;
+  }
+
   addRule() {
     if(this.formRule.valid) {
 
@@ -196,12 +201,10 @@ export class BoardSettingsComponent implements OnInit {
 
       r.canReject = this.fcCanReject.value;
       if(r.canReject) {
-        r.from = r.to;
+        r.to = r.from;
       } else {
-        console.log("WTF");
         r.bidirectionalMovement = this.fcBidirectionalMovement.value;
       }
-      console.log(r);
 
       r.roleDeveloperAllowed = this.fcRoleDeveloper.value;
       r.roleKanbanMasterAllowed = this.fcRoleKanbanMaster.value;
