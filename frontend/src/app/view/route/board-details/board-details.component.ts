@@ -92,7 +92,9 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     this.boardRepresentation.projectTable.forEach(pt => {
       pt.cardTables.forEach(ct => {
         ct.cards.forEach(c => {
-          c.card.subTasks = c.card.subTasks.sort((a, b) => a.createdOn - b.createdOn);
+          if (!isNullOrUndefined(c.card.subTasks)) {
+            c.card.subTasks = c.card.subTasks.sort((a, b) => a.createdOn - b.createdOn);
+          }
         });
       });
     });
