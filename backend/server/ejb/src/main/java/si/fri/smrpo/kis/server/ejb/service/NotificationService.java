@@ -5,6 +5,7 @@ import si.fri.smrpo.kis.server.ejb.models.EmailNotification;
 import si.fri.smrpo.kis.server.ejb.service.interfaces.NotificationServiceLocal;
 import si.fri.smrpo.kis.server.jpa.entities.*;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
@@ -16,6 +17,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,34 +29,68 @@ public class NotificationService implements NotificationServiceLocal {
 
     private static final Logger LOG = Logger.getLogger(NotificationService.class.getName());
 
+    private static String emailTemplate;
+
+
     @Resource(name = "java:jboss/mail/smrpo7")
     private Session session;
 
     @EJB
     private DatabaseServiceLocal database;
 
+    @PostConstruct
+    private void init() {
+
+        try {
+            BufferedReader r = new BufferedReader(new InputStreamReader(
+                    NotificationService.class.getResourceAsStream("/email-template.html"), "UTF-8"));
+
+            StringBuilder sb = new StringBuilder();
+            String line = r.readLine();
+            while (line != null) {
+                sb.append(line);
+                line = r.readLine();
+            }
+
+            emailTemplate = sb.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void sendEmailNotifications() {
         List<EmailNotification> emailNotifications = buildEmailNotification();
 
         for(EmailNotification en : emailNotifications) {
-            sendEmail(en.getKanbanMaster().getEmail(),
-                    "Cards are near due date",
-                    emailNotifications.toString());
-        }
 
+            String title = en.getReceiver().getFirstName() + " " + en.getReceiver().getLastName();
+            String email = en.getReceiver().getEmail();
+
+            String tableContent = en.getTableContent();
+
+            String emailContent = emailTemplate
+                    .replace("$USERNAME$", title)
+                    .replace("$CONTENT$", tableContent);
+
+
+            sendEmail(email,"Card due date notification" ,emailContent);
+        }
     }
 
-    private void sendEmail(String address, String topic, String content) {
+    private void sendEmail(String email, String subject, String content) {
+
         try {
+
             Message message = new MimeMessage(session);
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(address));
-            message.setSubject(topic);
-            message.setText(content);
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject(subject);
+            message.setContent(content, "text/html; charset=utf-8");
 
             Transport.send(message);
+
         } catch (MessagingException e) {
-            LOG.log(Level.WARNING, "Cannot send mail", e);
+            LOG.log(Level.WARNING, "Failed send mail", e);
         }
     }
 

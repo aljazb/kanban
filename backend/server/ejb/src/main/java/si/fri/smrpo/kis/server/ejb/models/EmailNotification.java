@@ -11,19 +11,19 @@ public class EmailNotification {
 
     private static final SimpleDateFormat basicSdf = new SimpleDateFormat("dd.MM.yyyy");
 
-    private UserAccount kanbanMaster;
+    private UserAccount receiver;
     private List<Card> cards = new ArrayList<>();
 
-    public EmailNotification(UserAccount kanbanMaster) {
-        this.kanbanMaster = kanbanMaster;
+    public EmailNotification(UserAccount receiver) {
+        this.receiver = receiver;
     }
 
-    public UserAccount getKanbanMaster() {
-        return kanbanMaster;
+    public UserAccount getReceiver() {
+        return receiver;
     }
 
-    public void setKanbanMaster(UserAccount kanbanMaster) {
-        this.kanbanMaster = kanbanMaster;
+    public void setReceiver(UserAccount receiver) {
+        this.receiver = receiver;
     }
 
     public List<Card> getCards() {
@@ -38,14 +38,35 @@ public class EmailNotification {
         this.cards.add(card);
     }
 
-    @Override
-    public String toString() {
+    public String getTableContent() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\n The following cards are near due date: \n\n");
+        cards.sort((o1, o2) -> o1.getDueDate().compareTo(o2.getDueDate()));
 
         for(Card c : cards) {
-            sb.append(String.format("Card: %s \t Due date: %s \t Project: %s \n", c.getName(), basicSdf.format(c.getDueDate()), c.getProject().getName()));
+            sb.append("<tr>");
+
+            sb.append("<td>");
+            sb.append(c.getName());
+            sb.append("</td>");
+
+            sb.append("<td>");
+            sb.append(c.getCode());
+            sb.append("</td>");
+
+            sb.append("<td>");
+            sb.append(basicSdf.format(c.getDueDate()));
+            sb.append("</td>");
+
+            sb.append("<td>");
+            sb.append(c.getProject().getName());
+            sb.append("</td>");
+
+            sb.append("<td>");
+            sb.append(c.getProject().getBoard().getName());
+            sb.append("</td>");
+
+            sb.append("</tr>");
         }
 
 
