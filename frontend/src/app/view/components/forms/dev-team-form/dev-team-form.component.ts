@@ -102,7 +102,7 @@ export class DevTeamFormComponent {
       this.availableDevelopers = this.availableDevelopers.filter(dev => !devIds.includes(dev.id));
 
       this.api.userAccount.getProductOwners().subscribe(productOwners => {
-        this.productOwners = productOwners.filter(productOwner => !devIds.includes(productOwner.id));
+        this.productOwners = productOwners;
         if(this.kanbanMaster.inRoleProductOwner) {
           this.deleteUser(this.productOwners, this.kanbanMaster.id);
         }

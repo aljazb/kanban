@@ -20,18 +20,19 @@ export class DevTeam extends BaseEntity<DevTeam> {
 
   static getDevelopers(dt: DevTeam): UserAccount[] {
     return dt.joinedUsers.filter(mtm =>
-      [MemberType.DEVELOPER, MemberType.DEVELOPER_AND_KANBAN_MASTER, MemberType.DEVELOPER_AND_PRODUCT_OWNER].includes(mtm.memberType))
+      [MemberType.DEVELOPER, MemberType.DEVELOPER_AND_KANBAN_MASTER, MemberType.DEVELOPER_AND_PRODUCT_OWNER].includes(mtm.memberType) &&
+      !mtm.isDeleted)
       .map(mtm => mtm.userAccount);
   }
 
   static getKanbanMaster(dt: DevTeam): UserAccount {
     return dt.joinedUsers.filter(mtm => [MemberType.KANBAN_MASTER, MemberType.DEVELOPER_AND_KANBAN_MASTER]
-      .includes(mtm.memberType)).map(mtm => mtm.userAccount)[0];
+      .includes(mtm.memberType) && !mtm.isDeleted).map(mtm => mtm.userAccount)[0];
   }
 
   static getProductOwner(dt: DevTeam): UserAccount {
     return dt.joinedUsers.filter(mtm => [MemberType.PRODUCT_OWNER, MemberType.DEVELOPER_AND_PRODUCT_OWNER]
-      .includes(mtm.memberType)).map(mtm => mtm.userAccount)[0];
+      .includes(mtm.memberType) && !mtm.isDeleted).map(mtm => mtm.userAccount)[0];
   }
 
 
