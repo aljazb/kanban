@@ -41,7 +41,7 @@
             <span *ngIf="cm.cardMoveType == cmt.INVALID">Exceeded WIP with moving</span>
             <span *ngIf="cm.cardMoveType == cmt.INVALID_WIP_CHANGE">Exceeded WIP with changing WIP</span>
             <span *ngIf="cm.cardMoveType == cmt.INVALID_ON_CREATE">Exceeded WIP with creating card</span>
-            <span *ngIf="cm.reason">Reason: {{cm.reason}}</span>
+            <span *ngIf="cm.reason"><br>Reason: {{cm.reason}}</span>
 
           </div>
         </div>
