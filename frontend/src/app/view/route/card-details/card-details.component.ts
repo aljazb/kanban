@@ -47,6 +47,10 @@ export class CardDetailsComponent implements OnInit {
         this.moves = card.cardMoves.sort((a, b) => b.createdOn - a.createdOn);
       }
 
+      if (card.subTasks) {
+        card.subTasks = card.subTasks.sort((a, b) => a.createdOn - b.createdOn)
+      }
+
       this.api.project.get(this.card.project.id).subscribe(project => {
         this.isAuthUserKanbanMaster = Membership.isDeveloper(project.membership);
         this.isAuthUserDeveloper = Membership.isKanbanMaster(project.membership);

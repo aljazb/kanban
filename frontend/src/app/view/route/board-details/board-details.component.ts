@@ -89,6 +89,13 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     this.isAuthUserKanbanMaster = Membership.isKanbanMaster(board.membership);
     this.isAuthUserDeveloper = Membership.isDeveloper(board.membership);
     this.boardRepresentation = this.buildBoardRepresentation();
+    this.boardRepresentation.projectTable.forEach(pt => {
+      pt.cardTables.forEach(ct => {
+        ct.cards.forEach(c => {
+          c.card.subTasks = c.card.subTasks.sort((a, b) => a.createdOn - b.createdOn);
+        });
+      });
+    });
     this.fcCriticalDays.patchValue(this.board.remainingDays);
     this.validateCollapseSettings();
   }
