@@ -390,9 +390,11 @@ public class AnalysisService implements AnalysisServiceLocal {
         for(Card c : filteredCards) {
             if(c.getAssignedTo() != null) {
                 DeveloperRatioSeries drs = developers.get(c.getAssignedTo().getId());
-                drs.incCards();
-                if(c.getWorkload() != null) {
-                    drs.incWorkload(c.getWorkload());
+                if(drs != null) {
+                    drs.incCards();
+                    if(c.getWorkload() != null) {
+                        drs.incWorkload(c.getWorkload());
+                    }
                 }
             }
         }
