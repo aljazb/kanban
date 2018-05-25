@@ -122,7 +122,7 @@ public class NotificationService implements NotificationServiceLocal {
                     for(Card c : p.getCards()) {
                         if(c.getDueDate() != null) {
                             if(c.getDueDate().before(warning)) {
-                                if(c.getBoardPart().getLeafNumber() <= b.getAcceptanceTesting()) {
+                                if(c.getBoardPart().getLeafNumber() < b.getAcceptanceTesting()) {
                                     en.addCard(c);
                                 }
                             }
