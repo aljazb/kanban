@@ -80,6 +80,20 @@ public class Board extends UUIDEntity<Board> {
     }
 
     @JsonIgnore
+    public int getLastLeafNumber() {
+        Set<BoardPart> leafs = buildLeavesBoardParts();
+        int lastLeafNumber = -1;
+
+        for(BoardPart bp : leafs) {
+            if(lastLeafNumber < bp.getLeafNumber()) {
+                lastLeafNumber = bp.getLeafNumber();
+            }
+        }
+
+        return lastLeafNumber;
+    }
+
+    @JsonIgnore
     public Set<BoardPart> buildLeavesBoardParts() {
         Set<BoardPart> leafs = new HashSet<>();
         buildLeavesBoardParts(this.boardParts, leafs);
