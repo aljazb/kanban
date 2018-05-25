@@ -176,8 +176,12 @@ export class BoardDetailsComponent implements OnInit, OnDestroy {
     if (!isNullOrUndefined(n) && n >= 0) {
       let today = cTsToDp(Date.now());
       let dateLimit = new Date(today.year, today.month, today.day + n);
+      let lastLeaf = this.boardRepresentation.leafBoardParts[this.boardRepresentation.leafBoardParts.length - 1];
       this.boardRepresentation.projectTable.forEach(pt => {
         pt.cardTables.forEach(ct => {
+          if (ct.currentBoardPart.leafNumber == lastLeaf.leafNumber) {
+            return;
+          }
           ct.cards.forEach(c => {
             if (isNullOrUndefined(c.card.dueDate)) {
               return;
