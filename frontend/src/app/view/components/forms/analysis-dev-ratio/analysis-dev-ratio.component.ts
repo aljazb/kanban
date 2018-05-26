@@ -50,8 +50,8 @@ export class AnalysisDevRatioComponent implements OnInit {
 
 
       response.data.forEach(value => {
-        workload.push(new NgxSeries(value.developer.email, value.combinedWorkload, value.ratioWorkload));
-        cards.push(new NgxSeries(value.developer.email, value.combinedCards, value.ratioCards));
+        workload.push(new NgxSeries(value.developer.email, value.combinedWorkload));
+        cards.push(new NgxSeries(value.developer.email, value.combinedCards));
       });
 
       this.ngxDataSetWorkload = workload;
