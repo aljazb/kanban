@@ -7,6 +7,7 @@ public class DeveloperRatioSeries {
     private UserAccount developer;
 
     private Integer combinedCards = 0;
+
     private Integer combinedWorkload = 0;
 
     public DeveloperRatioSeries(UserAccount developer) {
@@ -15,6 +16,15 @@ public class DeveloperRatioSeries {
 
     public UserAccount getDeveloper() {
         return developer;
+    }
+
+
+    public void incCards() {
+        this.combinedCards++;
+    }
+
+    public void incWorkload(Integer value) {
+        this.combinedWorkload += value;
     }
 
     public void setDeveloper(UserAccount developer) {
@@ -37,11 +47,4 @@ public class DeveloperRatioSeries {
         this.combinedWorkload = combinedWorkload;
     }
 
-    public void incCards() {
-        this.combinedCards++;
-    }
-
-    public void incWorkload(Integer value) {
-        this.combinedWorkload += value;
-    }
 }

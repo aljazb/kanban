@@ -32,10 +32,9 @@ export class ProjectTable {
         if(cardMoveRules) {
           cardMoveRules.forEach(cmr => {
 
-            if(
-              (cmr.roleKanbanMasterAllowed && isKanbanMaster) ||
-              (cmr.roleProductOwnerAllowed && isProductOwner) ||
-              (cmr.roleDeveloperAllowed && isDeveloper)
+            if((cmr.roleProductOwnerAllowed && isProductOwner) ||
+              (cmr.roleDeveloperAllowed && isDeveloper) ||
+              (isKanbanMaster)
             ) {
               if(cmr.canReject) {
                 moveBack = moveBackBoardParts;

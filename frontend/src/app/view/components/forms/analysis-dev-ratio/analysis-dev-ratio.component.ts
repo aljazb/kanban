@@ -48,9 +48,10 @@ export class AnalysisDevRatioComponent implements OnInit {
       let workload: NgxSeries[] = [];
       let cards: NgxSeries[] = [];
 
+
       response.data.forEach(value => {
-        workload.push(new NgxSeries(value.developer.email, value.combinedWorkload));
-        cards.push(new NgxSeries(value.developer.email, value.combinedCards));
+        workload.push(new NgxSeries(value.developer.email, value.combinedWorkload, value.ratioWorkload));
+        cards.push(new NgxSeries(value.developer.email, value.combinedCards, value.ratioCards));
       });
 
       this.ngxDataSetWorkload = workload;
@@ -58,6 +59,16 @@ export class AnalysisDevRatioComponent implements OnInit {
 
       setTimeout(() => {this.scrollToContent()}, 300);
     }
+  }
+
+  tooltipFormatting(series : {data: NgxSeries, startAngle: number, endAngle: number}) {
+    console.log(series);
+
+    let diff = Math.abs(series.startAngle - series.endAngle);
+    let ratio = diff / (2 * Math.PI)
+    let strRatio = Number(ratio * 100).toFixed(0);
+
+    return`${series.data.name}<br> Value: ${series.data.value} <br> Ratio: ${strRatio} %`;
   }
 
 }

@@ -31,13 +31,13 @@ public class AnalysisQuery {
 
     public boolean isShowDateValid(CardMove cm) {
         if(getShowFrom() != null) {
-            if(getShowFrom().after(cm.getCreatedOn())) {
+            if(getShowFrom().equals(cm.getCreatedOn()) || getShowFrom().after(cm.getCreatedOn())) {
                 return false;
             }
         }
 
         if(getShowTo() != null) {
-            if(getShowTo().before(cm.getCreatedOn())) {
+            if(getShowTo().equals(cm.getCreatedOn()) || getShowTo().before(cm.getCreatedOn())) {
                 return false;
             }
         }

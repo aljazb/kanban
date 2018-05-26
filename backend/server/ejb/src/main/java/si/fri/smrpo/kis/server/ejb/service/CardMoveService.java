@@ -36,14 +36,12 @@ public class CardMoveService implements CardMoveServiceLocal {
     }
 
     private boolean validCardMoveRole(CardMoveRules cmr, Membership m) {
-        if(cmr.getRoleDeveloperAllowed()) {
-            if(m.isDeveloper()) {
-                return true;
-            }
+        if(m.isKanbanMaster()) {
+            return true;
         }
 
-        if(cmr.getRoleKanbanMasterAllowed()) {
-            if(m.isKanbanMaster()) {
+        if(cmr.getRoleDeveloperAllowed()) {
+            if(m.isDeveloper()) {
                 return true;
             }
         }

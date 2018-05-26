@@ -324,7 +324,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(0));
         cmr.setTo(testBoardPartLeafs.get(1));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr.setBidirectionalMovement(true);
         cmr = database.create(cmr);
@@ -339,7 +338,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(1));
         cmr.setTo(testBoardPartLeafs.get(2));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
         testBoard.getCardMoveRules().add(cmr);
@@ -348,7 +346,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(2));
         cmr.setTo(testBoardPartLeafs.get(1));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr = database.create(cmr);
         testBoard.getCardMoveRules().add(cmr);
 
@@ -360,7 +357,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(2));
         cmr.setTo(testBoardPartLeafs.get(3));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr.setBidirectionalMovement(true);
         cmr = database.create(cmr);
@@ -374,7 +370,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(3));
         cmr.setTo(testBoardPartLeafs.get(4));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr.setBidirectionalMovement(true);
         cmr = database.create(cmr);
@@ -389,7 +384,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(4));
         cmr.setTo(testBoardPartLeafs.get(5));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr.setBidirectionalMovement(true);
         cmr = database.create(cmr);
@@ -404,7 +398,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(5));
         cmr.setTo(testBoardPartLeafs.get(6));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr.setBidirectionalMovement(true);
         cmr = database.create(cmr);
@@ -418,7 +411,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(6));
         cmr.setTo(testBoardPartLeafs.get(7));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleDeveloperAllowed(true);
         cmr = database.create(cmr);
         testBoard.getCardMoveRules().add(cmr);
@@ -427,7 +419,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(7));
         cmr.setTo(testBoardPartLeafs.get(6));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr = database.create(cmr);
         testBoard.getCardMoveRules().add(cmr);
 
@@ -439,7 +430,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(7));
         cmr.setTo(testBoardPartLeafs.get(8));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr.setBidirectionalMovement(true);
         cmr = database.create(cmr);
@@ -454,7 +444,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(8));
         cmr.setTo(testBoardPartLeafs.get(8));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr.setCanReject(true);
         cmr = database.create(cmr);
@@ -468,7 +457,6 @@ public class SeedService {
         cmr.setBoard(testBoard);
         cmr.setFrom(testBoardPartLeafs.get(8));
         cmr.setTo(testBoardPartLeafs.get(9));
-        cmr.setRoleKanbanMasterAllowed(true);
         cmr.setRoleProductOwnerAllowed(true);
         cmr.setBidirectionalMovement(true);
         cmr = database.create(cmr);

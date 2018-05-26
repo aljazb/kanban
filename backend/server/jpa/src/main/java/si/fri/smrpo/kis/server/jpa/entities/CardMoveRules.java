@@ -12,7 +12,6 @@ import javax.persistence.*;
 @JsonIdentityInfo(generator=JSOGGenerator.class)
 public class CardMoveRules extends UUIDEntity<CardMoveRules> {
 
-    private Boolean roleKanbanMasterAllowed = false;
     private Boolean roleDeveloperAllowed = false;
     private Boolean roleProductOwnerAllowed = false;
     private Boolean canReject = false;
@@ -62,14 +61,6 @@ public class CardMoveRules extends UUIDEntity<CardMoveRules> {
 
     public void setCanReject(Boolean canProductOwnerReject) {
         this.canReject = canProductOwnerReject;
-    }
-
-    public Boolean getRoleKanbanMasterAllowed() {
-        return roleKanbanMasterAllowed;
-    }
-
-    public void setRoleKanbanMasterAllowed(Boolean roleKanbanMasterAllowed) {
-        this.roleKanbanMasterAllowed = roleKanbanMasterAllowed;
     }
 
     public Boolean getRoleDeveloperAllowed() {

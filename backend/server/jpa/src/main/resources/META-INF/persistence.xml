@@ -16,6 +16,7 @@
 
         <class>si.fri.smrpo.kis.server.jpa.entities.Card</class>
         <class>si.fri.smrpo.kis.server.jpa.entities.CardMove</class>
+        <class>si.fri.smrpo.kis.server.jpa.entities.CardMoveRules</class>
         <class>si.fri.smrpo.kis.server.jpa.entities.SubTask</class>
 
         <class>si.fri.smrpo.kis.server.jpa.entities.Board</class>
@@ -47,3 +48,4 @@
         </properties>
     </persistence-unit>
 </persistence>
+

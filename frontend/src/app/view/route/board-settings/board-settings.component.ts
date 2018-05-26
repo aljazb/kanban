@@ -39,7 +39,6 @@ export class BoardSettingsComponent implements OnInit {
   fcBoardPartTo: FormControl;
 
   fcRoleDeveloper: FormControl;
-  fcRoleKanbanMaster: FormControl;
   fcRoleProductOwner: FormControl;
   fcCanReject: FormControl;
   fcBidirectionalMovement: FormControl;
@@ -81,7 +80,6 @@ export class BoardSettingsComponent implements OnInit {
     });
 
     this.fcRoleDeveloper = new FormControl(false);
-    this.fcRoleKanbanMaster = new FormControl(true);
     this.fcRoleProductOwner = new FormControl(false);
     this.fcCanReject = new FormControl(false);
     this.fcCanReject.valueChanges.subscribe(value => {
@@ -108,7 +106,6 @@ export class BoardSettingsComponent implements OnInit {
       from: this.fcBoardPartFrom,
       to: this.fcBoardPartTo,
       roleDeveloper: this.fcRoleDeveloper,
-      roleKanbanMaster: this.fcRoleKanbanMaster,
       roleProductOwner: this.fcRoleProductOwner,
       canReject: this.fcCanReject,
       bidirectionalMovement: this.fcBidirectionalMovement
@@ -167,7 +164,6 @@ export class BoardSettingsComponent implements OnInit {
       cmr.to = new BoardPart();
       cmr.to.id = value.to.id;
       cmr.roleProductOwnerAllowed = value.roleProductOwnerAllowed;
-      cmr.roleKanbanMasterAllowed = value.roleKanbanMasterAllowed;
       cmr.roleDeveloperAllowed = value.roleDeveloperAllowed;
       cmr.canReject = value.canReject;
       cmr.bidirectionalMovement = value.bidirectionalMovement;
@@ -185,7 +181,7 @@ export class BoardSettingsComponent implements OnInit {
   }
 
   atLeastOneRole(): boolean {
-    return this.fcRoleDeveloper.value || this.fcRoleKanbanMaster || this.fcRoleProductOwner;
+    return this.fcRoleDeveloper.value || this.fcRoleProductOwner;
   }
 
   addRule() {
@@ -207,7 +203,6 @@ export class BoardSettingsComponent implements OnInit {
       }
 
       r.roleDeveloperAllowed = this.fcRoleDeveloper.value;
-      r.roleKanbanMasterAllowed = this.fcRoleKanbanMaster.value;
       r.roleProductOwnerAllowed = this.fcRoleProductOwner.value;
 
       this.cardMoveRulesEditing = [r].concat(this.cardMoveRulesEditing);

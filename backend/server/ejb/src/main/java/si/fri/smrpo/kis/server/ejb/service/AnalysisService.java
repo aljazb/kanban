@@ -371,7 +371,7 @@ public class AnalysisService implements AnalysisServiceLocal {
     }
 
 
-    public DeveloperRatioResponse buildDeveloperRationResponse(DeveloperRatioQuery query, UserAccount authUser) throws DatabaseException {
+    public DeveloperRatioResponse buildDeveloperRationResponse(DeveloperRatioQuery query) throws DatabaseException {
         Project p = database.find(Project.class, query.getProject().getId());
         Board b = p.getBoard();
 
@@ -386,6 +386,7 @@ public class AnalysisService implements AnalysisServiceLocal {
             developers.put(dev.getId(), drs);
             response.add(drs);
         }
+
 
         for(Card c : filteredCards) {
             if(c.getAssignedTo() != null) {
@@ -405,7 +406,7 @@ public class AnalysisService implements AnalysisServiceLocal {
     @Override
     public DeveloperRatioResponse processDeveloperRatio(DeveloperRatioQuery query, UserAccount authUser) throws LogicBaseException {
         validate(query, authUser);
-        return buildDeveloperRationResponse(query, authUser);
+        return buildDeveloperRationResponse(query);
     }
 
 
